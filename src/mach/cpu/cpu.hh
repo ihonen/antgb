@@ -10,19 +10,19 @@ public:
     Cpu();
 private:
     uint8_t get_flag(uint8_t pos);
-    void set_flag(uint8_t pos, uint8_t val);
+    void    set_flag(uint8_t pos, uint8_t val);
     uint8_t get_cf();
     uint8_t get_hf();
     uint8_t get_nf();
     uint8_t get_zf();
-    void set_cf(bool cond = true);
-    void set_hf(bool cond = true);
-    void set_nf(bool cond = true);
-    void set_zf(bool cond = true);
-    void clear_cf(bool cond = true);
-    void clear_hf(bool cond = true);
-    void clear_nf(bool cond = true);
-    void clear_zf(bool cond = true);
+    void    set_cf(bool cond = true);
+    void    set_hf(bool cond = true);
+    void    set_nf(bool cond = true);
+    void    set_zf(bool cond = true);
+    void    clear_cf(bool cond = true);
+    void    clear_hf(bool cond = true);
+    void    clear_nf(bool cond = true);
+    void    clear_zf(bool cond = true);
 
     // Positions of the flag bits in flag register (F).
     static const uint8_t CF_BIT_POS = 4;
@@ -51,6 +51,9 @@ private:
     // so store them accordingly.
     const std::array<uint16_t*, 6> reg16 = {BC, DE, HL, AF, PC, SP};
     const std::array<uint8_t*, 8>  reg8  = {B, C, D, E, H, L, A, F};
+
+    // Current opcode in execution. Maximum instruction length is 3 bytes.
+    uint8_t op[3];
 };
 
 #endif // CPU_HH
