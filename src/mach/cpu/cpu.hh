@@ -9,6 +9,8 @@ class Cpu
 public:
     Cpu();
 private:
+    void    build_opcode_table();
+    void    execute_next();
     uint8_t get_flag(uint8_t pos);
     void    set_flag(uint8_t pos, uint8_t val);
     uint8_t get_cf();
@@ -30,8 +32,11 @@ private:
     static const uint8_t NF_BIT_POS = 6;
     static const uint8_t ZF_BIT_POS = 7;
 
+    // Main memory.
+    uint8_t mem[0xFFFF + 1];
+
     // BC, DE, HL, AF, PC, SP
-    uint16_t reg[6];
+    uint16_t reg[6] = {0};
     uint16_t* BC = &reg[0];
     uint16_t* DE = &reg[1];
     uint16_t* HL = &reg[2];
@@ -53,7 +58,11 @@ private:
     const std::array<uint8_t*, 8>  reg8  = {B, C, D, E, H, L, A, F};
 
     // Current opcode in execution. Maximum instruction length is 3 bytes.
-    uint8_t op[3];
+    uint8_t op[3] = {0};
+
+    class OpcodeInfo;
+    friend class OpcodeInfo;
+    static const OpcodeInfo OP_INFO;
 };
 
 #endif // CPU_HH
