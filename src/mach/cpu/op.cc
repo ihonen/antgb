@@ -47,7 +47,7 @@ void Cpu::op_08()
 
 void Cpu::op_09()
 {
-
+    ADD_HL_r16(BC);
 }
 
 void Cpu::op_0A()
@@ -127,7 +127,7 @@ void Cpu::op_18()
 
 void Cpu::op_19()
 {
-
+    ADD_HL_r16(DE);
 }
 
 void Cpu::op_1A()
@@ -207,7 +207,7 @@ void Cpu::op_28()
 
 void Cpu::op_29()
 {
-
+    ADD_HL_r16(HL);
 }
 
 void Cpu::op_2A()
@@ -287,7 +287,7 @@ void Cpu::op_38()
 
 void Cpu::op_39()
 {
-
+    ADD_HL_r16(SP);
 }
 
 void Cpu::op_3A()
@@ -1162,7 +1162,7 @@ void Cpu::op_E7()
 
 void Cpu::op_E8()
 {
-
+    ADD_SP_s8(static_cast<int8_t>(curr_op[1]));
 }
 
 void Cpu::op_E9()
