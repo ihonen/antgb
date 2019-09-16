@@ -103,6 +103,8 @@ private:
     void AND_u8(uint8_t u8);
     void AND_HL();
     void AND_r8(uint8_t* r8);
+    void BIT_n_HL(uint8_t n);
+    void BIT_n_r8(uint8_t n, uint8_t* r8);
     void NOP();
 
     void op_00(); void op_01(); void op_02(); void op_03();

@@ -82,6 +82,19 @@ void Cpu::AND_r8(uint8_t* r8)
     AND_u8(*r8);
 }
 
+/* BIT */
+void Cpu::BIT_n_HL(uint8_t n)
+{
+    BIT_n_r8(n, &mem[*HL]);
+}
+
+void Cpu::BIT_n_r8(uint8_t n, uint8_t* r8)
+{
+    set_hf();
+    clear_nf();
+    update_zf(!((*r8 >> n) & 0x01));
+}
+
 /* NOP */
 
 void Cpu::NOP()
