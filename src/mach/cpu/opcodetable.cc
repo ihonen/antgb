@@ -1,550 +1,521 @@
 #include "cpu.hh"
 
-const Cpu::OpcodeInfo Cpu::OP_INFO[256] = {
-    {1, 0, 0, nullptr}, // 0x00
-    {1, 0, 0, nullptr}, // 0x01
-    {1, 0, 0, nullptr}, // 0x02
-    {1, 0, 0, nullptr}, // 0x03
-    {1, 0, 0, nullptr}, // 0x04
-    {1, 0, 0, nullptr}, // 0x05
-    {1, 0, 0, nullptr}, // 0x06
-    {1, 0, 0, nullptr}, // 0x07
-    {1, 0, 0, nullptr}, // 0x08
-    {1, 0, 0, nullptr}, // 0x09
-    {1, 0, 0, nullptr}, // 0x0A
-    {1, 0, 0, nullptr}, // 0x0B
-    {1, 0, 0, nullptr}, // 0x0C
-    {1, 0, 0, nullptr}, // 0x0D
-    {1, 0, 0, nullptr}, // 0x0E
-    {1, 0, 0, nullptr}, // 0x0F
-
-    {1, 0, 0, nullptr}, // 0x10
-    {1, 0, 0, nullptr}, // 0x11
-    {1, 0, 0, nullptr}, // 0x12
-    {1, 0, 0, nullptr}, // 0x13
-    {1, 0, 0, nullptr}, // 0x14
-    {1, 0, 0, nullptr}, // 0x15
-    {1, 0, 0, nullptr}, // 0x16
-    {1, 0, 0, nullptr}, // 0x17
-    {1, 0, 0, nullptr}, // 0x18
-    {1, 0, 0, nullptr}, // 0x19
-    {1, 0, 0, nullptr}, // 0x1A
-    {1, 0, 0, nullptr}, // 0x1B
-    {1, 0, 0, nullptr}, // 0x1C
-    {1, 0, 0, nullptr}, // 0x1D
-    {1, 0, 0, nullptr}, // 0x1E
-    {1, 0, 0, nullptr}, // 0x1F
-
-    {1, 0, 0, nullptr}, // 0x20
-    {1, 0, 0, nullptr}, // 0x21
-    {1, 0, 0, nullptr}, // 0x22
-    {1, 0, 0, nullptr}, // 0x23
-    {1, 0, 0, nullptr}, // 0x24
-    {1, 0, 0, nullptr}, // 0x25
-    {1, 0, 0, nullptr}, // 0x26
-    {1, 0, 0, nullptr}, // 0x27
-    {1, 0, 0, nullptr}, // 0x28
-    {1, 0, 0, nullptr}, // 0x29
-    {1, 0, 0, nullptr}, // 0x2A
-    {1, 0, 0, nullptr}, // 0x2B
-    {1, 0, 0, nullptr}, // 0x2C
-    {1, 0, 0, nullptr}, // 0x2D
-    {1, 0, 0, nullptr}, // 0x2E
-    {1, 0, 0, nullptr}, // 0x2F
-
-    {1, 0, 0, nullptr}, // 0x30
-    {1, 0, 0, nullptr}, // 0x31
-    {1, 0, 0, nullptr}, // 0x32
-    {1, 0, 0, nullptr}, // 0x33
-    {1, 0, 0, nullptr}, // 0x34
-    {1, 0, 0, nullptr}, // 0x35
-    {1, 0, 0, nullptr}, // 0x36
-    {1, 0, 0, nullptr}, // 0x37
-    {1, 0, 0, nullptr}, // 0x38
-    {1, 0, 0, nullptr}, // 0x39
-    {1, 0, 0, nullptr}, // 0x3A
-    {1, 0, 0, nullptr}, // 0x3B
-    {1, 0, 0, nullptr}, // 0x3C
-    {1, 0, 0, nullptr}, // 0x3D
-    {1, 0, 0, nullptr}, // 0x3E
-    {1, 0, 0, nullptr}, // 0x3F
-
-    {1, 0, 0, nullptr}, // 0x40
-    {1, 0, 0, nullptr}, // 0x41
-    {1, 0, 0, nullptr}, // 0x42
-    {1, 0, 0, nullptr}, // 0x43
-    {1, 0, 0, nullptr}, // 0x44
-    {1, 0, 0, nullptr}, // 0x45
-    {1, 0, 0, nullptr}, // 0x46
-    {1, 0, 0, nullptr}, // 0x47
-    {1, 0, 0, nullptr}, // 0x48
-    {1, 0, 0, nullptr}, // 0x49
-    {1, 0, 0, nullptr}, // 0x4A
-    {1, 0, 0, nullptr}, // 0x4B
-    {1, 0, 0, nullptr}, // 0x4C
-    {1, 0, 0, nullptr}, // 0x4D
-    {1, 0, 0, nullptr}, // 0x4E
-    {1, 0, 0, nullptr}, // 0x4F
-
-    {1, 0, 0, nullptr}, // 0x50
-    {1, 0, 0, nullptr}, // 0x51
-    {1, 0, 0, nullptr}, // 0x52
-    {1, 0, 0, nullptr}, // 0x53
-    {1, 0, 0, nullptr}, // 0x54
-    {1, 0, 0, nullptr}, // 0x55
-    {1, 0, 0, nullptr}, // 0x56
-    {1, 0, 0, nullptr}, // 0x57
-    {1, 0, 0, nullptr}, // 0x58
-    {1, 0, 0, nullptr}, // 0x59
-    {1, 0, 0, nullptr}, // 0x5A
-    {1, 0, 0, nullptr}, // 0x5B
-    {1, 0, 0, nullptr}, // 0x5C
-    {1, 0, 0, nullptr}, // 0x5D
-    {1, 0, 0, nullptr}, // 0x5E
-    {1, 0, 0, nullptr}, // 0x5F
-
-    {1, 0, 0, nullptr}, // 0x60
-    {1, 0, 0, nullptr}, // 0x61
-    {1, 0, 0, nullptr}, // 0x62
-    {1, 0, 0, nullptr}, // 0x63
-    {1, 0, 0, nullptr}, // 0x64
-    {1, 0, 0, nullptr}, // 0x65
-    {1, 0, 0, nullptr}, // 0x66
-    {1, 0, 0, nullptr}, // 0x67
-    {1, 0, 0, nullptr}, // 0x68
-    {1, 0, 0, nullptr}, // 0x69
-    {1, 0, 0, nullptr}, // 0x6A
-    {1, 0, 0, nullptr}, // 0x6B
-    {1, 0, 0, nullptr}, // 0x6C
-    {1, 0, 0, nullptr}, // 0x6D
-    {1, 0, 0, nullptr}, // 0x6E
-    {1, 0, 0, nullptr}, // 0x6F
-
-    {1, 0, 0, nullptr}, // 0x70
-    {1, 0, 0, nullptr}, // 0x71
-    {1, 0, 0, nullptr}, // 0x72
-    {1, 0, 0, nullptr}, // 0x73
-    {1, 0, 0, nullptr}, // 0x74
-    {1, 0, 0, nullptr}, // 0x75
-    {1, 0, 0, nullptr}, // 0x76
-    {1, 0, 0, nullptr}, // 0x77
-    {1, 0, 0, nullptr}, // 0x78
-    {1, 0, 0, nullptr}, // 0x79
-    {1, 0, 0, nullptr}, // 0x7A
-    {1, 0, 0, nullptr}, // 0x7B
-    {1, 0, 0, nullptr}, // 0x7C
-    {1, 0, 0, nullptr}, // 0x7D
-    {1, 0, 0, nullptr}, // 0x7E
-    {1, 0, 0, nullptr}, // 0x7F
-
-    {1, 0, 0, nullptr}, // 0x80
-    {1, 0, 0, nullptr}, // 0x81
-    {1, 0, 0, nullptr}, // 0x82
-    {1, 0, 0, nullptr}, // 0x83
-    {1, 0, 0, nullptr}, // 0x84
-    {1, 0, 0, nullptr}, // 0x85
-    {1, 0, 0, nullptr}, // 0x86
-    {1, 0, 0, nullptr}, // 0x87
-    {1, 0, 0, nullptr}, // 0x88
-    {1, 0, 0, nullptr}, // 0x89
-    {1, 0, 0, nullptr}, // 0x8A
-    {1, 0, 0, nullptr}, // 0x8B
-    {1, 0, 0, nullptr}, // 0x8C
-    {1, 0, 0, nullptr}, // 0x8D
-    {1, 0, 0, nullptr}, // 0x8E
-    {1, 0, 0, nullptr}, // 0x8F
-
-    {1, 0, 0, nullptr}, // 0x90
-    {1, 0, 0, nullptr}, // 0x91
-    {1, 0, 0, nullptr}, // 0x92
-    {1, 0, 0, nullptr}, // 0x93
-    {1, 0, 0, nullptr}, // 0x94
-    {1, 0, 0, nullptr}, // 0x95
-    {1, 0, 0, nullptr}, // 0x96
-    {1, 0, 0, nullptr}, // 0x97
-    {1, 0, 0, nullptr}, // 0x98
-    {1, 0, 0, nullptr}, // 0x99
-    {1, 0, 0, nullptr}, // 0x9A
-    {1, 0, 0, nullptr}, // 0x9B
-    {1, 0, 0, nullptr}, // 0x9C
-    {1, 0, 0, nullptr}, // 0x9D
-    {1, 0, 0, nullptr}, // 0x9E
-    {1, 0, 0, nullptr}, // 0x9F
-
-    {1, 0, 0, nullptr}, // 0xA0
-    {1, 0, 0, nullptr}, // 0xA1
-    {1, 0, 0, nullptr}, // 0xA2
-    {1, 0, 0, nullptr}, // 0xA3
-    {1, 0, 0, nullptr}, // 0xA4
-    {1, 0, 0, nullptr}, // 0xA5
-    {1, 0, 0, nullptr}, // 0xA6
-    {1, 0, 0, nullptr}, // 0xA7
-    {1, 0, 0, nullptr}, // 0xA8
-    {1, 0, 0, nullptr}, // 0xA9
-    {1, 0, 0, nullptr}, // 0xAA
-    {1, 0, 0, nullptr}, // 0xAB
-    {1, 0, 0, nullptr}, // 0xAC
-    {1, 0, 0, nullptr}, // 0xAD
-    {1, 0, 0, nullptr}, // 0xAE
-    {1, 0, 0, nullptr}, // 0xAF
-
-    {1, 0, 0, nullptr}, // 0xB0
-    {1, 0, 0, nullptr}, // 0xB1
-    {1, 0, 0, nullptr}, // 0xB2
-    {1, 0, 0, nullptr}, // 0xB3
-    {1, 0, 0, nullptr}, // 0xB4
-    {1, 0, 0, nullptr}, // 0xB5
-    {1, 0, 0, nullptr}, // 0xB6
-    {1, 0, 0, nullptr}, // 0xB7
-    {1, 0, 0, nullptr}, // 0xB8
-    {1, 0, 0, nullptr}, // 0xB9
-    {1, 0, 0, nullptr}, // 0xBA
-    {1, 0, 0, nullptr}, // 0xBB
-    {1, 0, 0, nullptr}, // 0xBC
-    {1, 0, 0, nullptr}, // 0xBD
-    {1, 0, 0, nullptr}, // 0xBE
-    {1, 0, 0, nullptr}, // 0xBF
-
-    {1, 0, 0, nullptr}, // 0xC0
-    {1, 0, 0, nullptr}, // 0xC1
-    {1, 0, 0, nullptr}, // 0xC2
-    {1, 0, 0, nullptr}, // 0xC3
-    {1, 0, 0, nullptr}, // 0xC4
-    {1, 0, 0, nullptr}, // 0xC5
-    {1, 0, 0, nullptr}, // 0xC6
-    {1, 0, 0, nullptr}, // 0xC7
-    {1, 0, 0, nullptr}, // 0xC8
-    {1, 0, 0, nullptr}, // 0xC9
-    {1, 0, 0, nullptr}, // 0xCA
-    {1, 0, 0, nullptr}, // 0xCB
-    {1, 0, 0, nullptr}, // 0xCC
-    {1, 0, 0, nullptr}, // 0xCD
-    {1, 0, 0, nullptr}, // 0xCE
-    {1, 0, 0, nullptr}, // 0xCF
-
-    {1, 0, 0, nullptr}, // 0xD0
-    {1, 0, 0, nullptr}, // 0xD1
-    {1, 0, 0, nullptr}, // 0xD2
-    {1, 0, 0, nullptr}, // 0xD3
-    {1, 0, 0, nullptr}, // 0xD4
-    {1, 0, 0, nullptr}, // 0xD5
-    {1, 0, 0, nullptr}, // 0xD6
-    {1, 0, 0, nullptr}, // 0xD7
-    {1, 0, 0, nullptr}, // 0xD8
-    {1, 0, 0, nullptr}, // 0xD9
-    {1, 0, 0, nullptr}, // 0xDA
-    {1, 0, 0, nullptr}, // 0xDB
-    {1, 0, 0, nullptr}, // 0xDC
-    {1, 0, 0, nullptr}, // 0xDD
-    {1, 0, 0, nullptr}, // 0xDE
-    {1, 0, 0, nullptr}, // 0xDF
-
-    {1, 0, 0, nullptr}, // 0xE0
-    {1, 0, 0, nullptr}, // 0xE1
-    {1, 0, 0, nullptr}, // 0xE2
-    {1, 0, 0, nullptr}, // 0xE3
-    {1, 0, 0, nullptr}, // 0xE4
-    {1, 0, 0, nullptr}, // 0xE5
-    {1, 0, 0, nullptr}, // 0xE6
-    {1, 0, 0, nullptr}, // 0xE7
-    {1, 0, 0, nullptr}, // 0xE8
-    {1, 0, 0, nullptr}, // 0xE9
-    {1, 0, 0, nullptr}, // 0xEA
-    {1, 0, 0, nullptr}, // 0xEB
-    {1, 0, 0, nullptr}, // 0xEC
-    {1, 0, 0, nullptr}, // 0xED
-    {1, 0, 0, nullptr}, // 0xEE
-    {1, 0, 0, nullptr}, // 0xEF
-
-    {1, 0, 0, nullptr}, // 0xF0
-    {1, 0, 0, nullptr}, // 0xF1
-    {1, 0, 0, nullptr}, // 0xF2
-    {1, 0, 0, nullptr}, // 0xF3
-    {1, 0, 0, nullptr}, // 0xF4
-    {1, 0, 0, nullptr}, // 0xF5
-    {1, 0, 0, nullptr}, // 0xF6
-    {1, 0, 0, nullptr}, // 0xF7
-    {1, 0, 0, nullptr}, // 0xF8
-    {1, 0, 0, nullptr}, // 0xF9
-    {1, 0, 0, nullptr}, // 0xFA
-    {1, 0, 0, nullptr}, // 0xFB
-    {1, 0, 0, nullptr}, // 0xFC
-    {1, 0, 0, nullptr}, // 0xFD
-    {1, 0, 0, nullptr}, // 0xFE
-    {1, 0, 0, nullptr}  // 0xFF
+const Cpu::OpcodeInfo Cpu::OP_INFO[256] =
+{
+    {1, 4, 4, &Cpu::op_00},
+    {1, 0, 0, &Cpu::op_01},
+    {1, 0, 0, &Cpu::op_02},
+    {1, 0, 0, &Cpu::op_03},
+    {1, 0, 0, &Cpu::op_04},
+    {1, 0, 0, &Cpu::op_05},
+    {1, 0, 0, &Cpu::op_06},
+    {1, 0, 0, &Cpu::op_07},
+    {1, 0, 0, &Cpu::op_08},
+    {1, 0, 0, &Cpu::op_09},
+    {1, 0, 0, &Cpu::op_0A},
+    {1, 0, 0, &Cpu::op_0B},
+    {1, 0, 0, &Cpu::op_0C},
+    {1, 0, 0, &Cpu::op_0D},
+    {1, 0, 0, &Cpu::op_0E},
+    {1, 0, 0, &Cpu::op_0F},
+    {1, 0, 0, &Cpu::op_10},
+    {1, 0, 0, &Cpu::op_11},
+    {1, 0, 0, &Cpu::op_12},
+    {1, 0, 0, &Cpu::op_13},
+    {1, 0, 0, &Cpu::op_14},
+    {1, 0, 0, &Cpu::op_15},
+    {1, 0, 0, &Cpu::op_16},
+    {1, 0, 0, &Cpu::op_17},
+    {1, 0, 0, &Cpu::op_18},
+    {1, 0, 0, &Cpu::op_19},
+    {1, 0, 0, &Cpu::op_1A},
+    {1, 0, 0, &Cpu::op_1B},
+    {1, 0, 0, &Cpu::op_1C},
+    {1, 0, 0, &Cpu::op_1D},
+    {1, 0, 0, &Cpu::op_1E},
+    {1, 0, 0, &Cpu::op_1F},
+    {1, 0, 0, &Cpu::op_20},
+    {1, 0, 0, &Cpu::op_21},
+    {1, 0, 0, &Cpu::op_22},
+    {1, 0, 0, &Cpu::op_23},
+    {1, 0, 0, &Cpu::op_24},
+    {1, 0, 0, &Cpu::op_25},
+    {1, 0, 0, &Cpu::op_26},
+    {1, 0, 0, &Cpu::op_27},
+    {1, 0, 0, &Cpu::op_28},
+    {1, 0, 0, &Cpu::op_29},
+    {1, 0, 0, &Cpu::op_2A},
+    {1, 0, 0, &Cpu::op_2B},
+    {1, 0, 0, &Cpu::op_2C},
+    {1, 0, 0, &Cpu::op_2D},
+    {1, 0, 0, &Cpu::op_2E},
+    {1, 0, 0, &Cpu::op_2F},
+    {1, 0, 0, &Cpu::op_30},
+    {1, 0, 0, &Cpu::op_31},
+    {1, 0, 0, &Cpu::op_32},
+    {1, 0, 0, &Cpu::op_33},
+    {1, 0, 0, &Cpu::op_34},
+    {1, 0, 0, &Cpu::op_35},
+    {1, 0, 0, &Cpu::op_36},
+    {1, 0, 0, &Cpu::op_37},
+    {1, 0, 0, &Cpu::op_38},
+    {1, 0, 0, &Cpu::op_39},
+    {1, 0, 0, &Cpu::op_3A},
+    {1, 0, 0, &Cpu::op_3B},
+    {1, 0, 0, &Cpu::op_3C},
+    {1, 0, 0, &Cpu::op_3D},
+    {1, 0, 0, &Cpu::op_3E},
+    {1, 0, 0, &Cpu::op_3F},
+    {1, 0, 0, &Cpu::op_40},
+    {1, 0, 0, &Cpu::op_41},
+    {1, 0, 0, &Cpu::op_42},
+    {1, 0, 0, &Cpu::op_43},
+    {1, 0, 0, &Cpu::op_44},
+    {1, 0, 0, &Cpu::op_45},
+    {1, 0, 0, &Cpu::op_46},
+    {1, 0, 0, &Cpu::op_47},
+    {1, 0, 0, &Cpu::op_48},
+    {1, 0, 0, &Cpu::op_49},
+    {1, 0, 0, &Cpu::op_4A},
+    {1, 0, 0, &Cpu::op_4B},
+    {1, 0, 0, &Cpu::op_4C},
+    {1, 0, 0, &Cpu::op_4D},
+    {1, 0, 0, &Cpu::op_4E},
+    {1, 0, 0, &Cpu::op_4F},
+    {1, 0, 0, &Cpu::op_50},
+    {1, 0, 0, &Cpu::op_51},
+    {1, 0, 0, &Cpu::op_52},
+    {1, 0, 0, &Cpu::op_53},
+    {1, 0, 0, &Cpu::op_54},
+    {1, 0, 0, &Cpu::op_55},
+    {1, 0, 0, &Cpu::op_56},
+    {1, 0, 0, &Cpu::op_57},
+    {1, 0, 0, &Cpu::op_58},
+    {1, 0, 0, &Cpu::op_59},
+    {1, 0, 0, &Cpu::op_5A},
+    {1, 0, 0, &Cpu::op_5B},
+    {1, 0, 0, &Cpu::op_5C},
+    {1, 0, 0, &Cpu::op_5D},
+    {1, 0, 0, &Cpu::op_5E},
+    {1, 0, 0, &Cpu::op_5F},
+    {1, 0, 0, &Cpu::op_60},
+    {1, 0, 0, &Cpu::op_61},
+    {1, 0, 0, &Cpu::op_62},
+    {1, 0, 0, &Cpu::op_63},
+    {1, 0, 0, &Cpu::op_64},
+    {1, 0, 0, &Cpu::op_65},
+    {1, 0, 0, &Cpu::op_66},
+    {1, 0, 0, &Cpu::op_67},
+    {1, 0, 0, &Cpu::op_68},
+    {1, 0, 0, &Cpu::op_69},
+    {1, 0, 0, &Cpu::op_6A},
+    {1, 0, 0, &Cpu::op_6B},
+    {1, 0, 0, &Cpu::op_6C},
+    {1, 0, 0, &Cpu::op_6D},
+    {1, 0, 0, &Cpu::op_6E},
+    {1, 0, 0, &Cpu::op_6F},
+    {1, 0, 0, &Cpu::op_70},
+    {1, 0, 0, &Cpu::op_71},
+    {1, 0, 0, &Cpu::op_72},
+    {1, 0, 0, &Cpu::op_73},
+    {1, 0, 0, &Cpu::op_74},
+    {1, 0, 0, &Cpu::op_75},
+    {1, 0, 0, &Cpu::op_76},
+    {1, 0, 0, &Cpu::op_77},
+    {1, 0, 0, &Cpu::op_78},
+    {1, 0, 0, &Cpu::op_79},
+    {1, 0, 0, &Cpu::op_7A},
+    {1, 0, 0, &Cpu::op_7B},
+    {1, 0, 0, &Cpu::op_7C},
+    {1, 0, 0, &Cpu::op_7D},
+    {1, 0, 0, &Cpu::op_7E},
+    {1, 0, 0, &Cpu::op_7F},
+    {1, 0, 0, &Cpu::op_80},
+    {1, 0, 0, &Cpu::op_81},
+    {1, 0, 0, &Cpu::op_82},
+    {1, 0, 0, &Cpu::op_83},
+    {1, 0, 0, &Cpu::op_84},
+    {1, 0, 0, &Cpu::op_85},
+    {1, 0, 0, &Cpu::op_86},
+    {1, 0, 0, &Cpu::op_87},
+    {1, 0, 0, &Cpu::op_88},
+    {1, 0, 0, &Cpu::op_89},
+    {1, 0, 0, &Cpu::op_8A},
+    {1, 0, 0, &Cpu::op_8B},
+    {1, 0, 0, &Cpu::op_8C},
+    {1, 0, 0, &Cpu::op_8D},
+    {1, 0, 0, &Cpu::op_8E},
+    {1, 0, 0, &Cpu::op_8F},
+    {1, 0, 0, &Cpu::op_90},
+    {1, 0, 0, &Cpu::op_91},
+    {1, 0, 0, &Cpu::op_92},
+    {1, 0, 0, &Cpu::op_93},
+    {1, 0, 0, &Cpu::op_94},
+    {1, 0, 0, &Cpu::op_95},
+    {1, 0, 0, &Cpu::op_96},
+    {1, 0, 0, &Cpu::op_97},
+    {1, 0, 0, &Cpu::op_98},
+    {1, 0, 0, &Cpu::op_99},
+    {1, 0, 0, &Cpu::op_9A},
+    {1, 0, 0, &Cpu::op_9B},
+    {1, 0, 0, &Cpu::op_9C},
+    {1, 0, 0, &Cpu::op_9D},
+    {1, 0, 0, &Cpu::op_9E},
+    {1, 0, 0, &Cpu::op_9F},
+    {1, 0, 0, &Cpu::op_A0},
+    {1, 0, 0, &Cpu::op_A1},
+    {1, 0, 0, &Cpu::op_A2},
+    {1, 0, 0, &Cpu::op_A3},
+    {1, 0, 0, &Cpu::op_A4},
+    {1, 0, 0, &Cpu::op_A5},
+    {1, 0, 0, &Cpu::op_A6},
+    {1, 0, 0, &Cpu::op_A7},
+    {1, 0, 0, &Cpu::op_A8},
+    {1, 0, 0, &Cpu::op_A9},
+    {1, 0, 0, &Cpu::op_AA},
+    {1, 0, 0, &Cpu::op_AB},
+    {1, 0, 0, &Cpu::op_AC},
+    {1, 0, 0, &Cpu::op_AD},
+    {1, 0, 0, &Cpu::op_AE},
+    {1, 0, 0, &Cpu::op_AF},
+    {1, 0, 0, &Cpu::op_B0},
+    {1, 0, 0, &Cpu::op_B1},
+    {1, 0, 0, &Cpu::op_B2},
+    {1, 0, 0, &Cpu::op_B3},
+    {1, 0, 0, &Cpu::op_B4},
+    {1, 0, 0, &Cpu::op_B5},
+    {1, 0, 0, &Cpu::op_B6},
+    {1, 0, 0, &Cpu::op_B7},
+    {1, 0, 0, &Cpu::op_B8},
+    {1, 0, 0, &Cpu::op_B9},
+    {1, 0, 0, &Cpu::op_BA},
+    {1, 0, 0, &Cpu::op_BB},
+    {1, 0, 0, &Cpu::op_BC},
+    {1, 0, 0, &Cpu::op_BD},
+    {1, 0, 0, &Cpu::op_BE},
+    {1, 0, 0, &Cpu::op_BF},
+    {1, 0, 0, &Cpu::op_C0},
+    {1, 0, 0, &Cpu::op_C1},
+    {1, 0, 0, &Cpu::op_C2},
+    {1, 0, 0, &Cpu::op_C3},
+    {1, 0, 0, &Cpu::op_C4},
+    {1, 0, 0, &Cpu::op_C5},
+    {1, 0, 0, &Cpu::op_C6},
+    {1, 0, 0, &Cpu::op_C7},
+    {1, 0, 0, &Cpu::op_C8},
+    {1, 0, 0, &Cpu::op_C9},
+    {1, 0, 0, &Cpu::op_CA},
+    {1, 0, 0, &Cpu::op_CB},
+    {1, 0, 0, &Cpu::op_CC},
+    {1, 0, 0, &Cpu::op_CD},
+    {1, 0, 0, &Cpu::op_CE},
+    {1, 0, 0, &Cpu::op_CF},
+    {1, 0, 0, &Cpu::op_D0},
+    {1, 0, 0, &Cpu::op_D1},
+    {1, 0, 0, &Cpu::op_D2},
+    {1, 0, 0, &Cpu::op_D3},
+    {1, 0, 0, &Cpu::op_D4},
+    {1, 0, 0, &Cpu::op_D5},
+    {1, 0, 0, &Cpu::op_D6},
+    {1, 0, 0, &Cpu::op_D7},
+    {1, 0, 0, &Cpu::op_D8},
+    {1, 0, 0, &Cpu::op_D9},
+    {1, 0, 0, &Cpu::op_DA},
+    {1, 0, 0, &Cpu::op_DB},
+    {1, 0, 0, &Cpu::op_DC},
+    {1, 0, 0, &Cpu::op_DD},
+    {1, 0, 0, &Cpu::op_DE},
+    {1, 0, 0, &Cpu::op_DF},
+    {1, 0, 0, &Cpu::op_E0},
+    {1, 0, 0, &Cpu::op_E1},
+    {1, 0, 0, &Cpu::op_E2},
+    {1, 0, 0, &Cpu::op_E3},
+    {1, 0, 0, &Cpu::op_E4},
+    {1, 0, 0, &Cpu::op_E5},
+    {1, 0, 0, &Cpu::op_E6},
+    {1, 0, 0, &Cpu::op_E7},
+    {1, 0, 0, &Cpu::op_E8},
+    {1, 0, 0, &Cpu::op_E9},
+    {1, 0, 0, &Cpu::op_EA},
+    {1, 0, 0, &Cpu::op_EB},
+    {1, 0, 0, &Cpu::op_EC},
+    {1, 0, 0, &Cpu::op_ED},
+    {1, 0, 0, &Cpu::op_EE},
+    {1, 0, 0, &Cpu::op_EF},
+    {1, 0, 0, &Cpu::op_F0},
+    {1, 0, 0, &Cpu::op_F1},
+    {1, 0, 0, &Cpu::op_F2},
+    {1, 0, 0, &Cpu::op_F3},
+    {1, 0, 0, &Cpu::op_F4},
+    {1, 0, 0, &Cpu::op_F5},
+    {1, 0, 0, &Cpu::op_F6},
+    {1, 0, 0, &Cpu::op_F7},
+    {1, 0, 0, &Cpu::op_F8},
+    {1, 0, 0, &Cpu::op_F9},
+    {1, 0, 0, &Cpu::op_FA},
+    {1, 0, 0, &Cpu::op_FB},
+    {1, 0, 0, &Cpu::op_FC},
+    {1, 0, 0, &Cpu::op_FD},
+    {1, 0, 0, &Cpu::op_FE},
+    {1, 0, 0, &Cpu::op_FF}
 };
 
 const Cpu::OpcodeInfo Cpu::CB_OP_INFO[256] =
 {
-    {1, 0, 0, nullptr}, // 0x00
-    {1, 0, 0, nullptr}, // 0x01
-    {1, 0, 0, nullptr}, // 0x02
-    {1, 0, 0, nullptr}, // 0x03
-    {1, 0, 0, nullptr}, // 0x04
-    {1, 0, 0, nullptr}, // 0x05
-    {1, 0, 0, nullptr}, // 0x06
-    {1, 0, 0, nullptr}, // 0x07
-    {1, 0, 0, nullptr}, // 0x08
-    {1, 0, 0, nullptr}, // 0x09
-    {1, 0, 0, nullptr}, // 0x0A
-    {1, 0, 0, nullptr}, // 0x0B
-    {1, 0, 0, nullptr}, // 0x0C
-    {1, 0, 0, nullptr}, // 0x0D
-    {1, 0, 0, nullptr}, // 0x0E
-    {1, 0, 0, nullptr}, // 0x0F
-
-    {1, 0, 0, nullptr}, // 0x10
-    {1, 0, 0, nullptr}, // 0x11
-    {1, 0, 0, nullptr}, // 0x12
-    {1, 0, 0, nullptr}, // 0x13
-    {1, 0, 0, nullptr}, // 0x14
-    {1, 0, 0, nullptr}, // 0x15
-    {1, 0, 0, nullptr}, // 0x16
-    {1, 0, 0, nullptr}, // 0x17
-    {1, 0, 0, nullptr}, // 0x18
-    {1, 0, 0, nullptr}, // 0x19
-    {1, 0, 0, nullptr}, // 0x1A
-    {1, 0, 0, nullptr}, // 0x1B
-    {1, 0, 0, nullptr}, // 0x1C
-    {1, 0, 0, nullptr}, // 0x1D
-    {1, 0, 0, nullptr}, // 0x1E
-    {1, 0, 0, nullptr}, // 0x1F
-
-    {1, 0, 0, nullptr}, // 0x20
-    {1, 0, 0, nullptr}, // 0x21
-    {1, 0, 0, nullptr}, // 0x22
-    {1, 0, 0, nullptr}, // 0x23
-    {1, 0, 0, nullptr}, // 0x24
-    {1, 0, 0, nullptr}, // 0x25
-    {1, 0, 0, nullptr}, // 0x26
-    {1, 0, 0, nullptr}, // 0x27
-    {1, 0, 0, nullptr}, // 0x28
-    {1, 0, 0, nullptr}, // 0x29
-    {1, 0, 0, nullptr}, // 0x2A
-    {1, 0, 0, nullptr}, // 0x2B
-    {1, 0, 0, nullptr}, // 0x2C
-    {1, 0, 0, nullptr}, // 0x2D
-    {1, 0, 0, nullptr}, // 0x2E
-    {1, 0, 0, nullptr}, // 0x2F
-
-    {1, 0, 0, nullptr}, // 0x30
-    {1, 0, 0, nullptr}, // 0x31
-    {1, 0, 0, nullptr}, // 0x32
-    {1, 0, 0, nullptr}, // 0x33
-    {1, 0, 0, nullptr}, // 0x34
-    {1, 0, 0, nullptr}, // 0x35
-    {1, 0, 0, nullptr}, // 0x36
-    {1, 0, 0, nullptr}, // 0x37
-    {1, 0, 0, nullptr}, // 0x38
-    {1, 0, 0, nullptr}, // 0x39
-    {1, 0, 0, nullptr}, // 0x3A
-    {1, 0, 0, nullptr}, // 0x3B
-    {1, 0, 0, nullptr}, // 0x3C
-    {1, 0, 0, nullptr}, // 0x3D
-    {1, 0, 0, nullptr}, // 0x3E
-    {1, 0, 0, nullptr}, // 0x3F
-
-    {1, 0, 0, nullptr}, // 0x40
-    {1, 0, 0, nullptr}, // 0x41
-    {1, 0, 0, nullptr}, // 0x42
-    {1, 0, 0, nullptr}, // 0x43
-    {1, 0, 0, nullptr}, // 0x44
-    {1, 0, 0, nullptr}, // 0x45
-    {1, 0, 0, nullptr}, // 0x46
-    {1, 0, 0, nullptr}, // 0x47
-    {1, 0, 0, nullptr}, // 0x48
-    {1, 0, 0, nullptr}, // 0x49
-    {1, 0, 0, nullptr}, // 0x4A
-    {1, 0, 0, nullptr}, // 0x4B
-    {1, 0, 0, nullptr}, // 0x4C
-    {1, 0, 0, nullptr}, // 0x4D
-    {1, 0, 0, nullptr}, // 0x4E
-    {1, 0, 0, nullptr}, // 0x4F
-
-    {1, 0, 0, nullptr}, // 0x50
-    {1, 0, 0, nullptr}, // 0x51
-    {1, 0, 0, nullptr}, // 0x52
-    {1, 0, 0, nullptr}, // 0x53
-    {1, 0, 0, nullptr}, // 0x54
-    {1, 0, 0, nullptr}, // 0x55
-    {1, 0, 0, nullptr}, // 0x56
-    {1, 0, 0, nullptr}, // 0x57
-    {1, 0, 0, nullptr}, // 0x58
-    {1, 0, 0, nullptr}, // 0x59
-    {1, 0, 0, nullptr}, // 0x5A
-    {1, 0, 0, nullptr}, // 0x5B
-    {1, 0, 0, nullptr}, // 0x5C
-    {1, 0, 0, nullptr}, // 0x5D
-    {1, 0, 0, nullptr}, // 0x5E
-    {1, 0, 0, nullptr}, // 0x5F
-
-    {1, 0, 0, nullptr}, // 0x60
-    {1, 0, 0, nullptr}, // 0x61
-    {1, 0, 0, nullptr}, // 0x62
-    {1, 0, 0, nullptr}, // 0x63
-    {1, 0, 0, nullptr}, // 0x64
-    {1, 0, 0, nullptr}, // 0x65
-    {1, 0, 0, nullptr}, // 0x66
-    {1, 0, 0, nullptr}, // 0x67
-    {1, 0, 0, nullptr}, // 0x68
-    {1, 0, 0, nullptr}, // 0x69
-    {1, 0, 0, nullptr}, // 0x6A
-    {1, 0, 0, nullptr}, // 0x6B
-    {1, 0, 0, nullptr}, // 0x6C
-    {1, 0, 0, nullptr}, // 0x6D
-    {1, 0, 0, nullptr}, // 0x6E
-    {1, 0, 0, nullptr}, // 0x6F
-
-    {1, 0, 0, nullptr}, // 0x70
-    {1, 0, 0, nullptr}, // 0x71
-    {1, 0, 0, nullptr}, // 0x72
-    {1, 0, 0, nullptr}, // 0x73
-    {1, 0, 0, nullptr}, // 0x74
-    {1, 0, 0, nullptr}, // 0x75
-    {1, 0, 0, nullptr}, // 0x76
-    {1, 0, 0, nullptr}, // 0x77
-    {1, 0, 0, nullptr}, // 0x78
-    {1, 0, 0, nullptr}, // 0x79
-    {1, 0, 0, nullptr}, // 0x7A
-    {1, 0, 0, nullptr}, // 0x7B
-    {1, 0, 0, nullptr}, // 0x7C
-    {1, 0, 0, nullptr}, // 0x7D
-    {1, 0, 0, nullptr}, // 0x7E
-    {1, 0, 0, nullptr}, // 0x7F
-
-    {1, 0, 0, nullptr}, // 0x80
-    {1, 0, 0, nullptr}, // 0x81
-    {1, 0, 0, nullptr}, // 0x82
-    {1, 0, 0, nullptr}, // 0x83
-    {1, 0, 0, nullptr}, // 0x84
-    {1, 0, 0, nullptr}, // 0x85
-    {1, 0, 0, nullptr}, // 0x86
-    {1, 0, 0, nullptr}, // 0x87
-    {1, 0, 0, nullptr}, // 0x88
-    {1, 0, 0, nullptr}, // 0x89
-    {1, 0, 0, nullptr}, // 0x8A
-    {1, 0, 0, nullptr}, // 0x8B
-    {1, 0, 0, nullptr}, // 0x8C
-    {1, 0, 0, nullptr}, // 0x8D
-    {1, 0, 0, nullptr}, // 0x8E
-    {1, 0, 0, nullptr}, // 0x8F
-
-    {1, 0, 0, nullptr}, // 0x90
-    {1, 0, 0, nullptr}, // 0x91
-    {1, 0, 0, nullptr}, // 0x92
-    {1, 0, 0, nullptr}, // 0x93
-    {1, 0, 0, nullptr}, // 0x94
-    {1, 0, 0, nullptr}, // 0x95
-    {1, 0, 0, nullptr}, // 0x96
-    {1, 0, 0, nullptr}, // 0x97
-    {1, 0, 0, nullptr}, // 0x98
-    {1, 0, 0, nullptr}, // 0x99
-    {1, 0, 0, nullptr}, // 0x9A
-    {1, 0, 0, nullptr}, // 0x9B
-    {1, 0, 0, nullptr}, // 0x9C
-    {1, 0, 0, nullptr}, // 0x9D
-    {1, 0, 0, nullptr}, // 0x9E
-    {1, 0, 0, nullptr}, // 0x9F
-
-    {1, 0, 0, nullptr}, // 0xA0
-    {1, 0, 0, nullptr}, // 0xA1
-    {1, 0, 0, nullptr}, // 0xA2
-    {1, 0, 0, nullptr}, // 0xA3
-    {1, 0, 0, nullptr}, // 0xA4
-    {1, 0, 0, nullptr}, // 0xA5
-    {1, 0, 0, nullptr}, // 0xA6
-    {1, 0, 0, nullptr}, // 0xA7
-    {1, 0, 0, nullptr}, // 0xA8
-    {1, 0, 0, nullptr}, // 0xA9
-    {1, 0, 0, nullptr}, // 0xAA
-    {1, 0, 0, nullptr}, // 0xAB
-    {1, 0, 0, nullptr}, // 0xAC
-    {1, 0, 0, nullptr}, // 0xAD
-    {1, 0, 0, nullptr}, // 0xAE
-    {1, 0, 0, nullptr}, // 0xAF
-
-    {1, 0, 0, nullptr}, // 0xB0
-    {1, 0, 0, nullptr}, // 0xB1
-    {1, 0, 0, nullptr}, // 0xB2
-    {1, 0, 0, nullptr}, // 0xB3
-    {1, 0, 0, nullptr}, // 0xB4
-    {1, 0, 0, nullptr}, // 0xB5
-    {1, 0, 0, nullptr}, // 0xB6
-    {1, 0, 0, nullptr}, // 0xB7
-    {1, 0, 0, nullptr}, // 0xB8
-    {1, 0, 0, nullptr}, // 0xB9
-    {1, 0, 0, nullptr}, // 0xBA
-    {1, 0, 0, nullptr}, // 0xBB
-    {1, 0, 0, nullptr}, // 0xBC
-    {1, 0, 0, nullptr}, // 0xBD
-    {1, 0, 0, nullptr}, // 0xBE
-    {1, 0, 0, nullptr}, // 0xBF
-
-    {1, 0, 0, nullptr}, // 0xC0
-    {1, 0, 0, nullptr}, // 0xC1
-    {1, 0, 0, nullptr}, // 0xC2
-    {1, 0, 0, nullptr}, // 0xC3
-    {1, 0, 0, nullptr}, // 0xC4
-    {1, 0, 0, nullptr}, // 0xC5
-    {1, 0, 0, nullptr}, // 0xC6
-    {1, 0, 0, nullptr}, // 0xC7
-    {1, 0, 0, nullptr}, // 0xC8
-    {1, 0, 0, nullptr}, // 0xC9
-    {1, 0, 0, nullptr}, // 0xCA
-    {1, 0, 0, nullptr}, // 0xCB
-    {1, 0, 0, nullptr}, // 0xCC
-    {1, 0, 0, nullptr}, // 0xCD
-    {1, 0, 0, nullptr}, // 0xCE
-    {1, 0, 0, nullptr}, // 0xCF
-
-    {1, 0, 0, nullptr}, // 0xD0
-    {1, 0, 0, nullptr}, // 0xD1
-    {1, 0, 0, nullptr}, // 0xD2
-    {1, 0, 0, nullptr}, // 0xD3
-    {1, 0, 0, nullptr}, // 0xD4
-    {1, 0, 0, nullptr}, // 0xD5
-    {1, 0, 0, nullptr}, // 0xD6
-    {1, 0, 0, nullptr}, // 0xD7
-    {1, 0, 0, nullptr}, // 0xD8
-    {1, 0, 0, nullptr}, // 0xD9
-    {1, 0, 0, nullptr}, // 0xDA
-    {1, 0, 0, nullptr}, // 0xDB
-    {1, 0, 0, nullptr}, // 0xDC
-    {1, 0, 0, nullptr}, // 0xDD
-    {1, 0, 0, nullptr}, // 0xDE
-    {1, 0, 0, nullptr}, // 0xDF
-
-    {1, 0, 0, nullptr}, // 0xE0
-    {1, 0, 0, nullptr}, // 0xE1
-    {1, 0, 0, nullptr}, // 0xE2
-    {1, 0, 0, nullptr}, // 0xE3
-    {1, 0, 0, nullptr}, // 0xE4
-    {1, 0, 0, nullptr}, // 0xE5
-    {1, 0, 0, nullptr}, // 0xE6
-    {1, 0, 0, nullptr}, // 0xE7
-    {1, 0, 0, nullptr}, // 0xE8
-    {1, 0, 0, nullptr}, // 0xE9
-    {1, 0, 0, nullptr}, // 0xEA
-    {1, 0, 0, nullptr}, // 0xEB
-    {1, 0, 0, nullptr}, // 0xEC
-    {1, 0, 0, nullptr}, // 0xED
-    {1, 0, 0, nullptr}, // 0xEE
-    {1, 0, 0, nullptr}, // 0xEF
-
-    {1, 0, 0, nullptr}, // 0xF0
-    {1, 0, 0, nullptr}, // 0xF1
-    {1, 0, 0, nullptr}, // 0xF2
-    {1, 0, 0, nullptr}, // 0xF3
-    {1, 0, 0, nullptr}, // 0xF4
-    {1, 0, 0, nullptr}, // 0xF5
-    {1, 0, 0, nullptr}, // 0xF6
-    {1, 0, 0, nullptr}, // 0xF7
-    {1, 0, 0, nullptr}, // 0xF8
-    {1, 0, 0, nullptr}, // 0xF9
-    {1, 0, 0, nullptr}, // 0xFA
-    {1, 0, 0, nullptr}, // 0xFB
-    {1, 0, 0, nullptr}, // 0xFC
-    {1, 0, 0, nullptr}, // 0xFD
-    {1, 0, 0, nullptr}, // 0xFE
-    {1, 0, 0, nullptr}  // 0xFF
+    {1, 4, 4, &Cpu::op_CB_00},
+    {1, 0, 0, &Cpu::op_CB_01},
+    {1, 0, 0, &Cpu::op_CB_02},
+    {1, 0, 0, &Cpu::op_CB_03},
+    {1, 0, 0, &Cpu::op_CB_04},
+    {1, 0, 0, &Cpu::op_CB_05},
+    {1, 0, 0, &Cpu::op_CB_06},
+    {1, 0, 0, &Cpu::op_CB_07},
+    {1, 0, 0, &Cpu::op_CB_08},
+    {1, 0, 0, &Cpu::op_CB_09},
+    {1, 0, 0, &Cpu::op_CB_0A},
+    {1, 0, 0, &Cpu::op_CB_0B},
+    {1, 0, 0, &Cpu::op_CB_0C},
+    {1, 0, 0, &Cpu::op_CB_0D},
+    {1, 0, 0, &Cpu::op_CB_0E},
+    {1, 0, 0, &Cpu::op_CB_0F},
+    {1, 0, 0, &Cpu::op_CB_10},
+    {1, 0, 0, &Cpu::op_CB_11},
+    {1, 0, 0, &Cpu::op_CB_12},
+    {1, 0, 0, &Cpu::op_CB_13},
+    {1, 0, 0, &Cpu::op_CB_14},
+    {1, 0, 0, &Cpu::op_CB_15},
+    {1, 0, 0, &Cpu::op_CB_16},
+    {1, 0, 0, &Cpu::op_CB_17},
+    {1, 0, 0, &Cpu::op_CB_18},
+    {1, 0, 0, &Cpu::op_CB_19},
+    {1, 0, 0, &Cpu::op_CB_1A},
+    {1, 0, 0, &Cpu::op_CB_1B},
+    {1, 0, 0, &Cpu::op_CB_1C},
+    {1, 0, 0, &Cpu::op_CB_1D},
+    {1, 0, 0, &Cpu::op_CB_1E},
+    {1, 0, 0, &Cpu::op_CB_1F},
+    {1, 0, 0, &Cpu::op_CB_20},
+    {1, 0, 0, &Cpu::op_CB_21},
+    {1, 0, 0, &Cpu::op_CB_22},
+    {1, 0, 0, &Cpu::op_CB_23},
+    {1, 0, 0, &Cpu::op_CB_24},
+    {1, 0, 0, &Cpu::op_CB_25},
+    {1, 0, 0, &Cpu::op_CB_26},
+    {1, 0, 0, &Cpu::op_CB_27},
+    {1, 0, 0, &Cpu::op_CB_28},
+    {1, 0, 0, &Cpu::op_CB_29},
+    {1, 0, 0, &Cpu::op_CB_2A},
+    {1, 0, 0, &Cpu::op_CB_2B},
+    {1, 0, 0, &Cpu::op_CB_2C},
+    {1, 0, 0, &Cpu::op_CB_2D},
+    {1, 0, 0, &Cpu::op_CB_2E},
+    {1, 0, 0, &Cpu::op_CB_2F},
+    {1, 0, 0, &Cpu::op_CB_30},
+    {1, 0, 0, &Cpu::op_CB_31},
+    {1, 0, 0, &Cpu::op_CB_32},
+    {1, 0, 0, &Cpu::op_CB_33},
+    {1, 0, 0, &Cpu::op_CB_34},
+    {1, 0, 0, &Cpu::op_CB_35},
+    {1, 0, 0, &Cpu::op_CB_36},
+    {1, 0, 0, &Cpu::op_CB_37},
+    {1, 0, 0, &Cpu::op_CB_38},
+    {1, 0, 0, &Cpu::op_CB_39},
+    {1, 0, 0, &Cpu::op_CB_3A},
+    {1, 0, 0, &Cpu::op_CB_3B},
+    {1, 0, 0, &Cpu::op_CB_3C},
+    {1, 0, 0, &Cpu::op_CB_3D},
+    {1, 0, 0, &Cpu::op_CB_3E},
+    {1, 0, 0, &Cpu::op_CB_3F},
+    {1, 0, 0, &Cpu::op_CB_40},
+    {1, 0, 0, &Cpu::op_CB_41},
+    {1, 0, 0, &Cpu::op_CB_42},
+    {1, 0, 0, &Cpu::op_CB_43},
+    {1, 0, 0, &Cpu::op_CB_44},
+    {1, 0, 0, &Cpu::op_CB_45},
+    {1, 0, 0, &Cpu::op_CB_46},
+    {1, 0, 0, &Cpu::op_CB_47},
+    {1, 0, 0, &Cpu::op_CB_48},
+    {1, 0, 0, &Cpu::op_CB_49},
+    {1, 0, 0, &Cpu::op_CB_4A},
+    {1, 0, 0, &Cpu::op_CB_4B},
+    {1, 0, 0, &Cpu::op_CB_4C},
+    {1, 0, 0, &Cpu::op_CB_4D},
+    {1, 0, 0, &Cpu::op_CB_4E},
+    {1, 0, 0, &Cpu::op_CB_4F},
+    {1, 0, 0, &Cpu::op_CB_50},
+    {1, 0, 0, &Cpu::op_CB_51},
+    {1, 0, 0, &Cpu::op_CB_52},
+    {1, 0, 0, &Cpu::op_CB_53},
+    {1, 0, 0, &Cpu::op_CB_54},
+    {1, 0, 0, &Cpu::op_CB_55},
+    {1, 0, 0, &Cpu::op_CB_56},
+    {1, 0, 0, &Cpu::op_CB_57},
+    {1, 0, 0, &Cpu::op_CB_58},
+    {1, 0, 0, &Cpu::op_CB_59},
+    {1, 0, 0, &Cpu::op_CB_5A},
+    {1, 0, 0, &Cpu::op_CB_5B},
+    {1, 0, 0, &Cpu::op_CB_5C},
+    {1, 0, 0, &Cpu::op_CB_5D},
+    {1, 0, 0, &Cpu::op_CB_5E},
+    {1, 0, 0, &Cpu::op_CB_5F},
+    {1, 0, 0, &Cpu::op_CB_60},
+    {1, 0, 0, &Cpu::op_CB_61},
+    {1, 0, 0, &Cpu::op_CB_62},
+    {1, 0, 0, &Cpu::op_CB_63},
+    {1, 0, 0, &Cpu::op_CB_64},
+    {1, 0, 0, &Cpu::op_CB_65},
+    {1, 0, 0, &Cpu::op_CB_66},
+    {1, 0, 0, &Cpu::op_CB_67},
+    {1, 0, 0, &Cpu::op_CB_68},
+    {1, 0, 0, &Cpu::op_CB_69},
+    {1, 0, 0, &Cpu::op_CB_6A},
+    {1, 0, 0, &Cpu::op_CB_6B},
+    {1, 0, 0, &Cpu::op_CB_6C},
+    {1, 0, 0, &Cpu::op_CB_6D},
+    {1, 0, 0, &Cpu::op_CB_6E},
+    {1, 0, 0, &Cpu::op_CB_6F},
+    {1, 0, 0, &Cpu::op_CB_70},
+    {1, 0, 0, &Cpu::op_CB_71},
+    {1, 0, 0, &Cpu::op_CB_72},
+    {1, 0, 0, &Cpu::op_CB_73},
+    {1, 0, 0, &Cpu::op_CB_74},
+    {1, 0, 0, &Cpu::op_CB_75},
+    {1, 0, 0, &Cpu::op_CB_76},
+    {1, 0, 0, &Cpu::op_CB_77},
+    {1, 0, 0, &Cpu::op_CB_78},
+    {1, 0, 0, &Cpu::op_CB_79},
+    {1, 0, 0, &Cpu::op_CB_7A},
+    {1, 0, 0, &Cpu::op_CB_7B},
+    {1, 0, 0, &Cpu::op_CB_7C},
+    {1, 0, 0, &Cpu::op_CB_7D},
+    {1, 0, 0, &Cpu::op_CB_7E},
+    {1, 0, 0, &Cpu::op_CB_7F},
+    {1, 0, 0, &Cpu::op_CB_80},
+    {1, 0, 0, &Cpu::op_CB_81},
+    {1, 0, 0, &Cpu::op_CB_82},
+    {1, 0, 0, &Cpu::op_CB_83},
+    {1, 0, 0, &Cpu::op_CB_84},
+    {1, 0, 0, &Cpu::op_CB_85},
+    {1, 0, 0, &Cpu::op_CB_86},
+    {1, 0, 0, &Cpu::op_CB_87},
+    {1, 0, 0, &Cpu::op_CB_88},
+    {1, 0, 0, &Cpu::op_CB_89},
+    {1, 0, 0, &Cpu::op_CB_8A},
+    {1, 0, 0, &Cpu::op_CB_8B},
+    {1, 0, 0, &Cpu::op_CB_8C},
+    {1, 0, 0, &Cpu::op_CB_8D},
+    {1, 0, 0, &Cpu::op_CB_8E},
+    {1, 0, 0, &Cpu::op_CB_8F},
+    {1, 0, 0, &Cpu::op_CB_90},
+    {1, 0, 0, &Cpu::op_CB_91},
+    {1, 0, 0, &Cpu::op_CB_92},
+    {1, 0, 0, &Cpu::op_CB_93},
+    {1, 0, 0, &Cpu::op_CB_94},
+    {1, 0, 0, &Cpu::op_CB_95},
+    {1, 0, 0, &Cpu::op_CB_96},
+    {1, 0, 0, &Cpu::op_CB_97},
+    {1, 0, 0, &Cpu::op_CB_98},
+    {1, 0, 0, &Cpu::op_CB_99},
+    {1, 0, 0, &Cpu::op_CB_9A},
+    {1, 0, 0, &Cpu::op_CB_9B},
+    {1, 0, 0, &Cpu::op_CB_9C},
+    {1, 0, 0, &Cpu::op_CB_9D},
+    {1, 0, 0, &Cpu::op_CB_9E},
+    {1, 0, 0, &Cpu::op_CB_9F},
+    {1, 0, 0, &Cpu::op_CB_A0},
+    {1, 0, 0, &Cpu::op_CB_A1},
+    {1, 0, 0, &Cpu::op_CB_A2},
+    {1, 0, 0, &Cpu::op_CB_A3},
+    {1, 0, 0, &Cpu::op_CB_A4},
+    {1, 0, 0, &Cpu::op_CB_A5},
+    {1, 0, 0, &Cpu::op_CB_A6},
+    {1, 0, 0, &Cpu::op_CB_A7},
+    {1, 0, 0, &Cpu::op_CB_A8},
+    {1, 0, 0, &Cpu::op_CB_A9},
+    {1, 0, 0, &Cpu::op_CB_AA},
+    {1, 0, 0, &Cpu::op_CB_AB},
+    {1, 0, 0, &Cpu::op_CB_AC},
+    {1, 0, 0, &Cpu::op_CB_AD},
+    {1, 0, 0, &Cpu::op_CB_AE},
+    {1, 0, 0, &Cpu::op_CB_AF},
+    {1, 0, 0, &Cpu::op_CB_B0},
+    {1, 0, 0, &Cpu::op_CB_B1},
+    {1, 0, 0, &Cpu::op_CB_B2},
+    {1, 0, 0, &Cpu::op_CB_B3},
+    {1, 0, 0, &Cpu::op_CB_B4},
+    {1, 0, 0, &Cpu::op_CB_B5},
+    {1, 0, 0, &Cpu::op_CB_B6},
+    {1, 0, 0, &Cpu::op_CB_B7},
+    {1, 0, 0, &Cpu::op_CB_B8},
+    {1, 0, 0, &Cpu::op_CB_B9},
+    {1, 0, 0, &Cpu::op_CB_BA},
+    {1, 0, 0, &Cpu::op_CB_BB},
+    {1, 0, 0, &Cpu::op_CB_BC},
+    {1, 0, 0, &Cpu::op_CB_BD},
+    {1, 0, 0, &Cpu::op_CB_BE},
+    {1, 0, 0, &Cpu::op_CB_BF},
+    {1, 0, 0, &Cpu::op_CB_C0},
+    {1, 0, 0, &Cpu::op_CB_C1},
+    {1, 0, 0, &Cpu::op_CB_C2},
+    {1, 0, 0, &Cpu::op_CB_C3},
+    {1, 0, 0, &Cpu::op_CB_C4},
+    {1, 0, 0, &Cpu::op_CB_C5},
+    {1, 0, 0, &Cpu::op_CB_C6},
+    {1, 0, 0, &Cpu::op_CB_C7},
+    {1, 0, 0, &Cpu::op_CB_C8},
+    {1, 0, 0, &Cpu::op_CB_C9},
+    {1, 0, 0, &Cpu::op_CB_CA},
+    {1, 0, 0, &Cpu::op_CB_CB},
+    {1, 0, 0, &Cpu::op_CB_CC},
+    {1, 0, 0, &Cpu::op_CB_CD},
+    {1, 0, 0, &Cpu::op_CB_CE},
+    {1, 0, 0, &Cpu::op_CB_CF},
+    {1, 0, 0, &Cpu::op_CB_D0},
+    {1, 0, 0, &Cpu::op_CB_D1},
+    {1, 0, 0, &Cpu::op_CB_D2},
+    {1, 0, 0, &Cpu::op_CB_D3},
+    {1, 0, 0, &Cpu::op_CB_D4},
+    {1, 0, 0, &Cpu::op_CB_D5},
+    {1, 0, 0, &Cpu::op_CB_D6},
+    {1, 0, 0, &Cpu::op_CB_D7},
+    {1, 0, 0, &Cpu::op_CB_D8},
+    {1, 0, 0, &Cpu::op_CB_D9},
+    {1, 0, 0, &Cpu::op_CB_DA},
+    {1, 0, 0, &Cpu::op_CB_DB},
+    {1, 0, 0, &Cpu::op_CB_DC},
+    {1, 0, 0, &Cpu::op_CB_DD},
+    {1, 0, 0, &Cpu::op_CB_DE},
+    {1, 0, 0, &Cpu::op_CB_DF},
+    {1, 0, 0, &Cpu::op_CB_E0},
+    {1, 0, 0, &Cpu::op_CB_E1},
+    {1, 0, 0, &Cpu::op_CB_E2},
+    {1, 0, 0, &Cpu::op_CB_E3},
+    {1, 0, 0, &Cpu::op_CB_E4},
+    {1, 0, 0, &Cpu::op_CB_E5},
+    {1, 0, 0, &Cpu::op_CB_E6},
+    {1, 0, 0, &Cpu::op_CB_E7},
+    {1, 0, 0, &Cpu::op_CB_E8},
+    {1, 0, 0, &Cpu::op_CB_E9},
+    {1, 0, 0, &Cpu::op_CB_EA},
+    {1, 0, 0, &Cpu::op_CB_EB},
+    {1, 0, 0, &Cpu::op_CB_EC},
+    {1, 0, 0, &Cpu::op_CB_ED},
+    {1, 0, 0, &Cpu::op_CB_EE},
+    {1, 0, 0, &Cpu::op_CB_EF},
+    {1, 0, 0, &Cpu::op_CB_F0},
+    {1, 0, 0, &Cpu::op_CB_F1},
+    {1, 0, 0, &Cpu::op_CB_F2},
+    {1, 0, 0, &Cpu::op_CB_F3},
+    {1, 0, 0, &Cpu::op_CB_F4},
+    {1, 0, 0, &Cpu::op_CB_F5},
+    {1, 0, 0, &Cpu::op_CB_F6},
+    {1, 0, 0, &Cpu::op_CB_F7},
+    {1, 0, 0, &Cpu::op_CB_F8},
+    {1, 0, 0, &Cpu::op_CB_F9},
+    {1, 0, 0, &Cpu::op_CB_FA},
+    {1, 0, 0, &Cpu::op_CB_FB},
+    {1, 0, 0, &Cpu::op_CB_FC},
+    {1, 0, 0, &Cpu::op_CB_FD},
+    {1, 0, 0, &Cpu::op_CB_FE},
+    {1, 0, 0, &Cpu::op_CB_FF}
 };

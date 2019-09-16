@@ -26,6 +26,9 @@ CONFIG += c++14
 
 SOURCES += \
     src/mach/cpu/cpu.cc \
+    src/mach/cpu/execute.cc \
+    src/mach/cpu/flags.cc \
+    src/mach/cpu/opcodetable.cc \
     src/main.cc
 
 # Default rules for deployment.
