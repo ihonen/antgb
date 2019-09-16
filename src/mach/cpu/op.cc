@@ -2,7 +2,7 @@
 
 void Cpu::op_00()
 {
-
+    NOP();
 }
 
 void Cpu::op_01()

@@ -60,3 +60,10 @@ void Cpu::ADD_SP_s8(int8_t s8)
     clear_zf();
     *SP = static_cast<uint16_t>(result);
 }
+
+/* NOP */
+
+void Cpu::NOP()
+{
+
+}
