@@ -61,6 +61,27 @@ void Cpu::ADD_SP_s8(int8_t s8)
     *SP = static_cast<uint16_t>(result);
 }
 
+/* AND */
+
+void Cpu::AND_u8(uint8_t u8)
+{
+    *A &= u8;
+    clear_cf();
+    set_hf();
+    clear_nf();
+    update_zf(*A == 0);
+}
+
+void Cpu::AND_HL()
+{
+    AND_u8(mem[*HL]);
+}
+
+void Cpu::AND_r8(uint8_t* r8)
+{
+    AND_u8(*r8);
+}
+
 /* NOP */
 
 void Cpu::NOP()

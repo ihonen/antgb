@@ -100,6 +100,9 @@ private:
     void ADD_A_r8(uint8_t* r8);
     void ADD_HL_r16(uint16_t* r16);
     void ADD_SP_s8(int8_t s8);
+    void AND_u8(uint8_t u8);
+    void AND_HL();
+    void AND_r8(uint8_t* r8);
     void NOP();
 
     void op_00(); void op_01(); void op_02(); void op_03();
