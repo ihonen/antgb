@@ -10,24 +10,24 @@ class Cpu
 public:
     void execute(uint8_t* opcode);
 private:
-    inline uint8_t get_flag(uint8_t pos);
-    inline void    set_flag(uint8_t pos, uint8_t val);
-    inline uint8_t get_cf();
-    inline uint8_t get_hf();
-    inline uint8_t get_nf();
-    inline uint8_t get_zf();
-    inline void    set_cf();
-    inline void    set_hf();
-    inline void    set_nf();
-    inline void    set_zf();
-    inline void    clear_cf();
-    inline void    clear_hf();
-    inline void    clear_nf();
-    inline void    clear_zf();
-    inline void    update_cf(bool cond);
-    inline void    update_hf(bool cond);
-    inline void    update_nf(bool cond);
-    inline void    update_zf(bool cond);
+    uint8_t get_flag(uint8_t pos);
+    void    set_flag(uint8_t pos, uint8_t val);
+    uint8_t get_cf();
+    uint8_t get_hf();
+    uint8_t get_nf();
+    uint8_t get_zf();
+    void    set_cf();
+    void    set_hf();
+    void    set_nf();
+    void    set_zf();
+    void    clear_cf();
+    void    clear_hf();
+    void    clear_nf();
+    void    clear_zf();
+    void    update_cf(bool cond);
+    void    update_hf(bool cond);
+    void    update_nf(bool cond);
+    void    update_zf(bool cond);
 
     // Positions of the flag bits in flag register (F).
     static const uint8_t CF_BIT_POS = 4;
@@ -91,6 +91,15 @@ private:
     // amount of clock cycles based on whether a certain action was taken or
     // not.
     bool op_success;
+
+    void ADC_A_HL();
+    void ADC_A_u8(uint8_t u8);
+    void ADC_A_r8(uint8_t* r8);
+    void ADD_A_HL();
+    void ADD_A_u8(uint8_t u8);
+    void ADD_A_r8(uint8_t* r8);
+    void ADD_HL_r16(uint16_t* r16);
+    void ADD_SP_s8(int8_t s8);
 
     void op_00(); void op_01(); void op_02(); void op_03();
     void op_04(); void op_05(); void op_06(); void op_07();
