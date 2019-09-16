@@ -3,14 +3,13 @@
 
 #include <array>
 #include <cstdint>
+#include <vector>
 
 class Cpu
 {
 public:
     Cpu();
 private:
-    void    build_opcode_table();
-    void    execute_next();
     uint8_t get_flag(uint8_t pos);
     void    set_flag(uint8_t pos, uint8_t val);
     uint8_t get_cf();
@@ -57,12 +56,25 @@ private:
     const std::array<uint16_t*, 6> reg16 = {BC, DE, HL, AF, PC, SP};
     const std::array<uint8_t*, 8>  reg8  = {B, C, D, E, H, L, A, F};
 
-    // Current opcode in execution. Maximum instruction length is 3 bytes.
-    uint8_t op[3] = {0};
+    typedef struct
+    {
+        // The length of the instruction in bytes.
+        uint8_t len = 1;
+        // The duration of the instruction in clock cycles if failed.
+        uint8_t dur_f = 0;
+        // The duration of the instruction in clock cycles if successful.
+        uint8_t dur_s = 0;
+        // The function that is called when the instruction
+        // is encountered.
+        void (Cpu::*handler)() = nullptr;
+    } OpcodeInfo;
 
-    class OpcodeInfo;
-    friend class OpcodeInfo;
-    static const OpcodeInfo OP_INFO;
+    // This table will contain the information related to "normal" opcodes.
+    static const OpcodeInfo OP_INFO[256];
+    // This table will contain the information related to opcodes prefixed
+    // with 0xCB. The 0xCB prefix only means that another byte should be
+    // fetched and that byte defines the operation to be taken.
+    static const OpcodeInfo CB_OP_INFO[256];
 };
 
 #endif // CPU_HH
