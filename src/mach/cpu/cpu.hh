@@ -60,10 +60,12 @@ private:
     {
         // The length of the instruction in bytes.
         uint8_t len = 1;
-        // The duration of the instruction in clock cycles if failed.
-        uint8_t dur_f = 0;
-        // The duration of the instruction in clock cycles if successful.
+        // The duration of the instruction in clock cycles if action
+        // was taken.
         uint8_t dur_s = 0;
+        // The duration of the instruction in clock cycles if action
+        // was not taken.
+        uint8_t dur_f = 0;
         // The function that is called when the instruction
         // is encountered.
         void (Cpu::*handler)() = nullptr;
