@@ -40,42 +40,66 @@ uint8_t Cpu::get_zf()
     return get_flag(ZF_BIT_POS);
 }
 
-void Cpu::set_cf(bool cond)
+void Cpu::set_cf()
 {
-    if (cond) set_flag(CF_BIT_POS, 1);
+    set_flag(CF_BIT_POS, 1);
 }
 
-void Cpu::set_hf(bool cond)
+void Cpu::set_hf()
 {
-    if (cond) set_flag(HF_BIT_POS, 1);
+    set_flag(HF_BIT_POS, 1);
 }
 
-void Cpu::set_nf(bool cond)
+void Cpu::set_nf()
 {
-    if (cond) set_flag(NF_BIT_POS, 1);
+    set_flag(NF_BIT_POS, 1);
 }
 
-void Cpu::set_zf(bool cond)
+void Cpu::set_zf()
 {
-    if (cond) set_flag(ZF_BIT_POS, 1);
+    set_flag(ZF_BIT_POS, 1);
 }
 
-void Cpu::clear_cf(bool cond)
+void Cpu::clear_cf()
 {
-    if (cond) set_flag(CF_BIT_POS, 0);
+    set_flag(CF_BIT_POS, 0);
 }
 
-void Cpu::clear_hf(bool cond)
+void Cpu::clear_hf()
 {
-    if (cond) set_flag(HF_BIT_POS, 0);
+    set_flag(HF_BIT_POS, 0);
 }
 
-void Cpu::clear_nf(bool cond)
+void Cpu::clear_nf()
 {
-    if (cond) set_flag(NF_BIT_POS, 0);
+    set_flag(NF_BIT_POS, 0);
 }
 
-void Cpu::clear_zf(bool cond)
+void Cpu::clear_zf()
 {
-    if (cond) set_flag(ZF_BIT_POS, 0);
+    set_flag(ZF_BIT_POS, 0);
+}
+
+void Cpu::update_cf(bool cond)
+{
+    if (cond) set_cf();
+    else clear_cf();
+}
+
+void Cpu::update_hf(bool cond)
+{
+    if (cond) set_hf();
+    else clear_hf();
+}
+
+void Cpu::update_nf(bool cond)
+{
+    if (cond) set_nf();
+    else clear_nf();
+}
+
+void Cpu::update_zf(bool cond)
+{
+    if (cond) set_zf();
+    else clear_zf();
 }

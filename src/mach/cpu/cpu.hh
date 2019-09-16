@@ -10,20 +10,24 @@ class Cpu
 public:
     void execute(uint8_t* opcode);
 private:
-    uint8_t get_flag(uint8_t pos);
-    void    set_flag(uint8_t pos, uint8_t val);
-    uint8_t get_cf();
-    uint8_t get_hf();
-    uint8_t get_nf();
-    uint8_t get_zf();
-    void    set_cf(bool cond = true);
-    void    set_hf(bool cond = true);
-    void    set_nf(bool cond = true);
-    void    set_zf(bool cond = true);
-    void    clear_cf(bool cond = true);
-    void    clear_hf(bool cond = true);
-    void    clear_nf(bool cond = true);
-    void    clear_zf(bool cond = true);
+    inline uint8_t get_flag(uint8_t pos);
+    inline void    set_flag(uint8_t pos, uint8_t val);
+    inline uint8_t get_cf();
+    inline uint8_t get_hf();
+    inline uint8_t get_nf();
+    inline uint8_t get_zf();
+    inline void    set_cf();
+    inline void    set_hf();
+    inline void    set_nf();
+    inline void    set_zf();
+    inline void    clear_cf();
+    inline void    clear_hf();
+    inline void    clear_nf();
+    inline void    clear_zf();
+    inline void    update_cf(bool cond);
+    inline void    update_hf(bool cond);
+    inline void    update_nf(bool cond);
+    inline void    update_zf(bool cond);
 
     // Positions of the flag bits in flag register (F).
     static const uint8_t CF_BIT_POS = 4;
