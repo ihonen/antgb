@@ -237,7 +237,7 @@ void Cpu::op_2E()
 
 void Cpu::op_2F()
 {
-
+    CPL();
 }
 
 void Cpu::op_30()

@@ -146,6 +146,13 @@ void Cpu::CP_r8(uint8_t* r8)
     CP_n8(*r8);
 }
 
+/* CPL */
+
+void Cpu::CPL()
+{
+    *A = ~(*A);
+}
+
 /* NOP */
 
 void Cpu::NOP()
