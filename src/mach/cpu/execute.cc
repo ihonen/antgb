@@ -117,6 +117,15 @@ void Cpu::CALL_cc_n16(bool cc, uint16_t n16)
     else op_success = false;
 }
 
+/* CCF */
+
+void Cpu::CCF()
+{
+    update_cf(!get_cf());
+    clear_hf();
+    clear_nf();
+}
+
 /* NOP */
 
 void Cpu::NOP()

@@ -107,6 +107,7 @@ private:
     void BIT_n3_r8(uint8_t n, uint8_t* r8);
     void CALL_cc_n16(bool cc, uint16_t n16);
     void CALL_n16(uint16_t n16);
+    void CCF();
     void NOP();
 
     void op_00(); void op_01(); void op_02(); void op_03();

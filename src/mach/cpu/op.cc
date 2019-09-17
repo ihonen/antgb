@@ -317,7 +317,7 @@ void Cpu::op_3E()
 
 void Cpu::op_3F()
 {
-
+    CCF();
 }
 
 void Cpu::op_40()
