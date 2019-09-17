@@ -9,5 +9,6 @@ void Cpu::execute(uint8_t* opcode)
               CB_OP_INFO[*(curr_op + 1)].handler :
               OP_INFO[*(curr_op)].handler;
 
+    op_success = true;
     if (handler) (this->*handler)();
 }

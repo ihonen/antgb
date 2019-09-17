@@ -109,7 +109,12 @@ void Cpu::CALL_n16(uint16_t n16)
 
 void Cpu::CALL_cc_n16(bool cc, uint16_t n16)
 {
-    if (cc) CALL_n16(n16);
+    if (cc)
+    {
+        CALL_n16(n16);
+        op_success = true;
+    }
+    else op_success = false;
 }
 
 /* NOP */

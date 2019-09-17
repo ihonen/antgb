@@ -93,18 +93,18 @@ private:
     bool op_success;
 
     void ADC_A_HL();
-    void ADC_A_u8(uint8_t u8);
+    void ADC_A_n8(uint8_t u8);
     void ADC_A_r8(uint8_t* r8);
     void ADD_A_HL();
-    void ADD_A_u8(uint8_t u8);
+    void ADD_A_n8(uint8_t u8);
     void ADD_A_r8(uint8_t* r8);
     void ADD_HL_r16(uint16_t* r16);
-    void ADD_SP_s8(int8_t s8);
-    void AND_u8(uint8_t u8);
+    void ADD_SP_e8(int8_t s8);
+    void AND_n8(uint8_t u8);
     void AND_HL();
     void AND_r8(uint8_t* r8);
-    void BIT_n_HL(uint8_t n);
-    void BIT_n_r8(uint8_t n, uint8_t* r8);
+    void BIT_n3_HL(uint8_t n);
+    void BIT_n3_r8(uint8_t n, uint8_t* r8);
     void CALL_cc_n16(bool cc, uint16_t n16);
     void CALL_n16(uint16_t n16);
     void NOP();

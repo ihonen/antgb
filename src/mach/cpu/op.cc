@@ -996,7 +996,7 @@ void Cpu::op_C5()
 
 void Cpu::op_C6()
 {
-    ADD_A_u8(curr_op[1]);
+    ADD_A_n8(curr_op[1]);
 }
 
 void Cpu::op_C7()
@@ -1044,7 +1044,7 @@ void Cpu::op_CD()
 
 void Cpu::op_CE()
 {
-    ADC_A_u8(curr_op[1]);
+    ADC_A_n8(curr_op[1]);
 }
 
 void Cpu::op_CF()
@@ -1172,7 +1172,7 @@ void Cpu::op_E5()
 
 void Cpu::op_E6()
 {
-    AND_u8(curr_op[1]);
+    AND_n8(curr_op[1]);
 }
 
 void Cpu::op_E7()
@@ -1182,7 +1182,7 @@ void Cpu::op_E7()
 
 void Cpu::op_E8()
 {
-    ADD_SP_s8(static_cast<int8_t>(curr_op[1]));
+    ADD_SP_e8(static_cast<int8_t>(curr_op[1]));
 }
 
 void Cpu::op_E9()
@@ -1624,322 +1624,322 @@ void Cpu::op_CB_3F()
 
 void Cpu::op_CB_40()
 {
-    BIT_n_r8(0, B);
+    BIT_n3_r8(0, B);
 }
 
 void Cpu::op_CB_41()
 {
-    BIT_n_r8(0, C);
+    BIT_n3_r8(0, C);
 }
 
 void Cpu::op_CB_42()
 {
-    BIT_n_r8(0, D);
+    BIT_n3_r8(0, D);
 }
 
 void Cpu::op_CB_43()
 {
-    BIT_n_r8(0, E);
+    BIT_n3_r8(0, E);
 }
 
 void Cpu::op_CB_44()
 {
-    BIT_n_r8(0, H);
+    BIT_n3_r8(0, H);
 }
 
 void Cpu::op_CB_45()
 {
-    BIT_n_r8(0, L);
+    BIT_n3_r8(0, L);
 }
 
 void Cpu::op_CB_46()
 {
-    BIT_n_HL(0);
+    BIT_n3_HL(0);
 }
 
 void Cpu::op_CB_47()
 {
-    BIT_n_r8(0, A);
+    BIT_n3_r8(0, A);
 }
 
 void Cpu::op_CB_48()
 {
-    BIT_n_r8(1, B);
+    BIT_n3_r8(1, B);
 }
 
 void Cpu::op_CB_49()
 {
-    BIT_n_r8(1, C);
+    BIT_n3_r8(1, C);
 }
 
 void Cpu::op_CB_4A()
 {
-    BIT_n_r8(1, D);
+    BIT_n3_r8(1, D);
 }
 
 void Cpu::op_CB_4B()
 {
-    BIT_n_r8(1, E);
+    BIT_n3_r8(1, E);
 }
 
 void Cpu::op_CB_4C()
 {
-    BIT_n_r8(1, H);
+    BIT_n3_r8(1, H);
 }
 
 void Cpu::op_CB_4D()
 {
-    BIT_n_r8(1, L);
+    BIT_n3_r8(1, L);
 }
 
 void Cpu::op_CB_4E()
 {
-    BIT_n_HL(1);
+    BIT_n3_HL(1);
 }
 
 void Cpu::op_CB_4F()
 {
-    BIT_n_r8(1, A);
+    BIT_n3_r8(1, A);
 }
 
 void Cpu::op_CB_50()
 {
-    BIT_n_r8(2, B);
+    BIT_n3_r8(2, B);
 }
 
 void Cpu::op_CB_51()
 {
-    BIT_n_r8(2, C);
+    BIT_n3_r8(2, C);
 }
 
 void Cpu::op_CB_52()
 {
-    BIT_n_r8(2, D);
+    BIT_n3_r8(2, D);
 }
 
 void Cpu::op_CB_53()
 {
-    BIT_n_r8(2, E);
+    BIT_n3_r8(2, E);
 }
 
 void Cpu::op_CB_54()
 {
-    BIT_n_r8(2, H);
+    BIT_n3_r8(2, H);
 }
 
 void Cpu::op_CB_55()
 {
-    BIT_n_r8(2, L);
+    BIT_n3_r8(2, L);
 }
 
 void Cpu::op_CB_56()
 {
-    BIT_n_HL(2);
+    BIT_n3_HL(2);
 }
 
 void Cpu::op_CB_57()
 {
-    BIT_n_r8(2, A);
+    BIT_n3_r8(2, A);
 }
 
 void Cpu::op_CB_58()
 {
-    BIT_n_r8(3, B);
+    BIT_n3_r8(3, B);
 }
 
 void Cpu::op_CB_59()
 {
-    BIT_n_r8(3, C);
+    BIT_n3_r8(3, C);
 }
 
 void Cpu::op_CB_5A()
 {
-    BIT_n_r8(3, D);
+    BIT_n3_r8(3, D);
 }
 
 void Cpu::op_CB_5B()
 {
-    BIT_n_r8(3, E);
+    BIT_n3_r8(3, E);
 }
 
 void Cpu::op_CB_5C()
 {
-    BIT_n_r8(3, H);
+    BIT_n3_r8(3, H);
 }
 
 void Cpu::op_CB_5D()
 {
-    BIT_n_r8(3, L);
+    BIT_n3_r8(3, L);
 }
 
 void Cpu::op_CB_5E()
 {
-    BIT_n_HL(3);
+    BIT_n3_HL(3);
 }
 
 void Cpu::op_CB_5F()
 {
-    BIT_n_r8(3, A);
+    BIT_n3_r8(3, A);
 }
 
 void Cpu::op_CB_60()
 {
-    BIT_n_r8(4, B);
+    BIT_n3_r8(4, B);
 }
 
 void Cpu::op_CB_61()
 {
-    BIT_n_r8(4, C);
+    BIT_n3_r8(4, C);
 }
 
 void Cpu::op_CB_62()
 {
-    BIT_n_r8(4, D);
+    BIT_n3_r8(4, D);
 }
 
 void Cpu::op_CB_63()
 {
-    BIT_n_r8(4, E);
+    BIT_n3_r8(4, E);
 }
 
 void Cpu::op_CB_64()
 {
-    BIT_n_r8(4, H);
+    BIT_n3_r8(4, H);
 }
 
 void Cpu::op_CB_65()
 {
-    BIT_n_r8(4, L);
+    BIT_n3_r8(4, L);
 }
 
 void Cpu::op_CB_66()
 {
-    BIT_n_HL(4);
+    BIT_n3_HL(4);
 }
 
 void Cpu::op_CB_67()
 {
-    BIT_n_r8(4, A);
+    BIT_n3_r8(4, A);
 }
 
 void Cpu::op_CB_68()
 {
-    BIT_n_r8(5, B);
+    BIT_n3_r8(5, B);
 }
 
 void Cpu::op_CB_69()
 {
-    BIT_n_r8(5, C);
+    BIT_n3_r8(5, C);
 }
 
 void Cpu::op_CB_6A()
 {
-    BIT_n_r8(5, D);
+    BIT_n3_r8(5, D);
 }
 
 void Cpu::op_CB_6B()
 {
-    BIT_n_r8(5, E);
+    BIT_n3_r8(5, E);
 }
 
 void Cpu::op_CB_6C()
 {
-    BIT_n_r8(5, H);
+    BIT_n3_r8(5, H);
 }
 
 void Cpu::op_CB_6D()
 {
-    BIT_n_r8(5, L);
+    BIT_n3_r8(5, L);
 }
 
 void Cpu::op_CB_6E()
 {
-    BIT_n_HL(5);
+    BIT_n3_HL(5);
 }
 
 void Cpu::op_CB_6F()
 {
-    BIT_n_r8(5, A);
+    BIT_n3_r8(5, A);
 }
 
 void Cpu::op_CB_70()
 {
-    BIT_n_r8(6, B);
+    BIT_n3_r8(6, B);
 }
 
 void Cpu::op_CB_71()
 {
-    BIT_n_r8(6, C);
+    BIT_n3_r8(6, C);
 }
 
 void Cpu::op_CB_72()
 {
-    BIT_n_r8(6, D);
+    BIT_n3_r8(6, D);
 }
 
 void Cpu::op_CB_73()
 {
-    BIT_n_r8(6, E);
+    BIT_n3_r8(6, E);
 }
 
 void Cpu::op_CB_74()
 {
-    BIT_n_r8(6, H);
+    BIT_n3_r8(6, H);
 }
 
 void Cpu::op_CB_75()
 {
-    BIT_n_r8(6, L);
+    BIT_n3_r8(6, L);
 }
 
 void Cpu::op_CB_76()
 {
-    BIT_n_HL(6);
+    BIT_n3_HL(6);
 }
 
 void Cpu::op_CB_77()
 {
-    BIT_n_r8(6, A);
+    BIT_n3_r8(6, A);
 }
 
 void Cpu::op_CB_78()
 {
-    BIT_n_r8(7, B);
+    BIT_n3_r8(7, B);
 }
 
 void Cpu::op_CB_79()
 {
-    BIT_n_r8(7, C);
+    BIT_n3_r8(7, C);
 }
 
 void Cpu::op_CB_7A()
 {
-    BIT_n_r8(7, D);
+    BIT_n3_r8(7, D);
 }
 
 void Cpu::op_CB_7B()
 {
-    BIT_n_r8(7, E);
+    BIT_n3_r8(7, E);
 }
 
 void Cpu::op_CB_7C()
 {
-    BIT_n_r8(7, H);
+    BIT_n3_r8(7, H);
 }
 
 void Cpu::op_CB_7D()
 {
-    BIT_n_r8(7, L);
+    BIT_n3_r8(7, L);
 }
 
 void Cpu::op_CB_7E()
 {
-    BIT_n_HL(7);
+    BIT_n3_HL(7);
 }
 
 void Cpu::op_CB_7F()
 {
-    BIT_n_r8(7, A);
+    BIT_n3_r8(7, A);
 }
 
 void Cpu::op_CB_80()
