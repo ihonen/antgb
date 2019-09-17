@@ -126,6 +126,26 @@ void Cpu::CCF()
     clear_nf();
 }
 
+/* CP */
+
+void Cpu::CP_HL()
+{
+    CP_n8(mem[*HL]);
+}
+
+void Cpu::CP_n8(uint8_t n8)
+{
+    update_cf(*A < n8);
+    update_hf((*A & 0x0F) < (n8 & 0x0F));
+    set_nf();
+    update_zf(*A == n8);
+}
+
+void Cpu::CP_r8(uint8_t* r8)
+{
+    CP_n8(*r8);
+}
+
 /* NOP */
 
 void Cpu::NOP()
