@@ -5,31 +5,31 @@
 
 void Cpu::ADC_A_HL()
 {
-    ADC_A_u8(mem[*HL]);
+    ADC_A_n8(mem[*HL]);
 }
 
-void Cpu::ADC_A_u8(uint8_t u8)
+void Cpu::ADC_A_n8(uint8_t n8)
 {
-    ADD_A_u8(u8 + get_cf());
+    ADD_A_n8(n8 + get_cf());
 }
 
 void Cpu::ADC_A_r8(uint8_t* r8)
 {
-    ADC_A_u8(*r8);
+    ADC_A_n8(*r8);
 }
 
 /* ADD */
 
 void Cpu::ADD_A_HL()
 {
-    ADD_A_u8(mem[*HL]);
+    ADD_A_n8(mem[*HL]);
 }
 
-void Cpu::ADD_A_u8(uint8_t u8)
+void Cpu::ADD_A_n8(uint8_t n8)
 {
-    uint16_t result = *A + u8;
+    uint16_t result = *A + n8;
     update_cf(result > 0xFF);
-    update_hf((*A & 0x0F) + (u8 & 0x0F) > 0x0F);
+    update_hf((*A & 0x0F) + (n8 & 0x0F) > 0x0F);
     clear_nf();
     update_zf(result == 0);
     *A = static_cast<uint8_t>(result);
@@ -37,7 +37,7 @@ void Cpu::ADD_A_u8(uint8_t u8)
 
 void Cpu::ADD_A_r8(uint8_t* r8)
 {
-    ADD_A_u8(*r8);
+    ADD_A_n8(*r8);
 }
 
 void Cpu::ADD_HL_r16(uint16_t* r16)
@@ -50,12 +50,12 @@ void Cpu::ADD_HL_r16(uint16_t* r16)
     *HL = static_cast<uint16_t>(result);
 }
 
-void Cpu::ADD_SP_s8(int8_t s8)
+void Cpu::ADD_SP_e8(int8_t e8)
 {
-    uint32_t result = *SP + static_cast<int16_t>(s8);
+    uint32_t result = *SP + static_cast<int16_t>(e8);
     update_cf(result > 0xFFFF);
     // TODO: Check if this is correct.
-    update_hf(((*SP & 0xFFF) + s8) > 0xFFF);
+    update_hf(((*SP & 0xFFF) + e8) > 0xFFF);
     clear_nf();
     clear_zf();
     *SP = static_cast<uint16_t>(result);
@@ -63,9 +63,9 @@ void Cpu::ADD_SP_s8(int8_t s8)
 
 /* AND */
 
-void Cpu::AND_u8(uint8_t u8)
+void Cpu::AND_n8(uint8_t n8)
 {
-    *A &= u8;
+    *A &= n8;
     clear_cf();
     set_hf();
     clear_nf();
@@ -74,25 +74,25 @@ void Cpu::AND_u8(uint8_t u8)
 
 void Cpu::AND_HL()
 {
-    AND_u8(mem[*HL]);
+    AND_n8(mem[*HL]);
 }
 
 void Cpu::AND_r8(uint8_t* r8)
 {
-    AND_u8(*r8);
+    AND_n8(*r8);
 }
 
 /* BIT */
-void Cpu::BIT_n_HL(uint8_t n)
+void Cpu::BIT_n3_HL(uint8_t n3)
 {
-    BIT_n_r8(n, &mem[*HL]);
+    BIT_n3_r8(n3, &mem[*HL]);
 }
 
-void Cpu::BIT_n_r8(uint8_t n, uint8_t* r8)
+void Cpu::BIT_n3_r8(uint8_t n3, uint8_t* r8)
 {
     set_hf();
     clear_nf();
-    update_zf(!((*r8 >> n) & 0x01));
+    update_zf(!((*r8 >> n3) & 0x01));
 }
 
 /* CALL */
