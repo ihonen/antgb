@@ -47,14 +47,14 @@ private:
     uint16_t* PC = &reg[5];
     uint16_t* SP = &reg[4];
     // Note: the following assumes little-endian.
-    uint8_t*  B  = reinterpret_cast<uint8_t*>(BC) + 1;
-    uint8_t*  C  = reinterpret_cast<uint8_t*>(BC) + 0;
-    uint8_t*  D  = reinterpret_cast<uint8_t*>(DE) + 1;
-    uint8_t*  E  = reinterpret_cast<uint8_t*>(DE) + 0;
-    uint8_t*  H  = reinterpret_cast<uint8_t*>(HL) + 1;
-    uint8_t*  L  = reinterpret_cast<uint8_t*>(HL) + 0;
-    uint8_t*  A  = reinterpret_cast<uint8_t*>(AF) + 1;
-    uint8_t*  F  = reinterpret_cast<uint8_t*>(AF) + 0;
+    uint8_t*  B  = reinterpret_cast<uint8_t*>(BC) + 0;
+    uint8_t*  C  = reinterpret_cast<uint8_t*>(BC) + 1;
+    uint8_t*  D  = reinterpret_cast<uint8_t*>(DE) + 0;
+    uint8_t*  E  = reinterpret_cast<uint8_t*>(DE) + 1;
+    uint8_t*  H  = reinterpret_cast<uint8_t*>(HL) + 0;
+    uint8_t*  L  = reinterpret_cast<uint8_t*>(HL) + 1;
+    uint8_t*  A  = reinterpret_cast<uint8_t*>(AF) + 0;
+    uint8_t*  F  = reinterpret_cast<uint8_t*>(AF) + 1;
     // Some instructions "index" the registers (both 16- and 8-bit)
     // so store them accordingly.
     const std::array<uint16_t*, 6> reg16 = {BC, DE, HL, AF, PC, SP};
@@ -112,6 +112,9 @@ private:
     void CP_n8(uint8_t n8);
     void CP_r8(uint8_t* r8);
     void CPL();
+    void DEC_HL();
+    void DEC_r16(uint16_t* r16);
+    void DEC_r8(uint8_t* r8);
     void NOP();
 
     void op_00(); void op_01(); void op_02(); void op_03();
