@@ -982,7 +982,11 @@ void Cpu::op_C3()
 
 void Cpu::op_C4()
 {
-
+    // TODO: Verify correctness
+    uint16_t jump_addr = 0x0000;
+    jump_addr |= static_cast<uint16_t>(curr_op[1]) << 8;
+    jump_addr |= curr_op[2];
+    CALL_cc_n16(!get_zf(), jump_addr);
 }
 
 void Cpu::op_C5()
@@ -1022,12 +1026,20 @@ void Cpu::op_CB()
 
 void Cpu::op_CC()
 {
-
+    // TODO: Verify correctness
+    uint16_t jump_addr = 0x0000;
+    jump_addr |= static_cast<uint16_t>(curr_op[1]) << 8;
+    jump_addr |= curr_op[2];
+    CALL_cc_n16(get_zf(), jump_addr);
 }
 
 void Cpu::op_CD()
 {
-
+    // TODO: Verify correctness
+    uint16_t jump_addr = 0x0000;
+    jump_addr |= static_cast<uint16_t>(curr_op[1]) << 8;
+    jump_addr |= curr_op[2];
+    CALL_n16(jump_addr);
 }
 
 void Cpu::op_CE()
@@ -1062,7 +1074,11 @@ void Cpu::op_D3()
 
 void Cpu::op_D4()
 {
-
+    // TODO: Verify correctness
+    uint16_t jump_addr = 0x0000;
+    jump_addr |= static_cast<uint16_t>(curr_op[1]) << 8;
+    jump_addr |= curr_op[2];
+    CALL_cc_n16(!get_cf(), jump_addr);
 }
 
 void Cpu::op_D5()
@@ -1102,7 +1118,11 @@ void Cpu::op_DB()
 
 void Cpu::op_DC()
 {
-
+    // TODO: Verify correctness
+    uint16_t jump_addr = 0x0000;
+    jump_addr |= static_cast<uint16_t>(curr_op[1]) << 8;
+    jump_addr |= curr_op[2];
+    CALL_cc_n16(get_cf(), jump_addr);
 }
 
 void Cpu::op_DD()

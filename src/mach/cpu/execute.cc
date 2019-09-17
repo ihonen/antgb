@@ -95,6 +95,23 @@ void Cpu::BIT_n_r8(uint8_t n, uint8_t* r8)
     update_zf(!((*r8 >> n) & 0x01));
 }
 
+/* CALL */
+
+void Cpu::CALL_n16(uint16_t n16)
+{
+    --SP;
+    mem[*SP] = *PC >> 8;
+    --SP;
+    mem[*SP] = static_cast<uint8_t>(*PC);
+
+    *PC = n16;
+}
+
+void Cpu::CALL_cc_n16(bool cc, uint16_t n16)
+{
+    if (cc) CALL_n16(n16);
+}
+
 /* NOP */
 
 void Cpu::NOP()
