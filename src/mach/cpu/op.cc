@@ -1580,42 +1580,42 @@ void Cpu::op_CB_2F()
 
 void Cpu::op_CB_30()
 {
-
+    SWAP_r8(B);
 }
 
 void Cpu::op_CB_31()
 {
-
+    SWAP_r8(C);
 }
 
 void Cpu::op_CB_32()
 {
-
+    SWAP_r8(D);
 }
 
 void Cpu::op_CB_33()
 {
-
+    SWAP_r8(E);
 }
 
 void Cpu::op_CB_34()
 {
-
+    SWAP_r8(H);
 }
 
 void Cpu::op_CB_35()
 {
-
+    SWAP_r8(L);
 }
 
 void Cpu::op_CB_36()
 {
-
+    SWAP_HL();
 }
 
 void Cpu::op_CB_37()
 {
-
+    SWAP_r8(A);
 }
 
 void Cpu::op_CB_38()

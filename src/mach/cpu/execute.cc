@@ -685,3 +685,19 @@ void Cpu::SUB_A_r8(uint8_t* r8)
 {
     SUB_A_n8(*r8);
 }
+
+/* SWAP */
+
+void Cpu::SWAP_HL()
+{
+    SWAP_r8(&mem[*HL]);
+}
+
+void Cpu::SWAP_r8(uint8_t* r8)
+{
+    *r8 = static_cast<uint8_t>(((*r8 & 0x0F) << 4) | ((*r8 & 0xF0) >> 4));
+    clear_cf();
+    clear_hf();
+    clear_nf();
+    update_zf(*r8 == 0);
+}
