@@ -88,7 +88,7 @@ void Cpu::op_0F()
 
 void Cpu::op_10()
 {
-
+    STOP();
 }
 
 void Cpu::op_11()
@@ -607,7 +607,7 @@ void Cpu::op_75()
 
 void Cpu::op_76()
 {
-
+    HALT();
 }
 
 void Cpu::op_77()

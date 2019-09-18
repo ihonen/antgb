@@ -191,6 +191,13 @@ void Cpu::EI()
     }
 }
 
+/* HALT */
+
+void Cpu::HALT()
+{
+    is_halted = true;
+}
+
 /* INC */
 
 void Cpu::INC_HL()
@@ -673,6 +680,13 @@ void Cpu::SRL_r8(uint8_t* r8)
     clear_nf();
     update_zf(result == 0);
     *r8 = result;
+}
+
+/* STOP */
+
+void Cpu::STOP()
+{
+    is_stopped = true;
 }
 
 /* SUB */

@@ -108,6 +108,9 @@ private:
     enum IntStatusChange DI_status = IntStatusChange::NOT_SCHEDULED;
     enum IntStatusChange EI_status = IntStatusChange::NOT_SCHEDULED;
 
+    bool is_halted = false;
+    bool is_stopped = false;
+
     void ADC_A_HL();
     void ADC_A_n8(uint8_t u8);
     void ADC_A_r8(uint8_t* r8);
@@ -133,6 +136,7 @@ private:
     void DEC_r8(uint8_t* r8);
     void DI();
     void EI();
+    void HALT();
     void INC_HL();
     void INC_r16(uint16_t* r16);
     void INC_r8(uint8_t* r8);
@@ -198,6 +202,7 @@ private:
     void SRA_r8(uint8_t* r8);
     void SRL_HL();
     void SRL_r8(uint8_t* r8);
+    void STOP();
     void SUB_A_HL();
     void SUB_A_n8(uint8_t n8);
     void SUB_A_r8(uint8_t* r8);
@@ -336,7 +341,6 @@ private:
     void op_CB_F4(); void op_CB_F5(); void op_CB_F6(); void op_CB_F7();
     void op_CB_F8(); void op_CB_F9(); void op_CB_FA(); void op_CB_FB();
     void op_CB_FC(); void op_CB_FD(); void op_CB_FE(); void op_CB_FF();
-
 };
 
 #endif // CPU_HH
