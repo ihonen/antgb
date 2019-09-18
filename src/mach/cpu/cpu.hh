@@ -141,6 +141,27 @@ private:
     void JP_n16(uint16_t n16);
     void JR_cc_n8(bool cc, int8_t n8);
     void JR_n8(int8_t n8);
+    void LD_C_A();
+    void LD_HL_n8(uint8_t n8);
+    void LD_HL_r8(uint8_t* r8);
+    void LD_n16_A(uint16_t n16);
+    void LD_n16_SP(uint16_t n16);
+    void LD_r16_A(uint16_t* r16);
+    void LD_A_C();
+    void LD_A_n16(uint16_t n16);
+    void LD_A_r16(uint16_t* r16);
+    void LD_HL_SP_e8(int8_t e8);
+    void LD_r16_n16(uint16_t* r16, uint16_t n16);
+    void LD_r8_HL(uint8_t* r8);
+    void LD_r8_n8(uint8_t* r8, uint8_t n8);
+    void LD_r8_r8(uint8_t* r8_1, uint8_t* r8_2);
+    void LD_SP_HL();
+    void LDD_HL_A();
+    void LDD_A_HL();
+    void LDH_n8_A(uint8_t n8);
+    void LDH_A_n8(uint8_t n8);
+    void LDI_HL_A();
+    void LDI_A_HL();
     void NOP();
 
     void op_00(); void op_01(); void op_02(); void op_03();

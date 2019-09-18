@@ -251,6 +251,124 @@ void Cpu::JR_n8(int8_t n8)
     *PC += n8;
 }
 
+/* LD */
+
+void Cpu::LD_C_A()
+{
+    mem[0xFF00 + *C] = *A;
+}
+
+void Cpu::LD_HL_n8(uint8_t n8)
+{
+    mem[*HL] = n8;
+}
+
+void Cpu::LD_HL_r8(uint8_t* r8)
+{
+    LD_HL_n8(*r8);
+}
+
+void Cpu::LD_n16_A(uint16_t n16)
+{
+    mem[n16] = *A;
+}
+
+void Cpu::LD_n16_SP(uint16_t n16)
+{
+    // TODO: Check if both bytes of SP should be written.
+    mem[n16] = static_cast<uint8_t>(*SP);
+}
+
+void Cpu::LD_r16_A(uint16_t* r16)
+{
+    LD_n16_A(*r16);
+}
+
+void Cpu::LD_A_C()
+{
+    *A = mem[0xFF00 + *C];
+}
+
+void Cpu::LD_A_n16(uint16_t n16)
+{
+    *A = mem[n16];
+}
+
+void Cpu::LD_A_r16(uint16_t* r16)
+{
+    LD_A_n16(*r16);
+}
+
+void Cpu::LD_HL_SP_e8(int8_t e8)
+{
+    // TODO: Check correctness.
+    uint32_t result =static_cast<uint32_t>(*SP + e8);
+    update_cf(result > 0xFFFF);
+    update_hf((*SP & 0x000F) + static_cast<uint16_t>(e8 & 0x0F) > 0x0F);
+    clear_nf();
+    clear_zf();
+    *HL = static_cast<uint16_t>(result);
+}
+
+void Cpu::LD_r16_n16(uint16_t* r16, uint16_t n16)
+{
+    *r16 = n16;
+}
+
+void Cpu::LD_r8_HL(uint8_t* r8)
+{
+    *r8 = mem[*HL];
+}
+
+void Cpu::LD_r8_n8(uint8_t* r8, uint8_t n8)
+{
+    *r8 = n8;
+}
+
+void Cpu::LD_r8_r8(uint8_t* r8_1, uint8_t* r8_2)
+{
+    *r8_1 = *r8_2;
+}
+
+void Cpu::LD_SP_HL()
+{
+    *SP = *HL;
+}
+
+void Cpu::LDD_HL_A()
+{
+    mem[*HL] = *A;
+    --(*HL);
+}
+
+void Cpu::LDD_A_HL()
+{
+    *A = mem[*HL];
+    --(*HL);
+}
+
+void Cpu::LDH_n8_A(uint8_t n8)
+{
+    mem[0xFF00 + n8] = *A;
+}
+
+void Cpu::LDH_A_n8(uint8_t n8)
+{
+    *A = mem[0xFF00 + n8];
+}
+
+void Cpu::LDI_HL_A()
+{
+    mem[*HL] = *A;
+    ++(*HL);
+}
+
+void Cpu::LDI_A_HL()
+{
+    *A = mem[*HL];
+    ++(*HL);
+}
+
 /* NOP */
 
 void Cpu::NOP()

@@ -7,12 +7,15 @@ void Cpu::op_00()
 
 void Cpu::op_01()
 {
-
+    uint16_t n16 = 0x0000;
+    n16 |= static_cast<uint16_t>(curr_op[1]) << 8;
+    n16 |= curr_op[2];
+    LD_r16_n16(BC, n16);
 }
 
 void Cpu::op_02()
 {
-
+    LD_r16_A(BC);
 }
 
 void Cpu::op_03()
@@ -32,7 +35,7 @@ void Cpu::op_05()
 
 void Cpu::op_06()
 {
-
+    LD_r8_n8(B, curr_op[1]);
 }
 
 void Cpu::op_07()
@@ -42,7 +45,10 @@ void Cpu::op_07()
 
 void Cpu::op_08()
 {
-
+    uint16_t n16 = 0x0000;
+    n16 |= static_cast<uint16_t>(curr_op[1]) << 8;
+    n16 |= curr_op[2];
+    LD_n16_SP(n16);
 }
 
 void Cpu::op_09()
@@ -52,7 +58,7 @@ void Cpu::op_09()
 
 void Cpu::op_0A()
 {
-
+    LD_A_r16(BC);
 }
 
 void Cpu::op_0B()
@@ -72,7 +78,7 @@ void Cpu::op_0D()
 
 void Cpu::op_0E()
 {
-
+    LD_r8_n8(C, curr_op[1]);
 }
 
 void Cpu::op_0F()
@@ -87,12 +93,15 @@ void Cpu::op_10()
 
 void Cpu::op_11()
 {
-
+    uint16_t n16 = 0x0000;
+    n16 |= static_cast<uint16_t>(curr_op[1]) << 8;
+    n16 |= curr_op[2];
+    LD_r16_n16(DE, n16);
 }
 
 void Cpu::op_12()
 {
-
+    LD_r16_A(DE);
 }
 
 void Cpu::op_13()
@@ -112,7 +121,7 @@ void Cpu::op_15()
 
 void Cpu::op_16()
 {
-
+    LD_r8_n8(D, curr_op[1]);
 }
 
 void Cpu::op_17()
@@ -132,7 +141,7 @@ void Cpu::op_19()
 
 void Cpu::op_1A()
 {
-
+    LD_A_r16(DE);
 }
 
 void Cpu::op_1B()
@@ -152,7 +161,7 @@ void Cpu::op_1D()
 
 void Cpu::op_1E()
 {
-
+    LD_r8_n8(E, curr_op[1]);
 }
 
 void Cpu::op_1F()
@@ -167,12 +176,15 @@ void Cpu::op_20()
 
 void Cpu::op_21()
 {
-
+    uint16_t n16 = 0x0000;
+    n16 |= static_cast<uint16_t>(curr_op[1]) << 8;
+    n16 |= curr_op[2];
+    LD_r16_n16(HL, n16);
 }
 
 void Cpu::op_22()
 {
-
+    LDI_HL_A();
 }
 
 void Cpu::op_23()
@@ -192,7 +204,7 @@ void Cpu::op_25()
 
 void Cpu::op_26()
 {
-
+    LD_r8_n8(H, curr_op[1]);
 }
 
 void Cpu::op_27()
@@ -212,7 +224,7 @@ void Cpu::op_29()
 
 void Cpu::op_2A()
 {
-
+    LDI_A_HL();
 }
 
 void Cpu::op_2B()
@@ -232,7 +244,7 @@ void Cpu::op_2D()
 
 void Cpu::op_2E()
 {
-
+    LD_r8_n8(L, curr_op[1]);
 }
 
 void Cpu::op_2F()
@@ -247,12 +259,15 @@ void Cpu::op_30()
 
 void Cpu::op_31()
 {
-
+    uint16_t n16 = 0x0000;
+    n16 |= static_cast<uint16_t>(curr_op[1]) << 8;
+    n16 |= curr_op[2];
+    LD_r16_n16(SP, n16);
 }
 
 void Cpu::op_32()
 {
-
+    LDD_HL_A();
 }
 
 void Cpu::op_33()
@@ -272,7 +287,7 @@ void Cpu::op_35()
 
 void Cpu::op_36()
 {
-
+    LD_HL_n8(curr_op[1]);
 }
 
 void Cpu::op_37()
@@ -292,7 +307,7 @@ void Cpu::op_39()
 
 void Cpu::op_3A()
 {
-
+    LDD_A_HL();
 }
 
 void Cpu::op_3B()
@@ -312,7 +327,7 @@ void Cpu::op_3D()
 
 void Cpu::op_3E()
 {
-
+    LD_r8_n8(A, curr_op[1]);
 }
 
 void Cpu::op_3F()
@@ -322,272 +337,272 @@ void Cpu::op_3F()
 
 void Cpu::op_40()
 {
-
+    LD_r8_r8(B, B);
 }
 
 void Cpu::op_41()
 {
-
+    LD_r8_r8(B, C);
 }
 
 void Cpu::op_42()
 {
-
+    LD_r8_r8(B, D);
 }
 
 void Cpu::op_43()
 {
-
+    LD_r8_r8(B, E);
 }
 
 void Cpu::op_44()
 {
-
+    LD_r8_r8(B, H);
 }
 
 void Cpu::op_45()
 {
-
+    LD_r8_r8(B, L);
 }
 
 void Cpu::op_46()
 {
-
+    LD_r8_HL(B);
 }
 
 void Cpu::op_47()
 {
-
+    LD_r8_r8(B, A);
 }
 
 void Cpu::op_48()
 {
-
+    LD_r8_r8(C, B);
 }
 
 void Cpu::op_49()
 {
-
+    LD_r8_r8(C, C);
 }
 
 void Cpu::op_4A()
 {
-
+    LD_r8_r8(C, D);
 }
 
 void Cpu::op_4B()
 {
-
+    LD_r8_r8(C, E);
 }
 
 void Cpu::op_4C()
 {
-
+    LD_r8_r8(C, H);
 }
 
 void Cpu::op_4D()
 {
-
+    LD_r8_r8(C, L);
 }
 
 void Cpu::op_4E()
 {
-
+    LD_r8_HL(C);
 }
 
 void Cpu::op_4F()
 {
-
+    LD_r8_r8(C, A);
 }
 
 void Cpu::op_50()
 {
-
+    LD_r8_r8(D, B);
 }
 
 void Cpu::op_51()
 {
-
+    LD_r8_r8(D, C);
 }
 
 void Cpu::op_52()
 {
-
+    LD_r8_r8(D, D);
 }
 
 void Cpu::op_53()
 {
-
+    LD_r8_r8(D, E);
 }
 
 void Cpu::op_54()
 {
-
+    LD_r8_r8(D, H);
 }
 
 void Cpu::op_55()
 {
-
+    LD_r8_r8(D, L);
 }
 
 void Cpu::op_56()
 {
-
+    LD_r8_HL(D);
 }
 
 void Cpu::op_57()
 {
-
+    LD_r8_r8(D, A);
 }
 
 void Cpu::op_58()
 {
-
+    LD_r8_r8(E, B);
 }
 
 void Cpu::op_59()
 {
-
+    LD_r8_r8(E, C);
 }
 
 void Cpu::op_5A()
 {
-
+    LD_r8_r8(E, D);
 }
 
 void Cpu::op_5B()
 {
-
+    LD_r8_r8(E, E);
 }
 
 void Cpu::op_5C()
 {
-
+    LD_r8_r8(E, H);
 }
 
 void Cpu::op_5D()
 {
-
+    LD_r8_r8(E, L);
 }
 
 void Cpu::op_5E()
 {
-
+    LD_r8_HL(E);
 }
 
 void Cpu::op_5F()
 {
-
+    LD_r8_r8(E, A);
 }
 
 void Cpu::op_60()
 {
-
+    LD_r8_r8(H, B);
 }
 
 void Cpu::op_61()
 {
-
+    LD_r8_r8(H, C);
 }
 
 void Cpu::op_62()
 {
-
+    LD_r8_r8(H, D);
 }
 
 void Cpu::op_63()
 {
-
+    LD_r8_r8(H, E);
 }
 
 void Cpu::op_64()
 {
-
+    LD_r8_r8(H, H);
 }
 
 void Cpu::op_65()
 {
-
+    LD_r8_r8(H, L);
 }
 
 void Cpu::op_66()
 {
-
+    LD_r8_HL(H);
 }
 
 void Cpu::op_67()
 {
-
+    LD_r8_r8(H, A);
 }
 
 void Cpu::op_68()
 {
-
+    LD_r8_r8(L, B);
 }
 
 void Cpu::op_69()
 {
-
+    LD_r8_r8(L, C);
 }
 
 void Cpu::op_6A()
 {
-
+    LD_r8_r8(L, D);
 }
 
 void Cpu::op_6B()
 {
-
+    LD_r8_r8(L, E);
 }
 
 void Cpu::op_6C()
 {
-
+    LD_r8_r8(L, H);
 }
 
 void Cpu::op_6D()
 {
-
+    LD_r8_r8(L, L);
 }
 
 void Cpu::op_6E()
 {
-
+    LD_r8_HL(L);
 }
 
 void Cpu::op_6F()
 {
-
+    LD_r8_r8(L, A);
 }
 
 void Cpu::op_70()
 {
-
+    LD_HL_r8(B);
 }
 
 void Cpu::op_71()
 {
-
+    LD_HL_r8(C);
 }
 
 void Cpu::op_72()
 {
-
+    LD_HL_r8(D);
 }
 
 void Cpu::op_73()
 {
-
+    LD_HL_r8(E);
 }
 
 void Cpu::op_74()
 {
-
+    LD_HL_r8(H);
 }
 
 void Cpu::op_75()
 {
-
+    LD_HL_r8(L);
 }
 
 void Cpu::op_76()
@@ -597,47 +612,47 @@ void Cpu::op_76()
 
 void Cpu::op_77()
 {
-
+    LD_HL_r8(A);
 }
 
 void Cpu::op_78()
 {
-
+    LD_r8_r8(A, B);
 }
 
 void Cpu::op_79()
 {
-
+    LD_r8_r8(A, C);
 }
 
 void Cpu::op_7A()
 {
-
+    LD_r8_r8(A, D);
 }
 
 void Cpu::op_7B()
 {
-
+    LD_r8_r8(A, E);
 }
 
 void Cpu::op_7C()
 {
-
+    LD_r8_r8(A, H);
 }
 
 void Cpu::op_7D()
 {
-
+    LD_r8_r8(A, L);
 }
 
 void Cpu::op_7E()
 {
-
+    LD_A_r16(HL);
 }
 
 void Cpu::op_7F()
 {
-
+    LD_r8_r8(A, A);
 }
 
 void Cpu::op_80()
@@ -1157,7 +1172,7 @@ void Cpu::op_DF()
 
 void Cpu::op_E0()
 {
-
+    LDH_n8_A(curr_op[1]);
 }
 
 void Cpu::op_E1()
@@ -1167,7 +1182,7 @@ void Cpu::op_E1()
 
 void Cpu::op_E2()
 {
-
+    LD_C_A();
 }
 
 void Cpu::op_E3()
@@ -1207,7 +1222,10 @@ void Cpu::op_E9()
 
 void Cpu::op_EA()
 {
-
+    uint16_t load_addr = 0x0000;
+    load_addr |= static_cast<uint16_t>(curr_op[1]) << 8;
+    load_addr |= curr_op[2];
+    LD_n16_A(load_addr);
 }
 
 void Cpu::op_EB()
@@ -1237,7 +1255,7 @@ void Cpu::op_EF()
 
 void Cpu::op_F0()
 {
-
+    LDH_A_n8(curr_op[1]);
 }
 
 void Cpu::op_F1()
@@ -1247,7 +1265,7 @@ void Cpu::op_F1()
 
 void Cpu::op_F2()
 {
-
+    LD_A_C();
 }
 
 void Cpu::op_F3()
@@ -1277,17 +1295,20 @@ void Cpu::op_F7()
 
 void Cpu::op_F8()
 {
-
+    LD_HL_SP_e8(static_cast<int8_t>(curr_op[1]));
 }
 
 void Cpu::op_F9()
 {
-
+    LD_SP_HL();
 }
 
 void Cpu::op_FA()
 {
-
+    uint16_t n16 = 0x0000;
+    n16 |= static_cast<uint16_t>(curr_op[1]) << 8;
+    n16 |= curr_op[2];
+    LD_A_n16(n16);
 }
 
 void Cpu::op_FB()
