@@ -29,6 +29,12 @@ private:
     void    update_nf(bool cond);
     void    update_zf(bool cond);
 
+    void    disable_interrupts();
+    void    enable_interrupts();
+    uint8_t get_IME();
+    void    set_IME();
+    void    clear_IME();
+
     // Positions of the flag bits in flag register (F).
     static const uint8_t CF_BIT_POS = 4;
     static const uint8_t HF_BIT_POS = 5;
@@ -46,7 +52,7 @@ private:
     uint16_t* AF = &reg[3];
     uint16_t* PC = &reg[5];
     uint16_t* SP = &reg[4];
-    // Note: the following assumes little-endian.
+    // NOTE: the following assumes little-endian.
     uint8_t*  B  = reinterpret_cast<uint8_t*>(BC) + 0;
     uint8_t*  C  = reinterpret_cast<uint8_t*>(BC) + 1;
     uint8_t*  D  = reinterpret_cast<uint8_t*>(DE) + 0;
@@ -92,6 +98,16 @@ private:
     // not.
     bool op_success;
 
+    enum class IntStatusChange {NOT_SCHEDULED, SCHEDULED, TRIGGER};
+    // If either of these values is TRIGGER after
+    // executing an instuction, do the corresponding operation on the
+    // Interrupt Master Enable flag.
+    // TODO: If this is to be done accurately, IME has to be changed
+    // after one machine cycle, not one instruction.
+    // TODO: What to do if EI or DI is called twice or more in a row?
+    enum IntStatusChange DI_status = IntStatusChange::NOT_SCHEDULED;
+    enum IntStatusChange EI_status = IntStatusChange::NOT_SCHEDULED;
+
     void ADC_A_HL();
     void ADC_A_n8(uint8_t u8);
     void ADC_A_r8(uint8_t* r8);
@@ -115,6 +131,8 @@ private:
     void DEC_HL();
     void DEC_r16(uint16_t* r16);
     void DEC_r8(uint8_t* r8);
+    void DI();
+    void EI();
     void NOP();
 
     void op_00(); void op_01(); void op_02(); void op_03();

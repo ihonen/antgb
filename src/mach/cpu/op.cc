@@ -1237,7 +1237,7 @@ void Cpu::op_F2()
 
 void Cpu::op_F3()
 {
-
+    DI();
 }
 
 void Cpu::op_F4()
@@ -1277,7 +1277,7 @@ void Cpu::op_FA()
 
 void Cpu::op_FB()
 {
-
+    EI();
 }
 
 void Cpu::op_FC()

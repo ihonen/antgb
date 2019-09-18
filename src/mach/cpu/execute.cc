@@ -172,6 +172,25 @@ void Cpu::DEC_r8(uint8_t* r8)
     update_zf(*r8 == 0);
 }
 
+/* DI */
+
+void Cpu::DI()
+{
+    if (DI_status == IntStatusChange::NOT_SCHEDULED)
+    {
+        DI_status = IntStatusChange::SCHEDULED;
+    }
+}
+
+/* EI */
+void Cpu::EI()
+{
+    if (EI_status == IntStatusChange::NOT_SCHEDULED)
+    {
+        EI_status = IntStatusChange::SCHEDULED;
+    }
+}
+
 /* NOP */
 
 void Cpu::NOP()
