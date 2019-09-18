@@ -26,7 +26,7 @@ void Cpu::execute(const uint8_t* instruction)
         EI_status = IntStatusChange::TRIGGERED;
 
     const OpcodeInfo* op_info = (*curr_op == 0xCB) ?
-                                &CB_OP_INFO[*(curr_op + 1)] :
+                                &CB_OP_INFO[curr_op[1]] :
                                 &OP_INFO[*curr_op];
 
     if (op_info->handler) (this->*(op_info->handler))();
