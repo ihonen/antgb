@@ -54,7 +54,7 @@ void Cpu::ADD_SP_e8(int8_t e8)
 {
     uint32_t result = static_cast<uint32_t>(*SP + static_cast<int16_t>(e8));
     update_cf(result > 0xFFFF);
-    update_hf(((*SP & 0x000F) + (e8 & 0x0F)) > 0x0F);
+    update_hf(((*SP & 0x000F) + (static_cast<uint8_t>(e8 & 0x0F))) > 0x0F);
     clear_nf();
     clear_zf();
     *SP = static_cast<uint16_t>(result);
@@ -150,6 +150,26 @@ void Cpu::CP_r8(uint8_t* r8)
 void Cpu::CPL()
 {
     *A = ~(*A);
+}
+
+/* DEC */
+
+void Cpu::DEC_HL()
+{
+    DEC_r8(&mem[*HL]);
+}
+
+void Cpu::DEC_r16(uint16_t* r16)
+{
+    --(*r16);
+}
+
+void Cpu::DEC_r8(uint8_t* r8)
+{
+    --(*r8);
+    update_hf((*r8 & 0x0F) == 0x0F);
+    set_nf();
+    update_zf(*r8 == 0);
 }
 
 /* NOP */

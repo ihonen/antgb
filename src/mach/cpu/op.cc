@@ -27,7 +27,7 @@ void Cpu::op_04()
 
 void Cpu::op_05()
 {
-
+    DEC_r8(B);
 }
 
 void Cpu::op_06()
@@ -57,7 +57,7 @@ void Cpu::op_0A()
 
 void Cpu::op_0B()
 {
-
+    DEC_r16(BC);
 }
 
 void Cpu::op_0C()
@@ -67,7 +67,7 @@ void Cpu::op_0C()
 
 void Cpu::op_0D()
 {
-
+    DEC_r8(C);
 }
 
 void Cpu::op_0E()
@@ -107,7 +107,7 @@ void Cpu::op_14()
 
 void Cpu::op_15()
 {
-
+    DEC_r8(D);
 }
 
 void Cpu::op_16()
@@ -137,7 +137,7 @@ void Cpu::op_1A()
 
 void Cpu::op_1B()
 {
-
+    DEC_r16(DE);
 }
 
 void Cpu::op_1C()
@@ -147,7 +147,7 @@ void Cpu::op_1C()
 
 void Cpu::op_1D()
 {
-
+    DEC_r8(E);
 }
 
 void Cpu::op_1E()
@@ -187,7 +187,7 @@ void Cpu::op_24()
 
 void Cpu::op_25()
 {
-
+    DEC_r8(H);
 }
 
 void Cpu::op_26()
@@ -217,7 +217,7 @@ void Cpu::op_2A()
 
 void Cpu::op_2B()
 {
-
+    DEC_r16(HL);
 }
 
 void Cpu::op_2C()
@@ -227,7 +227,7 @@ void Cpu::op_2C()
 
 void Cpu::op_2D()
 {
-
+    DEC_r8(L);
 }
 
 void Cpu::op_2E()
@@ -267,7 +267,7 @@ void Cpu::op_34()
 
 void Cpu::op_35()
 {
-
+    DEC_HL();
 }
 
 void Cpu::op_36()
@@ -297,7 +297,7 @@ void Cpu::op_3A()
 
 void Cpu::op_3B()
 {
-
+    DEC_r16(SP);
 }
 
 void Cpu::op_3C()
@@ -307,7 +307,7 @@ void Cpu::op_3C()
 
 void Cpu::op_3D()
 {
-
+    DEC_r8(A);
 }
 
 void Cpu::op_3E()
