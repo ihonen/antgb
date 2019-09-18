@@ -83,7 +83,7 @@ void Cpu::op_0E()
 
 void Cpu::op_0F()
 {
-
+    RRCA();
 }
 
 void Cpu::op_10()

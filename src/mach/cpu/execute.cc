@@ -555,3 +555,10 @@ void Cpu::RRC_r8(uint8_t* r8)
     update_cf(result == 0);
     *r8 = result;
 }
+
+/* RRCA */
+
+void Cpu::RRCA()
+{
+    RRC_r8(A);
+}
