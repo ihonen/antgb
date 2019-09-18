@@ -977,7 +977,7 @@ void Cpu::op_BF()
 
 void Cpu::op_C0()
 {
-
+    RET_cc(!get_zf());
 }
 
 void Cpu::op_C1()
@@ -1027,12 +1027,12 @@ void Cpu::op_C7()
 
 void Cpu::op_C8()
 {
-
+    RET_cc(get_zf());
 }
 
 void Cpu::op_C9()
 {
-
+    RET();
 }
 
 void Cpu::op_CA()
@@ -1078,7 +1078,7 @@ void Cpu::op_CF()
 
 void Cpu::op_D0()
 {
-
+    RET_cc(!get_cf());
 }
 
 void Cpu::op_D1()
@@ -1125,7 +1125,7 @@ void Cpu::op_D7()
 
 void Cpu::op_D8()
 {
-
+    RET_cc(get_cf());
 }
 
 void Cpu::op_D9()

@@ -428,3 +428,24 @@ void Cpu::RES_n3_r8(uint8_t n3, uint8_t* r8)
 {
     *r8 &= ~(0x01 << n3);
 }
+
+/* RET */
+
+void Cpu::RET()
+{
+    ++SP;
+    *PC |= mem[*SP];
+    ++SP;
+    *PC |= mem[*SP] << 8;
+}
+
+void Cpu::RET_cc(bool cc)
+{
+    if (cc)
+    {
+        RET();
+        op_success = true;
+    }
+    else op_success = false;
+}
+

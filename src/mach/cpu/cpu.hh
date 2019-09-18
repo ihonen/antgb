@@ -170,6 +170,8 @@ private:
     void PUSH_r16(uint16_t* r16);
     void RES_n3_HL(uint8_t n3);
     void RES_n3_r8(uint8_t n3, uint8_t* r8);
+    void RET();
+    void RET_cc(bool cc);
 
     void op_00(); void op_01(); void op_02(); void op_03();
     void op_04(); void op_05(); void op_06(); void op_07();
