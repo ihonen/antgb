@@ -396,3 +396,13 @@ void Cpu::OR_r8(uint8_t* r8)
 {
     OR_n8(*r8);
 }
+
+/* POP */
+
+void Cpu::POP_r16(uint16_t* r16)
+{
+    ++SP;
+    *r16 |= mem[*SP];
+    ++SP;
+    *r16 |= mem[*SP] << 8;
+}

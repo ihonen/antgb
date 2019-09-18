@@ -982,7 +982,7 @@ void Cpu::op_C0()
 
 void Cpu::op_C1()
 {
-
+    POP_r16(BC);
 }
 
 void Cpu::op_C2()
@@ -1083,7 +1083,7 @@ void Cpu::op_D0()
 
 void Cpu::op_D1()
 {
-
+    POP_r16(DE);
 }
 
 void Cpu::op_D2()
@@ -1177,7 +1177,7 @@ void Cpu::op_E0()
 
 void Cpu::op_E1()
 {
-
+    POP_r16(HL);
 }
 
 void Cpu::op_E2()
@@ -1260,7 +1260,7 @@ void Cpu::op_F0()
 
 void Cpu::op_F1()
 {
-
+    POP_r16(AF);
 }
 
 void Cpu::op_F2()
