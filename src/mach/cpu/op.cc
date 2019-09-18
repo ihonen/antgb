@@ -209,7 +209,7 @@ void Cpu::op_26()
 
 void Cpu::op_27()
 {
-
+    /* DAA */
 }
 
 void Cpu::op_28()
@@ -1045,7 +1045,7 @@ void Cpu::op_CA()
 
 void Cpu::op_CB()
 {
-
+    /* SHOULD NOT END UP HERE */
 }
 
 void Cpu::op_CC()
@@ -1096,7 +1096,7 @@ void Cpu::op_D2()
 
 void Cpu::op_D3()
 {
-
+    /* UNUSED */
 }
 
 void Cpu::op_D4()
@@ -1143,7 +1143,7 @@ void Cpu::op_DA()
 
 void Cpu::op_DB()
 {
-
+    /* UNUSED */
 }
 
 void Cpu::op_DC()
@@ -1157,7 +1157,7 @@ void Cpu::op_DC()
 
 void Cpu::op_DD()
 {
-
+    /* UNUSED */
 }
 
 void Cpu::op_DE()
@@ -1187,12 +1187,12 @@ void Cpu::op_E2()
 
 void Cpu::op_E3()
 {
-
+    /* UNUSED */
 }
 
 void Cpu::op_E4()
 {
-
+    /* UNUSED */
 }
 
 void Cpu::op_E5()
@@ -1230,17 +1230,17 @@ void Cpu::op_EA()
 
 void Cpu::op_EB()
 {
-
+    /* UNUSED */
 }
 
 void Cpu::op_EC()
 {
-
+    /* UNUSED */
 }
 
 void Cpu::op_ED()
 {
-
+    /* UNUSED */
 }
 
 void Cpu::op_EE()
@@ -1275,7 +1275,7 @@ void Cpu::op_F3()
 
 void Cpu::op_F4()
 {
-
+    /* UNUSED */
 }
 
 void Cpu::op_F5()
@@ -1318,12 +1318,12 @@ void Cpu::op_FB()
 
 void Cpu::op_FC()
 {
-
+    /* UNUSED */
 }
 
 void Cpu::op_FD()
 {
-
+    /* UNUSED */
 }
 
 void Cpu::op_FE()
@@ -1335,8 +1335,6 @@ void Cpu::op_FF()
 {
     RST_f(0x38);
 }
-
-
 
 void Cpu::op_CB_00()
 {
