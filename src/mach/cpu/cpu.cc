@@ -1,55 +1,48 @@
 #include "cpu.hh"
 #include <cassert>
 
-uint8_t Cpu::get_IME()
-{
-    return mem[0xFFFF];
-}
-
-void Cpu::set_IME()
-{
-    mem[0xFFFF] = 0x01;
-}
-
-void Cpu::clear_IME()
-{
-    mem[0xFFFF] = 0x00;
-}
-
 void Cpu::disable_interrupts()
 {
-    clear_IME();
+    IME_flag_reset();
     DI_status = IntStatusChange::NOT_SCHEDULED;
 }
 
 void Cpu::enable_interrupts()
 {
-    set_IME();
+    IME_flag_set();
     EI_status = IntStatusChange::NOT_SCHEDULED;
 }
 
-void Cpu::execute(uint8_t* opcode)
+void Cpu::execute(const uint8_t* instruction)
 {
-    if (DI_status == IntStatusChange::SCHEDULED)
-    {
-        DI_status = IntStatusChange::TRIGGER;
-    }
-    else if (EI_status == IntStatusChange::SCHEDULED)
-    {
-        DI_status = IntStatusChange::TRIGGER;
-    }
+    curr_op = instruction;
+    op_success = true;
 
-    curr_op = opcode;
+    if (DI_status == IntStatusChange::SCHEDULED)
+        DI_status = IntStatusChange::TRIGGERED;
+    else if (EI_status == IntStatusChange::SCHEDULED)
+        EI_status = IntStatusChange::TRIGGERED;
+
     void (Cpu::*handler)();
     handler = (*curr_op == 0xCB) ?
               CB_OP_INFO[*(curr_op + 1)].handler :
               OP_INFO[*(curr_op)].handler;
 
-    op_success = true;
     if (handler) (this->*handler)();
 
-    if (DI_status == IntStatusChange::TRIGGER) disable_interrupts();
-    else if (EI_status == IntStatusChange::TRIGGER) enable_interrupts();
+    if (DI_status == IntStatusChange::TRIGGERED) disable_interrupts();
+    else if (EI_status == IntStatusChange::TRIGGERED) enable_interrupts();
+}
+
+uint8_t Cpu::extract_immediate8()
+{
+    return curr_op[1];
+}
+
+uint16_t Cpu::extract_immediate16()
+{
+    return (static_cast<uint16_t>(curr_op[1])) |
+           (static_cast<uint16_t>(curr_op[2]) << 8);
 }
 
 void Cpu::invalid_opcode()

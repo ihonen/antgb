@@ -9,35 +9,38 @@
 class Cpu
 {
 public:
-    void execute(uint8_t* opcode);
+    void execute(const uint8_t* instruction);
 
 private:
     uint8_t get_flag(uint8_t pos);
-    void    set_flag(uint8_t pos, uint8_t val);
-    uint8_t get_cf();
-    uint8_t get_hf();
-    uint8_t get_nf();
-    uint8_t get_zf();
-    void    set_cf();
-    void    set_hf();
-    void    set_nf();
-    void    set_zf();
-    void    clear_cf();
-    void    clear_hf();
-    void    clear_nf();
-    void    clear_zf();
-    void    update_cf(bool cond);
-    void    update_hf(bool cond);
-    void    update_nf(bool cond);
-    void    update_zf(bool cond);
+    void    assign_flag(uint8_t pos, uint8_t val);
+    uint8_t C_flag_get();
+    uint8_t H_flag_get();
+    uint8_t N_flag_get();
+    uint8_t Z_flag_get();
+    void    C_flag_reset();
+    void    H_flag_reset();
+    void    N_flag_reset();
+    void    Z_flag_reset();
+    void    C_flag_set();
+    void    H_flag_set();
+    void    N_flag_set();
+    void    Z_flag_set();
+    void    C_flag_update(bool cond);
+    void    H_flag_update(bool cond);
+    void    N_flag_update(bool cond);
+    void    Z_flag_update(bool cond);
+    uint8_t IME_flag_get();
+    void    IME_flag_reset();
+    void    IME_flag_set();
 
     void    disable_interrupts();
     void    enable_interrupts();
-    uint8_t get_IME();
-    void    set_IME();
-    void    clear_IME();
 
     void invalid_opcode();
+
+    uint8_t  extract_immediate8();
+    uint16_t extract_immediate16();
 
     // Positions of the flag bits in flag register (F).
     static const uint8_t CF_BIT_POS = 4;
@@ -46,9 +49,14 @@ private:
     static const uint8_t ZF_BIT_POS = 7;
 
     // Main memory.
+    // TODO: Make a separate class with proper memory management.
     uint8_t mem[0xFFFF + 1];
 
     // BC, DE, HL, AF, PC, SP
+    // It is useful to store the registers in this specific order
+    // because many instructions index into the registers in
+    // said order.
+    // NOTE: Little-endian machine is assumed!
     uint16_t reg[6] = {0};
     uint16_t* BC = &reg[0];
     uint16_t* DE = &reg[1];
@@ -56,7 +64,6 @@ private:
     uint16_t* AF = &reg[3];
     uint16_t* PC = &reg[5];
     uint16_t* SP = &reg[4];
-    // NOTE: the following assumes little-endian.
     uint8_t*  B  = reinterpret_cast<uint8_t*>(BC) + 0;
     uint8_t*  C  = reinterpret_cast<uint8_t*>(BC) + 1;
     uint8_t*  D  = reinterpret_cast<uint8_t*>(DE) + 0;
@@ -65,8 +72,6 @@ private:
     uint8_t*  L  = reinterpret_cast<uint8_t*>(HL) + 1;
     uint8_t*  A  = reinterpret_cast<uint8_t*>(AF) + 0;
     uint8_t*  F  = reinterpret_cast<uint8_t*>(AF) + 1;
-    // Some instructions "index" the registers (both 16- and 8-bit)
-    // so store them accordingly.
     const std::array<uint16_t*, 6> reg16 = {BC, DE, HL, AF, PC, SP};
     const std::array<uint8_t*, 8>  reg8  = {B, C, D, E, H, L, A, F};
 
@@ -94,7 +99,7 @@ private:
 
     // Pointer to the current instruction in execution. This is not necessarily
     // the same as PC since execute() can take a pointer to any location.
-    uint8_t* curr_op;
+    const uint8_t* curr_op;
 
     // Indicates whether the instruction that was just executed was executed
     // successfully. This is relevant because some instructions take a varying
@@ -102,7 +107,7 @@ private:
     // not.
     bool op_success;
 
-    enum class IntStatusChange {NOT_SCHEDULED, SCHEDULED, TRIGGER};
+    enum class IntStatusChange {NOT_SCHEDULED, SCHEDULED, TRIGGERED};
     // If either of these values is TRIGGER after
     // executing an instuction, do the corresponding operation on the
     // Interrupt Master Enable flag.

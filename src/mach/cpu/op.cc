@@ -7,10 +7,7 @@ void Cpu::op_00()
 
 void Cpu::op_01()
 {
-    uint16_t n16 = 0x0000;
-    n16 |= static_cast<uint16_t>(curr_op[1]) << 8;
-    n16 |= curr_op[2];
-    LD_r16_n16(BC, n16);
+    LD_r16_n16(BC, extract_immediate16());
 }
 
 void Cpu::op_02()
@@ -35,7 +32,7 @@ void Cpu::op_05()
 
 void Cpu::op_06()
 {
-    LD_r8_n8(B, curr_op[1]);
+    LD_r8_n8(B, extract_immediate8());
 }
 
 void Cpu::op_07()
@@ -45,10 +42,7 @@ void Cpu::op_07()
 
 void Cpu::op_08()
 {
-    uint16_t n16 = 0x0000;
-    n16 |= static_cast<uint16_t>(curr_op[1]) << 8;
-    n16 |= curr_op[2];
-    LD_n16_SP(n16);
+    LD_n16_SP(extract_immediate16());
 }
 
 void Cpu::op_09()
@@ -78,7 +72,7 @@ void Cpu::op_0D()
 
 void Cpu::op_0E()
 {
-    LD_r8_n8(C, curr_op[1]);
+    LD_r8_n8(C, extract_immediate8());
 }
 
 void Cpu::op_0F()
@@ -93,10 +87,7 @@ void Cpu::op_10()
 
 void Cpu::op_11()
 {
-    uint16_t n16 = 0x0000;
-    n16 |= static_cast<uint16_t>(curr_op[1]) << 8;
-    n16 |= curr_op[2];
-    LD_r16_n16(DE, n16);
+    LD_r16_n16(DE, extract_immediate16());
 }
 
 void Cpu::op_12()
@@ -121,7 +112,7 @@ void Cpu::op_15()
 
 void Cpu::op_16()
 {
-    LD_r8_n8(D, curr_op[1]);
+    LD_r8_n8(D, extract_immediate8());
 }
 
 void Cpu::op_17()
@@ -131,7 +122,7 @@ void Cpu::op_17()
 
 void Cpu::op_18()
 {
-    JR_n8(static_cast<int8_t>(curr_op[1]));
+    JR_n8(static_cast<int8_t>(extract_immediate8()));
 }
 
 void Cpu::op_19()
@@ -161,7 +152,7 @@ void Cpu::op_1D()
 
 void Cpu::op_1E()
 {
-    LD_r8_n8(E, curr_op[1]);
+    LD_r8_n8(E, extract_immediate8());
 }
 
 void Cpu::op_1F()
@@ -171,15 +162,12 @@ void Cpu::op_1F()
 
 void Cpu::op_20()
 {
-    JR_cc_n8(!get_zf(), static_cast<int8_t>(curr_op[1]));
+    JR_cc_n8(!Z_flag_get(), static_cast<int8_t>(extract_immediate8()));
 }
 
 void Cpu::op_21()
 {
-    uint16_t n16 = 0x0000;
-    n16 |= static_cast<uint16_t>(curr_op[1]) << 8;
-    n16 |= curr_op[2];
-    LD_r16_n16(HL, n16);
+    LD_r16_n16(HL, extract_immediate16());
 }
 
 void Cpu::op_22()
@@ -204,7 +192,7 @@ void Cpu::op_25()
 
 void Cpu::op_26()
 {
-    LD_r8_n8(H, curr_op[1]);
+    LD_r8_n8(H, extract_immediate8());
 }
 
 void Cpu::op_27()
@@ -214,7 +202,7 @@ void Cpu::op_27()
 
 void Cpu::op_28()
 {
-    JR_cc_n8(get_zf(), static_cast<int8_t>(curr_op[1]));
+    JR_cc_n8(Z_flag_get(), static_cast<int8_t>(extract_immediate8()));
 }
 
 void Cpu::op_29()
@@ -244,7 +232,7 @@ void Cpu::op_2D()
 
 void Cpu::op_2E()
 {
-    LD_r8_n8(L, curr_op[1]);
+    LD_r8_n8(L, extract_immediate8());
 }
 
 void Cpu::op_2F()
@@ -254,15 +242,12 @@ void Cpu::op_2F()
 
 void Cpu::op_30()
 {
-    JR_cc_n8(!get_cf(), static_cast<int8_t>(curr_op[1]));
+    JR_cc_n8(!C_flag_get(), static_cast<int8_t>(extract_immediate8()));
 }
 
 void Cpu::op_31()
 {
-    uint16_t n16 = 0x0000;
-    n16 |= static_cast<uint16_t>(curr_op[1]) << 8;
-    n16 |= curr_op[2];
-    LD_r16_n16(SP, n16);
+    LD_r16_n16(SP, extract_immediate16());
 }
 
 void Cpu::op_32()
@@ -287,7 +272,7 @@ void Cpu::op_35()
 
 void Cpu::op_36()
 {
-    LD_HL_n8(curr_op[1]);
+    LD_HL_n8(extract_immediate8());
 }
 
 void Cpu::op_37()
@@ -297,7 +282,7 @@ void Cpu::op_37()
 
 void Cpu::op_38()
 {
-    JR_cc_n8(get_cf(), static_cast<int8_t>(curr_op[1]));
+    JR_cc_n8(C_flag_get(), static_cast<int8_t>(extract_immediate8()));
 }
 
 void Cpu::op_39()
@@ -327,7 +312,7 @@ void Cpu::op_3D()
 
 void Cpu::op_3E()
 {
-    LD_r8_n8(A, curr_op[1]);
+    LD_r8_n8(A, extract_immediate8());
 }
 
 void Cpu::op_3F()
@@ -977,7 +962,7 @@ void Cpu::op_BF()
 
 void Cpu::op_C0()
 {
-    RET_cc(!get_zf());
+    RET_cc(!Z_flag_get());
 }
 
 void Cpu::op_C1()
@@ -987,27 +972,17 @@ void Cpu::op_C1()
 
 void Cpu::op_C2()
 {
-    uint16_t jump_addr = 0x0000;
-    jump_addr |= static_cast<uint16_t>(curr_op[1]) << 8;
-    jump_addr |= curr_op[2];
-    JP_cc_n16(!get_zf(), jump_addr);
+    JP_cc_n16(!Z_flag_get(), extract_immediate16());
 }
 
 void Cpu::op_C3()
 {
-    uint16_t jump_addr = 0x0000;
-    jump_addr |= static_cast<uint16_t>(curr_op[1]) << 8;
-    jump_addr |= curr_op[2];
-    JP_n16(jump_addr);
+    JP_n16(extract_immediate16());
 }
 
 void Cpu::op_C4()
 {
-    // TODO: Verify correctness
-    uint16_t jump_addr = 0x0000;
-    jump_addr |= static_cast<uint16_t>(curr_op[1]) << 8;
-    jump_addr |= curr_op[2];
-    CALL_cc_n16(!get_zf(), jump_addr);
+    CALL_cc_n16(!Z_flag_get(), extract_immediate16());
 }
 
 void Cpu::op_C5()
@@ -1017,7 +992,7 @@ void Cpu::op_C5()
 
 void Cpu::op_C6()
 {
-    ADD_A_n8(curr_op[1]);
+    ADD_A_n8(extract_immediate8());
 }
 
 void Cpu::op_C7()
@@ -1027,7 +1002,7 @@ void Cpu::op_C7()
 
 void Cpu::op_C8()
 {
-    RET_cc(get_zf());
+    RET_cc(Z_flag_get());
 }
 
 void Cpu::op_C9()
@@ -1037,10 +1012,7 @@ void Cpu::op_C9()
 
 void Cpu::op_CA()
 {
-    uint16_t jump_addr = 0x0000;
-    jump_addr |= static_cast<uint16_t>(curr_op[1]) << 8;
-    jump_addr |= curr_op[2];
-    JP_cc_n16(get_zf(), jump_addr);
+    JP_cc_n16(Z_flag_get(), extract_immediate16());
 }
 
 void Cpu::op_CB()
@@ -1050,25 +1022,17 @@ void Cpu::op_CB()
 
 void Cpu::op_CC()
 {
-    // TODO: Verify correctness
-    uint16_t jump_addr = 0x0000;
-    jump_addr |= static_cast<uint16_t>(curr_op[1]) << 8;
-    jump_addr |= curr_op[2];
-    CALL_cc_n16(get_zf(), jump_addr);
+    CALL_cc_n16(Z_flag_get(), extract_immediate16());
 }
 
 void Cpu::op_CD()
 {
-    // TODO: Verify correctness
-    uint16_t jump_addr = 0x0000;
-    jump_addr |= static_cast<uint16_t>(curr_op[1]) << 8;
-    jump_addr |= curr_op[2];
-    CALL_n16(jump_addr);
+    CALL_n16(extract_immediate16());
 }
 
 void Cpu::op_CE()
 {
-    ADC_A_n8(curr_op[1]);
+    ADC_A_n8(extract_immediate8());
 }
 
 void Cpu::op_CF()
@@ -1078,7 +1042,7 @@ void Cpu::op_CF()
 
 void Cpu::op_D0()
 {
-    RET_cc(!get_cf());
+    RET_cc(!C_flag_get());
 }
 
 void Cpu::op_D1()
@@ -1088,10 +1052,7 @@ void Cpu::op_D1()
 
 void Cpu::op_D2()
 {
-    uint16_t jump_addr = 0x0000;
-    jump_addr |= static_cast<uint16_t>(curr_op[1]) << 8;
-    jump_addr |= curr_op[2];
-    JP_cc_n16(!get_cf(), jump_addr);
+    JP_cc_n16(!C_flag_get(), extract_immediate16());
 }
 
 void Cpu::op_D3()
@@ -1101,11 +1062,7 @@ void Cpu::op_D3()
 
 void Cpu::op_D4()
 {
-    // TODO: Verify correctness
-    uint16_t jump_addr = 0x0000;
-    jump_addr |= static_cast<uint16_t>(curr_op[1]) << 8;
-    jump_addr |= curr_op[2];
-    CALL_cc_n16(!get_cf(), jump_addr);
+    CALL_cc_n16(!C_flag_get(), extract_immediate16());
 }
 
 void Cpu::op_D5()
@@ -1125,7 +1082,7 @@ void Cpu::op_D7()
 
 void Cpu::op_D8()
 {
-    RET_cc(get_cf());
+    RET_cc(C_flag_get());
 }
 
 void Cpu::op_D9()
@@ -1135,10 +1092,7 @@ void Cpu::op_D9()
 
 void Cpu::op_DA()
 {
-    uint16_t jump_addr = 0x0000;
-    jump_addr |= static_cast<uint16_t>(curr_op[1]) << 8;
-    jump_addr |= curr_op[2];
-    JP_cc_n16(get_cf(), jump_addr);
+    JP_cc_n16(C_flag_get(), extract_immediate16());
 }
 
 void Cpu::op_DB()
@@ -1148,11 +1102,7 @@ void Cpu::op_DB()
 
 void Cpu::op_DC()
 {
-    // TODO: Verify correctness
-    uint16_t jump_addr = 0x0000;
-    jump_addr |= static_cast<uint16_t>(curr_op[1]) << 8;
-    jump_addr |= curr_op[2];
-    CALL_cc_n16(get_cf(), jump_addr);
+    CALL_cc_n16(C_flag_get(), extract_immediate16());
 }
 
 void Cpu::op_DD()
@@ -1162,7 +1112,7 @@ void Cpu::op_DD()
 
 void Cpu::op_DE()
 {
-    SBC_A_n8(curr_op[1]);
+    SBC_A_n8(extract_immediate8());
 }
 
 void Cpu::op_DF()
@@ -1172,7 +1122,7 @@ void Cpu::op_DF()
 
 void Cpu::op_E0()
 {
-    LDH_n8_A(curr_op[1]);
+    LDH_n8_A(extract_immediate8());
 }
 
 void Cpu::op_E1()
@@ -1202,7 +1152,7 @@ void Cpu::op_E5()
 
 void Cpu::op_E6()
 {
-    AND_n8(curr_op[1]);
+    AND_n8(extract_immediate8());
 }
 
 void Cpu::op_E7()
@@ -1212,7 +1162,7 @@ void Cpu::op_E7()
 
 void Cpu::op_E8()
 {
-    ADD_SP_e8(static_cast<int8_t>(curr_op[1]));
+    ADD_SP_e8(static_cast<int8_t>(extract_immediate8()));
 }
 
 void Cpu::op_E9()
@@ -1222,10 +1172,7 @@ void Cpu::op_E9()
 
 void Cpu::op_EA()
 {
-    uint16_t load_addr = 0x0000;
-    load_addr |= static_cast<uint16_t>(curr_op[1]) << 8;
-    load_addr |= curr_op[2];
-    LD_n16_A(load_addr);
+    LD_n16_A(extract_immediate16());
 }
 
 void Cpu::op_EB()
@@ -1245,7 +1192,7 @@ void Cpu::op_ED()
 
 void Cpu::op_EE()
 {
-    XOR_n8(curr_op[1]);
+    XOR_n8(extract_immediate8());
 }
 
 void Cpu::op_EF()
@@ -1255,7 +1202,7 @@ void Cpu::op_EF()
 
 void Cpu::op_F0()
 {
-    LDH_A_n8(curr_op[1]);
+    LDH_A_n8(extract_immediate8());
 }
 
 void Cpu::op_F1()
@@ -1285,7 +1232,7 @@ void Cpu::op_F5()
 
 void Cpu::op_F6()
 {
-    OR_n8(curr_op[1]);
+    OR_n8(extract_immediate8());
 }
 
 void Cpu::op_F7()
@@ -1295,7 +1242,7 @@ void Cpu::op_F7()
 
 void Cpu::op_F8()
 {
-    LD_HL_SP_e8(static_cast<int8_t>(curr_op[1]));
+    LD_HL_SP_e8(static_cast<int8_t>(extract_immediate8()));
 }
 
 void Cpu::op_F9()
@@ -1305,10 +1252,7 @@ void Cpu::op_F9()
 
 void Cpu::op_FA()
 {
-    uint16_t n16 = 0x0000;
-    n16 |= static_cast<uint16_t>(curr_op[1]) << 8;
-    n16 |= curr_op[2];
-    LD_A_n16(n16);
+    LD_A_n16(extract_immediate16());
 }
 
 void Cpu::op_FB()
@@ -1328,7 +1272,7 @@ void Cpu::op_FD()
 
 void Cpu::op_FE()
 {
-    CP_n8(curr_op[1]);
+    CP_n8(extract_immediate8());
 }
 
 void Cpu::op_FF()

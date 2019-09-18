@@ -10,7 +10,12 @@ void Cpu::ADC_A_HL()
 
 void Cpu::ADC_A_n8(uint8_t n8)
 {
-    ADD_A_n8(n8 + get_cf());
+    uint16_t result = *A + n8 + C_flag_get();
+    C_flag_update(result > 0xFF);
+    H_flag_update((*A & 0x0F) + (n8 & 0x0F) + C_flag_get() > 0x0F);
+    N_flag_reset();
+    Z_flag_update(result == 0);
+    *A = static_cast<uint8_t>(result);
 }
 
 void Cpu::ADC_A_r8(uint8_t* r8)
@@ -28,10 +33,10 @@ void Cpu::ADD_A_HL()
 void Cpu::ADD_A_n8(uint8_t n8)
 {
     uint16_t result = *A + n8;
-    update_cf(result > 0xFF);
-    update_hf((*A & 0x0F) + (n8 & 0x0F) > 0x0F);
-    clear_nf();
-    update_zf(result == 0);
+    C_flag_update(result > 0xFF);
+    H_flag_update((*A & 0x0F) + (n8 & 0x0F) > 0x0F);
+    N_flag_reset();
+    Z_flag_update(result == 0);
     *A = static_cast<uint8_t>(result);
 }
 
@@ -43,20 +48,19 @@ void Cpu::ADD_A_r8(uint8_t* r8)
 void Cpu::ADD_HL_r16(uint16_t* r16)
 {
     uint32_t result = *HL + *r16;
-    update_cf(result > 0xFFFF);
-    update_hf(((*HL >> 8) & 0x0F) + ((*r16 >> 8) & 0x0F) > 0x0F);
-    clear_nf();
-    // Zero flag is not updated.
+    C_flag_update(result > 0xFFFF);
+    H_flag_update(((*HL >> 8) & 0x0F) + ((*r16 >> 8) & 0x0F) > 0x0F);
+    N_flag_reset();
     *HL = static_cast<uint16_t>(result);
 }
 
 void Cpu::ADD_SP_e8(int8_t e8)
 {
-    uint32_t result = static_cast<uint32_t>(*SP + static_cast<int16_t>(e8));
-    update_cf(result > 0xFFFF);
-    update_hf(((*SP & 0x000F) + (static_cast<uint8_t>(e8 & 0x0F))) > 0x0F);
-    clear_nf();
-    clear_zf();
+    uint32_t result = static_cast<uint32_t>(*SP) + e8;
+    C_flag_update(result > 0xFFFF);
+    H_flag_update(((*SP & 0x000F) + (static_cast<uint8_t>(e8 & 0x0F))) > 0x0F);
+    N_flag_reset();
+    Z_flag_reset();
     *SP = static_cast<uint16_t>(result);
 }
 
@@ -65,10 +69,10 @@ void Cpu::ADD_SP_e8(int8_t e8)
 void Cpu::AND_n8(uint8_t n8)
 {
     *A &= n8;
-    clear_cf();
-    set_hf();
-    clear_nf();
-    update_zf(*A == 0);
+    C_flag_reset();
+    H_flag_set();
+    N_flag_reset();
+    Z_flag_update(*A == 0);
 }
 
 void Cpu::AND_HL()
@@ -89,20 +93,16 @@ void Cpu::BIT_n3_HL(uint8_t n3)
 
 void Cpu::BIT_n3_r8(uint8_t n3, uint8_t* r8)
 {
-    set_hf();
-    clear_nf();
-    update_zf(!((*r8 >> n3) & 0x01));
+    H_flag_set();
+    N_flag_reset();
+    Z_flag_update(!((*r8 >> n3) & 0x01));
 }
 
 /* CALL */
 
 void Cpu::CALL_n16(uint16_t n16)
 {
-    --SP;
-    mem[*SP] = *PC >> 8;
-    --SP;
-    mem[*SP] = static_cast<uint8_t>(*PC);
-
+    PUSH_r16(PC);
     *PC = n16;
 }
 
@@ -120,9 +120,9 @@ void Cpu::CALL_cc_n16(bool cc, uint16_t n16)
 
 void Cpu::CCF()
 {
-    update_cf(!get_cf());
-    clear_hf();
-    clear_nf();
+    C_flag_update(!C_flag_get());
+    H_flag_reset();
+    N_flag_reset();
 }
 
 /* CP */
@@ -134,10 +134,10 @@ void Cpu::CP_HL()
 
 void Cpu::CP_n8(uint8_t n8)
 {
-    update_cf(*A < n8);
-    update_hf((*A & 0x0F) < (n8 & 0x0F));
-    set_nf();
-    update_zf(*A == n8);
+    C_flag_update(*A < n8);
+    H_flag_update((*A & 0x0F) < (n8 & 0x0F));
+    N_flag_set();
+    Z_flag_update(*A == n8);
 }
 
 void Cpu::CP_r8(uint8_t* r8)
@@ -156,26 +156,26 @@ void Cpu::CPL()
 
 void Cpu::DAA()
 {
-    if (!get_nf())
+    if (!N_flag_get())
     {
-        if (get_cf() || *A > 0x99)
+        if (C_flag_get() || *A > 0x99)
         {
             *A += 0x60;
-            set_cf();
+            C_flag_set();
         }
-        if (get_hf() || (*A & 0x0F) < 0x09)
+        if (H_flag_get() || (*A & 0x0F) < 0x09)
         {
             *A += 0x06;
         }
     }
     else
     {
-        if (get_cf()) *A -= 0x60;
-        if (get_hf()) *A -= 0x06;
+        if (C_flag_get()) *A -= 0x60;
+        if (H_flag_get()) *A -= 0x06;
     }
 
-    clear_hf();
-    update_zf(*A == 0);
+    H_flag_reset();
+    Z_flag_update(*A == 0);
 }
 
 /* DEC */
@@ -193,9 +193,9 @@ void Cpu::DEC_r16(uint16_t* r16)
 void Cpu::DEC_r8(uint8_t* r8)
 {
     --(*r8);
-    update_hf((*r8 & 0x0F) == 0x0F);
-    set_nf();
-    update_zf(*r8 == 0);
+    H_flag_update((*r8 & 0x0F) == 0x0F);
+    N_flag_set();
+    Z_flag_update(*r8 == 0);
 }
 
 /* DI */
@@ -203,18 +203,14 @@ void Cpu::DEC_r8(uint8_t* r8)
 void Cpu::DI()
 {
     if (DI_status == IntStatusChange::NOT_SCHEDULED)
-    {
         DI_status = IntStatusChange::SCHEDULED;
-    }
 }
 
 /* EI */
 void Cpu::EI()
 {
     if (EI_status == IntStatusChange::NOT_SCHEDULED)
-    {
         EI_status = IntStatusChange::SCHEDULED;
-    }
 }
 
 /* HALT */
@@ -239,9 +235,9 @@ void Cpu::INC_r16(uint16_t* r16)
 void Cpu::INC_r8(uint8_t* r8)
 {
     uint16_t result = *r8 + 1;
-    update_hf((*r8 & 0x0F) + 1 > 0x0F);
-    clear_nf();
-    update_zf(result == 0);
+    H_flag_update((*r8 & 0x0F) + 1 > 0x0F);
+    N_flag_reset();
+    Z_flag_update(result == 0);
     *r8 = static_cast<uint8_t>(result);
 }
 
@@ -334,12 +330,11 @@ void Cpu::LD_A_r16(uint16_t* r16)
 
 void Cpu::LD_HL_SP_e8(int8_t e8)
 {
-    // TODO: Check correctness.
-    uint32_t result =static_cast<uint32_t>(*SP + e8);
-    update_cf(result > 0xFFFF);
-    update_hf((*SP & 0x000F) + static_cast<uint16_t>(e8 & 0x0F) > 0x0F);
-    clear_nf();
-    clear_zf();
+    uint32_t result =static_cast<uint32_t>(*SP) + e8;
+    C_flag_update(result > 0xFFFF);
+    H_flag_update((*SP & 0x000F) + static_cast<uint16_t>(e8 & 0x0F) > 0x0F);
+    N_flag_reset();
+    Z_flag_reset();
     *HL = static_cast<uint16_t>(result);
 }
 
@@ -419,10 +414,10 @@ void Cpu::OR_HL()
 void Cpu::OR_n8(uint8_t n8)
 {
     *A |= n8;
-    clear_cf();
-    clear_hf();
-    clear_nf();
-    update_zf(*A == 0);
+    C_flag_reset();
+    H_flag_reset();
+    N_flag_reset();
+    Z_flag_update(*A == 0);
 }
 
 void Cpu::OR_r8(uint8_t* r8)
@@ -500,11 +495,11 @@ void Cpu::RL_r8(uint8_t* r8)
     uint8_t result = *r8;
     uint8_t msbit = (result >> 7) & 0x01;
     result <<= 1;
-    result |= get_cf();
-    update_cf(msbit != 0);
-    clear_hf();
-    clear_nf();
-    update_cf(result == 0);
+    result |= C_flag_get();
+    C_flag_update(msbit != 0);
+    H_flag_reset();
+    N_flag_reset();
+    C_flag_update(result == 0);
     *r8 = result;
 }
 
@@ -528,10 +523,10 @@ void Cpu::RLC_r8(uint8_t* r8)
     uint8_t msbit = (result >> 7) & 0x01;
     result <<= 1;
     result |= msbit;
-    update_cf(msbit != 0);
-    clear_hf();
-    clear_nf();
-    update_cf(result == 0);
+    C_flag_update(msbit != 0);
+    H_flag_reset();
+    N_flag_reset();
+    C_flag_update(result == 0);
     *r8 = result;
 }
 
@@ -554,11 +549,11 @@ void Cpu::RR_r8(uint8_t* r8)
     uint8_t result = *r8;
     uint8_t lsbit = result & 0x01;
     result >>= 1;
-    result |= (get_cf() << 7);
-    update_cf(lsbit != 0);
-    clear_hf();
-    clear_nf();
-    update_cf(result == 0);
+    result |= (C_flag_get() << 7);
+    C_flag_update(lsbit != 0);
+    H_flag_reset();
+    N_flag_reset();
+    C_flag_update(result == 0);
     *r8 = result;
 }
 
@@ -582,10 +577,10 @@ void Cpu::RRC_r8(uint8_t* r8)
     uint8_t lsbit = result & 0x01;
     result >>= 1;
     result |= (lsbit << 7);
-    update_cf(lsbit != 0);
-    clear_hf();
-    clear_nf();
-    update_cf(result == 0);
+    C_flag_update(lsbit != 0);
+    H_flag_reset();
+    N_flag_reset();
+    C_flag_update(result == 0);
     *r8 = result;
 }
 
@@ -611,11 +606,11 @@ void Cpu::SBC_A_HL()
 
 void Cpu::SBC_A_n8(uint8_t n8)
 {
-    uint16_t result = *A - n8 - get_cf();
-    update_hf((*A & 0x0F) - (n8 & 0x0F) - get_cf() > 0x0F);
-    update_cf(result > 0xFF);
-    set_nf();
-    update_zf(result == 0);
+    uint16_t result = *A - n8 - C_flag_get();
+    H_flag_update((*A & 0x0F) - (n8 & 0x0F) - C_flag_get() > 0x0F);
+    C_flag_update(result > 0xFF);
+    N_flag_set();
+    Z_flag_update(result == 0);
     *A = static_cast<uint8_t>(result);
 }
 
@@ -633,9 +628,9 @@ void Cpu::SUB_A_HL()
 
 void Cpu::SCF()
 {
-    set_cf();
-    clear_hf();
-    clear_nf();
+    C_flag_set();
+    H_flag_reset();
+    N_flag_reset();
 }
 
 /* SET */
@@ -662,10 +657,10 @@ void Cpu::SLA_r8(uint8_t* r8)
     uint8_t result = *r8;
     result <<= 1;
     result &= ~(0x01);
-    update_cf(((*r8 >> 7) & 0x01) != 0);
-    clear_hf();
-    clear_nf();
-    update_zf(result == 0);
+    C_flag_update(((*r8 >> 7) & 0x01) != 0);
+    H_flag_reset();
+    N_flag_reset();
+    Z_flag_update(result == 0);
     *r8 = result;
 }
 
@@ -682,10 +677,10 @@ void Cpu::SRA_r8(uint8_t* r8)
     uint8_t msb = *r8 & (0x01 << 7);
     result >>= 1;
     result |= msb;
-    update_cf(*r8 & 0x01);
-    clear_hf();
-    clear_nf();
-    update_zf(result == 0);
+    C_flag_update(*r8 & 0x01);
+    H_flag_reset();
+    N_flag_reset();
+    Z_flag_update(result == 0);
     *r8 = result;
 }
 
@@ -701,10 +696,10 @@ void Cpu::SRL_r8(uint8_t* r8)
     uint8_t result = *r8;
     result >>= 1;
     result &= ~(0x01 << 7);
-    update_cf(*r8 & 0x01);
-    clear_hf();
-    clear_nf();
-    update_zf(result == 0);
+    C_flag_update(*r8 & 0x01);
+    H_flag_reset();
+    N_flag_reset();
+    Z_flag_update(result == 0);
     *r8 = result;
 }
 
@@ -720,10 +715,10 @@ void Cpu::STOP()
 void Cpu::SUB_A_n8(uint8_t n8)
 {
     uint16_t result = *A - n8;
-    update_cf(result > 0xFF);
-    update_hf((*A & 0x0F) - (n8 & 0x0F) > 0x0F);
-    set_nf();
-    update_zf(result == 0);
+    C_flag_update(result > 0xFF);
+    H_flag_update((*A & 0x0F) - (n8 & 0x0F) > 0x0F);
+    N_flag_set();
+    Z_flag_update(result == 0);
     *A = static_cast<uint8_t>(result);
 }
 
@@ -742,10 +737,10 @@ void Cpu::SWAP_HL()
 void Cpu::SWAP_r8(uint8_t* r8)
 {
     *r8 = static_cast<uint8_t>(((*r8 & 0x0F) << 4) | ((*r8 & 0xF0) >> 4));
-    clear_cf();
-    clear_hf();
-    clear_nf();
-    update_zf(*r8 == 0);
+    C_flag_reset();
+    H_flag_reset();
+    N_flag_reset();
+    Z_flag_update(*r8 == 0);
 }
 
 /* XOR */
@@ -758,10 +753,10 @@ void Cpu::XOR_HL()
 void Cpu::XOR_n8(uint8_t n8)
 {
     *A ^= n8;
-    clear_cf();
-    clear_hf();
-    clear_nf();
-    update_zf(*A == 0);
+    C_flag_reset();
+    H_flag_reset();
+    N_flag_reset();
+    Z_flag_update(*A == 0);
 }
 
 void Cpu::XOR_r8(uint8_t* r8)

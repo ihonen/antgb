@@ -7,7 +7,7 @@ uint8_t Cpu::get_flag(uint8_t pos)
     return (*F >> pos) & 0x01;
 }
 
-void Cpu::set_flag(uint8_t pos, uint8_t val)
+void Cpu::assign_flag(uint8_t pos, uint8_t val)
 {
     assert(val == 0 || val == 1);
     if (val == 0)
@@ -20,86 +20,101 @@ void Cpu::set_flag(uint8_t pos, uint8_t val)
     }
 }
 
-uint8_t Cpu::get_cf()
+uint8_t Cpu::C_flag_get()
 {
     return get_flag(CF_BIT_POS);
 }
 
-uint8_t Cpu::get_hf()
+uint8_t Cpu::H_flag_get()
 {
     return get_flag(HF_BIT_POS);
 }
 
-uint8_t Cpu::get_nf()
+uint8_t Cpu::N_flag_get()
 {
     return get_flag(NF_BIT_POS);
 }
 
-uint8_t Cpu::get_zf()
+uint8_t Cpu::Z_flag_get()
 {
     return get_flag(ZF_BIT_POS);
 }
 
-void Cpu::set_cf()
+void Cpu::C_flag_set()
 {
-    set_flag(CF_BIT_POS, 1);
+    assign_flag(CF_BIT_POS, 1);
 }
 
-void Cpu::set_hf()
+void Cpu::H_flag_set()
 {
-    set_flag(HF_BIT_POS, 1);
+    assign_flag(HF_BIT_POS, 1);
 }
 
-void Cpu::set_nf()
+void Cpu::N_flag_set()
 {
-    set_flag(NF_BIT_POS, 1);
+    assign_flag(NF_BIT_POS, 1);
 }
 
-void Cpu::set_zf()
+void Cpu::Z_flag_set()
 {
-    set_flag(ZF_BIT_POS, 1);
+    assign_flag(ZF_BIT_POS, 1);
 }
 
-void Cpu::clear_cf()
+void Cpu::C_flag_reset()
 {
-    set_flag(CF_BIT_POS, 0);
+    assign_flag(CF_BIT_POS, 0);
 }
 
-void Cpu::clear_hf()
+void Cpu::H_flag_reset()
 {
-    set_flag(HF_BIT_POS, 0);
+    assign_flag(HF_BIT_POS, 0);
 }
 
-void Cpu::clear_nf()
+void Cpu::N_flag_reset()
 {
-    set_flag(NF_BIT_POS, 0);
+    assign_flag(NF_BIT_POS, 0);
 }
 
-void Cpu::clear_zf()
+void Cpu::Z_flag_reset()
 {
-    set_flag(ZF_BIT_POS, 0);
+    assign_flag(ZF_BIT_POS, 0);
 }
 
-void Cpu::update_cf(bool cond)
+void Cpu::C_flag_update(bool cond)
 {
-    if (cond) set_cf();
-    else clear_cf();
+    if (cond) C_flag_set();
+    else C_flag_reset();
 }
 
-void Cpu::update_hf(bool cond)
+void Cpu::H_flag_update(bool cond)
 {
-    if (cond) set_hf();
-    else clear_hf();
+    if (cond) H_flag_set();
+    else H_flag_reset();
 }
 
-void Cpu::update_nf(bool cond)
+void Cpu::N_flag_update(bool cond)
 {
-    if (cond) set_nf();
-    else clear_nf();
+    if (cond) N_flag_set();
+    else C_flag_reset();
 }
 
-void Cpu::update_zf(bool cond)
+void Cpu::Z_flag_update(bool cond)
 {
-    if (cond) set_zf();
-    else clear_zf();
+    if (cond) Z_flag_set();
+    else Z_flag_reset();
+}
+
+uint8_t Cpu::IME_flag_get()
+{
+    return mem[0xFFFF];
+}
+
+void Cpu::IME_flag_set()
+{
+    mem[0xFFFF] = 0x01;
+}
+
+void Cpu::IME_flag_reset()
+{
+    mem[0xFFFF] = 0x00;
 }
