@@ -1130,7 +1130,7 @@ void Cpu::op_D8()
 
 void Cpu::op_D9()
 {
-
+    RETI();
 }
 
 void Cpu::op_DA()

@@ -449,3 +449,10 @@ void Cpu::RET_cc(bool cc)
     else op_success = false;
 }
 
+/* RETI */
+
+void Cpu::RETI()
+{
+    RET();
+    enable_interrupts();
+}
