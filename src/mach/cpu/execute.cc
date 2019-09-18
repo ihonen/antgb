@@ -212,6 +212,28 @@ void Cpu::INC_r8(uint8_t* r8)
     *r8 = static_cast<uint8_t>(result);
 }
 
+/* JP */
+
+void Cpu::JP_HL()
+{
+    JP_n16(*HL);
+}
+
+void Cpu::JP_cc_n16(bool cc, uint16_t n16)
+{
+    if (cc)
+    {
+        JP_n16(n16);
+        op_success = true;
+    }
+    else op_success = false;
+}
+
+void Cpu::JP_n16(uint16_t n16)
+{
+    *PC = n16;
+}
+
 /* NOP */
 
 void Cpu::NOP()

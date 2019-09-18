@@ -972,12 +972,18 @@ void Cpu::op_C1()
 
 void Cpu::op_C2()
 {
-
+    uint16_t jump_addr = 0x0000;
+    jump_addr |= static_cast<uint16_t>(curr_op[1]) << 8;
+    jump_addr |= curr_op[2];
+    JP_cc_n16(!get_zf(), jump_addr);
 }
 
 void Cpu::op_C3()
 {
-
+    uint16_t jump_addr = 0x0000;
+    jump_addr |= static_cast<uint16_t>(curr_op[1]) << 8;
+    jump_addr |= curr_op[2];
+    JP_n16(jump_addr);
 }
 
 void Cpu::op_C4()
@@ -1016,7 +1022,10 @@ void Cpu::op_C9()
 
 void Cpu::op_CA()
 {
-
+    uint16_t jump_addr = 0x0000;
+    jump_addr |= static_cast<uint16_t>(curr_op[1]) << 8;
+    jump_addr |= curr_op[2];
+    JP_cc_n16(get_zf(), jump_addr);
 }
 
 void Cpu::op_CB()
@@ -1064,7 +1073,10 @@ void Cpu::op_D1()
 
 void Cpu::op_D2()
 {
-
+    uint16_t jump_addr = 0x0000;
+    jump_addr |= static_cast<uint16_t>(curr_op[1]) << 8;
+    jump_addr |= curr_op[2];
+    JP_cc_n16(!get_cf(), jump_addr);
 }
 
 void Cpu::op_D3()
@@ -1108,7 +1120,10 @@ void Cpu::op_D9()
 
 void Cpu::op_DA()
 {
-
+    uint16_t jump_addr = 0x0000;
+    jump_addr |= static_cast<uint16_t>(curr_op[1]) << 8;
+    jump_addr |= curr_op[2];
+    JP_cc_n16(get_cf(), jump_addr);
 }
 
 void Cpu::op_DB()
@@ -1187,7 +1202,7 @@ void Cpu::op_E8()
 
 void Cpu::op_E9()
 {
-
+    JP_n16(*HL);
 }
 
 void Cpu::op_EA()
