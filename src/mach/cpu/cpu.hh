@@ -202,6 +202,9 @@ private:
     void SUB_A_r8(uint8_t* r8);
     void SWAP_HL();
     void SWAP_r8(uint8_t* r8);
+    void XOR_HL();
+    void XOR_n8(uint8_t n8);
+    void XOR_r8(uint8_t* r8);
 
     void op_00(); void op_01(); void op_02(); void op_03();
     void op_04(); void op_05(); void op_06(); void op_07();

@@ -701,3 +701,24 @@ void Cpu::SWAP_r8(uint8_t* r8)
     clear_nf();
     update_zf(*r8 == 0);
 }
+
+/* XOR */
+
+void Cpu::XOR_HL()
+{
+    XOR_n8(mem[*HL]);
+}
+
+void Cpu::XOR_n8(uint8_t n8)
+{
+    *A ^= n8;
+    clear_cf();
+    clear_hf();
+    clear_nf();
+    update_zf(*A == 0);
+}
+
+void Cpu::XOR_r8(uint8_t* r8)
+{
+    XOR_n8(*r8);
+}
