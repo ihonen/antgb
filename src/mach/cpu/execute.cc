@@ -152,6 +152,32 @@ void Cpu::CPL()
     *A = ~(*A);
 }
 
+/* DAA */
+
+void Cpu::DAA()
+{
+    if (!get_nf())
+    {
+        if (get_cf() || *A > 0x99)
+        {
+            *A += 0x60;
+            set_cf();
+        }
+        if (get_hf() || (*A & 0x0F) < 0x09)
+        {
+            *A += 0x06;
+        }
+    }
+    else
+    {
+        if (get_cf()) *A -= 0x60;
+        if (get_hf()) *A -= 0x06;
+    }
+
+    clear_hf();
+    update_zf(*A == 0);
+}
+
 /* DEC */
 
 void Cpu::DEC_HL()

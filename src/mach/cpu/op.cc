@@ -209,7 +209,7 @@ void Cpu::op_26()
 
 void Cpu::op_27()
 {
-    /* DAA */
+    DAA();
 }
 
 void Cpu::op_28()

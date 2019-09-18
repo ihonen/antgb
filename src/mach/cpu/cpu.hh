@@ -131,6 +131,7 @@ private:
     void CP_n8(uint8_t n8);
     void CP_r8(uint8_t* r8);
     void CPL();
+    void DAA();
     void DEC_HL();
     void DEC_r16(uint16_t* r16);
     void DEC_r8(uint8_t* r8);
