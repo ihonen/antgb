@@ -1980,322 +1980,322 @@ void Cpu::op_CB_7F()
 
 void Cpu::op_CB_80()
 {
-
+    RES_n3_r8(0, B);
 }
 
 void Cpu::op_CB_81()
 {
-
+    RES_n3_r8(0, C);
 }
 
 void Cpu::op_CB_82()
 {
-
+    RES_n3_r8(0, D);
 }
 
 void Cpu::op_CB_83()
 {
-
+    RES_n3_r8(0, E);
 }
 
 void Cpu::op_CB_84()
 {
-
+    RES_n3_r8(0, H);
 }
 
 void Cpu::op_CB_85()
 {
-
+    RES_n3_r8(0, L);
 }
 
 void Cpu::op_CB_86()
 {
-
+    RES_n3_HL(0);
 }
 
 void Cpu::op_CB_87()
 {
-
+    RES_n3_r8(0, A);
 }
 
 void Cpu::op_CB_88()
 {
-
+    RES_n3_r8(1, B);
 }
 
 void Cpu::op_CB_89()
 {
-
+    RES_n3_r8(1, C);
 }
 
 void Cpu::op_CB_8A()
 {
-
+    RES_n3_r8(1, D);
 }
 
 void Cpu::op_CB_8B()
 {
-
+    RES_n3_r8(1, E);
 }
 
 void Cpu::op_CB_8C()
 {
-
+    RES_n3_r8(1, H);
 }
 
 void Cpu::op_CB_8D()
 {
-
+    RES_n3_r8(1, L);
 }
 
 void Cpu::op_CB_8E()
 {
-
+    RES_n3_HL(1);
 }
 
 void Cpu::op_CB_8F()
 {
-
+    RES_n3_r8(1, A);
 }
 
 void Cpu::op_CB_90()
 {
-
+    RES_n3_r8(2, B);
 }
 
 void Cpu::op_CB_91()
 {
-
+    RES_n3_r8(2, C);
 }
 
 void Cpu::op_CB_92()
 {
-
+    RES_n3_r8(2, D);
 }
 
 void Cpu::op_CB_93()
 {
-
+    RES_n3_r8(2, E);
 }
 
 void Cpu::op_CB_94()
 {
-
+    RES_n3_r8(2, H);
 }
 
 void Cpu::op_CB_95()
 {
-
+    RES_n3_r8(2, L);
 }
 
 void Cpu::op_CB_96()
 {
-
+    RES_n3_HL(2);
 }
 
 void Cpu::op_CB_97()
 {
-
+    RES_n3_r8(2, A);
 }
 
 void Cpu::op_CB_98()
 {
-
+    RES_n3_r8(3, B);
 }
 
 void Cpu::op_CB_99()
 {
-
+    RES_n3_r8(3, C);
 }
 
 void Cpu::op_CB_9A()
 {
-
+    RES_n3_r8(3, D);
 }
 
 void Cpu::op_CB_9B()
 {
-
+    RES_n3_r8(3, E);
 }
 
 void Cpu::op_CB_9C()
 {
-
+    RES_n3_r8(3, H);
 }
 
 void Cpu::op_CB_9D()
 {
-
+    RES_n3_r8(3, L);
 }
 
 void Cpu::op_CB_9E()
 {
-
+    RES_n3_HL(3);
 }
 
 void Cpu::op_CB_9F()
 {
-
+    RES_n3_r8(3, A);
 }
 
 void Cpu::op_CB_A0()
 {
-
+    RES_n3_r8(4, B);
 }
 
 void Cpu::op_CB_A1()
 {
-
+    RES_n3_r8(4, C);
 }
 
 void Cpu::op_CB_A2()
 {
-
+    RES_n3_r8(4, D);
 }
 
 void Cpu::op_CB_A3()
 {
-
+    RES_n3_r8(4, E);
 }
 
 void Cpu::op_CB_A4()
 {
-
+    RES_n3_r8(4, H);
 }
 
 void Cpu::op_CB_A5()
 {
-
+    RES_n3_r8(4, L);
 }
 
 void Cpu::op_CB_A6()
 {
-
+    RES_n3_HL(4);
 }
 
 void Cpu::op_CB_A7()
 {
-
+    RES_n3_r8(4, A);
 }
 
 void Cpu::op_CB_A8()
 {
-
+    RES_n3_r8(5, B);
 }
 
 void Cpu::op_CB_A9()
 {
-
+    RES_n3_r8(5, C);
 }
 
 void Cpu::op_CB_AA()
 {
-
+    RES_n3_r8(5, D);
 }
 
 void Cpu::op_CB_AB()
 {
-
+    RES_n3_r8(5, E);
 }
 
 void Cpu::op_CB_AC()
 {
-
+    RES_n3_r8(5, H);
 }
 
 void Cpu::op_CB_AD()
 {
-
+    RES_n3_r8(5, L);
 }
 
 void Cpu::op_CB_AE()
 {
-
+    RES_n3_HL(5);
 }
 
 void Cpu::op_CB_AF()
 {
-
+    RES_n3_r8(5, A);
 }
 
 void Cpu::op_CB_B0()
 {
-
+    RES_n3_r8(6, B);
 }
 
 void Cpu::op_CB_B1()
 {
-
+    RES_n3_r8(6, C);
 }
 
 void Cpu::op_CB_B2()
 {
-
+    RES_n3_r8(6, D);
 }
 
 void Cpu::op_CB_B3()
 {
-
+    RES_n3_r8(6, E);
 }
 
 void Cpu::op_CB_B4()
 {
-
+    RES_n3_r8(6, H);
 }
 
 void Cpu::op_CB_B5()
 {
-
+    RES_n3_r8(6, L);
 }
 
 void Cpu::op_CB_B6()
 {
-
+    RES_n3_HL(6);
 }
 
 void Cpu::op_CB_B7()
 {
-
+    RES_n3_r8(6, A);
 }
 
 void Cpu::op_CB_B8()
 {
-
+    RES_n3_r8(7, B);
 }
 
 void Cpu::op_CB_B9()
 {
-
+    RES_n3_r8(7, C);
 }
 
 void Cpu::op_CB_BA()
 {
-
+    RES_n3_r8(7, D);
 }
 
 void Cpu::op_CB_BB()
 {
-
+    RES_n3_r8(7, E);
 }
 
 void Cpu::op_CB_BC()
 {
-
+    RES_n3_r8(7, H);
 }
 
 void Cpu::op_CB_BD()
 {
-
+    RES_n3_r8(7, L);
 }
 
 void Cpu::op_CB_BE()
 {
-
+    RES_n3_HL(7);
 }
 
 void Cpu::op_CB_BF()
 {
-
+    RES_n3_r8(7, A);
 }
 
 void Cpu::op_CB_C0()

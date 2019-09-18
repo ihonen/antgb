@@ -416,3 +416,15 @@ void Cpu::PUSH_r16(uint16_t* r16)
     mem[*SP] = static_cast<uint8_t>(*r16 >> 8);
     --SP;
 }
+
+/* RES */
+
+void Cpu::RES_n3_HL(uint8_t n3)
+{
+    RES_n3_r8(n3, &mem[*HL]);
+}
+
+void Cpu::RES_n3_r8(uint8_t n3, uint8_t* r8)
+{
+    *r8 &= ~(0x01 << n3);
+}
