@@ -1,6 +1,7 @@
 #ifndef CPU_HH
 #define CPU_HH
 
+#include "cpuerror.hh"
 #include <array>
 #include <cstdint>
 #include <vector>
@@ -9,6 +10,7 @@ class Cpu
 {
 public:
     void execute(uint8_t* opcode);
+
 private:
     uint8_t get_flag(uint8_t pos);
     void    set_flag(uint8_t pos, uint8_t val);
@@ -34,6 +36,8 @@ private:
     uint8_t get_IME();
     void    set_IME();
     void    clear_IME();
+
+    void invalid_opcode();
 
     // Positions of the flag bits in flag register (F).
     static const uint8_t CF_BIT_POS = 4;

@@ -51,3 +51,8 @@ void Cpu::execute(uint8_t* opcode)
     if (DI_status == IntStatusChange::TRIGGER) disable_interrupts();
     else if (EI_status == IntStatusChange::TRIGGER) enable_interrupts();
 }
+
+void Cpu::invalid_opcode()
+{
+    throw OpcodeError(*PC, mem[*PC]);
+}

@@ -38,4 +38,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    src/mach/cpu/cpu.hh
+    src/mach/cpu/cpu.hh \
+    src/mach/cpu/cpuerror.hh
