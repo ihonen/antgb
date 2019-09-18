@@ -563,6 +563,12 @@ void Cpu::RRCA()
     RRC_r8(A);
 }
 
+void Cpu::RST_f(uint8_t f)
+{
+    PUSH_r16(PC);
+    *PC = 0x0000 + f;
+}
+
 /* SBC */
 
 void Cpu::SBC_A_HL()

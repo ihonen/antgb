@@ -185,6 +185,7 @@ private:
     void RRC_HL();
     void RRC_r8(uint8_t* r8);
     void RRCA();
+    void RST_f(uint8_t f);
     void SBC_A_HL();
     void SBC_A_n8(uint8_t n8);
     void SBC_A_r8(uint8_t* r8);
