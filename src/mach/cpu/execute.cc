@@ -375,3 +375,24 @@ void Cpu::NOP()
 {
 
 }
+
+/* OR */
+
+void Cpu::OR_HL()
+{
+    OR_n8(mem[*HL]);
+}
+
+void Cpu::OR_n8(uint8_t n8)
+{
+    *A |= n8;
+    clear_cf();
+    clear_hf();
+    clear_nf();
+    update_zf(*A == 0);
+}
+
+void Cpu::OR_r8(uint8_t* r8)
+{
+    OR_n8(*r8);
+}

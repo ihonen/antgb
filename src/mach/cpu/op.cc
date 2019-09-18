@@ -897,42 +897,42 @@ void Cpu::op_AF()
 
 void Cpu::op_B0()
 {
-
+    OR_r8(B);
 }
 
 void Cpu::op_B1()
 {
-
+    OR_r8(C);
 }
 
 void Cpu::op_B2()
 {
-
+    OR_r8(D);
 }
 
 void Cpu::op_B3()
 {
-
+    OR_r8(E);
 }
 
 void Cpu::op_B4()
 {
-
+    OR_r8(H);
 }
 
 void Cpu::op_B5()
 {
-
+    OR_r8(L);
 }
 
 void Cpu::op_B6()
 {
-
+    OR_HL();
 }
 
 void Cpu::op_B7()
 {
-
+    OR_r8(A);
 }
 
 void Cpu::op_B8()
@@ -1285,7 +1285,7 @@ void Cpu::op_F5()
 
 void Cpu::op_F6()
 {
-
+    OR_n8(curr_op[1]);
 }
 
 void Cpu::op_F7()
