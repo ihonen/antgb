@@ -456,3 +456,21 @@ void Cpu::RETI()
     RET();
     enable_interrupts();
 }
+
+void Cpu::RL_HL()
+{
+    RL_r8(&mem[*HL]);
+}
+
+void Cpu::RL_r8(uint8_t* r8)
+{
+    uint8_t result = *r8;
+    uint8_t new_carry = result & (0x01 << 7);
+    result <<= 1;
+    result |= get_cf();
+    update_cf(new_carry != 0);
+    clear_hf();
+    clear_nf();
+    update_cf(result == 0);
+    *r8 = result;
+}
