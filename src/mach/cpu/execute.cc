@@ -465,10 +465,10 @@ void Cpu::RL_HL()
 void Cpu::RL_r8(uint8_t* r8)
 {
     uint8_t result = *r8;
-    uint8_t new_carry = (result >> 7) & 0x01;
+    uint8_t msbit = (result >> 7) & 0x01;
     result <<= 1;
     result |= get_cf();
-    update_cf(new_carry != 0);
+    update_cf(msbit != 0);
     clear_hf();
     clear_nf();
     update_cf(result == 0);
@@ -480,4 +480,24 @@ void Cpu::RL_r8(uint8_t* r8)
 void Cpu::RLA()
 {
     RL_r8(A);
+}
+
+/* RLC */
+
+void Cpu::RLC_HL()
+{
+    RLC_r8(&mem[*HL]);
+}
+
+void Cpu::RLC_r8(uint8_t* r8)
+{
+    uint8_t result = *r8;
+    uint8_t msbit = (result >> 7) & 0x01;
+    result <<= 1;
+    result |= msbit;
+    update_cf(msbit != 0);
+    clear_hf();
+    clear_nf();
+    update_cf(result == 0);
+    *r8 = result;
 }
