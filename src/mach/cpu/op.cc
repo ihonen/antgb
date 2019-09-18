@@ -166,7 +166,7 @@ void Cpu::op_1E()
 
 void Cpu::op_1F()
 {
-
+    RRA();
 }
 
 void Cpu::op_20()

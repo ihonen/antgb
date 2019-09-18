@@ -528,3 +528,10 @@ void Cpu::RR_r8(uint8_t* r8)
     update_cf(result == 0);
     *r8 = result;
 }
+
+/* RRA */
+
+void Cpu::RRA()
+{
+    RR_r8(A);
+}
