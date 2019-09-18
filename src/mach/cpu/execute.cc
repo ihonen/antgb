@@ -623,7 +623,27 @@ void Cpu::SLA_r8(uint8_t* r8)
     uint8_t result = *r8;
     result <<= 1;
     result &= ~(0x01);
-    update_cf(*r8 >> 8 != 0);
+    update_cf(((*r8 >> 7) & 0x01) != 0);
+    clear_hf();
+    clear_nf();
+    update_zf(result == 0);
+    *r8 = result;
+}
+
+/* SRA */
+
+void Cpu::SRA_HL()
+{
+    SRA_r8(&mem[*HL]);
+}
+
+void Cpu::SRA_r8(uint8_t* r8)
+{
+    uint8_t result = *r8;
+    uint8_t msb = *r8 & (0x01 << 7);
+    result >>= 1;
+    result |= msb;
+    update_cf(*r8 & 0x01);
     clear_hf();
     clear_nf();
     update_zf(result == 0);

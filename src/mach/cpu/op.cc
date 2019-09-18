@@ -1510,72 +1510,72 @@ void Cpu::op_CB_21()
 
 void Cpu::op_CB_22()
 {
-    SLA_r8(C);
+    SLA_r8(D);
 }
 
 void Cpu::op_CB_23()
 {
-    SLA_r8(D);
+    SLA_r8(E);
 }
 
 void Cpu::op_CB_24()
 {
-    SLA_r8(E);
+    SLA_r8(H);
 }
 
 void Cpu::op_CB_25()
 {
-    SLA_r8(H);
+    SLA_r8(L);
 }
 
 void Cpu::op_CB_26()
 {
-    SLA_r8(L);
+    SLA_HL();
 }
 
 void Cpu::op_CB_27()
 {
-    SLA_HL();
+    SLA_r8(A);
 }
 
 void Cpu::op_CB_28()
 {
-    SLA_r8(A);
+    SRA_r8(B);
 }
 
 void Cpu::op_CB_29()
 {
-
+    SRA_r8(C);
 }
 
 void Cpu::op_CB_2A()
 {
-
+    SRA_r8(D);
 }
 
 void Cpu::op_CB_2B()
 {
-
+    SRA_r8(E);
 }
 
 void Cpu::op_CB_2C()
 {
-
+    SRA_r8(H);
 }
 
 void Cpu::op_CB_2D()
 {
-
+    SRA_r8(L);
 }
 
 void Cpu::op_CB_2E()
 {
-
+    SRA_HL();
 }
 
 void Cpu::op_CB_2F()
 {
-
+    SRA_r8(A);
 }
 
 void Cpu::op_CB_30()
