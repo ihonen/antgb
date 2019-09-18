@@ -501,3 +501,30 @@ void Cpu::RLC_r8(uint8_t* r8)
     update_cf(result == 0);
     *r8 = result;
 }
+
+/* RLCA */
+
+void Cpu::RLCA()
+{
+    RLC_r8(A);
+}
+
+/* RR */
+
+void Cpu::RR_HL()
+{
+    RR_r8(&mem[*HL]);
+}
+
+void Cpu::RR_r8(uint8_t* r8)
+{
+    uint8_t result = *r8;
+    uint8_t lsbit = result & 0x01;
+    result >>= 1;
+    result |= (get_cf() << 7);
+    update_cf(lsbit != 0);
+    clear_hf();
+    clear_nf();
+    update_cf(result == 0);
+    *r8 = result;
+}

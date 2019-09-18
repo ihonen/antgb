@@ -40,7 +40,7 @@ void Cpu::op_06()
 
 void Cpu::op_07()
 {
-
+    RLCA();
 }
 
 void Cpu::op_08()
@@ -1460,42 +1460,42 @@ void Cpu::op_CB_17()
 
 void Cpu::op_CB_18()
 {
-
+    RR_r8(B);
 }
 
 void Cpu::op_CB_19()
 {
-
+    RR_r8(C);
 }
 
 void Cpu::op_CB_1A()
 {
-
+    RR_r8(D);
 }
 
 void Cpu::op_CB_1B()
 {
-
+    RR_r8(E);
 }
 
 void Cpu::op_CB_1C()
 {
-
+    RR_r8(H);
 }
 
 void Cpu::op_CB_1D()
 {
-
+    RR_r8(L);
 }
 
 void Cpu::op_CB_1E()
 {
-
+    RR_HL();
 }
 
 void Cpu::op_CB_1F()
 {
-
+    RR_r8(A);
 }
 
 void Cpu::op_CB_20()
