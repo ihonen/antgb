@@ -599,6 +599,18 @@ void Cpu::SCF()
     clear_nf();
 }
 
+/* SET */
+
+void Cpu::SET_n3_HL(uint8_t n3)
+{
+    SET_n3_r8(n3, &mem[*HL]);
+}
+
+void Cpu::SET_n3_r8(uint8_t n3, uint8_t* r8)
+{
+    *r8 |= 0x01 << n3;
+}
+
 /* SUB */
 
 void Cpu::SUB_A_n8(uint8_t n8)

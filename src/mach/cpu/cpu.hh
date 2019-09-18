@@ -189,6 +189,8 @@ private:
     void SBC_A_n8(uint8_t n8);
     void SBC_A_r8(uint8_t* r8);
     void SCF();
+    void SET_n3_HL(uint8_t n3);
+    void SET_n3_r8(uint8_t n3, uint8_t* r8);
     void SUB_A_HL();
     void SUB_A_n8(uint8_t n8);
     void SUB_A_r8(uint8_t* r8);
