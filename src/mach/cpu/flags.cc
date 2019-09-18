@@ -10,14 +10,8 @@ uint8_t Cpu::get_flag(uint8_t pos)
 void Cpu::assign_flag(uint8_t pos, uint8_t val)
 {
     assert(val == 0 || val == 1);
-    if (val == 0)
-    {
-        *F &= ~(0x01 << pos);
-    }
-    else
-    {
-        *F |= 0x01 << pos;
-    }
+    if (val == 0) *F &= ~(0x01 << pos);
+    else *F |= 0x01 << pos;
 }
 
 uint8_t Cpu::C_flag_get()
