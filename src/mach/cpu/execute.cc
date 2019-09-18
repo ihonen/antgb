@@ -406,3 +406,13 @@ void Cpu::POP_r16(uint16_t* r16)
     ++SP;
     *r16 |= mem[*SP] << 8;
 }
+
+/* PUSH */
+
+void Cpu::PUSH_r16(uint16_t* r16)
+{
+    mem[*SP] = static_cast<uint8_t>(*r16);
+    --SP;
+    mem[*SP] = static_cast<uint8_t>(*r16 >> 8);
+    --SP;
+}

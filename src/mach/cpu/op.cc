@@ -1012,7 +1012,7 @@ void Cpu::op_C4()
 
 void Cpu::op_C5()
 {
-
+    PUSH_r16(BC);
 }
 
 void Cpu::op_C6()
@@ -1110,7 +1110,7 @@ void Cpu::op_D4()
 
 void Cpu::op_D5()
 {
-
+    PUSH_r16(DE);
 }
 
 void Cpu::op_D6()
@@ -1197,7 +1197,7 @@ void Cpu::op_E4()
 
 void Cpu::op_E5()
 {
-
+    PUSH_r16(HL);
 }
 
 void Cpu::op_E6()
@@ -1280,7 +1280,7 @@ void Cpu::op_F4()
 
 void Cpu::op_F5()
 {
-
+    PUSH_r16(AF);
 }
 
 void Cpu::op_F6()
