@@ -292,7 +292,7 @@ void Cpu::op_36()
 
 void Cpu::op_37()
 {
-
+    SCF();
 }
 
 void Cpu::op_38()

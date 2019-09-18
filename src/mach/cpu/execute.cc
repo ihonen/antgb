@@ -590,6 +590,15 @@ void Cpu::SUB_A_HL()
     SUB_A_n8(mem[*HL]);
 }
 
+/* SCF */
+
+void Cpu::SCF()
+{
+    set_cf();
+    clear_hf();
+    clear_nf();
+}
+
 /* SUB */
 
 void Cpu::SUB_A_n8(uint8_t n8)
