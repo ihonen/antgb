@@ -1500,47 +1500,47 @@ void Cpu::op_CB_1F()
 
 void Cpu::op_CB_20()
 {
-
+    SLA_r8(B);
 }
 
 void Cpu::op_CB_21()
 {
-
+    SLA_r8(C);
 }
 
 void Cpu::op_CB_22()
 {
-
+    SLA_r8(C);
 }
 
 void Cpu::op_CB_23()
 {
-
+    SLA_r8(D);
 }
 
 void Cpu::op_CB_24()
 {
-
+    SLA_r8(E);
 }
 
 void Cpu::op_CB_25()
 {
-
+    SLA_r8(H);
 }
 
 void Cpu::op_CB_26()
 {
-
+    SLA_r8(L);
 }
 
 void Cpu::op_CB_27()
 {
-
+    SLA_HL();
 }
 
 void Cpu::op_CB_28()
 {
-
+    SLA_r8(A);
 }
 
 void Cpu::op_CB_29()
