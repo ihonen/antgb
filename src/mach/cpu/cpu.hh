@@ -139,6 +139,8 @@ private:
     void JP_HL();
     void JP_cc_n16(bool cc, uint16_t n16);
     void JP_n16(uint16_t n16);
+    void JR_cc_n8(bool cc, int8_t n8);
+    void JR_n8(int8_t n8);
     void NOP();
 
     void op_00(); void op_01(); void op_02(); void op_03();

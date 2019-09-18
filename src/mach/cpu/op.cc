@@ -122,7 +122,7 @@ void Cpu::op_17()
 
 void Cpu::op_18()
 {
-
+    JR_n8(static_cast<int8_t>(curr_op[1]));
 }
 
 void Cpu::op_19()
@@ -162,7 +162,7 @@ void Cpu::op_1F()
 
 void Cpu::op_20()
 {
-
+    JR_cc_n8(!get_zf(), static_cast<int8_t>(curr_op[1]));
 }
 
 void Cpu::op_21()
@@ -202,7 +202,7 @@ void Cpu::op_27()
 
 void Cpu::op_28()
 {
-
+    JR_cc_n8(get_zf(), static_cast<int8_t>(curr_op[1]));
 }
 
 void Cpu::op_29()
@@ -242,7 +242,7 @@ void Cpu::op_2F()
 
 void Cpu::op_30()
 {
-
+    JR_cc_n8(!get_cf(), static_cast<int8_t>(curr_op[1]));
 }
 
 void Cpu::op_31()
@@ -282,7 +282,7 @@ void Cpu::op_37()
 
 void Cpu::op_38()
 {
-
+    JR_cc_n8(get_cf(), static_cast<int8_t>(curr_op[1]));
 }
 
 void Cpu::op_39()

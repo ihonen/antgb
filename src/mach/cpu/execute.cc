@@ -234,6 +234,23 @@ void Cpu::JP_n16(uint16_t n16)
     *PC = n16;
 }
 
+/* JR */
+
+void Cpu::JR_cc_n8(bool cc, int8_t n8)
+{
+    if (cc)
+    {
+        JR_n8(n8);
+        op_success = true;
+    }
+    else op_success = false;
+}
+
+void Cpu::JR_n8(int8_t n8)
+{
+    *PC += n8;
+}
+
 /* NOP */
 
 void Cpu::NOP()
