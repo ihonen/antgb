@@ -133,6 +133,9 @@ private:
     void DEC_r8(uint8_t* r8);
     void DI();
     void EI();
+    void INC_HL();
+    void INC_r16(uint16_t* r16);
+    void INC_r8(uint8_t* r8);
     void NOP();
 
     void op_00(); void op_01(); void op_02(); void op_03();

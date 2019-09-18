@@ -191,6 +191,27 @@ void Cpu::EI()
     }
 }
 
+/* INC */
+
+void Cpu::INC_HL()
+{
+    INC_r8(&mem[*HL]);
+}
+
+void Cpu::INC_r16(uint16_t* r16)
+{
+    ++(*r16);
+}
+
+void Cpu::INC_r8(uint8_t* r8)
+{
+    uint16_t result = *r8 + 1;
+    update_hf((*r8 & 0x0F) + 1 > 0x0F);
+    clear_nf();
+    update_zf(result == 0);
+    *r8 = static_cast<uint8_t>(result);
+}
+
 /* NOP */
 
 void Cpu::NOP()
