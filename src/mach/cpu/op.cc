@@ -1620,42 +1620,42 @@ void Cpu::op_CB_37()
 
 void Cpu::op_CB_38()
 {
-
+    SRL_r8(B);
 }
 
 void Cpu::op_CB_39()
 {
-
+    SRL_r8(C);
 }
 
 void Cpu::op_CB_3A()
 {
-
+    SRL_r8(D);
 }
 
 void Cpu::op_CB_3B()
 {
-
+    SRL_r8(E);
 }
 
 void Cpu::op_CB_3C()
 {
-
+    SRL_r8(H);
 }
 
 void Cpu::op_CB_3D()
 {
-
+    SRL_r8(L);
 }
 
 void Cpu::op_CB_3E()
 {
-
+    SRL_HL();
 }
 
 void Cpu::op_CB_3F()
 {
-
+    SRL_r8(A);
 }
 
 void Cpu::op_CB_40()

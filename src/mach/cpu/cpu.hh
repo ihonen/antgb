@@ -195,6 +195,8 @@ private:
     void SLA_r8(uint8_t* r8);
     void SRA_HL();
     void SRA_r8(uint8_t* r8);
+    void SRL_HL();
+    void SRL_r8(uint8_t* r8);
     void SUB_A_HL();
     void SUB_A_n8(uint8_t n8);
     void SUB_A_r8(uint8_t* r8);

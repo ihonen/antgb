@@ -650,6 +650,25 @@ void Cpu::SRA_r8(uint8_t* r8)
     *r8 = result;
 }
 
+/* SRL */
+
+void Cpu::SRL_HL()
+{
+    SRL_r8(&mem[*HL]);
+}
+
+void Cpu::SRL_r8(uint8_t* r8)
+{
+    uint8_t result = *r8;
+    result >>= 1;
+    result &= ~(0x01 << 7);
+    update_cf(*r8 & 0x01);
+    clear_hf();
+    clear_nf();
+    update_zf(result == 0);
+    *r8 = result;
+}
+
 /* SUB */
 
 void Cpu::SUB_A_n8(uint8_t n8)
