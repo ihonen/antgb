@@ -1380,42 +1380,42 @@ void Cpu::op_CB_07()
 
 void Cpu::op_CB_08()
 {
-
+    RRC_r8(B);
 }
 
 void Cpu::op_CB_09()
 {
-
+    RRC_r8(C);
 }
 
 void Cpu::op_CB_0A()
 {
-
+    RRC_r8(D);
 }
 
 void Cpu::op_CB_0B()
 {
-
+    RRC_r8(E);
 }
 
 void Cpu::op_CB_0C()
 {
-
+    RRC_r8(H);
 }
 
 void Cpu::op_CB_0D()
 {
-
+    RRC_r8(L);
 }
 
 void Cpu::op_CB_0E()
 {
-
+    RRC_HL();
 }
 
 void Cpu::op_CB_0F()
 {
-
+    RRC_r8(A);
 }
 
 void Cpu::op_CB_10()

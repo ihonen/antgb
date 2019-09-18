@@ -535,3 +535,23 @@ void Cpu::RRA()
 {
     RR_r8(A);
 }
+
+/* RRC */
+
+void Cpu::RRC_HL()
+{
+    RRC_r8(&mem[*HL]);
+}
+
+void Cpu::RRC_r8(uint8_t* r8)
+{
+    uint8_t result = *r8;
+    uint8_t lsbit = result & 0x01;
+    result >>= 1;
+    result |= (lsbit << 7);
+    update_cf(lsbit != 0);
+    clear_hf();
+    clear_nf();
+    update_cf(result == 0);
+    *r8 = result;
+}
