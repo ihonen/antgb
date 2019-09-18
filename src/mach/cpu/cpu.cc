@@ -15,6 +15,8 @@ void Cpu::enable_interrupts()
 
 void Cpu::execute(const uint8_t* instruction)
 {
+    if (!instruction) instruction = &mem[*PC];
+
     curr_op = instruction;
     op_success = true;
 
@@ -23,12 +25,15 @@ void Cpu::execute(const uint8_t* instruction)
     else if (EI_status == IntStatusChange::SCHEDULED)
         EI_status = IntStatusChange::TRIGGERED;
 
-    void (Cpu::*handler)();
-    handler = (*curr_op == 0xCB) ?
-              CB_OP_INFO[*(curr_op + 1)].handler :
-              OP_INFO[*(curr_op)].handler;
+    const OpcodeInfo* op_info = (*curr_op == 0xCB) ?
+                                &CB_OP_INFO[*(curr_op + 1)] :
+                                &OP_INFO[*curr_op];
 
-    if (handler) (this->*handler)();
+    if (op_info->handler) (this->*(op_info->handler))();
+    else invalid_opcode();
+
+    if (op_success) clock_cycles += op_info->cycles_success;
+    else clock_cycles += op_info->cycles_failure;
 
     if (DI_status == IntStatusChange::TRIGGERED) disable_interrupts();
     else if (EI_status == IntStatusChange::TRIGGERED) enable_interrupts();
@@ -43,6 +48,16 @@ uint16_t Cpu::extract_immediate16()
 {
     return (static_cast<uint16_t>(curr_op[1])) |
            (static_cast<uint16_t>(curr_op[2]) << 8);
+}
+
+uint64_t Cpu::get_cycles()
+{
+    return clock_cycles;
+}
+
+void Cpu::reset_cycles()
+{
+    clock_cycles = 0;
 }
 
 void Cpu::invalid_opcode()

@@ -9,8 +9,9 @@
 class Cpu
 {
 public:
-    void execute(const uint8_t* instruction);
-
+    void     execute(const uint8_t* instruction = nullptr);
+    void     reset_cycles();
+    uint64_t get_cycles();
 private:
     uint8_t get_flag(uint8_t pos);
     void    assign_flag(uint8_t pos, uint8_t val);
@@ -81,10 +82,10 @@ private:
         uint8_t len = 1;
         // The duration of the instruction in clock cycles if action
         // was taken.
-        uint8_t dur_s = 0;
+        uint8_t cycles_success = 0;
         // The duration of the instruction in clock cycles if action
         // was not taken.
-        uint8_t dur_f = 0;
+        uint8_t cycles_failure = 0;
         // The function that is called when the instruction
         // is encountered.
         void (Cpu::*handler)() = nullptr;
@@ -99,7 +100,7 @@ private:
 
     // Pointer to the current instruction in execution. This is not necessarily
     // the same as PC since execute() can take a pointer to any location.
-    const uint8_t* curr_op;
+    const uint8_t* curr_op = nullptr;
 
     // Indicates whether the instruction that was just executed was executed
     // successfully. This is relevant because some instructions take a varying
@@ -119,6 +120,8 @@ private:
 
     bool is_halted = false;
     bool is_stopped = false;
+
+    uint64_t clock_cycles = 0;
 
     void ADC_A_HL();
     void ADC_A_n8(uint8_t u8);
