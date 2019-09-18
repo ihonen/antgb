@@ -126,7 +126,7 @@ void Cpu::op_16()
 
 void Cpu::op_17()
 {
-
+    RLA();
 }
 
 void Cpu::op_18()

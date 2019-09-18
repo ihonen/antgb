@@ -175,6 +175,7 @@ private:
     void RETI();
     void RL_HL();
     void RL_r8(uint8_t* r8);
+    void RLA();
 
     void op_00(); void op_01(); void op_02(); void op_03();
     void op_04(); void op_05(); void op_06(); void op_07();
