@@ -562,3 +562,47 @@ void Cpu::RRCA()
 {
     RRC_r8(A);
 }
+
+/* SBC */
+
+void Cpu::SBC_A_HL()
+{
+    SBC_A_n8(mem[*HL]);
+}
+
+void Cpu::SBC_A_n8(uint8_t n8)
+{
+    uint16_t result = *A - n8 - get_cf();
+    update_hf((*A & 0x0F) - (n8 & 0x0F) - get_cf() > 0x0F);
+    update_cf(result > 0xFF);
+    set_nf();
+    update_zf(result == 0);
+    *A = static_cast<uint8_t>(result);
+}
+
+void Cpu::SBC_A_r8(uint8_t* r8)
+{
+    SBC_A_n8(*r8);
+}
+
+void Cpu::SUB_A_HL()
+{
+    SUB_A_n8(mem[*HL]);
+}
+
+/* SUB */
+
+void Cpu::SUB_A_n8(uint8_t n8)
+{
+    uint16_t result = *A - n8;
+    update_cf(result > 0xFF);
+    update_hf((*A & 0x0F) - (n8 & 0x0F) > 0x0F);
+    set_nf();
+    update_zf(result == 0);
+    *A = static_cast<uint8_t>(result);
+}
+
+void Cpu::SUB_A_r8(uint8_t* r8)
+{
+    SUB_A_n8(*r8);
+}
