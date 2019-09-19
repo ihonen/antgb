@@ -482,6 +482,11 @@ void CPU::RET_cc(bool cc)
 void CPU::RETI()
 {
     RET();
+    if (is_interrupted)
+    {
+        is_interrupted = false;
+        curr_interrupt = nullptr;
+    }
     enable_interrupts_now();
 }
 

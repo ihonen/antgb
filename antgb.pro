@@ -30,7 +30,8 @@ SOURCES += \
     src/mach/cpu/cpu_execute.cc \
     src/mach/cpu/cpu_flags.cc \
     src/mach/cpu/cpu_opmap.cc \
-    src/mach/cpu/cpu_opcodes.cc
+    src/mach/cpu/cpu_opcodes.cc \
+    src/mach/cpu/cpu_interrupts.cc
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

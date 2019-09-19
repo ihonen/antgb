@@ -98,15 +98,15 @@ void CPU::Z_flag_update(bool cond)
 
 uint8_t CPU::IME_flag_get()
 {
-    return mem[HWREG_IME_ADDR];
+    return IME_flag;
 }
 
 void CPU::IME_flag_set()
 {
-    mem[HWREG_IME_ADDR] = 0x01;
+    IME_flag = 0x01;
 }
 
 void CPU::IME_flag_reset()
 {
-    mem[HWREG_IME_ADDR] = 0x00;
+    IME_flag = 0x00;
 }

@@ -24,18 +24,10 @@ public:
     void     reset_cycles();
     uint64_t get_cycles();
 private:
-    typedef struct
-    {
-        uint8_t len_bytes = 0;
-        uint8_t cycles_on_action = 0;
-        uint8_t cycles_on_no_action = 0;
-        void   (CPU::*handler)() = nullptr;
-    } InstrInfo;
-
     enum HWRegisterAddr : uint16_t
     {
         HWREG_IF_ADDR  = 0xFF0F, // Interrupt flag register
-        HWREG_IME_ADDR = 0xFFFF  // Interrupt master enable register
+        HWREG_IE_ADDR = 0xFFFF  // Interrupt enable register
     };
 
     // Interrupt enabling and disabling have a delay of one machine cycle.
@@ -57,6 +49,32 @@ private:
     };
 
     enum class BranchTaken {NO = 0, YES = 1};
+
+    enum IntFlagPos : uint8_t
+    {
+        VBLANK = 0,
+        LCDC = 1,
+        TIMER_OVERFLOW = 2,
+        SERIAL_TRANSFER = 3,
+        PIN_P10_P13_CHANGE = 4
+    };
+
+    typedef struct
+    {
+        uint8_t len_bytes;
+        uint8_t cycles_on_action;
+        uint8_t cycles_on_no_action;
+        void   (CPU::*handler)();
+    } InstrInfo;
+
+    typedef struct
+    {
+        uint8_t    priority;
+        uint8_t    flag_position;
+        uint8_t    jump_address;
+    } IntInfo;
+
+    static const array<const IntInfo, 5> INTERRUPT_TABLE;
 
     // Main memory.
     // TODO: Make a separate class with proper memory management.
@@ -81,6 +99,9 @@ private:
     uint8_t&  A  = *(reinterpret_cast<uint8_t*>(&AF) + 0);
     uint8_t&  F  = *(reinterpret_cast<uint8_t*>(&AF) + 1);
 
+    // Interrupt master enable
+    uint8_t IME_flag = 0x00;
+
     // This table will contain the information related to "normal" opcodes.
     static const array<const InstrInfo, 256> INSTR_TABLE;
     // This table will contain the information related to opcodes prefixed
@@ -103,6 +124,9 @@ private:
     bool is_stopped = false;
 
     uint64_t clock_cycles = 0;
+
+    const IntInfo* curr_interrupt = nullptr;
+    bool is_interrupted = false;
 
     uint8_t  get_ALU_flag(enum ALUFlagPos pos);
     void     assign_ALU_flag(enum ALUFlagPos pos, uint8_t val);
@@ -130,6 +154,8 @@ private:
     void     invalid_opcode();
     uint8_t  extract_immediate8(const uint8_t* instruction = nullptr);
     uint16_t extract_immediate16(const uint8_t* instruction = nullptr);
+    const IntInfo* check_interrupts();
+    void           handle_interrupt(const IntInfo* int_info);
 
     void ADC_A_HL();
     void ADC_A_n8(uint8_t u8);
