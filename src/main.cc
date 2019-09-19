@@ -6,7 +6,7 @@
 int main()
 {
     uint8_t op[3] {0x00, 0x00, 0x00};
-    Cpu cpu;
+    CPU cpu;
     cpu.execute(op);
 
     for (volatile size_t i = 0; i < 0xFFFF; ++i);

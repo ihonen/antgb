@@ -26,11 +26,11 @@ CONFIG += c++14
 
 SOURCES += \
     src/mach/cpu/cpu.cc \
-    src/mach/cpu/execute.cc \
-    src/mach/cpu/flags.cc \
-    src/mach/cpu/op.cc \
-    src/mach/cpu/opcode.cc \
-    src/main.cc
+    src/main.cc \
+    src/mach/cpu/cpu_execute.cc \
+    src/mach/cpu/cpu_flags.cc \
+    src/mach/cpu/cpu_opmap.cc \
+    src/mach/cpu/cpu_opcodes.cc
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -38,5 +38,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    src/mach/cpu/cpu.hh \
-    src/mach/cpu/cpuerror.hh
+    src/mach/cpu/cpu.hh

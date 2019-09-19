@@ -1,158 +1,166 @@
 #ifndef CPU_HH
 #define CPU_HH
 
-#include "cpuerror.hh"
 #include <array>
 #include <cstdint>
-#include <vector>
 
-class Cpu
+using std::array;
+
+class CPU
 {
 public:
-    void     execute(const uint8_t* instruction = nullptr);
+    class OpcodeError : public std::exception
+    {
+    public:
+        OpcodeError(uint16_t addr, uint8_t val) : addr_(addr), val_(val) {}
+        uint16_t address() { return addr_; }
+        uint8_t value() { return val_; }
+    private:
+        uint16_t addr_;
+        uint8_t val_;
+    };
+
+    void     execute(const uint8_t* const instruction = nullptr);
     void     reset_cycles();
     uint64_t get_cycles();
 private:
-    uint8_t get_flag(uint8_t pos);
-    void    assign_flag(uint8_t pos, uint8_t val);
-    uint8_t C_flag_get();
-    uint8_t H_flag_get();
-    uint8_t N_flag_get();
-    uint8_t Z_flag_get();
-    void    C_flag_reset();
-    void    H_flag_reset();
-    void    N_flag_reset();
-    void    Z_flag_reset();
-    void    C_flag_set();
-    void    H_flag_set();
-    void    N_flag_set();
-    void    Z_flag_set();
-    void    C_flag_update(bool cond);
-    void    H_flag_update(bool cond);
-    void    N_flag_update(bool cond);
-    void    Z_flag_update(bool cond);
-    uint8_t IME_flag_get();
-    void    IME_flag_reset();
-    void    IME_flag_set();
+    typedef struct
+    {
+        uint8_t len_bytes = 0;
+        uint8_t cycles_on_action = 0;
+        uint8_t cycles_on_no_action = 0;
+        void   (CPU::*handler)() = nullptr;
+    } InstrInfo;
 
-    void    disable_interrupts();
-    void    enable_interrupts();
+    enum HWRegisterAddr : uint16_t
+    {
+        HWREG_IF_ADDR  = 0xFF0F, // Interrupt flag register
+        HWREG_IME_ADDR = 0xFFFF  // Interrupt master enable register
+    };
 
-    void invalid_opcode();
+    // Interrupt enabling and disabling have a delay of one machine cycle.
+    enum class IMEStatus
+    {
+        DO_NOTHING,
+        SET_NEXT_CYCLE,
+        RESET_NEXT_CYCLE,
+        SET_THIS_CYCLE,   // At the end of cycle
+        RESET_THIS_CYCLE  // At the end of cycle
+    };
 
-    uint8_t  extract_immediate8();
-    uint16_t extract_immediate16();
+    enum class ALUFlagPos : uint8_t
+    {
+        C_FLAG = 4,
+        H_FLAG = 5,
+        N_FLAG = 6,
+        Z_FLAG = 7
+    };
 
-    // Positions of the flag bits in flag register (F).
-    static const uint8_t CF_BIT_POS = 4;
-    static const uint8_t HF_BIT_POS = 5;
-    static const uint8_t NF_BIT_POS = 6;
-    static const uint8_t ZF_BIT_POS = 7;
+    enum class BranchTaken {NO = 0, YES = 1};
 
     // Main memory.
     // TODO: Make a separate class with proper memory management.
-    uint8_t mem[0xFFFF + 1];
+    array<uint8_t, 0x100> mem = {0}; // 65 KB, 16-bit memory space
 
-    // BC, DE, HL, AF, PC, SP
-    // It is useful to store the registers in this specific order
-    // because many instructions index into the registers in
-    // said order.
+    // NOTE: Register order is based on that which appears in the
+    // machine instructions.
     // NOTE: Little-endian machine is assumed!
-    uint16_t reg[6] = {0};
-    uint16_t* BC = &reg[0];
-    uint16_t* DE = &reg[1];
-    uint16_t* HL = &reg[2];
-    uint16_t* AF = &reg[3];
-    uint16_t* PC = &reg[5];
-    uint16_t* SP = &reg[4];
-    uint8_t*  B  = reinterpret_cast<uint8_t*>(BC) + 0;
-    uint8_t*  C  = reinterpret_cast<uint8_t*>(BC) + 1;
-    uint8_t*  D  = reinterpret_cast<uint8_t*>(DE) + 0;
-    uint8_t*  E  = reinterpret_cast<uint8_t*>(DE) + 1;
-    uint8_t*  H  = reinterpret_cast<uint8_t*>(HL) + 0;
-    uint8_t*  L  = reinterpret_cast<uint8_t*>(HL) + 1;
-    uint8_t*  A  = reinterpret_cast<uint8_t*>(AF) + 0;
-    uint8_t*  F  = reinterpret_cast<uint8_t*>(AF) + 1;
-    const std::array<uint16_t*, 6> reg16 = {BC, DE, HL, AF, PC, SP};
-    const std::array<uint8_t*, 8>  reg8  = {B, C, D, E, H, L, A, F};
-
-    typedef struct
-    {
-        // The length of the instruction in bytes.
-        uint8_t len = 1;
-        // The duration of the instruction in clock cycles if action
-        // was taken.
-        uint8_t cycles_success = 0;
-        // The duration of the instruction in clock cycles if action
-        // was not taken.
-        uint8_t cycles_failure = 0;
-        // The function that is called when the instruction
-        // is encountered.
-        void (Cpu::*handler)() = nullptr;
-    } OpcodeInfo;
+    array<uint16_t, 6> reg = {0};
+    uint16_t& BC = reg[0];
+    uint16_t& DE = reg[1];
+    uint16_t& HL = reg[2];
+    uint16_t& AF = reg[3];
+    uint16_t& PC = reg[5];
+    uint16_t& SP = reg[4];
+    uint8_t&  B  = *(reinterpret_cast<uint8_t*>(&BC) + 0);
+    uint8_t&  C  = *(reinterpret_cast<uint8_t*>(&BC) + 1);
+    uint8_t&  D  = *(reinterpret_cast<uint8_t*>(&DE) + 0);
+    uint8_t&  E  = *(reinterpret_cast<uint8_t*>(&DE) + 1);
+    uint8_t&  H  = *(reinterpret_cast<uint8_t*>(&HL) + 0);
+    uint8_t&  L  = *(reinterpret_cast<uint8_t*>(&HL) + 1);
+    uint8_t&  A  = *(reinterpret_cast<uint8_t*>(&AF) + 0);
+    uint8_t&  F  = *(reinterpret_cast<uint8_t*>(&AF) + 1);
 
     // This table will contain the information related to "normal" opcodes.
-    static const OpcodeInfo OP_INFO[256];
+    static const array<const InstrInfo, 256> INSTR_TABLE;
     // This table will contain the information related to opcodes prefixed
     // with 0xCB. The 0xCB prefix only means that another byte should be
     // fetched and that byte defines the operation to be taken.
-    static const OpcodeInfo CB_OP_INFO[256];
+    static const array<const InstrInfo, 256> CB_INSTR_TABLE;
 
     // Pointer to the current instruction in execution. This is not necessarily
     // the same as PC since execute() can take a pointer to any location.
-    const uint8_t* curr_op = nullptr;
+    const uint8_t* curr_instr = nullptr;
 
-    // Indicates whether the instruction that was just executed was executed
-    // successfully. This is relevant because some instructions take a varying
-    // amount of clock cycles based on whether a certain action was taken or
-    // not.
-    bool op_success;
+    // Conditional branches take a varying number of clock cycles depending
+    // on whether the condition was true (i.e. branch happened) or not.
+    BranchTaken branch_taken = BranchTaken::NO;
 
-    enum class IntStatusChange {NOT_SCHEDULED, SCHEDULED, TRIGGERED};
-    // If either of these values is TRIGGER after
-    // executing an instuction, do the corresponding operation on the
-    // Interrupt Master Enable flag.
-    // TODO: If this is to be done accurately, IME has to be changed
-    // after one machine cycle, not one instruction.
-    // TODO: What to do if EI or DI is called twice or more in a row?
-    enum IntStatusChange DI_status = IntStatusChange::NOT_SCHEDULED;
-    enum IntStatusChange EI_status = IntStatusChange::NOT_SCHEDULED;
+    enum IMEStatus DI_status = IMEStatus::DO_NOTHING;
+    enum IMEStatus EI_status = IMEStatus::DO_NOTHING;
 
     bool is_halted = false;
     bool is_stopped = false;
 
     uint64_t clock_cycles = 0;
 
+    uint8_t  get_ALU_flag(enum ALUFlagPos pos);
+    void     assign_ALU_flag(enum ALUFlagPos pos, uint8_t val);
+    uint8_t  C_flag_get();
+    uint8_t  H_flag_get();
+    uint8_t  N_flag_get();
+    uint8_t  Z_flag_get();
+    void     C_flag_reset();
+    void     H_flag_reset();
+    void     N_flag_reset();
+    void     Z_flag_reset();
+    void     C_flag_set();
+    void     H_flag_set();
+    void     N_flag_set();
+    void     Z_flag_set();
+    void     C_flag_update(bool cond);
+    void     H_flag_update(bool cond);
+    void     N_flag_update(bool cond);
+    void     Z_flag_update(bool cond);
+    uint8_t  IME_flag_get();
+    void     IME_flag_reset();
+    void     IME_flag_set();
+    void     disable_interrupts_now();
+    void     enable_interrupts_now();
+    void     invalid_opcode();
+    uint8_t  extract_immediate8(const uint8_t* instruction = nullptr);
+    uint16_t extract_immediate16(const uint8_t* instruction = nullptr);
+
     void ADC_A_HL();
     void ADC_A_n8(uint8_t u8);
-    void ADC_A_r8(uint8_t* r8);
+    void ADC_A_r8(uint8_t& r8);
     void ADD_A_HL();
     void ADD_A_n8(uint8_t u8);
-    void ADD_A_r8(uint8_t* r8);
-    void ADD_HL_r16(uint16_t* r16);
+    void ADD_A_r8(uint8_t& r8);
+    void ADD_HL_r16(uint16_t& r16);
     void ADD_SP_e8(int8_t s8);
     void AND_n8(uint8_t u8);
     void AND_HL();
-    void AND_r8(uint8_t* r8);
+    void AND_r8(uint8_t& r8);
     void BIT_n3_HL(uint8_t n);
-    void BIT_n3_r8(uint8_t n, uint8_t* r8);
+    void BIT_n3_r8(uint8_t n, uint8_t& r8);
     void CALL_cc_n16(bool cc, uint16_t n16);
     void CALL_n16(uint16_t n16);
     void CCF();
     void CP_HL();
     void CP_n8(uint8_t n8);
-    void CP_r8(uint8_t* r8);
+    void CP_r8(uint8_t& r8);
     void CPL();
     void DAA();
     void DEC_HL();
-    void DEC_r16(uint16_t* r16);
-    void DEC_r8(uint8_t* r8);
+    void DEC_r16(uint16_t& r16);
+    void DEC_r8(uint8_t& r8);
     void DI();
     void EI();
     void HALT();
     void INC_HL();
-    void INC_r16(uint16_t* r16);
-    void INC_r8(uint8_t* r8);
+    void INC_r16(uint16_t& r16);
+    void INC_r8(uint8_t& r8);
     void JP_HL();
     void JP_cc_n16(bool cc, uint16_t n16);
     void JP_n16(uint16_t n16);
@@ -160,18 +168,18 @@ private:
     void JR_n8(int8_t n8);
     void LD_C_A();
     void LD_HL_n8(uint8_t n8);
-    void LD_HL_r8(uint8_t* r8);
+    void LD_HL_r8(uint8_t& r8);
     void LD_n16_A(uint16_t n16);
     void LD_n16_SP(uint16_t n16);
-    void LD_r16_A(uint16_t* r16);
+    void LD_r16_A(uint16_t& r16);
     void LD_A_C();
     void LD_A_n16(uint16_t n16);
-    void LD_A_r16(uint16_t* r16);
+    void LD_A_r16(uint16_t& r16);
     void LD_HL_SP_e8(int8_t e8);
-    void LD_r16_n16(uint16_t* r16, uint16_t n16);
-    void LD_r8_HL(uint8_t* r8);
-    void LD_r8_n8(uint8_t* r8, uint8_t n8);
-    void LD_r8_r8(uint8_t* r8_1, uint8_t* r8_2);
+    void LD_r16_n16(uint16_t& r16, uint16_t n16);
+    void LD_r8_HL(uint8_t& r8);
+    void LD_r8_n8(uint8_t& r8, uint8_t n8);
+    void LD_r8_r8(uint8_t& r8_1, uint8_t& r8_2);
     void LD_SP_HL();
     void LDD_HL_A();
     void LDD_A_HL();
@@ -182,48 +190,48 @@ private:
     void NOP();
     void OR_HL();
     void OR_n8(uint8_t n8);
-    void OR_r8(uint8_t* r8);
-    void POP_r16(uint16_t* r16);
-    void PUSH_r16(uint16_t* r16);
+    void OR_r8(uint8_t& r8);
+    void POP_r16(uint16_t& r16);
+    void PUSH_r16(uint16_t& r16);
     void RES_n3_HL(uint8_t n3);
-    void RES_n3_r8(uint8_t n3, uint8_t* r8);
+    void RES_n3_r8(uint8_t n3, uint8_t& r8);
     void RET();
     void RET_cc(bool cc);
     void RETI();
     void RL_HL();
-    void RL_r8(uint8_t* r8);
+    void RL_r8(uint8_t& r8);
     void RLA();
     void RLC_HL();
-    void RLC_r8(uint8_t* r8);
+    void RLC_r8(uint8_t& r8);
     void RLCA();
     void RR_HL();
-    void RR_r8(uint8_t* r8);
+    void RR_r8(uint8_t& r8);
     void RRA();
     void RRC_HL();
-    void RRC_r8(uint8_t* r8);
+    void RRC_r8(uint8_t& r8);
     void RRCA();
     void RST_f(uint8_t f);
     void SBC_A_HL();
     void SBC_A_n8(uint8_t n8);
-    void SBC_A_r8(uint8_t* r8);
+    void SBC_A_r8(uint8_t& r8);
     void SCF();
     void SET_n3_HL(uint8_t n3);
-    void SET_n3_r8(uint8_t n3, uint8_t* r8);
+    void SET_n3_r8(uint8_t n3, uint8_t& r8);
     void SLA_HL();
-    void SLA_r8(uint8_t* r8);
+    void SLA_r8(uint8_t& r8);
     void SRA_HL();
-    void SRA_r8(uint8_t* r8);
+    void SRA_r8(uint8_t& r8);
     void SRL_HL();
-    void SRL_r8(uint8_t* r8);
+    void SRL_r8(uint8_t& r8);
     void STOP();
     void SUB_A_HL();
     void SUB_A_n8(uint8_t n8);
-    void SUB_A_r8(uint8_t* r8);
+    void SUB_A_r8(uint8_t& r8);
     void SWAP_HL();
-    void SWAP_r8(uint8_t* r8);
+    void SWAP_r8(uint8_t& r8);
     void XOR_HL();
     void XOR_n8(uint8_t n8);
-    void XOR_r8(uint8_t* r8);
+    void XOR_r8(uint8_t& r8);
 
     void op_00(); void op_01(); void op_02(); void op_03();
     void op_04(); void op_05(); void op_06(); void op_07();

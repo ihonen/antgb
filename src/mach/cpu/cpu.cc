@@ -1,66 +1,68 @@
 #include "cpu.hh"
 #include <cassert>
 
-void Cpu::disable_interrupts()
+void CPU::execute(const uint8_t* instruction)
 {
-    IME_flag_reset();
-    DI_status = IntStatusChange::NOT_SCHEDULED;
-}
+    if (!instruction) instruction = &mem[PC];
 
-void Cpu::enable_interrupts()
-{
-    IME_flag_set();
-    EI_status = IntStatusChange::NOT_SCHEDULED;
-}
+    curr_instr = instruction;
 
-void Cpu::execute(const uint8_t* instruction)
-{
-    if (!instruction) instruction = &mem[*PC];
+    if (DI_status == IMEStatus::RESET_NEXT_CYCLE)
+        DI_status = IMEStatus::RESET_THIS_CYCLE;
+    else if (EI_status == IMEStatus::SET_NEXT_CYCLE)
+        EI_status = IMEStatus::SET_THIS_CYCLE;
 
-    curr_op = instruction;
-    op_success = true;
-
-    if (DI_status == IntStatusChange::SCHEDULED)
-        DI_status = IntStatusChange::TRIGGERED;
-    else if (EI_status == IntStatusChange::SCHEDULED)
-        EI_status = IntStatusChange::TRIGGERED;
-
-    const OpcodeInfo* op_info = (*curr_op == 0xCB) ?
-                                &CB_OP_INFO[curr_op[1]] :
-                                &OP_INFO[*curr_op];
+    const InstrInfo* op_info = (*curr_instr == 0xCB) ?
+                                &CB_INSTR_TABLE[curr_instr[1]] :
+                                &INSTR_TABLE[*curr_instr];
 
     if (op_info->handler) (this->*(op_info->handler))();
     else invalid_opcode();
 
-    if (op_success) clock_cycles += op_info->cycles_success;
-    else clock_cycles += op_info->cycles_failure;
+    if (branch_taken == BranchTaken::YES)
+         clock_cycles += op_info->cycles_on_action;
+    else clock_cycles += op_info->cycles_on_no_action;
 
-    if (DI_status == IntStatusChange::TRIGGERED) disable_interrupts();
-    else if (EI_status == IntStatusChange::TRIGGERED) enable_interrupts();
+    if (DI_status == IMEStatus::RESET_THIS_CYCLE) disable_interrupts_now();
+    else if (EI_status == IMEStatus::SET_THIS_CYCLE) enable_interrupts_now();
 }
 
-uint8_t Cpu::extract_immediate8()
+void CPU::disable_interrupts_now()
 {
-    return curr_op[1];
+    IME_flag_reset();
+    DI_status = IMEStatus::DO_NOTHING;
 }
 
-uint16_t Cpu::extract_immediate16()
+void CPU::enable_interrupts_now()
 {
-    return (static_cast<uint16_t>(curr_op[1])) |
-           (static_cast<uint16_t>(curr_op[2]) << 8);
+    IME_flag_set();
+    EI_status = IMEStatus::DO_NOTHING;
 }
 
-uint64_t Cpu::get_cycles()
+uint8_t CPU::extract_immediate8(const uint8_t* instruction)
+{
+    if (!instruction) instruction = curr_instr;
+    return curr_instr[1];
+}
+
+uint16_t CPU::extract_immediate16(const uint8_t* instruction)
+{
+    if (!instruction) instruction = curr_instr;
+    return (static_cast<uint16_t>(instruction[1])) |
+           (static_cast<uint16_t>(instruction[2]) << 8);
+}
+
+uint64_t CPU::get_cycles()
 {
     return clock_cycles;
 }
 
-void Cpu::reset_cycles()
+void CPU::reset_cycles()
 {
     clock_cycles = 0;
 }
 
-void Cpu::invalid_opcode()
+void CPU::invalid_opcode()
 {
-    throw OpcodeError(*PC, mem[*PC]);
+    throw OpcodeError(PC, mem[PC]);
 }
