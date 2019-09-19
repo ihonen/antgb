@@ -31,7 +31,11 @@ void CPU::execute(const uint8_t* instruction)
     if (branch_taken == BranchTaken::YES)
         clock_cycles += op_info->cycles_on_action;
     else
+    {
         clock_cycles += op_info->cycles_on_no_action;
+        // Only increment PC if did not branch.
+        PC += op_info->len_bytes;
+    }
 
     if (DI_status == IMEStatus::RESET_THIS_CYCLE) disable_interrupts_now();
     else if (EI_status == IMEStatus::SET_THIS_CYCLE) enable_interrupts_now();
