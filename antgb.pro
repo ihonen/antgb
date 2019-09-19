@@ -27,11 +27,11 @@ CONFIG += c++14
 SOURCES += \
     src/mach/cpu/cpu.cc \
     src/main.cc \
-    src/mach/cpu/cpu_execute.cc \
     src/mach/cpu/cpu_flags.cc \
     src/mach/cpu/cpu_opmap.cc \
     src/mach/cpu/cpu_opcodes.cc \
-    src/mach/cpu/cpu_interrupts.cc
+    src/mach/cpu/cpu_interrupts.cc \
+    src/mach/cpu/cpu_operations.cc
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

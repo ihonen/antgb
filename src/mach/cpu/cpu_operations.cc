@@ -1,5 +1,4 @@
 #include "cpu.hh"
-#include <iostream>
 
 /* ADC */
 
@@ -111,9 +110,9 @@ void CPU::CALL_cc_n16(bool cc, uint16_t n16)
     if (cc)
     {
         CALL_n16(n16);
-        branch_taken = BranchTaken::YES;
+        branch_taken = true;
     }
-    else branch_taken = BranchTaken::NO;
+    else branch_taken = false;
 }
 
 /* CCF */
@@ -253,9 +252,9 @@ void CPU::JP_cc_n16(bool cc, uint16_t n16)
     if (cc)
     {
         JP_n16(n16);
-        branch_taken = BranchTaken::YES;
+        branch_taken = true;
     }
-    else branch_taken = BranchTaken::NO;
+    else branch_taken = false;
 }
 
 void CPU::JP_n16(uint16_t n16)
@@ -270,9 +269,9 @@ void CPU::JR_cc_n8(bool cc, int8_t n8)
     if (cc)
     {
         JR_n8(n8);
-        branch_taken = BranchTaken::YES;
+        branch_taken = true;
     }
-    else branch_taken = BranchTaken::NO;
+    else branch_taken = false;
 }
 
 void CPU::JR_n8(int8_t n8)
@@ -472,9 +471,9 @@ void CPU::RET_cc(bool cc)
     if (cc)
     {
         RET();
-        branch_taken = BranchTaken::YES;
+        branch_taken = true;
     }
-    else branch_taken = BranchTaken::NO;
+    else branch_taken = false;
 }
 
 /* RETI */

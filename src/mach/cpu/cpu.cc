@@ -1,12 +1,10 @@
 #include "cpu.hh"
-#include <algorithm>
-#include <cassert>
 
 void CPU::execute(const uint8_t* instruction)
 {
     if (!instruction) instruction = &mem[PC];
     curr_instr = instruction;
-    branch_taken = BranchTaken::NO;
+    branch_taken = false;
 
     if (DI_status == IMEStatus::RESET_NEXT_CYCLE)
         DI_status = IMEStatus::RESET_THIS_CYCLE;
@@ -29,7 +27,7 @@ void CPU::execute(const uint8_t* instruction)
     if (op_info->handler) (this->*(op_info->handler))();
     else invalid_opcode();
 
-    if (branch_taken == BranchTaken::YES)
+    if (branch_taken)
         clock_cycles += op_info->cycles_on_action;
     else
     {

@@ -27,7 +27,7 @@ private:
     enum HWRegisterAddr : uint16_t
     {
         HWREG_IF_ADDR  = 0xFF0F, // Interrupt flag register
-        HWREG_IE_ADDR = 0xFFFF  // Interrupt enable register
+        HWREG_IE_ADDR = 0xFFFF   // Interrupt enable register
     };
 
     // Interrupt enabling and disabling have a delay of one machine cycle.
@@ -47,8 +47,6 @@ private:
         N_FLAG = 6,
         Z_FLAG = 7
     };
-
-    enum class BranchTaken {NO = 0, YES = 1};
 
     enum IntFlagPos : uint8_t
     {
@@ -88,8 +86,8 @@ private:
     uint16_t& DE = reg[1];
     uint16_t& HL = reg[2];
     uint16_t& AF = reg[3];
-    uint16_t& PC = reg[5];
-    uint16_t& SP = reg[4];
+    uint16_t& PC = reg[4];
+    uint16_t& SP = reg[5];
     uint8_t&  B  = *(reinterpret_cast<uint8_t*>(&BC) + 0);
     uint8_t&  C  = *(reinterpret_cast<uint8_t*>(&BC) + 1);
     uint8_t&  D  = *(reinterpret_cast<uint8_t*>(&DE) + 0);
@@ -106,7 +104,8 @@ private:
     static const array<const InstrInfo, 256> INSTR_TABLE;
     // This table will contain the information related to opcodes prefixed
     // with 0xCB. The 0xCB prefix only means that another byte should be
-    // fetched and that byte defines the operation to be taken.
+    // fetched and the combination of the two bytes then determines the
+    // operation to be done.
     static const array<const InstrInfo, 256> CB_INSTR_TABLE;
 
     // Pointer to the current instruction in execution. This is not necessarily
@@ -115,7 +114,7 @@ private:
 
     // Conditional branches take a varying number of clock cycles depending
     // on whether the condition was true (i.e. branch happened) or not.
-    BranchTaken branch_taken = BranchTaken::NO;
+    bool branch_taken = false;
 
     enum IMEStatus DI_status = IMEStatus::DO_NOTHING;
     enum IMEStatus EI_status = IMEStatus::DO_NOTHING;

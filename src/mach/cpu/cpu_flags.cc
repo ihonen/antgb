@@ -1,5 +1,4 @@
 #include "cpu.hh"
-#include <cassert>
 
 uint8_t CPU::get_ALU_flag(enum ALUFlagPos pos)
 {
