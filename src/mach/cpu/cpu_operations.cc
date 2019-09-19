@@ -712,6 +712,7 @@ void CPU::SRL_r8(uint8_t& r8)
 void CPU::STOP()
 {
     is_stopped = true;
+    // TODO: Turn off display
 }
 
 /* SUB */

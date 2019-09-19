@@ -36,19 +36,26 @@ void CPU::execute(const uint8_t* instruction)
     curr_instr = instruction;
     branch_taken = false;
 
-    if (DI_status == IMEStatus::RESET_NEXT_CYCLE)
-        DI_status = IMEStatus::RESET_THIS_CYCLE;
-    else if (EI_status == IMEStatus::SET_NEXT_CYCLE)
-        EI_status = IMEStatus::SET_THIS_CYCLE;
-
     // Nested interrupts are possible if the user has set IME
     // in the handler, so no if statement here.
     const IntInfo* int_info = check_interrupts();
     if (int_info)
     {
+        if (is_halted) is_halted = false;
+        if (is_stopped && int_info->id == IntID::KEYPAD)
+            is_stopped = false;
         curr_interrupt = int_info;
         handle_interrupt(curr_interrupt);
     }
+
+    if (is_halted) return;
+    if (is_stopped) return;
+
+    if (DI_status == IMEStatus::RESET_NEXT_CYCLE)
+        DI_status = IMEStatus::RESET_THIS_CYCLE;
+    else if (EI_status == IMEStatus::SET_NEXT_CYCLE)
+        EI_status = IMEStatus::SET_THIS_CYCLE;
+
 
     const InstrInfo* op_info = (*curr_instr == 0xCB) ?
                                 &CB_INSTR_TABLE[curr_instr[1]] :

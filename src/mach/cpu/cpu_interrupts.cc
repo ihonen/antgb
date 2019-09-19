@@ -2,11 +2,11 @@
 
 const array<const CPU::IntInfo,5> CPU::INTERRUPT_TABLE =
 {{
-    {1, 0, 0x40}, // V-Blank
-    {2, 1, 0x48}, // LCDC Status
-    {3, 2, 0x50}, // Timer overflow
-    {4, 3, 0x58}, // Serial transfer
-    {5, 4, 0x60}  // P10-P13 Hi-Lo change
+    {IntID::VBLANK,      1, 0, 0x40},
+    {IntID::LCDC_STATUS, 2, 1, 0x48},
+    {IntID::TIMER_OVF,   3, 2, 0x50},
+    {IntID::SERIAL,      4, 3, 0x58},
+    {IntID::KEYPAD,      5, 4, 0x60}
 }};
 
 const CPU::IntInfo* CPU::check_interrupts()

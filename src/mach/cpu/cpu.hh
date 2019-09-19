@@ -67,8 +67,11 @@ private:
         void   (CPU::*handler)();
     } InstrInfo;
 
+    enum class IntID {VBLANK, LCDC_STATUS, TIMER_OVF, SERIAL, KEYPAD};
+
     typedef struct
     {
+        IntID      id;
         uint8_t    priority;
         uint8_t    flag_position;
         uint8_t    jump_address;
