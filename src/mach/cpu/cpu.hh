@@ -20,6 +20,8 @@ public:
         uint8_t val_;
     };
 
+             CPU();
+    void     restart();
     void     execute(const uint8_t* const instruction = nullptr);
     void     reset_cycles();
     uint64_t get_cycles();
@@ -127,6 +129,7 @@ private:
     const IntInfo* curr_interrupt = nullptr;
     bool is_interrupted = false;
 
+    void     CPU_init();
     uint8_t  get_ALU_flag(enum ALUFlagPos pos);
     void     assign_ALU_flag(enum ALUFlagPos pos, uint8_t val);
     uint8_t  C_flag_get();

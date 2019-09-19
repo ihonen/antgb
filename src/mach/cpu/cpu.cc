@@ -1,5 +1,35 @@
 #include "cpu.hh"
 
+CPU::CPU()
+{
+    CPU_init();
+}
+
+void CPU::restart()
+{
+    CPU_init();
+}
+
+void CPU::CPU_init()
+{
+    mem = {0};
+    reg = {0};
+    IME_flag = 0x00;
+    mem[HWREG_IF_ADDR] = 0x00;
+    mem[HWREG_IF_ADDR] = 0x00;
+    PC = 0x0100;
+    SP = 0xFFFE;
+    curr_instr = nullptr;
+    curr_interrupt = nullptr;
+    branch_taken = false;
+    DI_status = IMEStatus::DO_NOTHING;
+    EI_status = IMEStatus::DO_NOTHING;
+    is_halted = false;
+    is_stopped = false;
+    clock_cycles = 0;
+    is_interrupted = false;
+}
+
 void CPU::execute(const uint8_t* instruction)
 {
     if (!instruction) instruction = &mem[PC];
