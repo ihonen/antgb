@@ -6,6 +6,7 @@ void CPU::execute(const uint8_t* instruction)
 {
     if (!instruction) instruction = &mem[PC];
     curr_instr = instruction;
+    branch_taken = BranchTaken::NO;
 
     if (DI_status == IMEStatus::RESET_NEXT_CYCLE)
         DI_status = IMEStatus::RESET_THIS_CYCLE;
