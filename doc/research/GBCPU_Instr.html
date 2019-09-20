@@ -1,0 +1,2770 @@
+<html style><!--
+ Page saved with SingleFile 
+ url: http://www.devrs.com/gb/files/GBCPU_Instr.html 
+ saved date: Fri Sep 20 2019 21:18:34 GMT+0300 (Eastern European Summer Time)
+--><meta charset=utf-8>
+<title>
+ GameBoy CPU InstructionSet Sheet (GCISheet)
+ </title>
+<link type=image/x-icon rel="shortcut icon" href="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="></head>
+<body background="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+<table width cellspacing=0 cellpadding=0 border=1 bgcolor=lightgrey>
+ <tbody><tr>
+ <td align=CENTER>
+ <a name=TOP></a>
+ <font size=5pt>GameBoy CPU InstructionSet Sheet (GCISheet)</font>
+ </td>
+ </tr>
+ <tr height>
+ <td width align=CENTER>
+ <table width cellspacing=0 cellpadding=0 border=1 bgcolor=lightgrey>
+ <tbody><tr>
+ <td colspan=9 align=CENTER>
+ <a name=QUICKJUMP><font size=3pt>QuickJump Navigator:</font></a>
+ </td>
+ </tr>
+ <tr>
+ <td width>
+ <font size=1.5pt face="Courier New" color>
+ <a href=#ADC>ADC A,n</a><br>
+ <a href=#ADD>ADD A,n</a><br>
+ <a href=#ADD2>ADD HL,n</a><br>
+ <a href=#ADD3>ADD SP,n</a><br>
+ <a href=#AND>AND n</a><br>
+ <a href=#BIT>BIT b,r</a><br>
+ <a href=#CALL>CALL n</a><br>
+ <a href=#CALL2>CALL cc,n</a>
+ </font>
+ </td>
+ <td width>
+ <font size=1.5pt face="Courier New" color>
+ <a href=#CCF>CCF</a><br>
+ <a href=#CP>CP n</a><br>
+ <a href=#CPL>CPL</a><br>
+ <a href=#DAA>DAA</a><br>
+ <a href=#DEC>DEC n</a><br>
+ <a href=#DEC2>DEC nn</a><br>
+ <a href=#DI>DI</a><br>
+ <a href=#EI>EI</a>
+ </font>
+ </td>
+ <td width>
+ <font size=1.5pt face="Courier New" color>
+ <a href=#INC>INC n</a><br>
+ <a href=#INC2>INC nn</a><br>
+ <a href=#JP>JP n</a><br>
+ <a href=#JP2>JP cc,n</a><br>
+ <a href=#JP3>JP [HL]</a><br>
+ <a href=#JR>JR n</a><br>
+ <a href=#JR2>JR cc,n</a><br>
+ <a href=#HALT>HALT</a>
+ </font>
+ </td>
+ <td width>
+ <font size=1.5pt face="Courier New" color>
+ <a href=#LD>LD A,n</a><br>
+ <a href=#LD2>LD n,A</a><br>
+ <a href=#LD3>LD A,[C]</a><br>
+ <a href=#LD4>LD A,[HL+]</a><br>
+ <a href=#LD5>LD A,[HL-]</a><br>
+ <a href=#LD6>LD A,[HLI]</a><br>
+ <a href=#LD7>LD A,[HLD]</a><br>
+ <a href=#LD8>LD [C],A</a>
+ </font>
+ </td>
+ <td width>
+ <font size=1.5pt face="Courier New" color>
+ <a href=#LD9>LD [HL+],A</a><br>
+ <a href=#LD10>LD [HL-],A</a><br>
+ <a href=#LD11>LD [HLI],A</a><br>
+ <a href=#LD12>LD [HLD],A</a><br>
+ <a href=#LD13>LD r1,r2</a><br>
+ <a href=#LD14>LD n,nn</a><br>
+ <a href=#LD15>LD HL,[SP+n]</a><br>
+ <a href=#LD16>LD SP,HL</a>
+ </font>
+ </td>
+ <td width>
+ <font size=1.5pt face="Courier New" color>
+ <a href=#LD17>LD [n],SP</a><br>
+ <a href=#LDD>LDD A,[HL]</a><br>
+ <a href=#LDD2>LDD [HL],A</a><br>
+ <a href=#LDH>LDH [n],A</a><br>
+ <a href=#LDH2>LDH A,[n]</a><br>
+ <a href=#LDHL>LDHL SP,n</a><br>
+ <a href=#LDI>LDI A,[HL]</a><br>
+ <a href=#LDI2>LDI [HL],A</a>
+ </font>
+ </td>
+ <td width>
+ <font size=1.5pt face="Courier New" color>
+ <a href=#NOP>NOP</a><br>
+ <a href=#OR>OR n</a><br>
+ <a href=#POP>POP nn</a><br>
+ <a href=#PUSH>PUSH nn</a><br>
+ <a href=#RES>RES b,r</a><br>
+ <a href=#RET>RET</a><br>
+ <a href=#RET2>RET cc</a><br>
+ <a href=#RETI>RETI</a>
+ </font>
+ </td>
+ <td width>
+ <font size=1.5pt face="Courier New" color>
+ <a href=#RL>RL n</a><br>
+ <a href=#RLC>RLC n</a><br>
+ <a href=#RR>RR n</a><br>
+ <a href=#RRC>RRC n</a><br>
+ <a href=#RST>RST n</a><br>
+ <a href=#SBC>SBC A,n</a><br>
+ <a href=#SCF>SCF</a><br>
+ <a href=#SET>SET b,r</a>
+ </font>
+ </td>
+ <td width>
+ <font size=1.5pt face="Courier New" color>
+ <a href=#SLA>SLA n</a><br>
+ <a href=#SRA>SRA n</a><br>
+ <a href=#SRL>SRL n</a><br>
+ <a href=#STOP>STOP</a><br>
+ <a href=#SUB>SUB n</a><br>
+ <a href=#SWAP>SWAP n</a><br>
+ <a href=#XOR>XOR n</a>
+ </font>
+ </td>
+ </tr>
+ </table>
+ </td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=ADC></a>
+ <pre>
+
+<font color=blue>ADC</font> <font color=olive>A,n</font>       <font color=green>- Add n + Carry flag to A.
+
+
+
+			
+
+
+
+	n = A,B,C,D,E,H,L,(HL),#
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		Z - Set if result is zero.
+
+
+
+		N - Reset.
+
+
+
+		H - Set if carry from bit 3.
+
+
+
+		C - Set if carry from bit 7.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=ADD></a>
+ <pre>
+
+<font color=blue>ADD</font> <font color=olive>A,n</font>       <font color=green>- Add n to A.
+
+
+
+			
+
+
+
+	n = A,B,C,D,E,H,L,(HL),#
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		Z - Set if result is zero.
+
+
+
+		N - Reset.
+
+
+
+		H - Set if carry from bit 3.
+
+
+
+		C - Set if carry from bit 7.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=ADD2></a>
+ <pre>
+
+<font color=blue>ADD</font> <font color=olive>HL,n</font>      <font color=green>- Add n to HL.
+
+
+
+			
+
+
+
+	n = BC,DE,HL
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		Z - Not affected
+
+
+
+		N - Reset.
+
+
+
+		H - Set if carry from bit 11.
+
+
+
+		C - Set if carry from bit 15.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=ADD3></a>
+ <pre>
+
+<font color=blue>ADD</font> <font color=olive>SP,n</font>      <font color=green>- Add n to Stack Pointer (SP).
+
+
+
+			
+
+
+
+	n = one byte signed immediate value
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		Z - Reset.
+
+
+
+		N - Reset.
+
+
+
+		H - Set or reset according to operation.
+
+
+
+		C - Set or reset according to operation.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=AND></a>
+ <pre>
+
+<font color=blue>AND</font> <font color=olive>n</font>         <font color=green>- Logically AND n with A, result in A.
+
+
+
+			
+
+
+
+	n = A,B,C,D,E,H,L,(HL),#
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		Z - Set if result is zero.
+
+
+
+		N - Reset.
+
+
+
+		H - Set.
+
+
+
+		C - Reset.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=BIT></a>
+ <pre>
+
+<font color=blue>BIT</font> <font color=olive>b,r</font>       <font color=green>- Test bit b in register r.
+
+
+
+			
+
+
+
+	b = 0-7, r = A,B,C,D,E,H,L,(HL)
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		Z - Set if bit b of register r is 0.
+
+
+
+		N - Reset.
+
+
+
+		H - Set.
+
+
+
+		C - Not affected.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=CALL></a>
+ <pre>
+
+<font color=blue>CALL</font> <font color=olive>n</font>        <font color=green>- Push address of next instruction onto
+
+
+
+		stack and then jump to address n.
+
+
+
+				
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=CALL2></a>
+ <pre>
+
+<font color=blue>CALL</font> <font color=olive>cc,n</font>     <font color=green>- Call address n if following condition
+
+
+
+		is true:
+
+
+
+			
+
+
+
+	cc = NZ, Call if Z flag is reset.
+
+
+
+	cc = Z,  Call if Z flag is set.
+
+
+
+	cc = NC, Call if C flag is reset.
+
+
+
+	cc = C,  Call if C flag is set.
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=CCF></a>
+ <pre>
+
+<font color=blue>CCF</font>           <font color=green>- Complement carry flag.
+
+
+
+			
+
+
+
+	If C flag is set then reset it.
+
+
+
+	If C flag is reset then set it.
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		Z - Not affected.
+
+
+
+		N - Reset.
+
+
+
+		H - Reset.
+
+
+
+		C - Complemented.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=CP></a>
+ <pre>
+
+<font color=blue>CP</font> <font color=olive>n</font>          <font color=green>- Compare A with n.
+
+
+
+			
+
+
+
+	This is basically an A - n subtraction
+
+
+
+	instruction but the results are thrown away.
+
+
+
+			
+
+
+
+	n = A,B,C,D,E,H,L,(HL),#
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		Z - Set if result is zero. (Set if A = n)
+
+
+
+		N - Set.
+
+
+
+		H - Set if no borrow from bit 4.
+
+
+
+		C - Set for no borrow. (Set if A &lt; n.)</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=CPL></a>
+ <pre>
+
+<font color=blue>CPL</font>           <font color=green>- Complement A register. (Flip all bits.)
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		Z - Not affected.
+
+
+
+		N - Set.
+
+
+
+		H - Set.
+
+
+
+		C - Not affected.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=DAA></a>
+ <pre>
+
+<font color=blue>DAA</font>           <font color=green>- Decimal adjust register A.
+
+
+
+			
+
+
+
+	This instruction adjusts register A so that the
+
+
+
+	correct representation of Binary Coded Decimal
+
+
+
+	(BCD) is obtained.
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		Z - Set if register A is zero.
+
+
+
+		N - Not affected.
+
+
+
+		H - Reset.
+
+
+
+		C - Set of reset according to operation.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=DEC></a>
+ <pre>
+
+<font color=blue>DEC</font> <font color=olive>n</font>         <font color=green>- Decrement register n.
+
+
+
+			
+
+
+
+	n = A,B,C,D,E,H,L,(HL)
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		Z - Set if result is zero.
+
+
+
+		N - Set.
+
+
+
+		H - Set if no borrow from bit 4.
+
+
+
+		C - Not affected.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=DEC2></a>
+ <pre>
+
+<font color=blue>DEC</font> <font color=olive>nn</font>        <font color=green>- Decrement register nn.
+
+
+
+			
+
+
+
+	nn = BC,DE,HL,SP
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=DI></a>
+ <pre>
+
+<font color=blue>DI</font>            <font color=green>- Disable interrupts.
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=EI></a>
+ <pre>
+
+<font color=blue>EI</font>            <font color=green>- Enable interrupts.
+
+
+
+			
+
+
+
+	This instruction enables the interrupts but not immediately.
+
+
+
+	Interrupts are enabled after the instruction after EI is
+
+
+
+	executed.
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=INC></a>
+ <pre>
+
+<font color=blue>INC</font> <font color=olive>n</font>         <font color=green>- Increment register n.
+
+
+
+			
+
+
+
+	n = A,B,C,D,E,H,L,(HL)
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		Z - Set if result is zero.
+
+
+
+		N - Reset.
+
+
+
+		H - Set if carry from bit 3.
+
+
+
+		C - Not affected.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=INC2></a>
+ <pre>
+
+<font color=blue>INC</font> <font color=olive>nn</font>        <font color=green>- Increment register nn.
+
+
+
+			
+
+
+
+	n = BC,DE,HL,SP
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=JP></a>
+ <pre>
+
+<font color=blue>JP</font> <font color=olive>n</font>          <font color=green>- Jump to address n.
+
+
+
+			
+
+
+
+	n = two byte immediate value. (LSByte first)
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=JP2></a>
+ <pre>
+
+<font color=blue>JP</font> <font color=olive>cc,n</font>       <font color=green>- Jump to address n if following condition
+
+
+
+		is true:
+
+
+
+			
+
+
+
+	n = two byte immediate value. (LSByte first.)
+
+
+
+			
+
+
+
+	cc = NZ, Jump if Z flag is reset.
+
+
+
+	cc = Z,  Jump if Z flag is set.
+
+
+
+	cc = NC, Jump if C flag is reset.
+
+
+
+	cc = C,  Jump if C flag is set.
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=JP3></a>
+ <pre>
+
+<font color=blue>JP</font> <font color=darkblue>[</font><font color=olive>HL</font><font color=darkblue>]</font>       <font color=green>- Jump to address contained in HL.
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=JR></a>
+ <pre>
+
+<font color=blue>JR</font> <font color=olive>n</font>          <font color=green>- Add n to current address and jump to it.
+
+
+
+			
+
+
+
+	n = one byte signed immediate value.
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=JR2></a>
+ <pre>
+
+<font color=blue>JR</font> <font color=olive>cc,n</font>       <font color=green>- If following condition is true then
+
+
+
+		add n to current address and jump to it:
+
+
+
+			
+
+
+
+	n = one byte signed immediate value
+
+
+
+			
+
+
+
+	cc = NZ, Jump if Z flag is reset.
+
+
+
+	cc = Z,  Jump if Z flag is set.
+
+
+
+	cc = NC, Jump if C flag is reset.
+
+
+
+	cc = C,  Jump if C flag is set.
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=HALT></a>
+ <pre>
+
+<font color=blue>HALT</font>          <font color=green>- Power down CPU until an interrupt occurs.
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=LD></a>
+ <pre>
+
+<font color=blue>LD</font> <font color=olive>A,n</font>        <font color=green>- Put value n into A.
+
+
+
+			
+
+
+
+	n = A,B,C,D,E,H,L,(BC),(DE),(HL),(nnnn),#
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=LD2></a>
+ <pre>
+
+<font color=blue>LD</font> <font color=olive>n,A</font>        <font color=green>- Put value A into n.
+
+
+
+			
+
+
+
+	n = A,B,C,D,E,H,L,(BC,(DE),(HL),(nnnn)
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=LD3></a>
+ <pre>
+
+<font color=blue>LD</font> <font color=olive>A,</font><font color=darkblue>[</font><font color=olive>C</font><font color=darkblue>]</font>      <font color=green>- Put value at address $FF00 + register C into A.
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=LD4></a>
+ <pre>
+
+<font color=blue>LD</font> <font color=olive>A,</font><font color=darkblue>[</font><font color=olive>HL+</font><font color=darkblue>]</font>    <font color=green>- Same as LD A,[HLI].</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=LD5></a>
+ <pre>
+
+<font color=blue>LD</font> <font color=olive>A,</font><font color=darkblue>[</font><font color=olive>HL-</font><font color=darkblue>]</font>    <font color=green>- Same as LD A,[HLD].</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=LD6></a>
+ <pre>
+
+<font color=blue>LD</font> <font color=olive>A,</font><font color=darkblue>[</font><font color=olive>HLI</font><font color=darkblue>]</font>    <font color=green>- Put value at address HL into A. Increment HL.
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=LD7></a>
+ <pre>
+
+<font color=blue>LD</font> <font color=olive>A,</font><font color=darkblue>[</font><font color=olive>HLD</font><font color=darkblue>]</font>    <font color=green>- Put value at address HL into A. Decrement HL.
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=LD8></a>
+ <pre>
+
+<font color=blue>LD</font> <font color=darkblue>[</font><font color=olive>C</font><font color=darkblue>]</font><font color=olive>,A</font>      <font color=green>- Put A into address $FF00 + register C.
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=LD9></a>
+ <pre>
+
+<font color=blue>LD</font> <font color=darkblue>[</font><font color=olive>HL+</font><font color=darkblue>]</font><font color=olive>,A</font>    <font color=green>- Same as LD [HLI],A.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=LD10></a>
+ <pre>
+
+<font color=blue>LD</font> <font color=darkblue>[</font><font color=olive>HL-</font><font color=darkblue>]</font><font color=olive>,A</font>    <font color=green>- Same as LD [HLD],A.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=LD11></a>
+ <pre>
+
+<font color=blue>LD</font> <font color=darkblue>[</font><font color=olive>HLI</font><font color=darkblue>]</font><font color=olive>,A</font>    <font color=green>- Put A into memory address HL. Increment HL.
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=LD12></a>
+ <pre>
+
+<font color=blue>LD</font> <font color=darkblue>[</font><font color=olive>HLD</font><font color=darkblue>]</font><font color=olive>,A</font>    <font color=green>- Put A into memory address HL. Decrement HL.
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=LD13></a>
+ <pre>
+
+<font color=blue>LD</font> <font color=olive>r1,r2</font>      <font color=green>- Put value r2 into r1.
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=LD14></a>
+ <pre>
+
+<font color=blue>LD</font> <font color=olive>n,nn</font>       <font color=green>- Put value nn into n.
+
+
+
+			
+
+
+
+	n = BC,DE,HL,SP
+
+
+
+	nn = 16 bit immediate value
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=LD15></a>
+ <pre>
+
+<font color=blue>LD</font> <font color=olive>HL,</font><font color=darkblue>[</font><font color=olive>SP+n</font><font color=darkblue>]</font>  <font color=green>- Put SP + n into HL.
+
+
+
+			
+
+
+
+	n = one byte signed immediate value
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		Z - Reset.
+
+
+
+		N - Reset.
+
+
+
+		H - Set or reset according to operation.
+
+
+
+		C - Set or reset according to operation.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=LD16></a>
+ <pre>
+
+<font color=blue>LD</font> <font color=olive>SP,HL</font>      <font color=green>- Put HL into Stack Pointer (SP).
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=LD17></a>
+ <pre>
+
+<font color=blue>LD</font> <font color=darkblue>[</font><font color=olive>n</font><font color=darkblue>]</font><font color=olive>,SP</font>     <font color=green>- Put Stack Pointer (SP) at address n.
+
+
+
+			
+
+
+
+	n = two byte immediate address
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=LDD></a>
+ <pre>
+
+<font color=blue>LDD</font> <font color=olive>A,</font><font color=darkblue>[</font><font color=olive>HL</font><font color=darkblue>]</font>    <font color=green>- Same as LD A,[HLD].</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=LDD2></a>
+ <pre>
+
+<font color=blue>LDD</font> <font color=darkblue>[</font><font color=olive>HL</font><font color=darkblue>]</font><font color=olive>,A</font>    <font color=green>- Same as LD [HLD],A.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=LDH></a>
+ <pre>
+
+<font color=blue>LDH</font> <font color=darkblue>[</font><font color=olive>n</font><font color=darkblue>]</font><font color=olive>,A</font>     <font color=green>- Put A into memory address $FF00 + n.
+
+
+
+			
+
+
+
+	n = one byte immediate value
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=LDH2></a>
+ <pre>
+
+<font color=blue>LDH</font> <font color=olive>A,</font><font color=darkblue>[</font><font color=olive>n</font><font color=darkblue>]</font>     <font color=green>- Put memory address $FF00 + n into A.
+
+
+
+			
+
+
+
+	n = one byte immediate value
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=LDHL></a>
+ <pre>
+
+<font color=blue>LDHL</font> <font color=olive>SP,n</font>     <font color=green>- Same as LD HL,[SP+n]</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=LDI></a>
+ <pre>
+
+<font color=blue>LDI</font> <font color=olive>A,</font><font color=darkblue>[</font><font color=olive>HL</font><font color=darkblue>]</font>    <font color=green>- Same as LD A,[HLI].</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=LDI2></a>
+ <pre>
+
+<font color=blue>LDI</font> <font color=darkblue>[</font><font color=olive>HL</font><font color=darkblue>]</font><font color=olive>,A</font>    <font color=green>- Same as LD [HLI],A.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=NOP></a>
+ <pre>
+
+<font color=blue>NOP</font>           <font color=green>- No operation.
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=OR></a>
+ <pre>
+
+<font color=blue>OR</font> <font color=olive>n</font>          <font color=green>- Logical OR n with register A, result in A.
+
+
+
+			
+
+
+
+	n = A,B,C,D,E,H,L,(HL),#
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		Z - Set if result is zero.
+
+
+
+		N - Reset.
+
+
+
+		H - Reset.
+
+
+
+		C - Reset.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=POP></a>
+ <pre>
+
+<font color=blue>POP</font> <font color=olive>nn</font>        <font color=green>- Pop two bytes off stack into register pair nn.
+
+
+
+		Increment Stack Pointer (SP) twice.
+
+
+
+			
+
+
+
+	nn = AF,BC,DE,HL
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=PUSH></a>
+ <pre>
+
+<font color=blue>PUSH</font> <font color=olive>nn</font>       <font color=green>- Push register pair nn onto stack.
+
+
+
+		Decrement Stack Pointer (SP) twice.
+
+
+
+			
+
+
+
+	nn = AF,BC,DE,HL
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=RES></a>
+ <pre>
+
+<font color=blue>RES</font> <font color=olive>b,r</font>       <font color=green>- Reset bit b in register r.
+
+
+
+			
+
+
+
+	b = 0-7, r = A,B,C,D,E,H,L,(HL)
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=RET></a>
+ <pre>
+
+<font color=blue>RET</font>           <font color=green>- Pop two bytes from stack &amp; jump to that address.
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=RET2></a>
+ <pre>
+
+<font color=blue>RET</font> <font color=olive>cc</font>        <font color=green>- Return if following condition is true:
+
+
+
+			
+
+
+
+	cc = NZ, Return if Z flag is reset.
+
+
+
+	cc = Z,  Return if Z flag is set.
+
+
+
+	cc = NC, Return if C flag is reset.
+
+
+
+	cc = C,  Return if C flag is set.
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=RETI></a>
+ <pre>
+
+<font color=blue>RETI</font>          <font color=green>- Pop two bytes from stack &amp; jump to that address
+
+
+
+		then enable interrupts.
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=RL></a>
+ <pre>
+
+<font color=blue>RL</font> <font color=olive>n</font>          <font color=green>- Rotate n left through Carry flag.
+
+
+
+			
+
+
+
+	n = A,B,C,D,E,H,L,(HL)
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		Z - Set if result is zero.
+
+
+
+		N - Reset.
+
+
+
+		H - Reset.
+
+
+
+		C - Contains old bit 7 data.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=RLC></a>
+ <pre>
+
+<font color=blue>RLC</font> <font color=olive>n</font>         <font color=green>- Rotate n left. Old bit 7 to Carry flag.
+
+
+
+			
+
+
+
+	n = A,B,C,D,E,H,L,(HL)
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		Z - Set if result is zero.
+
+
+
+		N - Reset.
+
+
+
+		H - Reset.
+
+
+
+		C - Contains old bit 7 data.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=RR></a>
+ <pre>
+
+<font color=blue>RR</font> <font color=olive>n</font>          <font color=green>- Rotate n right through Carry flag.
+
+
+
+			
+
+
+
+	n = A,B,C,D,E,H,L,(HL)
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		Z - Set if result is zero.
+
+
+
+		N - Reset.
+
+
+
+		H - Reset.
+
+
+
+		C - Contains old bit 0 data.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=RRC></a>
+ <pre>
+
+<font color=blue>RRC</font> <font color=olive>n</font>         <font color=green>- Rotate n right. Old bit 0 to Carry flag.
+
+
+
+			
+
+
+
+	n = A,B,C,D,E,H,L,(HL)
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		Z - Set if result is zero.
+
+
+
+		N - Reset.
+
+
+
+		H - Reset.
+
+
+
+		C - Contains old bit 0 data.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=RST></a>
+ <pre>
+
+<font color=blue>RST</font> <font color=olive>n</font>         <font color=green>- Push present address onto stack.
+
+
+
+		Jump to address $0000 + n.
+
+
+
+			
+
+
+
+	n = $00,$08,$10,$18,$20,$28,$30,$38
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=SBC></a>
+ <pre>
+
+<font color=blue>SBC</font> <font color=olive>A,n</font>       <font color=green>- Subtract n + Carry flag from A.
+
+
+
+			
+
+
+
+	n = A,B,C,D,E,H,L,(HL),#
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		Z - Set if result is zero.
+
+
+
+		N - Set.
+
+
+
+		H - Set if no borrow from bit 4.
+
+
+
+		C - Set if no borrow.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=SCF></a>
+ <pre>
+
+<font color=blue>SCF</font>           <font color=green>- Set Carry flag.
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		Z - Not affected.
+
+
+
+		N - Reset.
+
+
+
+		H - Reset.
+
+
+
+		C - Set.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=SET></a>
+ <pre>
+
+<font color=blue>SET</font> <font color=olive>b,r</font>       <font color=green>- Set bit b in register r.
+
+
+
+			
+
+
+
+	b = 0-7, r = A,B,C,D,E,H,L,(HL)
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		None</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=SLA></a>
+ <pre>
+
+<font color=blue>SLA</font> <font color=olive>n</font>         <font color=green>- Shift n left into Carry. LSBit of n set to 0.
+
+
+
+			
+
+
+
+	n = A,B,C,D,E,H,L,(HL)
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		Z - Set if result is zero.
+
+
+
+		N - Reset.
+
+
+
+		H - Reset.
+
+
+
+		C - Contains old bit 7 data.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=SRA></a>
+ <pre>
+
+<font color=blue>SRA</font> <font color=olive>n</font>         <font color=green>- Shift n right into Carry. MSBit doesn't change.
+
+
+
+			
+
+
+
+	n = A,B,C,D,E,H,L,(HL)
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		Z - Set if result is zero.
+
+
+
+		N - Reset.
+
+
+
+		H - Reset.
+
+
+
+		C - Contains old bit 0 data.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=SRL></a>
+ <pre>
+
+<font color=blue>SRL</font> <font color=olive>n</font>         <font color=green>- Shift n right into Carry. MSBit of n set to 0.
+
+
+
+			
+
+
+
+	n = A,B,C,D,E,H,L,(HL)
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		Z - Set if result is zero.
+
+
+
+		N - Reset.
+
+
+
+		H - Reset.
+
+
+
+		C - Contains old bit 0 data.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=STOP></a>
+ <pre>
+
+<font color=blue>STOP</font>          <font color=green>- ???
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		?</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=SUB></a>
+ <pre>
+
+<font color=blue>SUB</font> <font color=olive>n</font>         <font color=green>- Subtract n from A.
+
+
+
+			
+
+
+
+	n = A,B,C,D,E,H,L,(HL),#
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		Z - Set if result is zero.
+
+
+
+		N - Set.
+
+
+
+		H - Set if no borrow from bit 4.
+
+
+
+		C - Set if no borrow.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=SWAP></a>
+ <pre>
+
+<font color=blue>SWAP</font> <font color=olive>n</font>        <font color=green>- Swap upper &amp; lower bits of n.
+
+
+
+			
+
+
+
+	n = A,B,C,D,E,H,L,(HL)
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		Z - Set if result is zero.
+
+
+
+		N - Reset.
+
+
+
+		H - Reset.
+
+
+
+		C - Reset.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+ <tr>
+ <td align=LEFT>
+ <a name=XOR></a>
+ <pre>
+
+<font color=blue>XOR</font> <font color=olive>n</font>         <font color=green>- Logical exclusive OR n with
+
+
+
+		register A, result in A.
+
+
+
+			
+
+
+
+	n = A,B,C,D,E,H,L,(HL),#
+
+
+
+			
+
+
+
+	Flags affected:
+
+
+
+		Z - Set if result is zero.
+
+
+
+		N - Reset.
+
+
+
+		H - Reset.
+
+
+
+		C - Reset.</font>
+
+
+
+			</pre>
+ </td>
+ </tr>
+ <tr>
+ <td><a href=#TOP>Top</a></td>
+ </tr>
+</table>
+<p>
+ 
+<font face="Courier New">
+ <table width cellspacing=0 cellpadding=2 border=1>
+ <tbody><tr valign=TOP>
+ <td colspan=1 width bgcolor=lightgrey align=LEFT>
+ <font size=1pt>
+ All material on this page is Copyright (c) 1999 by 
+ <a href=mailto:scnelson@nullpointer.net style=color:blue;text-decoration:none>col_deamon</a>. 
+ All rights reserved.
+ </font>
+ </td>
+ </tr>
+ <tr valign=TOP>
+ <td colspan=1 width bgcolor=lightgrey align=LEFT>
+ <font size=2pt>
+ <b>Last updated</b>: <i>11.25.99 09:46</i>
+ </font>
+ </td>
+ </tr>
+ </table>
+</font>
+<div id=ghostery-purple-box class="ghostery-bottom ghostery-right ghostery-none ghostery-collapsed"><div id=ghostery-box><div id=ghostery-count style="background:rgba(0,0,0,0) none repeat scroll 0% 0%;color:#ffffff">0</div><div id=ghostery-pb-icons-container><span id=ghostery-breaking-tracker class=ghostery-pb-tracker title="Broken Page Trackers" style='background:rgba(0,0,0,0) url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+DQo8c3ZnIHdpZHRoPSIxOHB4IiBoZWlnaHQ9IjE4cHgiIHZpZXdCb3g9IjAgMCAxOCAxOCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4NCiAgICA8IS0tIEdlbmVyYXRvcjogU2tldGNoIDQwICgzMzc2MikgLSBodHRwOi8vd3d3LmJvaGVtaWFuY29kaW5nLmNvbS9za2V0Y2ggLS0+DQogICAgPHRpdGxlPmJyZWFraW5ncGFnZTwvdGl0bGU+DQogICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+DQogICAgPGRlZnM+PC9kZWZzPg0KICAgIDxnIGlkPSJQdXJwbGUtQm94IiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4NCiAgICAgICAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQxNi4wMDAwMDAsIC00NTMuMDAwMDAwKSIgaWQ9ImJhbSEtYnJlYWtpbmctdGhlLXBhZ2UtY29weS0yIiBmaWxsPSIjRkNCQTMzIj4NCiAgICAgICAgICAgIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDQxNi4wMDAwMDAsIDQ1My4wMDAwMDApIj4NCiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNOSwwLjE5NTY1MjE3NCBDNC4xNDQzNjAyNSwwLjE5NTY1MjE3NCAwLjE5NTY1MjE3NCw0LjE0NDM2MDI1IDAuMTk1NjUyMTc0LDkgQzAuMTk1NjUyMTc0LDEzLjg1NTYzOTggNC4xNDQzNjAyNSwxNy44MDQzNDc4IDksMTcuODA0MzQ3OCBDMTMuODU1NjM5OCwxNy44MDQzNDc4IDE3LjgwNDM0NzgsMTMuODU1NjM5OCAxNy44MDQzNDc4LDkgQzE3LjgwNDM0NzgsNC4xNDQzNjAyNSAxMy44NTU2Mzk4LDAuMTk1NjUyMTc0IDksMC4xOTU2NTIxNzQgWiBNMTEuNDg1NTg5OSwxMy40MTA0NDQxIEwxMS4wNzcwNzk4LDEzLjAyMDY3NjggTDEyLjEwMDQ3MTEsMTIuMjE2OTU3OSBMMTEuMDQ2MjQ1MSwxMi4yMTY5NTc5IEwxMS4yMzQ0NzgxLDEwLjg3MDcwODcgTDkuODAzMTgxNDIsMTEuNzk1NzUxMiBMOS40MDMzMzczNCw5LjM0NTA5MzkyIEw4LjY5NDc0MjY5LDExLjA4NjU1MTkgTDcuMzI1NzIwMDksMTAuMTcwOTgxNSBMNy43NTI1Njk3NywxMS45Mjk1NyBMNi41NTQyNDY3MywxMi4zMTE0Nzc1IEw3Ljg4MjM1Nzg3LDEzLjQxMDQ0NDEgTDExLjQ4NTU4OTksMTMuNDEwNDQ0MSBaIE02LjcxNTY3NTcyLDEzLjQxMDQ0NDEgTDUuMDI4NjMxOTcsMTIuMDA2NzU3NiBMNi44Njg0Mzg3MywxMS40MzE5ODE4IEw2LjE2Mzg3NDc3LDguNDg4NTczMDkgTDguMzQ5MzEyODgsOS45NTk5NzUxMiBMOS43MDQwMjY1NCw2LjYxMjQ5MDE1IEwxMC4zNTAzNDcxLDEwLjU1NjcxODIgTDEyLjE5NDk5MDcsOS4zNzY1MzMyOCBMMTEuODk4OTM2OCwxMS40NzY5MjM5IEwxNC4yNjI5MzQzLDExLjQ3NjkyMzkgTDEyLjIxMjkyNzIsMTMuMDc4OTIwMiBMMTIuNTY3MjI0NSwxMy40MTA0NDQxIEwxNS4zMzEyNjc3LDEzLjQxMDQ0NDEgTDE0LjQ3Mzk0MDcsMTIuNTk4NjYzOSBMMTcuMjA3MzUwNiwxMC40NjY4MzM5IEwxMy4wNjA3ODIxLDEwLjQ2NjgzMzkgTDEzLjQ5NjI5NzcsNy4zNDg2OTUgTDExLjA5OTg1MzIsOC44Nzg5NDUwNSBMMTAuMTIxMjAyNiwyLjg5Mjc3MTMgTDcuODc3NzIyNTgsOC40MjU0OTI4NSBMNC41NzA1NDQ0Nyw2LjIwMzk4MDEgTDUuNjY1NDgwNDEsMTAuNzUwMzkyNyBMMi45NTEwMTQ3MiwxMS41OTgyNDc2IEw1LjEzNjQ1MjgzLDEzLjQxMDQ0NDEgTDYuNzE1Njc1NzIsMTMuNDEwNDQ0MSBaIiBpZD0iYnJlYWtpbmdwYWdlIj48L3BhdGg+DQogICAgICAgICAgICA8L2c+DQogICAgICAgIDwvZz4NCiAgICA8L2c+DQo8L3N2Zz4=") repeat scroll 0% 0%;opacity:.5'></span><span id=ghostery-slow-tracker class=ghostery-pb-tracker title="Slow Trackers" style='background:rgba(0,0,0,0) url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+DQo8c3ZnIHdpZHRoPSIxN3B4IiBoZWlnaHQ9IjE3cHgiIHZpZXdCb3g9IjAgMCAxNyAxNyIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4NCiAgICA8IS0tIEdlbmVyYXRvcjogU2tldGNoIDQwICgzMzc2MikgLSBodHRwOi8vd3d3LmJvaGVtaWFuY29kaW5nLmNvbS9za2V0Y2ggLS0+DQogICAgPHRpdGxlPnNsb3d0cmFja2VyczwvdGl0bGU+DQogICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+DQogICAgPGRlZnM+PC9kZWZzPg0KICAgIDxnIGlkPSJQdXJwbGUtQm94IiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4NCiAgICAgICAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTM5NS4wMDAwMDAsIC00NTQuMDAwMDAwKSIgaWQ9InNsb3d0cmFja2VycyIgZmlsbD0iI0ZDQkEzMyI+DQogICAgICAgICAgICA8cGF0aCBkPSJNNDAzLjUsNDU0IEMzOTguODEyMjEsNDU0IDM5NSw0NTcuODEyMjEgMzk1LDQ2Mi41IEMzOTUsNDY3LjE4Nzc5IDM5OC44MTIyMSw0NzEgNDAzLjUsNDcxIEM0MDguMTg3NzksNDcxIDQxMiw0NjcuMTg3NzkgNDEyLDQ2Mi41IEM0MTIsNDU3LjgxMjIxIDQwOC4xODc3OSw0NTQgNDAzLjUsNDU0IFogTTQwOS42MDk1ODQsNDY1LjE3ODY1NCBDNDA5LjUzMDI1OSw0NjUuMTU0MDkgNDA4LjY3NzI4Myw0NjQuNzQ2NDIgNDA3LjU2MTA5MSw0NjQuMzYyNjM3IEM0MDguNDg0Mzc4LDQ2My43NDU2MSA0MDkuMDk0NDE4LDQ2Mi42OTM2NDUgNDA5LjA5NDQxOCw0NjEuNTAxNzMzIEM0MDkuMDk0NDE4LDQ1OS42MDU1ODEgNDA3LjU1MTQwMSw0NTguMDYyMzM4IDQwNS42NTUyNDksNDU4LjA2MjMzOCBDNDAzLjc1OTA5Nyw0NTguMDYyMzM4IDQwMi4yMTU4NTQsNDU5LjYwNTU4MSA0MDIuMjE1ODU0LDQ2MS41MDE3MzMgQzQwMi4yMTU4NTQsNDYyLjA0OTM1IDQwMi4zNDUyMDgsNDYyLjU2Njc2OSA0MDIuNTczMjY5LDQ2My4wMjY0OTcgQzQwMi43ODgwMzQsNDYzLjA2ODYzOCA0MDMuMzQ0NDQsNDYzLjE3NTIzMiA0MDQuMjIzNzgyLDQ2My4zMjM5NjggQzQwNS4yMDQ1MzUsNDYzLjQ5MDI4MSA0MDUuODUyNDM2LDQ2My4zNTY0MTkgNDA2LjM5MTAzOSw0NjIuODc2NjM0IEM0MDYuNzI4MTcyLDQ2Mi41NzY0NTkgNDA2LjkyODA2NCw0NjIuMTYzNjA2IDQwNi45NTM1MjksNDYxLjcxMzc5NCBDNDA2Ljk4MDEyMSw0NjEuMjYzOTgxIDQwNi44Mjk1ODMsNDYwLjgyOTk0NCA0MDYuNTI5NDA4LDQ2MC40OTM3MTIgQzQwNi4wNDY5MTksNDU5Ljk1MjQwNSA0MDUuMjE1MTI3LDQ1OS45MDM5NTMgNDA0LjY3MjY5Myw0NjAuMzg1NTQxIEM0MDQuMjM5NTU3LDQ2MC43NzExMjYgNDA0LjE4NTAyMSw0NjEuNDQ0NDkyIDQwNC41NTIxMjcsNDYxLjg1NzM0NiBDNDA0Ljg0MDEzMyw0NjIuMTgwNTA3IDQwNS4zNjk5NDcsNDYyLjIxNzQ2NiA0MDUuNjg2Nzk5LDQ2MS45MzU3NyBDNDA1LjgwMzk4NCw0NjEuODMxODggNDA1Ljg3MzM5NCw0NjEuNjkyODM1IDQwNS44ODA2MDYsNDYxLjU0NDc3NiBDNDA1Ljg4NjY5LDQ2MS40MjQyMSA0MDUuODUwNjMzLDQ2MS4zMTA2MyA0MDUuNzgwOTk4LDQ2MS4yMzQwMDkgQzQwNS43MTg1NzQsNDYxLjE2NTUgNDA1LjYxOTE5Miw0NjEuMTI3NjQxIDQwNS41MTY4OCw0NjEuMTI4NTQyIEM0MDUuNDI5ODkyLDQ2MS4xMzEwMjEgNDA1LjMxNzIxNCw0NjEuMTY1NSA0MDUuMjQ0MTk4LDQ2MS4yMzc2MTUgQzQwNS4yMjYzOTUsNDYxLjI1NDI5MSA0MDUuMjA0NTM1LDQ2MS4yNjQ4ODMgNDA1LjE3OTc0Niw0NjEuMjY0ODgzIEM0MDUuMTI2MTExLDQ2MS4yNjQ4ODMgNDA1LjA4MzA2OCw0NjEuMjE2NDMxIDQwNS4wODMwNjgsNDYxLjE1NzYxMyBDNDA1LjA4MzA2OCw0NjEuMTIxMzMxIDQwNS4wOTc5NDEsNDYxLjA5NDk2NCA0MDUuMTE2NDIxLDQ2MS4wNjk0OTggQzQwNS4yMjYzOTUsNDYwLjkxODk2IDQwNS4zODE0NCw0NjAuODMxNzQ3IDQwNS41MzUzNTksNDYwLjgxODY3NiBDNDA1Ljc0NDAzOSw0NjAuODAxMDk5IDQwNS45MTMwNTcsNDYwLjg2MDgxOCA0MDYuMDQ2OTE5LDQ2MS4wMDc3NTEgQzQwNi4xNzk4NzksNDYxLjE1NDAwNyA0MDYuMjQ5Mjg5LDQ2MS4zNDg0OSA0MDYuMjM3MTIsNDYxLjU2MzI1NSBDNDA2LjIyMzgyNCw0NjEuODA2MTkgNDA2LjExMjk0OCw0NjIuMDMyNDQ4IDQwNS45MjM2NDksNDYyLjIwMDU2NCBDNDA1LjQ1NzE2LDQ2Mi42MTYxMjIgNDA0LjcwNzE3Myw0NjIuNTY2MDkzIDQwNC4yODU1Myw0NjIuMDkzMjk0IEM0MDMuNzg5NzQ1LDQ2MS41MzU5ODcgNDAzLjg1ODQ3OSw0NjAuNjMyMDgxIDQwNC40MzUxNjcsNDYwLjExNzgxNyBDNDA1LjEyMzQwNyw0NTkuNTA1Mjk3IDQwNi4xODI1ODQsNDU5LjU2NjgyIDQwNi43OTQyMDIsNDYwLjI1NTI4NCBDNDA3LjE1NzAyNiw0NjAuNjYyNzMgNDA3LjM0MDAxNiw0NjEuMTg4MjYyIDQwNy4zMDg0NjYsNDYxLjczMzE3NCBDNDA3LjI3NjY5MSw0NjIuMjc4OTg4IDQwNy4wMzQ2NTgsNDYyLjc3OTA1NSA0MDYuNjI2OTg3LDQ2My4xNDE2NTQgQzQwNi4xNjgzODYsNDYzLjU1MDIyNiA0MDUuNjMyMjYyLDQ2My43NDY1MTIgNDA0Ljk0NjUwMiw0NjMuNzQ2NTEyIEM0MDQuNzA1MzcsNDYzLjc0NjUxMiA0MDQuNDQ0ODU3LDQ2My43MjE3MjIgNDA0LjE2MzE2Miw0NjMuNjc0Mzk3IEM0MDMuMTkyMDk5LDQ2My41MDk2NjIgNDAyLjE1NTAwNyw0NjMuMzI0ODY5IDQwMi4wMTU5NjIsNDYzLjMwNTQ4OCBDNDAxLjMxNzEzMSw0NjMuMjEyMTkxIDQwMC43MzYxNjEsNDYyLjczNzU4OSA0MDAuNzE3NjgyLDQ2Mi4wMzk2NTkgTDQwMC44OTQ1ODcsNDU4Ljk4NzY1MyBDNDAwLjg5NDU4Nyw0NTguNzkxMzY3IDQwMC43MzUyNiw0NTguNjMxMTM4IDQwMC41MzgwNzIsNDU4LjYzMTEzOCBDNDAwLjM0MDg4NSw0NTguNjMxMTM4IDQwMC4xODE1NTgsNDU4Ljc5MDQ2NSA0MDAuMTgxNTU4LDQ1OC45ODc2NTMgQzQwMC4xODE1NTgsNDU4Ljk4NzY1MyA0MDAuMjg1NDQ3LDQ2MC44NDE0MzcgNDAwLjI5NzYxNyw0NjEuMDc1NTgzIEM0MDAuMzIwNjAzLDQ2MS41MjAyMTIgMzk5LjkxMTEzLDQ2MS44NzY3MjYgMzk5LjQ2MDQxNiw0NjEuODc2NzI2IEMzOTguOTk4NDM1LDQ2MS44NzY3MjYgMzk4LjU4NzE1OSw0NjEuNTAwODMxIDM5OC42MjM0NDEsNDYxLjAzOTUyNiBDMzk4LjY0MzQ5OCw0NjAuNzg0MTk3IDM5OC42NjQ2ODIsNDYwLjUyMDA3OSAzOTguNjg1ODY1LDQ2MC4yNzI4NjIgTDM5OC43NTk3ODIsNDU5LjAwOTUxMiBDMzk4Ljc1OTc4Miw0NTguODEzMjI2IDM5OC42MDA0NTUsNDU4LjY1Mjk5OCAzOTguNDAzMjY4LDQ1OC42NTI5OTggQzM5OC4yMDYwOCw0NTguNjUyOTk4IDM5OC4wNDY3NTMsNDU4LjgxMjMyNSAzOTguMDQ2NzUzLDQ1OS4wMDk1MTIgTDM5OC4yMjAyNzgsNDYxLjk5OTk5NyBMMzk4LjIyMDI3OCw0NjIuMDA1MTggQzM5OC4yMjAyNzgsNDY0LjA5NzYxNyAzOTkuNDE3MzczLDQ2NS44MDI4OTIgNDAxLjUxMDcxMiw0NjUuODAxMDg5IEM0MDMuNjIyNTMxLDQ2NS43OTgzODUgNDA5LjYwODY4Myw0NjUuODAxMDg5IDQwOS42MDg2ODMsNDY1LjgwMTA4OSBDNDA5Ljc4MTA4MSw0NjUuODAxMDg5IDQwOS45MjAzNTEsNDY1LjY2MTE0MyA0MDkuOTIwMzUxLDQ2NS40ODk0MjEgQzQwOS45MjAzNTEsNDY1LjMxNzAyMyA0MDkuNzczMTkzLDQ2NS4yMzA3MTEgNDA5LjYwOTU4NCw0NjUuMTc4NjU0IFoiPjwvcGF0aD4NCiAgICAgICAgPC9nPg0KICAgIDwvZz4NCjwvc3ZnPg==") repeat scroll 0% 0%;opacity:.5'></span><span id=ghostery-non-secure-tracker class=ghostery-pb-tracker title="Non-secure Trackers" style='background:rgba(0,0,0,0) url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+DQo8c3ZnIHdpZHRoPSIxOHB4IiBoZWlnaHQ9IjE4cHgiIHZpZXdCb3g9IjAgMCAxOCAxOCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4NCiAgICA8IS0tIEdlbmVyYXRvcjogU2tldGNoIDQwICgzMzc2MikgLSBodHRwOi8vd3d3LmJvaGVtaWFuY29kaW5nLmNvbS9za2V0Y2ggLS0+DQogICAgPHRpdGxlPndhcm5pbmc8L3RpdGxlPg0KICAgIDxkZXNjPkNyZWF0ZWQgd2l0aCBTa2V0Y2guPC9kZXNjPg0KICAgIDxkZWZzPjwvZGVmcz4NCiAgICA8ZyBpZD0iUHVycGxlLUJveCIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+DQogICAgICAgIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0zNzMuMDAwMDAwLCAtNDUzLjAwMDAwMCkiIGlkPSJ3YXJuaW5nIiBmaWxsPSIjRkVCMDMyIj4NCiAgICAgICAgICAgIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDM3My4wMDAwMDAsIDQ1My4wMDAwMDApIj4NCiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNOSwwLjYzMDQzNDc4MyBDNC4zODQxNDQ5MywwLjYzMDQzNDc4MyAwLjYzMDQzNDc4Myw0LjM4NDE0NDkzIDAuNjMwNDM0NzgzLDkgQzAuNjMwNDM0NzgzLDEzLjYxNTg1NTEgNC4zODQxNDQ5MywxNy4zNjk1NjUyIDksMTcuMzY5NTY1MiBDMTMuNjE1ODU1MSwxNy4zNjk1NjUyIDE3LjM2OTU2NTIsMTMuNjE1ODU1MSAxNy4zNjk1NjUyLDkgQzE3LjM2OTU2NTIsNC4zODQxNDQ5MyAxMy42MTU4NTUxLDAuNjMwNDM0NzgzIDksMC42MzA0MzQ3ODMgWiBNNC42NDI5MjgxMSwxMS43ODk4NTUxIEM1LjI1MDQxMTY1LDExLjc4OTg1NTEgNS43NTY5NTIzNCwxMS4zNjA3NTY3IDUuODc4NzE2OTMsMTAuODgxMzY5NSBDNi4wMDA0ODE1MiwxMS4zNjEyNDM3IDYuNTA3MDIyMjIsMTEuNzIzNzM2OSA3LjExNDM4NCwxMS43MjM3MzY5IEM3LjcyNDE4MTA2LDExLjcyMzczNjkgOC4yMzI2Njk5OSwxMS4zNjUwMTg0IDguMzUxNTEyMjMsMTAuODgyNzA4OSBDOC40NzA5NjMzLDExLjM2NTAxODQgOC45Nzk0NTIyMywxMS43MzY1MjIyIDkuNTg4NzYyMjQsMTEuNzM2NTIyMiBDMTAuMTk0NjYyOCwxMS43MzY1MjIyIDEwLjcwMTIwMzUsMTEuMzk0OTcyNSAxMC44MjM0NTUyLDEwLjkxNjU1OTQgQzEwLjk0NTcwNjgsMTEuMzk0OTcyNSAxMS40NTIyNDc1LDExLjc4OTM2OCAxMi4wNTgyNjk5LDExLjc4OTM2OCBDMTIuMzUzNjcwOCwxMS43ODkzNjggMTIuNjI0NzE4OCwxMS42OTkzODQgMTIuODM5NzU1LDExLjU1OTU5ODIgQzExLjAwOTUxMTUsOC43MTgwOTk3NSAxMi4xNDUzMzE2LDQuMTM3NjgxMTYgMTIuMTQ1MzMxNiw0LjEzNzY4MTE2IEM2Ljk0NjQ3MDYzLDUuMjMxNjE0MjQgNC42NjU4MTk4NSwxMC4xMDAzNzE0IDQuMDU3OTcxMDEsMTEuNjY2MTQyMiBDNC4yMzI5NDY3MywxMS43NDMyMTkyIDQuNDMxNzg4MzEsMTEuNzg5ODU1MSA0LjY0MjkyODExLDExLjc4OTg1NTEgWiIgaWQ9Indhcm5pbmd0cmFja2VycyI+PC9wYXRoPg0KICAgICAgICAgICAgPC9nPg0KICAgICAgICA8L2c+DQogICAgPC9nPg0KPC9zdmc+") repeat scroll 0% 0%;opacity:.5'></span></div><div id=ghostery-title hidden>Looking</div><div id=ghostery-minimize><span id=ghostery-minimize-icon></span></div><span id=ghostery-close style='background:rgba(0,0,0,0) url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+DQo8c3ZnIHdpZHRoPSIxNXB4IiBoZWlnaHQ9IjE1cHgiIHZpZXdCb3g9IjAgMCAxNSAxNSIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4NCiAgICA8IS0tIEdlbmVyYXRvcjogU2tldGNoIDMuNy4yICgyODI3NikgLSBodHRwOi8vd3d3LmJvaGVtaWFuY29kaW5nLmNvbS9za2V0Y2ggLS0+DQogICAgPHRpdGxlPmNvbGxhcHNlIGNvcHkgMjwvdGl0bGU+DQogICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+DQogICAgPGRlZnM+PC9kZWZzPg0KICAgIDxnIGlkPSJQdXJwbGUtQm94IiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4NCiAgICAgICAgPGcgaWQ9ImNvbGxhcHNlLWNvcHktMiI+DQogICAgICAgICAgICA8Y2lyY2xlIGlkPSJPdmFsLTMxNSIgZmlsbC1vcGFjaXR5PSIwLjI3MDE1Mzk4NiIgZmlsbD0iI0Q4RDhEOCIgY3g9IjcuNSIgY3k9IjcuNSIgcj0iNy41Ij48L2NpcmNsZT4NCiAgICAgICAgICAgIDxwYXRoIGQ9Ik00LjM2LDQuMzYgTDEwLjU3NDU2MzQsMTAuNTc0NTYzNCIgaWQ9IkxpbmUiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSI+PC9wYXRoPg0KICAgICAgICAgICAgPHBhdGggZD0iTTQuMzYsNC4zNiBMMTAuNTc0NTYzNCwxMC41NzQ1NjM0IiBpZD0iTGluZS1Db3B5IiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS1saW5lY2FwPSJzcXVhcmUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDcuNjAwMDAwLCA3LjYwMDAwMCkgc2NhbGUoLTEsIDEpIHRyYW5zbGF0ZSgtNy42MDAwMDAsIC03LjYwMDAwMCkgIj48L3BhdGg+DQogICAgICAgIDwvZz4NCiAgICA8L2c+DQo8L3N2Zz4=") repeat scroll 0% 0%'></span></div><div id=ghostery-pb-background><div id=ghostery-trackerList></div></div></div>

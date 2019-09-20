@@ -1,0 +1,886 @@
+<!DOCTYPE html> <html style lang=en-US><!--
+ Page saved with SingleFile 
+ url: https://mgba-emu.github.io/gbdoc/ 
+ saved date: Fri Sep 20 2019 21:24:31 GMT+0300 (Eastern European Summer Time)
+--><meta charset=utf-8>
+<meta http-equiv=X-UA-Compatible content="IE=edge">
+<meta name=viewport content="width=device-width, initial-scale=1">
+<title>Open Game Boy Documentation Project | gbdoc</title>
+<meta name=generator content="Jekyll v3.8.5">
+<meta property=og:title content="Open Game Boy Documentation Project">
+<meta property=og:locale content=en_US>
+<meta name=description content="Open Game Boy Documentation Project">
+<meta property=og:description content="Open Game Boy Documentation Project">
+<link rel=canonical href=https://mgba-emu.github.io/gbdoc/>
+<meta property=og:url content=https://mgba-emu.github.io/gbdoc/>
+<meta property=og:site_name content=gbdoc>
+<script type=application/ld+json>{"@type":"WebSite","url":"https://mgba-emu.github.io/gbdoc/","name":"gbdoc","headline":"Open Game Boy Documentation Project","description":"Open Game Boy Documentation Project","@context":"http://schema.org"}</script>
+<style>.anchorjs-link{opacity:0;text-decoration:none}:hover>.anchorjs-link,.anchorjs-link:focus{opacity:1}[data-anchorjs-icon]::after{content:attr(data-anchorjs-icon)}@font-face{font-family:"anchorjs-icons";src:url("data:n/a;base64,AAEAAAALAIAAAwAwT1MvMg8yG2cAAAE4AAAAYGNtYXDp3gC3AAABpAAAAExnYXNwAAAAEAAAA9wAAAAIZ2x5ZlQCcfwAAAH4AAABCGhlYWQHFvHyAAAAvAAAADZoaGVhBnACFwAAAPQAAAAkaG10eASAADEAAAGYAAAADGxvY2EACACEAAAB8AAAAAhtYXhwAAYAVwAAARgAAAAgbmFtZQGOH9cAAAMAAAAAunBvc3QAAwAAAAADvAAAACAAAQAAAAEAAHzE2p9fDzz1AAkEAAAAAADRecUWAAAAANQA6R8AAAAAAoACwAAAAAgAAgAAAAAAAAABAAADwP/AAAACgAAA/9MCrQABAAAAAAAAAAAAAAAAAAAAAwABAAAAAwBVAAIAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAMCQAGQAAUAAAKZAswAAACPApkCzAAAAesAMwEJAAAAAAAAAAAAAAAAAAAAARAAAAAAAAAAAAAAAAAAAAAAQAAg//0DwP/AAEADwABAAAAAAQAAAAAAAAAAAAAAIAAAAAAAAAIAAAACgAAxAAAAAwAAAAMAAAAcAAEAAwAAABwAAwABAAAAHAAEADAAAAAIAAgAAgAAACDpy//9//8AAAAg6cv//f///+EWNwADAAEAAAAAAAAAAAAAAAAACACEAAEAAAAAAAAAAAAAAAAxAAACAAQARAKAAsAAKwBUAAABIiYnJjQ3NzY2MzIWFxYUBwcGIicmNDc3NjQnJiYjIgYHBwYUFxYUBwYGIwciJicmNDc3NjIXFhQHBwYUFxYWMzI2Nzc2NCcmNDc2MhcWFAcHBgYjARQGDAUtLXoWOR8fORYtLTgKGwoKCjgaGg0gEhIgDXoaGgkJBQwHdR85Fi0tOAobCgoKOBoaDSASEiANehoaCQkKGwotLXoWOR8BMwUFLYEuehYXFxYugC44CQkKGwo4GkoaDQ0NDXoaShoKGwoFBe8XFi6ALjgJCQobCjgaShoNDQ0NehpKGgobCgoKLYEuehYXAAAADACWAAEAAAAAAAEACAAAAAEAAAAAAAIAAwAIAAEAAAAAAAMACAAAAAEAAAAAAAQACAAAAAEAAAAAAAUAAQALAAEAAAAAAAYACAAAAAMAAQQJAAEAEAAMAAMAAQQJAAIABgAcAAMAAQQJAAMAEAAMAAMAAQQJAAQAEAAMAAMAAQQJAAUAAgAiAAMAAQQJAAYAEAAMYW5jaG9yanM0MDBAAGEAbgBjAGgAbwByAGoAcwA0ADAAMABAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAH//wAP") format("truetype")}html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}[hidden]{display:none}a{background-color:transparent}a:active,a:hover{outline-width:0}h1{margin:.67em 0}img{border-style:none}::-webkit-input-placeholder{color:inherit;opacity:.54}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}*{box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";font-size:14px;line-height:1.5;color:#24292e;background-color:#fff}a{color:#0366d6;text-decoration:none}a:hover{text-decoration:underline}strong{font-weight:600}table{border-spacing:0;border-collapse:collapse}code{font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,Courier,monospace}@keyframes fade-in{0%{opacity:0}100%{opacity:1}}@keyframes fade-out{0%{opacity:1}100%{opacity:0}}@keyframes fade-up{0%{opacity:.8;transform:translateY(100%)}100%{opacity:1;transform:translateY(0)}}@keyframes fade-down{0%{opacity:1;transform:translateY(0)}100%{opacity:.5;transform:translateY(100%)}}@keyframes grow-x{to{width:100%}}@keyframes shrink-x{to{width:0%}}@keyframes scale-in{0%{opacity:0;transform:scale(0.5)}100%{opacity:1;transform:scale(1)}}@keyframes pulse{0%{opacity:.3}10%{opacity:1}100%{opacity:.3}}@keyframes pulse-in{0%{transform:scale3d(1,1,1)}50%{transform:scale3d(1.1,1.1,1.1)}100%{transform:scale3d(1,1,1)}}.border-top{border-top:1px #e1e4e8 solid!important}.border-gray-light{border-color:#eaecef!important}.text-gray{color:#586069!important}.mt-5{margin-top:32px!important}.my-5{margin-top:32px!important;margin-bottom:32px!important}.pt-3{padding-top:16px!important}.px-3{padding-right:16px!important;padding-left:16px!important}.text-right{text-align:right!important}.container-lg{max-width:1012px;margin-right:auto;margin-left:auto}.markdown-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";font-size:16px;line-height:1.5;word-wrap:break-word}.markdown-body::before{display:table;content:""}.markdown-body::after{display:table;clear:both;content:""}.markdown-body>*:first-child{margin-top:0!important}.markdown-body>*:last-child{margin-bottom:0!important}.markdown-body a:not([href]){color:inherit;text-decoration:none}.markdown-body p,.markdown-body ul,.markdown-body table{margin-top:0;margin-bottom:16px}.markdown-body h1,.markdown-body h2,.markdown-body h3,.markdown-body h4,.markdown-body h5{margin-top:24px;margin-bottom:16px;font-weight:600;line-height:1.25}.markdown-body h3 code,.markdown-body h4 code,.markdown-body h5 code{font-size:inherit}.markdown-body h1{padding-bottom:.3em;font-size:2em;border-bottom:1px solid #eaecef}.markdown-body h2{padding-bottom:.3em;font-size:1.5em;border-bottom:1px solid #eaecef}.markdown-body h3{font-size:1.25em}.markdown-body h4{font-size:1em}.markdown-body h5{font-size:.875em}.markdown-body ul{padding-left:2em}.markdown-body ul ul{margin-top:0;margin-bottom:0}.markdown-body li+li{margin-top:.25em}.markdown-body table{display:block;width:100%;overflow:auto}.markdown-body table th{font-weight:600}.markdown-body table th,.markdown-body table td{padding:6px 13px;border:1px solid #dfe2e5}.markdown-body table tr{background-color:#fff;border-top:1px solid #c6cbd1}.markdown-body table tr:nth-child(2n){background-color:#f6f8fa}.markdown-body img{max-width:100%;box-sizing:content-box;background-color:#fff}.markdown-body code{padding:.2em .4em;margin:0;font-size:85%;background-color:rgba(27,31,35,0.05);border-radius:3px}</style>
+<link type=image/x-icon rel="shortcut icon" href="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="></head>
+ <body>
+ <div class="container-lg px-3 my-5 markdown-body">
+ 
+ <h1><a href=https://mgba-emu.github.io/gbdoc/>gbdoc</a></h1>
+ 
+ <h1 id=open-game-boy-documentation-project>Open Game Boy Documentation Project</h1>
+<ul>
+ <li><a href=#tech-specs>Technical specifications</a>
+ <ul>
+ <li><a href=#models>Models</a></li>
+ <li><a href=#hardware>Hardware</a></li>
+ </ul>
+ </li>
+ <li><a href=#cpu>CPU</a></li>
+ <li><a href=#memory-map>Memory map</a>
+ <ul>
+ <li><a href=#mmio>Memory mapped I/O</a></li>
+ <li><a href=#mmio-cgb>CGB-specific memory mapped I/O</a></li>
+ </ul>
+ </li>
+ <li><a href=#cart>Cartridges</a>
+ <ul>
+ <li><a href=#mbc>Memory bank controllers</a>
+ <ul>
+ <li><a href=#mbc-1>MBC1</a></li>
+ <li><a href=#mbc-2>MBC2</a></li>
+ <li><a href=#mbc-3>MBC3</a></li>
+ <li><a href=#mbc-5>MBC5</a></li>
+ <li><a href=#mbc-6>MBC6</a></li>
+ <li><a href=#mbc-7>MBC7</a></li>
+ <li><a href=#mbc-mmm01>MMM01</a></li>
+ <li><a href=#mbc-pocketcam>Pocket Camera</a></li>
+ <li><a href=#mbc-tama5>TAMA5</a></li>
+ <li><a href=#mbc-huc1>HuC-1</a></li>
+ <li><a href=#mbc-huc3>HuC-3</a></li>
+ <li><a href=#mbc-unlicensed>Unlicensed mappers</a></li>
+ </ul>
+ </li>
+ </ul>
+ </li>
+ <li><a href=#ppu>Picture processing unit</a>
+ <ul>
+ <li><a href=#ppu-mode>Draw mode</a>
+ <ul>
+ <li><a href=#ppu-mode-0>Mode 0</a></li>
+ <li><a href=#ppu-mode-1>Mode 1</a></li>
+ <li><a href=#ppu-mode-2>Mode 2</a></li>
+ <li><a href=#ppu-mode-3>Mode 3</a></li>
+ </ul>
+ </li>
+ <li><a href=#ppu-pal>Palettes</a></li>
+ <li><a href=#ppu-bg>Background</a></li>
+ <li><a href=#ppu-obj>OAM/OBJs (sprites)</a></li>
+ <li><a href=#ppu-win>Window</a></li>
+ <li><a href=#ppu-sc>Scrolling</a></li>
+ </ul>
+ </li>
+ <li><a href=#apu>Audio processing unit</a>
+ <ul>
+ <li><a href=#apu-ch1>Channel 1</a></li>
+ <li><a href=#apu-ch2>Channel 2</a></li>
+ <li><a href=#apu-ch3>Channel 3</a></li>
+ <li><a href=#apu-ch4>Channel 4</a></li>
+ </ul>
+ </li>
+ <li><a href=#timer>Timer</a></li>
+ <li><a href=#dma>DMA</a></li>
+ <li><a href=#irq>Interrupts</a></li>
+ <li><a href=#sio>Serial I/O</a>
+ <ul>
+ <li><a href=#sio-link>Link cable</a></li>
+ <li><a href=#sio-gbprinter>Game Boy Printer</a></li>
+ <li><a href=#sio-ir>Infrared</a></li>
+ </ul>
+ </li>
+ <li><a href=#misc>Miscellaneous</a>
+ <ul>
+ <li><a href=#errata>Hardware issues</a></li>
+ <li><a href=#sgb>Super Game Boy</a></li>
+ <li><a href=#cheats>Cheat codes</a></li>
+ </ul>
+ </li>
+ <li><a href=#about>About this documentation</a></li>
+</ul>
+<h1 id=technical-specifications><a id=tech-specs>Technical specifications</a></h1>
+<h2 id=models><a id=models>Models</a><a class=anchorjs-link href=#models aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h2>
+<p>There are three lines of Game Boy models based on CPU iterations, each with its own minor revisions:</p>
+<ul>
+ <li>DMG: Game Boy
+ <ul>
+ <li>DMG-01
+ <ul>
+ <li>Original Game Boy, Dot Matrix Game, “brick”</li>
+ </ul>
+ </li>
+ <li>SHVC-027
+ <ul>
+ <li>Super Game Boy</li>
+ <li>SNES accessory with DMG CPU</li>
+ <li>Slight clock difference from DMG</li>
+ </ul>
+ </li>
+ </ul>
+ </li>
+ <li>MGB: Game Boy Pocket
+ <ul>
+ <li>MGB-001
+ <ul>
+ <li>Game Boy Pocket</li>
+ <li>Minor hardware revision</li>
+ </ul>
+ </li>
+ <li>MGB-101
+ <ul>
+ <li>Game Boy Light</li>
+ <li>Japan only</li>
+ </ul>
+ </li>
+ <li>SHVC-042
+ <ul>
+ <li>Super Game Boy 2</li>
+ <li>SNES accessory with MGB CPU</li>
+ <li>Same clock as MGB</li>
+ </ul>
+ </li>
+ </ul>
+ </li>
+ <li>CGB: Game Boy Color
+ <ul>
+ <li>CGB-001
+ <ul>
+ <li>Game Boy Color</li>
+ <li>Major hardware revision</li>
+ </ul>
+ </li>
+ <li>AGB-001/AGS-001/AGS-101
+ <ul>
+ <li>Game Boy Advance</li>
+ <li>CGB compatibility mode</li>
+ </ul>
+ </li>
+ </ul>
+ </li>
+</ul>
+<h2 id=hardware><a id=hardware>Hardware</a><a class=anchorjs-link href=#hardware aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h2>
+<ul>
+ <li><a href=#cpu>CPU</a>: Sharp SM83 clocked at 4.194304 MHz
+ <ul>
+ <li>Similar instruction set to Intel 8080 and Zilog Z80, sometimes erroneously referred to as a Z80 or LR35902</li>
+ <li>CGB version is optionally clocked at 8.388608 MHz (2x DMG CPU)</li>
+ </ul>
+ </li>
+ <li>RAM: 8 kiB (DMG), 32 kiB (CGB)</li>
+ <li><a href=#ppu>Video</a>: 160×144 pixels
+ <ul>
+ <li>2 backgrounds: main and window</li>
+ <li>40 OBJs (sprites), max 10 per line</li>
+ <li>8×8 pixel tiles</li>
+ <li>4 “modes” (0–3), with variable timing</li>
+ <li>456 cycles per line</li>
+ <li>70224 cycles per frame</li>
+ <li>VDraw: 144 lines, 65664 cycles</li>
+ <li>VBlank: 10 lines, 4560 cycles</li>
+ <li>DMG mode:
+ <ul>
+ <li>2-bit/4 distinct colors</li>
+ <li>4 colors per palette</li>
+ <li>1 background palette</li>
+ <li>2 object palettes (index 0 is transparent, 3 effective colors per palette)</li>
+ </ul>
+ </li>
+ <li>CGB mode:
+ <ul>
+ <li>15-bit/32768 distinct colors</li>
+ <li>4 colors per palette</li>
+ <li>8 background palettes</li>
+ <li>8 object palettes (index 0 is transparent, 3 effective colors per palette)</li>
+ </ul>
+ </li>
+ </ul>
+ </li>
+ <li>Audio: 4 channels
+ <ul>
+ <li><a href=#apu-ch1>Channel 1</a>: Square, sweep</li>
+ <li><a href=#apu-ch2>Channel 2</a>: Square</li>
+ <li><a href=#apu-ch3>Channel 3</a>: “Wave” (4-bit PCM patterns)</li>
+ <li><a href=#apu-ch4>Channel 4</a>: Noise (LFSR)</li>
+ </ul>
+ </li>
+</ul>
+<h1 id=cpu><a id=cpu>CPU</a></h1>
+<p>The Game Boy uses a Sharp SM83, which is similar to Intel 8080, Zilog Z80, and other i8080 knockoffs.</p>
+<ul>
+ <li>DMG: clocked at 4.194304 MHz</li>
+ <li>CGB: optionally clocked at 8.388608 MHz</li>
+ <li>Two types of cycles: T states and M cycles
+ <ul>
+ <li>M cycles (“machine” cycles, 1:4 clock) are the base unit of CPU instructions</li>
+ <li>T states or T cycles (“transistor”(?) states, 1:1 clock) are the base unit of system operation and many components are clocked directly on T state</li>
+ </ul>
+ </li>
+ <li>8-bit general purpose registers
+ <ul>
+ <li>A, B, C, D, E, H, L</li>
+ </ul>
+ </li>
+ <li>8-bit flags register (F)
+ <ul>
+ <li>Bits 0–3 are grounded to 0</li>
+ <li>Bit 4: C (carry flag)</li>
+ <li>Bit 5: H (half-carry flag)</li>
+ <li>Bit 6: N (negative flag)</li>
+ <li>Bit 7: Z (zero flag)</li>
+ </ul>
+ </li>
+ <li>16-bit general purpose register views
+ <ul>
+ <li>AF, BC, DE, HL</li>
+ <li>AF does not allow writing F bits 0–3</li>
+ </ul>
+ </li>
+ <li>16-bit special purpose registers
+ <ul>
+ <li>PC (program counter)</li>
+ <li>SP (stack pointer)</li>
+ </ul>
+ </li>
+</ul>
+<p>TODO</p>
+<h1 id=memory-map><a id=memory-map>Memory map</a></h1>
+<ul>
+ <li><code class=highlighter-rouge>$0000</code> – <code class=highlighter-rouge>$7FFF</code>: <a href=#mbc>External bus (ROM region)</a></li>
+ <li><code class=highlighter-rouge>$8000</code> – <code class=highlighter-rouge>$9FFF</code>: VRAM</li>
+ <li><code class=highlighter-rouge>$A000</code> – <code class=highlighter-rouge>$BFFF</code>: External bus (RAM region)</li>
+ <li><code class=highlighter-rouge>$C000</code> – <code class=highlighter-rouge>$DFFF</code>: WRAM</li>
+ <li><code class=highlighter-rouge>$E000</code> – <code class=highlighter-rouge>$FDFF</code>: ECHO (WRAM secondary mapping)</li>
+ <li><code class=highlighter-rouge>$FE00</code> – <code class=highlighter-rouge>$FE9F</code>: Object Attribute Memory (OAM)</li>
+ <li><code class=highlighter-rouge>$FEA0</code> – <code class=highlighter-rouge>$FEFF</code>: Invalid OAM region (behavior varies per revision)</li>
+ <li><code class=highlighter-rouge>$FF00</code> – <code class=highlighter-rouge>$FF7F</code>: <a href=#mmio>Memory mapped I/O</a></li>
+ <li><code class=highlighter-rouge>$FF80</code> – <code class=highlighter-rouge>$FFFE</code>: High RAM (HRAM)</li>
+ <li><code class=highlighter-rouge>$FFFF</code>: <a href=#mmio-if><code class=highlighter-rouge>IE</code> register</a></li>
+</ul>
+<h2 id=memory-mapped-io><a id=mmio>Memory mapped I/O</a><a class=anchorjs-link href=#memory-mapped-io aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h2>
+<ul>
+ <li><code class=highlighter-rouge>$FF00</code> — <code class=highlighter-rouge>P1</code>/<code class=highlighter-rouge>JOYP</code>: <a href=#mmio-p1>Joypad</a></li>
+ <li><code class=highlighter-rouge>$FF01</code> — <code class=highlighter-rouge>SB</code>: <a href=#mmio-sb>Serial byte</a></li>
+ <li><code class=highlighter-rouge>$FF02</code> — <code class=highlighter-rouge>SC</code>: <a href=#mmio-sc>Serial control</a></li>
+ <li><code class=highlighter-rouge>$FF03</code>: unmapped</li>
+ <li><code class=highlighter-rouge>$FF04</code> — <code class=highlighter-rouge>DIV</code>: <a href=#mmio-div>Clock divider</a></li>
+ <li><code class=highlighter-rouge>$FF05</code> — <code class=highlighter-rouge>TIMA</code>: <a href=#mmio-tima>Timer value</a></li>
+ <li><code class=highlighter-rouge>$FF06</code> — <code class=highlighter-rouge>TMA</code>: <a href=#mmio-tma>Timer reload</a></li>
+ <li><code class=highlighter-rouge>$FF07</code> — <code class=highlighter-rouge>TAC</code>: <a href=#mmio-tac>Timer control</a></li>
+ <li><code class=highlighter-rouge>$FF08</code> – <code class=highlighter-rouge>$FF0E</code>: unmapped</li>
+ <li><code class=highlighter-rouge>$FF0F</code>&nbsp;— <code class=highlighter-rouge>IF</code>: <a href=#mmio-if>Interrupts asserted</a></li>
+ <li><code class=highlighter-rouge>$FF10</code> — <code class=highlighter-rouge>NR10</code>: <a href=#apu-nr10>Audio channel 1 sweep</a></li>
+ <li><code class=highlighter-rouge>$FF11</code> — <code class=highlighter-rouge>NR11</code>: <a href=#apu-nr11>Audio channel 1 sound length/wave duty</a></li>
+ <li><code class=highlighter-rouge>$FF12</code> — <code class=highlighter-rouge>NR12</code>: <a href=#apu-nr12>Audio channel 1 envelope</a></li>
+ <li><code class=highlighter-rouge>$FF13</code> — <code class=highlighter-rouge>NR13</code>: <a href=#apu-nr13>Audio channel 1 frequency</a></li>
+ <li><code class=highlighter-rouge>$FF14</code> — <code class=highlighter-rouge>NR14</code>: <a href=#apu-nr14>Audio channel 1 control</a></li>
+ <li><code class=highlighter-rouge>$FF15</code> — <code class=highlighter-rouge>NR20</code>: Unmapped</li>
+ <li><code class=highlighter-rouge>$FF16</code> — <code class=highlighter-rouge>NR21</code>: <a href=#apu-nr21>Audio channel 2 sound length/wave duty</a></li>
+ <li><code class=highlighter-rouge>$FF17</code> — <code class=highlighter-rouge>NR22</code>: <a href=#apu-nr22>Audio channel 2 envelope</a></li>
+ <li><code class=highlighter-rouge>$FF18</code> — <code class=highlighter-rouge>NR23</code>: <a href=#apu-nr23>Audio channel 2 frequency</a></li>
+ <li><code class=highlighter-rouge>$FF19</code> — <code class=highlighter-rouge>NR24</code>: <a href=#apu-nr24>Audio channel 2 control</a></li>
+ <li><code class=highlighter-rouge>$FF1A</code> — <code class=highlighter-rouge>NR30</code>: <a href=#apu-nr30>Audio channel 3 enable</a></li>
+ <li><code class=highlighter-rouge>$FF1B</code> — <code class=highlighter-rouge>NR31</code>: <a href=#apu-nr31>Audio channel 3 sound length</a></li>
+ <li><code class=highlighter-rouge>$FF1C</code> — <code class=highlighter-rouge>NR32</code>: <a href=#apu-nr32>Audio channel 3 volume</a></li>
+ <li><code class=highlighter-rouge>$FF1D</code> — <code class=highlighter-rouge>NR33</code>: <a href=#apu-nr33>Audio channel 3 frequency</a></li>
+ <li><code class=highlighter-rouge>$FF1E</code> — <code class=highlighter-rouge>NR34</code>: <a href=#apu-nr34>Audio channel 3 control</a></li>
+ <li><code class=highlighter-rouge>$FF1F</code> — <code class=highlighter-rouge>NR40</code>: Unmapped</li>
+ <li><code class=highlighter-rouge>$FF20</code> — <code class=highlighter-rouge>NR41</code>: <a href=#apu-nr41>Audio channel 4 sound length</a></li>
+ <li><code class=highlighter-rouge>$FF21</code> — <code class=highlighter-rouge>NR42</code>: <a href=#apu-nr42>Audio channel 4 volume</a></li>
+ <li><code class=highlighter-rouge>$FF22</code> — <code class=highlighter-rouge>NR43</code>: <a href=#apu-nr43>Audio channel 4 frequency</a></li>
+ <li><code class=highlighter-rouge>$FF23</code> — <code class=highlighter-rouge>NR44</code>: <a href=#apu-nr44>Audio channel 4 control</a></li>
+ <li><code class=highlighter-rouge>$FF24</code> — <code class=highlighter-rouge>NR50</code>: <a href=#apu-nr50>Audio output mapping</a></li>
+ <li><code class=highlighter-rouge>$FF25</code> — <code class=highlighter-rouge>NR51</code>: <a href=#apu-nr51>Audio channel mapping</a></li>
+ <li><code class=highlighter-rouge>$FF26</code> — <code class=highlighter-rouge>NR52</code>: <a href=#apu-nr52>Audio channel control</a></li>
+ <li><code class=highlighter-rouge>$FF27</code> – <code class=highlighter-rouge>$FF2F</code>: Unmapped</li>
+ <li><code class=highlighter-rouge>$FF30</code> – <code class=highlighter-rouge>$FF3F</code>: <a href=#apu-ch3>Wave pattern</a></li>
+ <li><code class=highlighter-rouge>$FF40</code>&nbsp;— <code class=highlighter-rouge>LCDC</code>: <a href=#ppu-lcdc>LCD control</a></li>
+ <li><code class=highlighter-rouge>$FF41</code>&nbsp;— <code class=highlighter-rouge>STAT</code>: <a href=#ppu-stat>LCD status</a></li>
+ <li><code class=highlighter-rouge>$FF42</code>&nbsp;— <code class=highlighter-rouge>SCY</code>: <a href=#ppu-scy>Background vert. scroll</a></li>
+ <li><code class=highlighter-rouge>$FF43</code>&nbsp;— <code class=highlighter-rouge>SCX</code>: <a href=#ppu-scx>Background horiz. scroll</a></li>
+ <li><code class=highlighter-rouge>$FF44</code>&nbsp;— <code class=highlighter-rouge>LY</code>: <a href=#ppu-ly>LCD Y coordinate</a></li>
+ <li><code class=highlighter-rouge>$FF45</code>&nbsp;— <code class=highlighter-rouge>LYC</code>: <a href=#ppu-lyc>LCD Y compare</a></li>
+ <li><code class=highlighter-rouge>$FF46</code>&nbsp;— <code class=highlighter-rouge>DMA</code>: <a href=#ppu-dma>OAM DMA source address</a></li>
+ <li><code class=highlighter-rouge>$FF47</code>&nbsp;— <code class=highlighter-rouge>BGP</code>: <a href=#ppu-bgp>Background palette</a></li>
+ <li><code class=highlighter-rouge>$FF48</code>&nbsp;— <code class=highlighter-rouge>OBP0</code>: <a href=#ppu-obp0>OBJ palette 0</a></li>
+ <li><code class=highlighter-rouge>$FF49</code>&nbsp;— <code class=highlighter-rouge>OBP1</code>: <a href=#ppu-obp1>OBJ palette 1</a></li>
+ <li><code class=highlighter-rouge>$FF4A</code>&nbsp;— <code class=highlighter-rouge>WY</code>: <a href=#ppu-wy>Window Y coord</a></li>
+ <li><code class=highlighter-rouge>$FF4B</code>&nbsp;— <code class=highlighter-rouge>WX</code>: <a href=#ppu-wx>Window X coord</a></li>
+ <li><code class=highlighter-rouge>$FF50</code> — <a href=#mmio-bootrom>Boot ROM control</a></li>
+ <li><code class=highlighter-rouge>$FFFF</code>&nbsp;— <code class=highlighter-rouge>IE</code>: <a href=#mmio-ie>Interrupts enabled</a></li>
+</ul>
+<p>See <a href=#mmio-cgb>CGB-specific memory mapped I/O</a> for additional registers in CGB mode.</p>
+<p>This section describes the bit mappings of memory mapped I/O.</p>
+<p>Mapping Key:</p>
+<ul>
+ <li><code class=highlighter-rouge>1</code>: Unmapped (hi-Z), always reads 1</li>
+ <li><code class=highlighter-rouge>I</code>: Input only (readable by CPU)</li>
+ <li><code class=highlighter-rouge>O</code>: Output only (writable by CPU)</li>
+ <li><code class=highlighter-rouge>B</code>: Bidirectional (read/write by CPU)</li>
+</ul>
+<h3 id=ff00--p1joyp-joypad><a id=mmio-p1><code class=highlighter-rouge>$FF00</code> — <code class=highlighter-rouge>P1</code>/<code class=highlighter-rouge>JOYP</code>: Joypad</a><a class=anchorjs-link href=#ff00--p1joyp-joypad aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<ul>
+ <li>Mapping: <code class=highlighter-rouge>11BBIIII</code></li>
+</ul>
+<p>This register is used for reading joypad input. The hardware multiplexes the D-pad and the face buttons so only four buttons can be read at a time, based on the value of bits 4 and 5 (0 for select, 1 for deselect). Keys are pulled low (to 0) when pressed and high (to 1) when unpressed. If bits 4 and 5 are both low, then the combination of the D-pad and face buttons is ANDed (i.e. a 0 value implies one or both of the associated keys are pressed). If neither bit 4 or 5 is selected then all keys read 1.</p>
+<table>
+ <thead>
+ <tr>
+ <th>Bit</th>
+ <th>4 low</th>
+ <th>5 low</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>0</td>
+ <td>Right</td>
+ <td>A</td>
+ </tr>
+ <tr>
+ <td>1</td>
+ <td>Left</td>
+ <td>B</td>
+ </tr>
+ <tr>
+ <td>2</td>
+ <td>Up</td>
+ <td>Select</td>
+ </tr>
+ <tr>
+ <td>3</td>
+ <td>Down</td>
+ <td>Start</td>
+ </tr>
+ </tbody>
+</table>
+<p>Additionally, bits 4 and 5 are used for communicating with the SGB. See the <a href=#sgb>Super Game Boy section</a> for more information.</p>
+<h3 id=ff01--sb-serial-byte><a id=mmio-sb><code class=highlighter-rouge>$FF01</code> — <code class=highlighter-rouge>SB</code>: Serial byte</a><a class=anchorjs-link href=#ff01--sb-serial-byte aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<ul>
+ <li>Mapping: <code class=highlighter-rouge>BBBBBBBB</code></li>
+</ul>
+<p>TODO</p>
+<h3 id=ff02--sc-serial-control><a id=mmio-sc><code class=highlighter-rouge>$FF02</code> — <code class=highlighter-rouge>SC</code>: Serial control</a><a class=anchorjs-link href=#ff02--sc-serial-control aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<ul>
+ <li>DMG Mapping: <code class=highlighter-rouge>B111111B</code></li>
+ <li>CGB Mapping: <code class=highlighter-rouge>B11111BB</code></li>
+</ul>
+<p>TODO</p>
+<h3 id=ff04--div-clock-divider><a id=mmio-div><code class=highlighter-rouge>$FF04</code> — <code class=highlighter-rouge>DIV</code>: Clock divider</a><a class=anchorjs-link href=#ff04--div-clock-divider aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<ul>
+ <li>Mapping: <code class=highlighter-rouge>BBBBBBBB</code></li>
+</ul>
+<p>This register is incremented by the CPU clock. (TODO: explain at what rate)</p>
+<p>Writing to this register sets it to 0.</p>
+<h3 id=ff05--tima-timer-value><a id=mmio-tima><code class=highlighter-rouge>$FF05</code> — <code class=highlighter-rouge>TIMA</code>: Timer value</a><a class=anchorjs-link href=#ff05--tima-timer-value aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<ul>
+ <li>Mapping: <code class=highlighter-rouge>BBBBBBBB</code></li>
+</ul>
+<p>Increases at a rate specified by <a href=#mmio-tac><code class=highlighter-rouge>TAC</code></a>. When it overflows, a Timer IRQ is asserted, and this register is reloaded with <a href=#mmio-tma><code class=highlighter-rouge>TMA</code></a>’s value.</p>
+<p>The way the increment is performed in hardware causes spurious increments under certain conditions, refer to <a href=#timer>Timer</a>.</p>
+<h3 id=ff06--tma-timer-reload><a id=mmio-tma><code class=highlighter-rouge>$FF06</code> — <code class=highlighter-rouge>TMA</code>: Timer reload</a><a class=anchorjs-link href=#ff06--tma-timer-reload aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<ul>
+ <li>Mapping: <code class=highlighter-rouge>BBBBBBBB</code></li>
+</ul>
+<p>When <a href=#mmio-tima>TIMA</a> overflows, this register’s contents are copied to it. Controls timer overflow frequency.</p>
+<h3 id=ff07--tac-timer-control><a id=mmio-tma><code class=highlighter-rouge>$FF07</code> — <code class=highlighter-rouge>TAC</code>: Timer control</a><a class=anchorjs-link href=#ff07--tac-timer-control aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<ul>
+ <li>Mapping: <code class=highlighter-rouge>11111BBB</code></li>
+</ul>
+<p>Bits:</p>
+<ul>
+ <li>0–1: Select at which frequency <a href=#mmio-tima><code class=highlighter-rouge>TIMA</code></a> increases
+ <ul>
+ <li>0: CPU clock / 1024</li>
+ <li>1: CPU clock / 16</li>
+ <li>2: CPU clock / 64</li>
+ <li>3: CPU clock / 256</li>
+ </ul>
+ </li>
+ <li>2: <a href=#mmio-tima><code class=highlighter-rouge>TIMA</code></a> doesn’t increment when this bit is reset</li>
+</ul>
+<h3 id=ff0f--if-interrupts-asserted><a id=mmio-if><code class=highlighter-rouge>$FF0F</code> — <code class=highlighter-rouge>IF</code>: Interrupts asserted</a><a class=anchorjs-link href=#ff0f--if-interrupts-asserted aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<ul>
+ <li>Mapping: <code class=highlighter-rouge>111BBBBB</code></li>
+</ul>
+<p>Bits:</p>
+<ul>
+ <li>0: VBlank</li>
+ <li>1: LCD STAT</li>
+ <li>2: Timer</li>
+ <li>3: Serial</li>
+ <li>4: Joypad</li>
+</ul>
+<p>TODO</p>
+<h3 id=ff40-lcdc-lcd-control><a id=ppu-lcdc><code class=highlighter-rouge>$FF40</code>&nbsp;— <code class=highlighter-rouge>LCDC</code>: LCD control</a><a class=anchorjs-link href=#ff40-lcdc-lcd-control aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<ul>
+ <li>Mapping: <code class=highlighter-rouge>BBBBBBBB</code></li>
+</ul>
+<p>Bits:</p>
+<ul>
+ <li>0: Background enable (on CGB: Background &amp; window enable)</li>
+ <li>1: OBJ enable</li>
+ <li>2: OBJ size</li>
+ <li>3: Background tilemap</li>
+ <li>4: Background tiles</li>
+ <li>5: Window enable</li>
+ <li>6: Window tilemap</li>
+ <li>7: LCD enable</li>
+</ul>
+<h3 id=ff41-stat-lcd-status><a id=ppu-stat><code class=highlighter-rouge>$FF41</code>&nbsp;— <code class=highlighter-rouge>STAT</code>: LCD status</a><a class=anchorjs-link href=#ff41-stat-lcd-status aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<ul>
+ <li>Mapping: <code class=highlighter-rouge>1BBBIII</code></li>
+</ul>
+<p>Bits:</p>
+<ul>
+ <li>0–1: LCD mode (see <a href=#draw-modes>Draw modes</a>)</li>
+ <li>2: <a href=#ppu-ly><code class=highlighter-rouge>LY</code></a> coincidence flag</li>
+ <li>3–6: STAT interrupt selection
+ <ul>
+ <li>3: Mode 0 (HBlank)</li>
+ <li>4: Mode 1 (VBlank)</li>
+ <li>5: Mode 2 (OAM scan)</li>
+ <li>6: LY coincidence</li>
+ </ul>
+ </li>
+</ul>
+<p>Bits 4–6 select which sources are considered for the STAT interrupt. Selecting more than one source may trigger <a href=#ppu-stat-bug>STAT IRQ blocking</a>.</p>
+<p>Note that on DMG, writing to this register may assert a STAT IRQ; refer to <a href=#stat-write-irq>STAT writing IRQ</a>.</p>
+<h3 id=ff42-scy-background-vert-scroll><a id=ppu-scy><code class=highlighter-rouge>$FF42</code>&nbsp;— <code class=highlighter-rouge>SCY</code>: Background vert. scroll</a><a class=anchorjs-link href=#ff42-scy-background-vert-scroll aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<ul>
+ <li>Mapping: <code class=highlighter-rouge>BBBBBBBB</code></li>
+</ul>
+<p>TODO</p>
+<h3 id=ff43-scx-background-horiz-scroll><a id=ppu-scx><code class=highlighter-rouge>$FF43</code>&nbsp;— <code class=highlighter-rouge>SCX</code>: Background horiz. scroll</a><a class=anchorjs-link href=#ff43-scx-background-horiz-scroll aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<ul>
+ <li>Mapping: <code class=highlighter-rouge>BBBBBBBB</code></li>
+</ul>
+<p>TODO</p>
+<h3 id=ff44-ly-lcd-y-coordinate><a id=ppu-ly><code class=highlighter-rouge>$FF44</code>&nbsp;— <code class=highlighter-rouge>LY</code>: LCD Y coordinate</a><a class=anchorjs-link href=#ff44-ly-lcd-y-coordinate aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<ul>
+ <li>Mapping: <code class=highlighter-rouge>IIIIIIII</code></li>
+</ul>
+<p>Indicates which line the LCD is currently processing. Values 0-143 indicate VDraw, values 144-153 indicate VBlank.</p>
+<p>Note that the LCD is in VBlank for part of line 0; see (TODO).</p>
+<h3 id=ff45-lyc-lcd-y-compare><a id=ppu-lyc><code class=highlighter-rouge>$FF45</code>&nbsp;— <code class=highlighter-rouge>LYC</code>: LCD Y compare</a><a class=anchorjs-link href=#ff45-lyc-lcd-y-compare aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<ul>
+ <li>Mapping: <code class=highlighter-rouge>BBBBBBBB</code></li>
+</ul>
+<p>As long as <a href=#ppu-ly><code class=highlighter-rouge>LY</code></a> has the same value as this register, <a href=#ppu-stat><code class=highlighter-rouge>STAT</code></a> bit 2 is set.</p>
+<h3 id=ff46-dma-oam-dma-source-address><a id=ppu-dma><code class=highlighter-rouge>$FF46</code>&nbsp;— <code class=highlighter-rouge>DMA</code>: OAM DMA source address</a><a class=anchorjs-link href=#ff46-dma-oam-dma-source-address aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<ul>
+ <li>Mapping: <code class=highlighter-rouge>BBBBBBBB</code></li>
+</ul>
+<p>When this register is written to, an OAM DMA transfer starts immediately.</p>
+<p>If value $XY is written, the transfer will copy $XY00-$XY9F to $FE00-$FE9F.</p>
+<h3 id=ff47-bgp-background-palette><a id=ppu-bgp><code class=highlighter-rouge>$FF47</code>&nbsp;— <code class=highlighter-rouge>BGP</code>: Background palette</a><a class=anchorjs-link href=#ff47-bgp-background-palette aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<ul>
+ <li>Mapping: <code class=highlighter-rouge>BBBBBBBB</code></li>
+</ul>
+<p>Defines how colors of BG (and the window) are displayed.</p>
+<p>Bits 0 and 1 define color 0, bits 2 and 3 define color 1, etc. The two bits form a value, where 0 is white, 1 is light gray, 2 is dark gray, and 3 is black.</p>
+<h3 id=ff48-obp0-obj-palette-0><a id=ppu-obp0><code class=highlighter-rouge>$FF48</code>&nbsp;— <code class=highlighter-rouge>OBP0</code>: OBJ palette 0</a><a class=anchorjs-link href=#ff48-obp0-obj-palette-0 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<ul>
+ <li>Mapping: <code class=highlighter-rouge>BBBBBBBB</code></li>
+</ul>
+<p>Defines how colors of OBJ using palette 0 are displayed.</p>
+<p>The mapping is identical to <a href=#ppu-bgp><code class=highlighter-rouge>BGP</code></a>, however color 0 is never displayed (transparent), so the lower 2 bits are never considered.</p>
+<h3 id=ff49-obp1-obj-palette-1><a id=ppu-obp1><code class=highlighter-rouge>$FF49</code>&nbsp;— <code class=highlighter-rouge>OBP1</code>: OBJ palette 1</a><a class=anchorjs-link href=#ff49-obp1-obj-palette-1 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<ul>
+ <li>Mapping: <code class=highlighter-rouge>BBBBBBBB</code></li>
+</ul>
+<p>Defines how colors of OBJ using palette 1 are displayed.</p>
+<p>The mapping is identical to <a href=#ppu-obp0><code class=highlighter-rouge>OBP0</code></a>.</p>
+<h3 id=ff4a-wy-window-y-coord><a id=ppu-wy><code class=highlighter-rouge>$FF4A</code>&nbsp;— <code class=highlighter-rouge>WY</code>: Window Y coord</a><a class=anchorjs-link href=#ff4a-wy-window-y-coord aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<ul>
+ <li>Mapping: <code class=highlighter-rouge>BBBBBBBB</code></li>
+</ul>
+<p>Defines the window’s Y coordinate, that is, the first scanline on which the window is displayed.</p>
+<p>TODO: what happens when changing mid-frame? Mid-scanline?</p>
+<h3 id=ff4b-wx-window-x-coord><a id=ppu-wx><code class=highlighter-rouge>$FF4B</code>&nbsp;— <code class=highlighter-rouge>WX</code>: Window X coord</a><a class=anchorjs-link href=#ff4b-wx-window-x-coord aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<ul>
+ <li>Mapping: <code class=highlighter-rouge>BBBBBBBB</code></li>
+</ul>
+<p>Defines the window’s X coordinate <strong>plus 7</strong>. (Therefore, a value of 7 will cause the window to span the entire scanline, and a value of 87 will only span half of the screen). Values larger than 167 cause the window to not be displayed.</p>
+<p>Values 1-6 act as if the window started to the left of the screen. Value 0 has rather erratic behavior that depends on <a href=#ppu-scx><code class=highlighter-rouge>SCX</code></a> (TODO: explain how)</p>
+<p>TODO: what happens when changing mid-frame? Mid-scanline?</p>
+<p>TODO: explain what happens when hiding the window every other scanline, for example</p>
+<p>TODO: the official manual states that a <code class=highlighter-rouge>WX</code> value of $A6 (166) is “prohibited”. Why?</p>
+<h3 id=ffff--ie-interrupts-enabled><a id=mmio-ie><code class=highlighter-rouge>$FFFF</code> — <code class=highlighter-rouge>IE</code>: Interrupts enabled</a><a class=anchorjs-link href=#ffff--ie-interrupts-enabled aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<ul>
+ <li>Mapping: <code class=highlighter-rouge>111BBBBB</code></li>
+</ul>
+<p>Bits:</p>
+<ul>
+ <li>0: VBlank</li>
+ <li>1: LCD STAT</li>
+ <li>2: Timer</li>
+ <li>3: Serial</li>
+ <li>4: Joypad</li>
+</ul>
+<p>TODO</p>
+<h2 id=cgb-specific-memory-mapped-io><a id=mmio-cgb>CGB-specific memory mapped I/O</a><a class=anchorjs-link href=#cgb-specific-memory-mapped-io aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h2>
+<p>TODO</p>
+<h1 id=cartridges><a id=cart>Cartridges</a></h1>
+<p>TODO</p>
+<h2 id=memory-bank-controllers><a id=mbc>Memory bank controllers</a><a class=anchorjs-link href=#memory-bank-controllers aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h2>
+<p>The Game Boy Advance has a 16-bit address space, the lower half of which (<code class=highlighter-rouge>$0000</code> – <code class=highlighter-rouge>$7FFF</code>), is devoted to cartridge ROM.
+Further there is an a 8 kiB region (<code class=highlighter-rouge>$A000</code> – <code class=highlighter-rouge>$BFFF</code>), which is generally used for external RAM (often backed by a battery).
+However, this leaves 32 kiB usable for ROM which is insufficient for most games.
+This is where memory bank controllers (MBC for short, sometimes called mappers) come into play: using an MBC the allocated address space can be sliced up and swapped out.</p>
+<p>The ROM address space is usually broken into two sections, <code class=highlighter-rouge>$0000</code> – <code class=highlighter-rouge>$3FFF</code> being a (usually) fixed mapping to the beginning of a ROM, or “bank 0”, and <code class=highlighter-rouge>$4000</code> – <code class=highlighter-rouge>$7FFF</code> which can be programmatically swapped to point to other regions of ROM.
+How this is handled depends on the specific MBC implementation.</p>
+<p>Many MBCs share similar traits, namely:</p>
+<ul>
+ <li>Writing a value to an address in the region <code class=highlighter-rouge>$0000</code> – <code class=highlighter-rouge>$1FFF</code> controls if external RAM is accessible. <code class=highlighter-rouge>$xA</code> enables access and other values disable access.</li>
+ <li>Writing a value to an address in the region <code class=highlighter-rouge>$2000</code> – <code class=highlighter-rouge>$3FFF</code> controls which bank is swapped into the upper half of ROM address space.</li>
+ <li>Writing a value to an address in the region <code class=highlighter-rouge>$4000</code> – <code class=highlighter-rouge>$5FFF</code> controls which bank is swapped into the external RAM address space.</li>
+</ul>
+<p>None of these are universal, however. Please see the sections on the respective MBC for details.</p>
+<p>A list of known MBC types is as follows:</p>
+<ul>
+ <li>No MBC
+ <ul>
+ <li><code class=highlighter-rouge>$00</code></li>
+ <li><code class=highlighter-rouge>$08</code>: RAM</li>
+ <li><code class=highlighter-rouge>$09</code>: Battery-backed RAM</li>
+ </ul>
+ </li>
+ <li><a href=#mbc-1>MBC1</a>:
+ <ul>
+ <li><code class=highlighter-rouge>$01</code></li>
+ <li><code class=highlighter-rouge>$02</code>: RAM</li>
+ <li><code class=highlighter-rouge>$03</code>: Battery-backed RAM</li>
+ </ul>
+ </li>
+ <li><a href=#mbc-2>MBC2</a>:
+ <ul>
+ <li><code class=highlighter-rouge>$05</code>: RAM</li>
+ <li><code class=highlighter-rouge>$06</code>: Battery-backed RAM</li>
+ </ul>
+ </li>
+ <li><a href=#mbc-3>MBC3</a>:
+ <ul>
+ <li><code class=highlighter-rouge>$0F</code>: Battery-backed RTC</li>
+ <li><code class=highlighter-rouge>$10</code>: Battery-backed RAM and RTC</li>
+ <li><code class=highlighter-rouge>$11</code></li>
+ <li><code class=highlighter-rouge>$12</code>: RAM</li>
+ <li><code class=highlighter-rouge>$13</code>: Battery-backed RAM</li>
+ </ul>
+ </li>
+ <li>MBC4 does not exist</li>
+ <li><a href=#mbc-5>MBC5</a>:
+ <ul>
+ <li><code class=highlighter-rouge>$19</code></li>
+ <li><code class=highlighter-rouge>$1A</code>: RAM</li>
+ <li><code class=highlighter-rouge>$1B</code>: Battery-backed RAM</li>
+ <li><code class=highlighter-rouge>$1C</code>: Rumble</li>
+ <li><code class=highlighter-rouge>$1D</code>: Battery-backed rumble</li>
+ <li><code class=highlighter-rouge>$1E</code>: Battery-backed RAM and rumble</li>
+ </ul>
+ </li>
+ <li><a href=#mbc-6>MBC6</a>:
+ <ul>
+ <li><code class=highlighter-rouge>$20</code>: Battery backed RAM, flash memory</li>
+ </ul>
+ </li>
+ <li><a href=#mbc-7>MBC7</a>:
+ <ul>
+ <li><code class=highlighter-rouge>$22</code>: EEPROM, accelerometer</li>
+ </ul>
+ </li>
+ <li><a href=#mbc-mmm01>MMM01</a>
+ <ul>
+ <li><code class=highlighter-rouge>$0B</code></li>
+ <li><code class=highlighter-rouge>$0C</code>: RAM</li>
+ <li><code class=highlighter-rouge>$0D</code>: Battery-backed RAM</li>
+ </ul>
+ </li>
+ <li><a href=#mbc-pocketcam>Pocket Camera</a>
+ <ul>
+ <li><code class=highlighter-rouge>$FC</code></li>
+ </ul>
+ </li>
+ <li><a href=#mbc-tama5>TAMA5</a>
+ <ul>
+ <li><code class=highlighter-rouge>$FD</code>: EEPROM, RTC, and alarm</li>
+ </ul>
+ </li>
+ <li><a href=#mbc-huc1>HuC-1</a>
+ <ul>
+ <li><code class=highlighter-rouge>$FF</code>: IR sensor</li>
+ </ul>
+ </li>
+ <li><a href=#mbc-huc3>HuC-3</a>
+ <ul>
+ <li><code class=highlighter-rouge>$FE</code>: IR sensor</li>
+ </ul>
+ </li>
+ <li><a href=#mbc-unlicensed>Unlicensed mappers</a>
+ <ul>
+ <li>(?): Sachen</li>
+ <li>(?): Sintax</li>
+ <li>(?): Vast Fame</li>
+ <li>N/A: <a href=#mbc-wisdom-tree>Wisdom Tree</a></li>
+ <li>TODO …</li>
+ </ul>
+ </li>
+</ul>
+<h3 id=mbc1><a id=mbc-1>MBC1</a><a class=anchorjs-link href=#mbc1 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<ul>
+ <li>Maximum ROM size: 128 banks (2 MiB) (?)</li>
+ <li>Maximum RAM size: (?)</li>
+</ul>
+<p>MBC1 is a common memory bank controller for the first few years of Game Boy games. It can be wired up to the cartridge differently sometimes giving it the illusion of being a different MBC type, usually referred to as MBC1-M. However, the physical chip is the same.</p>
+<h4 id=bank-swapping>Bank swapping<a class=anchorjs-link href=#bank-swapping aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>MBC1 bank swapping is a bit unusual due to the fact that it has a high bank and a low bank that combine to make the actual bank number. The high and low bank are combined as such to arrive at the bank number for the <code class=highlighter-rouge>$4000</code> region bank:</p>
+<p><code class=highlighter-rouge>LO % MAPPING_SIZE + (HI % 4) * MAPPING_SIZE</code></p>
+<p>The bank for the <code class=highlighter-rouge>$0000</code> region can be swapped when the MBC is “external RAM mode” and wired as MBC1-M, which is controlled by writes to the <code class=highlighter-rouge>$6000</code> region. When in RAM mode, bank “0” is mapped as <code class=highlighter-rouge>(HI % 4) * MAPPING_SIZE</code>.</p>
+<p>The mapping size is 32 for regular MBC1 cartridges and 16 for MBC1-M cartridges.</p>
+<h4 id=read-from-0000--3fff>Read from <code class=highlighter-rouge>$0000</code> – <code class=highlighter-rouge>$3FFF</code><a class=anchorjs-link href=#read-from-0000--3fff aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>Default mapped as bank 0. Can be swapped out with specific other banks based on “mode”. See the Mapping section.</p>
+<h4 id=read-from-4000--7fff>Read from <code class=highlighter-rouge>$4000</code> – <code class=highlighter-rouge>$7FFF</code><a class=anchorjs-link href=#read-from-4000--7fff aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>Default mapped as bank 1. Can be swapped out with most other banks. See the Mapping section.</p>
+<h4 id=read-from-a000--bfff>Read from <code class=highlighter-rouge>$A000</code> – <code class=highlighter-rouge>$BFFF</code><a class=anchorjs-link href=#read-from-a000--bfff aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>External RAM. Access is disabled by default. Disabled reads are pulled high (<code class=highlighter-rouge>$FF</code>).</p>
+<h4 id=write-to-0xxx--1xxx>Write to <code class=highlighter-rouge>$0xxx</code> – <code class=highlighter-rouge>$1xxx</code><a class=anchorjs-link href=#write-to-0xxx--1xxx aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>Enable or disable external RAM access. Writing a value of <code class=highlighter-rouge>$xA</code> enables access, whereas any other value disables access. The high nybble is ignored.</p>
+<h4 id=write-to-2xxx--3xxx>Write to <code class=highlighter-rouge>$2xxx</code> – <code class=highlighter-rouge>$3xxx</code><a class=anchorjs-link href=#write-to-2xxx--3xxx aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>Set the low bank value; see the Mapping section. It cannot be zero and will be coerced to 1 if a value of 0 is written.</p>
+<h4 id=write-to-4xxx--5xxx>Write to <code class=highlighter-rouge>$4xxx</code> – <code class=highlighter-rouge>$5xxx</code><a class=anchorjs-link href=#write-to-4xxx--5xxx aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>Set the high bank value; see the Mapping section. This instead controls the external RAM bank when in RAM mode.</p>
+<h4 id=write-to-6xxx--7xxx>Write to <code class=highlighter-rouge>$6xxx</code> – <code class=highlighter-rouge>$7xxx</code><a class=anchorjs-link href=#write-to-6xxx--7xxx aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>Adjust mode based on the least significant bit. Writing <code class=highlighter-rouge>%…1</code> enables “external RAM mode” which allows swapping the RAM bank and the bank at <code class=highlighter-rouge>$0000</code>. Writing <code class=highlighter-rouge>%…0</code> disables RAM mode and switches the RAM and <code class=highlighter-rouge>$0000</code> ROM banks back to 0.</p>
+<h4 id=write-to-a000--bfff>Write to <code class=highlighter-rouge>$A000</code> – <code class=highlighter-rouge>$BFFF</code><a class=anchorjs-link href=#write-to-a000--bfff aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>Write a value to external RAM, if enabled. The value is ignored otherwise.</p>
+<h3 id=mbc2><a id=mbc-2>MBC2</a><a class=anchorjs-link href=#mbc2 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<p>TODO</p>
+<h3 id=mbc3><a id=mbc-3>MBC3</a><a class=anchorjs-link href=#mbc3 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<ul>
+ <li>Maximum ROM size: 256 banks (4 MiB) (?)</li>
+ <li>Maximum RAM size: 4 banks (32 kB) / 8 banks (64 kB) for MBC30</li>
+</ul>
+<p>MBC3 is one of the most common MBCs, along with MBC5. It’s especially present in the DMG era. MBC3 improves upon MBC1 by removing the “banking mode”, and can function with a RTC (Real-Time Clock, famously used in the second generation Pokémon games). The Japanese version of Pokémon Crystal contains a special MBC3 labelled MBC30, that simply can address twice the external RAM. (This is the only known difference; JP Crystal is also the only known cart to use MBC30)</p>
+<h4 id=read-from-0000--3fff-1>Read from <code class=highlighter-rouge>$0000</code> – <code class=highlighter-rouge>$3FFF</code><a class=anchorjs-link href=#read-from-0000--3fff-1 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>Always mapped as bank 0.</p>
+<h4 id=read-from-4000--7fff-1>Read from <code class=highlighter-rouge>$4000</code> – <code class=highlighter-rouge>$7FFF</code><a class=anchorjs-link href=#read-from-4000--7fff-1 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>Default mapped as bank 1. Can be swapped out with all other banks except bank 0. See the Mapping section.</p>
+<h4 id=read-from-a000--bfff-1>Read from <code class=highlighter-rouge>$A000</code> – <code class=highlighter-rouge>$BFFF</code><a class=anchorjs-link href=#read-from-a000--bfff-1 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>External RAM or RTC register. Access is disabled by default. Disabled reads are pulled high (<code class=highlighter-rouge>$FF</code>).</p>
+<h4 id=write-to-0xxx--1xxx-1>Write to <code class=highlighter-rouge>$0xxx</code> – <code class=highlighter-rouge>$1xxx</code><a class=anchorjs-link href=#write-to-0xxx--1xxx-1 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>Enable or disable external RAM access. Writing a value of <code class=highlighter-rouge>$xA</code> enables access, whereas any other value disables access. The high nybble is ignored.</p>
+<h4 id=write-to-2xxx--3xxx-1>Write to <code class=highlighter-rouge>$2xxx</code> – <code class=highlighter-rouge>$3xxx</code><a class=anchorjs-link href=#write-to-2xxx--3xxx-1 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>Set the ROM bank value; see the Mapping section.</p>
+<h4 id=write-to-4xxx--5xxx-1>Write to <code class=highlighter-rouge>$4xxx</code> – <code class=highlighter-rouge>$5xxx</code><a class=anchorjs-link href=#write-to-4xxx--5xxx-1 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>Set the RAM bank value, or select a RTC register; see the Mapping section.</p>
+<h4 id=write-to-6xxx--7xxx-1>Write to <code class=highlighter-rouge>$6xxx</code> – <code class=highlighter-rouge>$7xxx</code><a class=anchorjs-link href=#write-to-6xxx--7xxx-1 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>Latch RTC registers when writing $00 then $01. Latching the registers should be done before accessing them, but does not stop the clock.</p>
+<h4 id=write-to-a000--bfff-1>Write to <code class=highlighter-rouge>$A000</code> – <code class=highlighter-rouge>$BFFF</code><a class=anchorjs-link href=#write-to-a000--bfff-1 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>Write a value to external RAM or a RTC register, if enabled. The value is otherwise ignored.</p>
+<h3 id=mbc5><a id=mbc-5>MBC5</a><a class=anchorjs-link href=#mbc5 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<ul>
+ <li>Maximum ROM size: 512 banks (8 MiB) (?)</li>
+ <li>Maximum RAM size: 16 banks (128 kB)</li>
+</ul>
+<p>MBC5 is ome of the most common MBCs, along with MBC3. It’s especially present in the CGB era, mostly because it is the first MBC to officially support CGB double-speed mode, at least according to Nintendo’s manual. MBC5 improves upon MBC3 by expanding ROM and RAM capabilities (although only one game makes use of all 512 ROM banks, and a handful of all 16 RAM banks), as well as the aforementioned CGB double-speed support. MBC5 cannot work with a RTC, unlike MBC3, but can work with a rumble motor.</p>
+<h4 id=bank-swapping-1>Bank swapping<a class=anchorjs-link href=#bank-swapping-1 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>MBC5 can address up to 512 banks, which doesn’t fit the ROM bank value into a single byte. Therefore, that value is split into a low byte, and a high byte, which effectively contains only 1 bit (? If MBC5 can <em>actually</em> support more ROM banks, this may even be a full byte). Since most, or rather all but one, games use at most 256 banks, rendering this extra bit (? byte) unused. (TODO: for games not using this extra byte, what does writing to <code class=highlighter-rouge>$3xxx</code> do?)</p>
+<h4 id=read-from-0000--3fff-2>Read from <code class=highlighter-rouge>$0000</code> – <code class=highlighter-rouge>$3FFF</code><a class=anchorjs-link href=#read-from-0000--3fff-2 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>Always mapped as bank 0.</p>
+<h4 id=read-from-4000--7fff-2>Read from <code class=highlighter-rouge>$4000</code> – <code class=highlighter-rouge>$7FFF</code><a class=anchorjs-link href=#read-from-4000--7fff-2 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>Default mapped as bank 1. Can be swapped out with all other banks <strong>including</strong> bank 0. See the Mapping section.</p>
+<h4 id=read-from-a000--bfff-2>Read from <code class=highlighter-rouge>$A000</code> – <code class=highlighter-rouge>$BFFF</code><a class=anchorjs-link href=#read-from-a000--bfff-2 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>External RAM register. Access is disabled by default. Disabled reads are pulled high (<code class=highlighter-rouge>$FF</code>).</p>
+<h4 id=write-to-0xxx--1xxx-2>Write to <code class=highlighter-rouge>$0xxx</code> – <code class=highlighter-rouge>$1xxx</code><a class=anchorjs-link href=#write-to-0xxx--1xxx-2 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>Enable or disable external RAM access. Writing a value of <code class=highlighter-rouge>$xA</code> enables access, whereas any other value disables access. The high nybble is ignored (?).</p>
+<h4 id=write-to-2xxx>Write to <code class=highlighter-rouge>$2xxx</code><a class=anchorjs-link href=#write-to-2xxx aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>Set the low ROM bank value; see the Mapping section.</p>
+<h4 id=write-to-3xxx>Write to <code class=highlighter-rouge>$3xxx</code><a class=anchorjs-link href=#write-to-3xxx aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>Set the high ROM bank value; see the Mapping section.</p>
+<h4 id=write-to-4xxx--5xxx-2>Write to <code class=highlighter-rouge>$4xxx</code> – <code class=highlighter-rouge>$5xxx</code><a class=anchorjs-link href=#write-to-4xxx--5xxx-2 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>Set the RAM bank value; see the Mapping section. If the cartridge has rumble, bit 3 is mapped to rumble instead of RAM bank, i.e. <code class=highlighter-rouge>bank OR 8</code> enables rumble.</p>
+<h4 id=write-to-a000--bfff-2>Write to <code class=highlighter-rouge>$A000</code> – <code class=highlighter-rouge>$BFFF</code><a class=anchorjs-link href=#write-to-a000--bfff-2 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>Write a value to external RAM, if enabled. The value is otherwise ignored.</p>
+<h3 id=mbc6><a id=mbc-6>MBC6</a><a class=anchorjs-link href=#mbc6 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<p>MBC6 is special in that it has a 8 Mbit flash chip that can be mapped into ROM space, as well as having two separate ROM banked regions (<code class=highlighter-rouge>$4xxx</code> –<code class=highlighter-rouge>$5xxx</code> and <code class=highlighter-rouge>$6xxx</code> – <code class=highlighter-rouge>$7xxx</code>) and two SRAM banked regions (<code class=highlighter-rouge>$Axxx</code> and <code class=highlighter-rouge>$Bxxx</code>). It is only used in one game, Net de Get: Minigame @ 100.</p>
+<p>TODO</p>
+<h3 id=mbc7><a id=mbc-7>MBC7</a><a class=anchorjs-link href=#mbc7 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<p>MBC7 is a special memory bank controller for the Game Boy Color that contains an 2-axis accelerometer (ADXL202E) and and a 256 byte EEPROM (<a href=http://www.microchip.com/wwwproducts/en/en010904>93LC56</a>). It is notably used in the game Kirby’s Tilt ‘n’ Tumble.</p>
+<p>Accelerometer data must be latched before reading. Data is 16-bit and centered at the value <code class=highlighter-rouge>$81D0</code>. Earth’s gravity affects the value by roughly <code class=highlighter-rouge>$70</code>, with larger acceleration providing a larger range. Maximum range is unknown.</p>
+<p>Save data is accessed through a manually clocked shift register.</p>
+<p>TODO</p>
+<h3 id=mmm01><a id=mbc-mmm01>MMM01</a><a class=anchorjs-link href=#mmm01 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<p>MMM01 is a “metamapper” in that it is used in game collection (Momotarō Collection 2 and Taito Variety Pack) to provide a boot menu before locking itself down into a separate “normal” mapper mode that only exposes certain banks to the game inside the collection.</p>
+<p>TODO</p>
+<h3 id=pocket-cam><a id=mbc-pocketcam>Pocket Cam</a><a class=anchorjs-link href=#pocket-cam aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<p>TODO</p>
+<h3 id=tama5><a id=mbc-tama5>TAMA5</a><a class=anchorjs-link href=#tama5 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<p>TAMA5 is a custom MBC developed by Bandai and officially licensed by Nintendo that provides a small EEPROM, along with RTC and piezoelectric buzzer components, similar to HuC-3. It is an unusal MBC in that it only has two addresses with which it can communicate with the MBC. There are other TAMA chips on the PCB, which include TAMA6 and TAMA7 (the ROM). It is only used in one game, Game de Hakken!! Tamagotchi - Osutchi to Mesutchi, also known as Tamagotchi 3.</p>
+<p>TODO</p>
+<h3 id=huc-1><a id=mbc-huc1>HuC-1</a><a class=anchorjs-link href=#huc-1 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<p>HuC-1 is a custom MBC developed by Hudson and officially licensed by Nintendo that provides infrared communication for games that predate the Game Boy Color, such as Pokémon Card GB, the Japanese version of Pokémon Trading Card Game. Oddly, the international versions do not use HuC-1 and instead rely on the GBC’s IR port.</p>
+<p>TODO</p>
+<h3 id=huc-3><a id=mbc-huc3>HuC-3</a><a class=anchorjs-link href=#huc-3 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<p>HuC-3 is a custom MBC developed by Hudson and officially licensed by Nintendo that extends HuC-1 with an RTC and a piezoelectric buzzer. It’s notably used in the Robot Poncots (Robopon outside of Japan) and Pocket Family game series.</p>
+<p>TODO</p>
+<h3 id=unlicensed-mappers><a id=mbc-unlicensed>Unlicensed mappers</a><a class=anchorjs-link href=#unlicensed-mappers aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<p>Several unlicensed games use unofficial mappers that are less well documented and may have copy protection.</p>
+<h4 id=wisdom-tree><a id=mbc-wisdom-tree>Wisdom Tree</a><a class=anchorjs-link href=#wisdom-tree aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>Wisdom Tree is an American company devoted to very, very Christian games. Notable for unlicensed games including Super 3D Noah’s Ark, they released games on a wide array of Nintendo platforms including the Game Boy. The Game Boy version uses a very simple mapper with the ROM region (<code class=highlighter-rouge>$0000</code> – <code class=highlighter-rouge>$7FFF</code>) remappable as a single monolithic block.</p>
+<h5 id=read-from-0000--7fff>Read from <code class=highlighter-rouge>$0000</code> – <code class=highlighter-rouge>$7FFF</code><a class=anchorjs-link href=#read-from-0000--7fff aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h5>
+<p>Default mapped as bank 0. Can be swapped out with other banks.</p>
+<h5 id=write-to-0000--3fff>Write to <code class=highlighter-rouge>$0000</code> – <code class=highlighter-rouge>$3FFF</code><a class=anchorjs-link href=#write-to-0000--3fff aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h5>
+<p>Swap the 32 KiB bank in the whole ROM region. Unlike most mappers the selected bank is based on the address written, not the value written.</p>
+<h1 id=picture-processing-unit><a id=ppu>Picture processing unit</a></h1>
+<p>The Game Boy’s picture processing unit is responsible for creating video frames. One frame takes 70224 cycles (~59.7275 frames per second).</p>
+<p>Timing is divided into 154 lines, 144 during VDraw and 10 during VBlank. Each line takes 456 cycles.</p>
+<p>The PPU can be disabled entirely during normal operation via the <a href=#ppu-lcdc><code class=highlighter-rouge>LCDC</code> register</a>. This prevents normal timing such that re-enabling it can lead to irregular frame rates, at least transiently.</p>
+<h2 id=draw-modes><a name=ppu-mode>Draw modes</a><a class=anchorjs-link href=#draw-modes aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h2>
+<p>The PPU has 4 distinct modes:</p>
+<ul>
+ <li>Mode 0: HBlank</li>
+ <li>Mode 1: VBlank</li>
+ <li>Mode 2: OAM scan</li>
+ <li>Mode 3: HDraw</li>
+</ul>
+<p>Modes 0, 2, and 3 do not occur during VBlank, only during VDraw. Mode transitions occur in this order:</p>
+<ul>
+ <li>1 → 2 (VBlank to VDraw transition)</li>
+ <li>2 → 3 (VDraw only)</li>
+ <li>3 → 0 (VDraw only)</li>
+ <li>0 → 1 (VDraw to VBlank transition)</li>
+ <li>0 → 2 (VDraw only)</li>
+</ul>
+<p><strong>Different transitions can affect timing characteristics.</strong></p>
+<h3 id=mode-0><a name=ppu-mode-0>Mode 0</a><a class=anchorjs-link href=#mode-0 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<p>HBlank occurs between lines and allows a short period of time for adjusting PPU parameters, VRAM, and OAM.</p>
+<h4 id=timing-characteristics>Timing characteristics<a class=anchorjs-link href=#timing-characteristics aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>Base timing: 204 cycles (max)</p>
+<p>HDraw (mode 3) can steal cycles from HBlank depending on scrolling parameters (SCX), window parameters (WX), and OAM.</p>
+<h3 id=mode-1><a name=ppu-mode-1>Mode 1</a><a class=anchorjs-link href=#mode-1 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<p>VBlank occurs between frames and allows a short period of time for adjusting PPU parameters, VRAM, and OAM.</p>
+<h4 id=timing-characteristics-1>Timing characteristics<a class=anchorjs-link href=#timing-characteristics-1 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>Exact timing: 4560 cycles (10 lines)</p>
+<h3 id=mode-2><a name=ppu-mode-2>Mode 2</a><a class=anchorjs-link href=#mode-2 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<p>Mode 2 occurs after HBlank and before HDraw. It is used to scan OAM to find which OBJs are active. During this time OAM is locked.</p>
+<h4 id=timing-characteristics-2>Timing characteristics<a class=anchorjs-link href=#timing-characteristics-2 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>Exact timing: 80 cycles (2 cycles per OAM entry)</p>
+<h3 id=mode-3><a name=ppu-mode-3>Mode 3</a><a class=anchorjs-link href=#mode-3 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<p>HDraw is when pixels are drawn.</p>
+<h4 id=timing-characteristics-3>Timing characteristics<a class=anchorjs-link href=#timing-characteristics-3 aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h4>
+<p>Base timing: 172 cycles (min)</p>
+<ul>
+ <li>1 cycle per BG pixel</li>
+ <li>6–11 cycles per active OBJ</li>
+ <li>0–7 extra cycles: <code class=highlighter-rouge>SCX % 8</code></li>
+ <li>TODO: describe PPU FIFO</li>
+ <li>TODO: describe windows</li>
+</ul>
+<h1 id=audio-processing-unit><a id=apu>Audio processing unit</a></h1>
+<p>TODO</p>
+<h1 id=timer><a id=timer>Timer</a></h1>
+<p>TODO</p>
+<h1 id=dma><a id=dma>DMA</a></h1>
+<p>TODO</p>
+<h1 id=interrupts><a id=irq>Interrupts</a></h1>
+<p>The Game Boy contains 5 interrupt types. Each type has a different priority and vector:</p>
+<table>
+ <thead>
+ <tr>
+ <th>Type</th>
+ <th>Priority</th>
+ <th>Vector</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>VBlank</td>
+ <td>0</td>
+ <td><code class=highlighter-rouge>$0040</code></td>
+ </tr>
+ <tr>
+ <td>LCD STAT</td>
+ <td>1</td>
+ <td><code class=highlighter-rouge>$0048</code></td>
+ </tr>
+ <tr>
+ <td>Timer</td>
+ <td>2</td>
+ <td><code class=highlighter-rouge>$0050</code></td>
+ </tr>
+ <tr>
+ <td>Serial</td>
+ <td>3</td>
+ <td><code class=highlighter-rouge>$0058</code></td>
+ </tr>
+ <tr>
+ <td>Joypad</td>
+ <td>4</td>
+ <td><code class=highlighter-rouge>$0060</code></td>
+ </tr>
+ </tbody>
+</table>
+<p>Interrupts are controlled through three registers:</p>
+<ul>
+ <li><a href=#mmio-if><code class=highlighter-rouge>IF</code></a>: interrupts asserted</li>
+ <li><a href=#mmio-ie><code class=highlighter-rouge>IE</code></a>: interrupts enabled</li>
+ <li><code class=highlighter-rouge>IME</code>: interrupt master enable</li>
+</ul>
+<p><code class=highlighter-rouge>IF</code> and <code class=highlighter-rouge>IE</code> are memory-mapped, whereas <code class=highlighter-rouge>IME</code> is controlled through the <a href=#cpu-di><code class=highlighter-rouge>DI</code></a> (disable interrupts) and <a href=#cpu-ei><code class=highlighter-rouge>EI</code></a> (enable interrupts) instructions.</p>
+<p>Interrupt requests are edge triggered(<em>Is this true in all cases?</em>): when an IRQ is asserted, it sets the bit corresponding to its priority in the <a href=#mmio-if><code class=highlighter-rouge>IF</code> register</a>. Interrupt <em>dispatch</em> however is level triggered: if at any time between instructions(<em>Unclear; which T state?</em>) while <code class=highlighter-rouge>IME</code> is enabled <code class=highlighter-rouge>IE AND IF != 0</code> IRQ dispatch will begin. Note that multi-M cycle instructions effectively block interrupt dispatch from starting until the end of the instruction.</p>
+<p>Interrupt dispatch takes 4 M cycles. The interrupt vector is loaded into the program counter based on the lowest significant bit of <code class=highlighter-rouge>IE AND IF</code> after the program counter’s old value has been pushed onto the stack, which takes two M cycles (one per byte, high byte first).</p>
+<p>When interrupt dispatch completes the bit associated with the interrupt handled is automatically cleared from <code class=highlighter-rouge>IF</code> and <code class=highlighter-rouge>IME</code> is set to 0. Returning from the interrupt is handled by the <code class=highlighter-rouge>reti</code> instruction, which atomically pops the old program counter from the stack and reenables <code class=highlighter-rouge>IME</code>.</p>
+<h3 id=interrupt-dispatch-canceling><a id=irq-cancel>Interrupt dispatch canceling</a><a class=anchorjs-link href=#interrupt-dispatch-canceling aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<p>Interrupt dispatch is not atomic. If the value of <code class=highlighter-rouge>IE AND IF</code> changes between the first M cycle and when the vector is loaded, the value of the vector may change. This can happen if <code class=highlighter-rouge>IE</code> or <code class=highlighter-rouge>IF</code> is altered in some way, either by a higher priority IRQ asserting, or by another memory write (e.g. the first stack push overwriting <code class=highlighter-rouge>IE</code> or <code class=highlighter-rouge>IF</code>).</p>
+<ul>
+ <li>If a higher priority IRQ is asserted, it effectively “steals” the interrupt dispatch</li>
+ <li>If <code class=highlighter-rouge>IE AND IF</code> becomes zero, no interrupt vector can be located and instead <code class=highlighter-rouge>$0000</code> is loaded into the program counter.</li>
+</ul>
+<h1 id=serial-io><a id=sio>Serial I/O</a></h1>
+<p>TODO</p>
+<h1 id=miscellaneous><a id=misc>Miscellaneous</a></h1>
+<h2 id=hardware-issues><a id=errata>Hardware issues</a><a class=anchorjs-link href=#hardware-issues aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h2>
+<ul>
+ <li><a href=#oam-bug>OAM bug</a></li>
+ <li><a href=#irq-cancel>Interrupt dispatch canceling</a></li>
+ <li><a href=#ppu-stat-bug>STAT IRQ blocking</a></li>
+ <li><a href=#stat-write-irq>STAT writing IRQ</a></li>
+</ul>
+<h3 id=oam-bug><a id=oam-bug>OAM bug</a><a class=anchorjs-link href=#oam-bug aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<p>Under some circumstances, OAM may be corrupted.</p>
+<p>Triggers are:</p>
+<ul>
+ <li>Performing a 16-bit <code class=highlighter-rouge>inc</code> or <code class=highlighter-rouge>dec</code> (this includes the implicit <code class=highlighter-rouge>inc hl</code> performed by <code class=highlighter-rouge>ld [hli], a</code>, and the implicit <code class=highlighter-rouge>dec sp</code>s performed by <code class=highlighter-rouge>push de</code>, for example) with the affected register pointing to OAM (TODO: is this Mode-dependent? Does <code class=highlighter-rouge>ld hl, $FE00 ; dec hl</code> corrupt? Does <code class=highlighter-rouge>ld hl, $FEFF ; inc hl</code> corrupt?)</li>
+ <li>Writing OAM while the PPU is reading it (TODO: does this include Mode 2, Mode 3, or both?)
+TODO: are there other triggers?</li>
+</ul>
+<p>TODO: explain how exactly OAM is corrupted.</p>
+<p>The OAM bug is fixed on CGB.</p>
+<h3 id=stat-irq-blocking><a id=ppu-stat-bug>STAT IRQ blocking</a><a class=anchorjs-link href=#stat-irq-blocking aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<p>The STAT IRQ is edge-triggered, based on conditions selected in the <a href=#ppu-stat><code class=highlighter-rouge>STAT</code> register</a>. A STAT IRQ is asserted when one or more selected conditions become true when none were true previously. Trouble arises between mode transitions, because the signal doesn’t go low then high again, but stays low.</p>
+<p>For example, enabling Mode 2 and Mode 0 sources will assert an IRQ on LY 0 Mode 2, then on LY 0 Mode 0, but not on LY 1 Mode 2 since both modes are contiguous.</p>
+<p>NB: this does not occur with Mode 0 and LYC, because LYC is slightly late on Mode 2, so the signal does go low then high again. (<a href=https://twitter.com/liji32/status/1002867726476562432>Source</a>)</p>
+<h3 id=stat-writing-irq><a id=stat-write-irq>STAT writing IRQ</a><a class=anchorjs-link href=#stat-writing-irq aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h3>
+<p>When writing to STAT on DMG, bits 3–6 are considered high for one cycle, which temporarily selects all conditions and may thus assert a STAT IRQ. CGB does not exhibit this bug, even in DMG mode.</p>
+<h2 id=super-game-boy><a id=sgb>Super Game Boy</a><a class=anchorjs-link href=#super-game-boy aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h2>
+<p>TODO</p>
+<h2 id=cheat-codes><a id=cheats>Cheat codes</a><a class=anchorjs-link href=#cheat-codes aria-label=Anchor data-anchorjs-icon= style="font:1em/1 anchorjs-icons;padding-left:.375em"></a></h2>
+<p>TODO</p>
+<h1 id=about-this-document><a id=about>About this document</a></h1>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFgAAAAfCAYAAABjyArgAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAdnJLH8AAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAABTpJREFUaN7tWk1PG0cY9jlSLO5cOIYbbZUeU6T0B5AfkIh/UNRbJKqgiFSKVAlZrqLm0FCptyawxubDX3gNa2N71/Z6IeTKT+AnvNXzrt9ldlnwB84aE0Yasd6ZnR2efeZ5P2ZiRBSPxWJ0X0dfifCn+2Mnv017xV3KlbJUPChQySjRQbVMRt2gI7NK9WaNGq0GWW2TmrZFzU7TrbZFlm2S2WpwH/St1A1+VjdKPFaulOOx8Y5MNk1beylK7Wi0ub1BG5lPXD+lP9LHrf/uTFWAvgA3r+do/7BI5YpORu2QwWq06gxg22lR58Qm53OHjk+P6eSLW3HtfHa4DX0s2+Jn8CzGKFd1HhNjB0HWdjY9kAHwHQU55ge3WmYG1qwasxWgAdTVN6v09Oen9DD+8NJSwD20rf6+yn3bx23+KGB0pVFhNu8f7vtATme3KLWruSBnNkbG4pfLL2l2dvbSHHEPbWMBGLKgggtgmh2LWZlIJmh6erpv3UHfxJ8JfhYSAjZXPZCLnlxs5zKU3nNBHgWLk38l6dHsI28e8/PztLS0xBXXch990DdSgKGTkIULcJvMxIVnCz7wpqamaHFxkVZWVkjXda64xj20qX3xbKVmUMtxQQaTIReuJmdpt7Djl4obsHj93w8Uj8fd9y4s0NnZGQUL7qENfdA3CpA9gGHQoJeQBTA3CC7AA5Dn5+d0XVlfX/cBDbYAZHwwfDi8A4avUM5Tdn/PlYoQFg/6jwhz8aHVolhz3xxlbpEBjOULowTNxdJWwZ2bmwtlxFUFHwHPqEzGmNBkvONCKhQW76ZI294cSiagq8LcL6enPQFGESZ/bU32ADZYGups0KC5Kri9WNsPyNBkGD6WirpBesVlMWtx3tVikYlBARaDNggJ0FcMXyQAM3ttk6VBDBqWum3bNGwByCIXGBNjw4UTFhcPXBarHsUwMiEGLVggF/KBg9KBIoYvEoChjy2nxa6YTAqae9MieocKFw4rRLS41HXbVJkYFmB4CsESElX5Cp6JDGBEaPaJzb6ssFeVBngL0C18dVQV/GDb2tqa7x8RFmNsaDEivksykcu43oSiw3cKYBg3LGEJItQlBQDD/F2AqWlaaJv6vCxVjI2ID1JU7bpshXKBvQnosLhrd1IikE84PnW8CaksFGM1MzPDxgGA4xrLX9rE0wDg0hYmEwirmz4dLvjctWEAvs7IXcXeyI0cfF/kFWRCADE4yTBN7kev1RWAd8AnPjKPRgaw6qb1C3DkbtokAzxooCHaG2mg0a9EwPDBdcM1QFUlItgWlURMRKh8nZG7zpD1Y+SEMa6R6/C7RmnkVJDVZA8+OuaB96tBz1iSPeKmSYgM1yq4zK9y0wCy3A+2oYDRqpvWUNy0vH5zN20i0pUSaKhhctCfHWWgcdgNNJC6lEDjpgmfW51wrzbCQ+VB4vtxhcoTAbCa7Pnwz9+jT/YkEzw2kj14l6Qs1cT7sMmeiQAYdfnVspeufP7iuQ/kQZI+YH1ourJt0us3r7/F3eWLH0u//sJuVGeIhDva0EdNuD/+8TFLA/xsfMBvdPvef+O3V8scDABklcnDbBkB3FanSe/ev4vqHEJokBHsM1aAPZBtd9MTmjzwpmdSNj2tyMANghd2PQZwwwEWuVC37QFar2177Fzwtj3OR7TNyGWhV7ryVkiEWr//4TvS0hq7cPCTbe/giaMcPHH4nnrwJJXR6MlPT8ZxVOk2SUNvgKUCrLd/vKViuagcnepWHJ1qm9yGPuMAdmIZfF9HUInowT0QX+905f/GIzQzf2iprAAAAABJRU5ErkJggg==" alt=CC-BY-4.0></p>
+<p>This document is licensed under the <a href=http://creativecommons.org/licenses/by/4.0/>Creative Commons Attribution 4.0 International License</a> (CC-BY 4.0)</p>
+<ul>
+ <li>Copyright © 2018 – 2019, Vicki Pfau</li>
+</ul>
+ 
+ <div class="footer border-top border-gray-light mt-5 pt-3 text-right text-gray">
+ This site is open source. <a href=https://github.com/mgba-emu/gbdoc/edit/gh-pages/index.md>Improve this page</a>.
+ </div>
+ 
+ </div>
+ <div id=ghostery-purple-box class="ghostery-bottom ghostery-right ghostery-none ghostery-collapsed"><div id=ghostery-box><div id=ghostery-count style="background:rgba(0,0,0,0) none repeat scroll 0% 0%;color:#ffffff">0</div><div id=ghostery-pb-icons-container><span id=ghostery-breaking-tracker class=ghostery-pb-tracker title="Broken Page Trackers" style='background:rgba(0,0,0,0) url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+DQo8c3ZnIHdpZHRoPSIxOHB4IiBoZWlnaHQ9IjE4cHgiIHZpZXdCb3g9IjAgMCAxOCAxOCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4NCiAgICA8IS0tIEdlbmVyYXRvcjogU2tldGNoIDQwICgzMzc2MikgLSBodHRwOi8vd3d3LmJvaGVtaWFuY29kaW5nLmNvbS9za2V0Y2ggLS0+DQogICAgPHRpdGxlPmJyZWFraW5ncGFnZTwvdGl0bGU+DQogICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+DQogICAgPGRlZnM+PC9kZWZzPg0KICAgIDxnIGlkPSJQdXJwbGUtQm94IiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4NCiAgICAgICAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQxNi4wMDAwMDAsIC00NTMuMDAwMDAwKSIgaWQ9ImJhbSEtYnJlYWtpbmctdGhlLXBhZ2UtY29weS0yIiBmaWxsPSIjRkNCQTMzIj4NCiAgICAgICAgICAgIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDQxNi4wMDAwMDAsIDQ1My4wMDAwMDApIj4NCiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNOSwwLjE5NTY1MjE3NCBDNC4xNDQzNjAyNSwwLjE5NTY1MjE3NCAwLjE5NTY1MjE3NCw0LjE0NDM2MDI1IDAuMTk1NjUyMTc0LDkgQzAuMTk1NjUyMTc0LDEzLjg1NTYzOTggNC4xNDQzNjAyNSwxNy44MDQzNDc4IDksMTcuODA0MzQ3OCBDMTMuODU1NjM5OCwxNy44MDQzNDc4IDE3LjgwNDM0NzgsMTMuODU1NjM5OCAxNy44MDQzNDc4LDkgQzE3LjgwNDM0NzgsNC4xNDQzNjAyNSAxMy44NTU2Mzk4LDAuMTk1NjUyMTc0IDksMC4xOTU2NTIxNzQgWiBNMTEuNDg1NTg5OSwxMy40MTA0NDQxIEwxMS4wNzcwNzk4LDEzLjAyMDY3NjggTDEyLjEwMDQ3MTEsMTIuMjE2OTU3OSBMMTEuMDQ2MjQ1MSwxMi4yMTY5NTc5IEwxMS4yMzQ0NzgxLDEwLjg3MDcwODcgTDkuODAzMTgxNDIsMTEuNzk1NzUxMiBMOS40MDMzMzczNCw5LjM0NTA5MzkyIEw4LjY5NDc0MjY5LDExLjA4NjU1MTkgTDcuMzI1NzIwMDksMTAuMTcwOTgxNSBMNy43NTI1Njk3NywxMS45Mjk1NyBMNi41NTQyNDY3MywxMi4zMTE0Nzc1IEw3Ljg4MjM1Nzg3LDEzLjQxMDQ0NDEgTDExLjQ4NTU4OTksMTMuNDEwNDQ0MSBaIE02LjcxNTY3NTcyLDEzLjQxMDQ0NDEgTDUuMDI4NjMxOTcsMTIuMDA2NzU3NiBMNi44Njg0Mzg3MywxMS40MzE5ODE4IEw2LjE2Mzg3NDc3LDguNDg4NTczMDkgTDguMzQ5MzEyODgsOS45NTk5NzUxMiBMOS43MDQwMjY1NCw2LjYxMjQ5MDE1IEwxMC4zNTAzNDcxLDEwLjU1NjcxODIgTDEyLjE5NDk5MDcsOS4zNzY1MzMyOCBMMTEuODk4OTM2OCwxMS40NzY5MjM5IEwxNC4yNjI5MzQzLDExLjQ3NjkyMzkgTDEyLjIxMjkyNzIsMTMuMDc4OTIwMiBMMTIuNTY3MjI0NSwxMy40MTA0NDQxIEwxNS4zMzEyNjc3LDEzLjQxMDQ0NDEgTDE0LjQ3Mzk0MDcsMTIuNTk4NjYzOSBMMTcuMjA3MzUwNiwxMC40NjY4MzM5IEwxMy4wNjA3ODIxLDEwLjQ2NjgzMzkgTDEzLjQ5NjI5NzcsNy4zNDg2OTUgTDExLjA5OTg1MzIsOC44Nzg5NDUwNSBMMTAuMTIxMjAyNiwyLjg5Mjc3MTMgTDcuODc3NzIyNTgsOC40MjU0OTI4NSBMNC41NzA1NDQ0Nyw2LjIwMzk4MDEgTDUuNjY1NDgwNDEsMTAuNzUwMzkyNyBMMi45NTEwMTQ3MiwxMS41OTgyNDc2IEw1LjEzNjQ1MjgzLDEzLjQxMDQ0NDEgTDYuNzE1Njc1NzIsMTMuNDEwNDQ0MSBaIiBpZD0iYnJlYWtpbmdwYWdlIj48L3BhdGg+DQogICAgICAgICAgICA8L2c+DQogICAgICAgIDwvZz4NCiAgICA8L2c+DQo8L3N2Zz4=") repeat scroll 0% 0%;opacity:.5'></span><span id=ghostery-slow-tracker class=ghostery-pb-tracker title="Slow Trackers" style='background:rgba(0,0,0,0) url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+DQo8c3ZnIHdpZHRoPSIxN3B4IiBoZWlnaHQ9IjE3cHgiIHZpZXdCb3g9IjAgMCAxNyAxNyIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4NCiAgICA8IS0tIEdlbmVyYXRvcjogU2tldGNoIDQwICgzMzc2MikgLSBodHRwOi8vd3d3LmJvaGVtaWFuY29kaW5nLmNvbS9za2V0Y2ggLS0+DQogICAgPHRpdGxlPnNsb3d0cmFja2VyczwvdGl0bGU+DQogICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+DQogICAgPGRlZnM+PC9kZWZzPg0KICAgIDxnIGlkPSJQdXJwbGUtQm94IiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4NCiAgICAgICAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTM5NS4wMDAwMDAsIC00NTQuMDAwMDAwKSIgaWQ9InNsb3d0cmFja2VycyIgZmlsbD0iI0ZDQkEzMyI+DQogICAgICAgICAgICA8cGF0aCBkPSJNNDAzLjUsNDU0IEMzOTguODEyMjEsNDU0IDM5NSw0NTcuODEyMjEgMzk1LDQ2Mi41IEMzOTUsNDY3LjE4Nzc5IDM5OC44MTIyMSw0NzEgNDAzLjUsNDcxIEM0MDguMTg3NzksNDcxIDQxMiw0NjcuMTg3NzkgNDEyLDQ2Mi41IEM0MTIsNDU3LjgxMjIxIDQwOC4xODc3OSw0NTQgNDAzLjUsNDU0IFogTTQwOS42MDk1ODQsNDY1LjE3ODY1NCBDNDA5LjUzMDI1OSw0NjUuMTU0MDkgNDA4LjY3NzI4Myw0NjQuNzQ2NDIgNDA3LjU2MTA5MSw0NjQuMzYyNjM3IEM0MDguNDg0Mzc4LDQ2My43NDU2MSA0MDkuMDk0NDE4LDQ2Mi42OTM2NDUgNDA5LjA5NDQxOCw0NjEuNTAxNzMzIEM0MDkuMDk0NDE4LDQ1OS42MDU1ODEgNDA3LjU1MTQwMSw0NTguMDYyMzM4IDQwNS42NTUyNDksNDU4LjA2MjMzOCBDNDAzLjc1OTA5Nyw0NTguMDYyMzM4IDQwMi4yMTU4NTQsNDU5LjYwNTU4MSA0MDIuMjE1ODU0LDQ2MS41MDE3MzMgQzQwMi4yMTU4NTQsNDYyLjA0OTM1IDQwMi4zNDUyMDgsNDYyLjU2Njc2OSA0MDIuNTczMjY5LDQ2My4wMjY0OTcgQzQwMi43ODgwMzQsNDYzLjA2ODYzOCA0MDMuMzQ0NDQsNDYzLjE3NTIzMiA0MDQuMjIzNzgyLDQ2My4zMjM5NjggQzQwNS4yMDQ1MzUsNDYzLjQ5MDI4MSA0MDUuODUyNDM2LDQ2My4zNTY0MTkgNDA2LjM5MTAzOSw0NjIuODc2NjM0IEM0MDYuNzI4MTcyLDQ2Mi41NzY0NTkgNDA2LjkyODA2NCw0NjIuMTYzNjA2IDQwNi45NTM1MjksNDYxLjcxMzc5NCBDNDA2Ljk4MDEyMSw0NjEuMjYzOTgxIDQwNi44Mjk1ODMsNDYwLjgyOTk0NCA0MDYuNTI5NDA4LDQ2MC40OTM3MTIgQzQwNi4wNDY5MTksNDU5Ljk1MjQwNSA0MDUuMjE1MTI3LDQ1OS45MDM5NTMgNDA0LjY3MjY5Myw0NjAuMzg1NTQxIEM0MDQuMjM5NTU3LDQ2MC43NzExMjYgNDA0LjE4NTAyMSw0NjEuNDQ0NDkyIDQwNC41NTIxMjcsNDYxLjg1NzM0NiBDNDA0Ljg0MDEzMyw0NjIuMTgwNTA3IDQwNS4zNjk5NDcsNDYyLjIxNzQ2NiA0MDUuNjg2Nzk5LDQ2MS45MzU3NyBDNDA1LjgwMzk4NCw0NjEuODMxODggNDA1Ljg3MzM5NCw0NjEuNjkyODM1IDQwNS44ODA2MDYsNDYxLjU0NDc3NiBDNDA1Ljg4NjY5LDQ2MS40MjQyMSA0MDUuODUwNjMzLDQ2MS4zMTA2MyA0MDUuNzgwOTk4LDQ2MS4yMzQwMDkgQzQwNS43MTg1NzQsNDYxLjE2NTUgNDA1LjYxOTE5Miw0NjEuMTI3NjQxIDQwNS41MTY4OCw0NjEuMTI4NTQyIEM0MDUuNDI5ODkyLDQ2MS4xMzEwMjEgNDA1LjMxNzIxNCw0NjEuMTY1NSA0MDUuMjQ0MTk4LDQ2MS4yMzc2MTUgQzQwNS4yMjYzOTUsNDYxLjI1NDI5MSA0MDUuMjA0NTM1LDQ2MS4yNjQ4ODMgNDA1LjE3OTc0Niw0NjEuMjY0ODgzIEM0MDUuMTI2MTExLDQ2MS4yNjQ4ODMgNDA1LjA4MzA2OCw0NjEuMjE2NDMxIDQwNS4wODMwNjgsNDYxLjE1NzYxMyBDNDA1LjA4MzA2OCw0NjEuMTIxMzMxIDQwNS4wOTc5NDEsNDYxLjA5NDk2NCA0MDUuMTE2NDIxLDQ2MS4wNjk0OTggQzQwNS4yMjYzOTUsNDYwLjkxODk2IDQwNS4zODE0NCw0NjAuODMxNzQ3IDQwNS41MzUzNTksNDYwLjgxODY3NiBDNDA1Ljc0NDAzOSw0NjAuODAxMDk5IDQwNS45MTMwNTcsNDYwLjg2MDgxOCA0MDYuMDQ2OTE5LDQ2MS4wMDc3NTEgQzQwNi4xNzk4NzksNDYxLjE1NDAwNyA0MDYuMjQ5Mjg5LDQ2MS4zNDg0OSA0MDYuMjM3MTIsNDYxLjU2MzI1NSBDNDA2LjIyMzgyNCw0NjEuODA2MTkgNDA2LjExMjk0OCw0NjIuMDMyNDQ4IDQwNS45MjM2NDksNDYyLjIwMDU2NCBDNDA1LjQ1NzE2LDQ2Mi42MTYxMjIgNDA0LjcwNzE3Myw0NjIuNTY2MDkzIDQwNC4yODU1Myw0NjIuMDkzMjk0IEM0MDMuNzg5NzQ1LDQ2MS41MzU5ODcgNDAzLjg1ODQ3OSw0NjAuNjMyMDgxIDQwNC40MzUxNjcsNDYwLjExNzgxNyBDNDA1LjEyMzQwNyw0NTkuNTA1Mjk3IDQwNi4xODI1ODQsNDU5LjU2NjgyIDQwNi43OTQyMDIsNDYwLjI1NTI4NCBDNDA3LjE1NzAyNiw0NjAuNjYyNzMgNDA3LjM0MDAxNiw0NjEuMTg4MjYyIDQwNy4zMDg0NjYsNDYxLjczMzE3NCBDNDA3LjI3NjY5MSw0NjIuMjc4OTg4IDQwNy4wMzQ2NTgsNDYyLjc3OTA1NSA0MDYuNjI2OTg3LDQ2My4xNDE2NTQgQzQwNi4xNjgzODYsNDYzLjU1MDIyNiA0MDUuNjMyMjYyLDQ2My43NDY1MTIgNDA0Ljk0NjUwMiw0NjMuNzQ2NTEyIEM0MDQuNzA1MzcsNDYzLjc0NjUxMiA0MDQuNDQ0ODU3LDQ2My43MjE3MjIgNDA0LjE2MzE2Miw0NjMuNjc0Mzk3IEM0MDMuMTkyMDk5LDQ2My41MDk2NjIgNDAyLjE1NTAwNyw0NjMuMzI0ODY5IDQwMi4wMTU5NjIsNDYzLjMwNTQ4OCBDNDAxLjMxNzEzMSw0NjMuMjEyMTkxIDQwMC43MzYxNjEsNDYyLjczNzU4OSA0MDAuNzE3NjgyLDQ2Mi4wMzk2NTkgTDQwMC44OTQ1ODcsNDU4Ljk4NzY1MyBDNDAwLjg5NDU4Nyw0NTguNzkxMzY3IDQwMC43MzUyNiw0NTguNjMxMTM4IDQwMC41MzgwNzIsNDU4LjYzMTEzOCBDNDAwLjM0MDg4NSw0NTguNjMxMTM4IDQwMC4xODE1NTgsNDU4Ljc5MDQ2NSA0MDAuMTgxNTU4LDQ1OC45ODc2NTMgQzQwMC4xODE1NTgsNDU4Ljk4NzY1MyA0MDAuMjg1NDQ3LDQ2MC44NDE0MzcgNDAwLjI5NzYxNyw0NjEuMDc1NTgzIEM0MDAuMzIwNjAzLDQ2MS41MjAyMTIgMzk5LjkxMTEzLDQ2MS44NzY3MjYgMzk5LjQ2MDQxNiw0NjEuODc2NzI2IEMzOTguOTk4NDM1LDQ2MS44NzY3MjYgMzk4LjU4NzE1OSw0NjEuNTAwODMxIDM5OC42MjM0NDEsNDYxLjAzOTUyNiBDMzk4LjY0MzQ5OCw0NjAuNzg0MTk3IDM5OC42NjQ2ODIsNDYwLjUyMDA3OSAzOTguNjg1ODY1LDQ2MC4yNzI4NjIgTDM5OC43NTk3ODIsNDU5LjAwOTUxMiBDMzk4Ljc1OTc4Miw0NTguODEzMjI2IDM5OC42MDA0NTUsNDU4LjY1Mjk5OCAzOTguNDAzMjY4LDQ1OC42NTI5OTggQzM5OC4yMDYwOCw0NTguNjUyOTk4IDM5OC4wNDY3NTMsNDU4LjgxMjMyNSAzOTguMDQ2NzUzLDQ1OS4wMDk1MTIgTDM5OC4yMjAyNzgsNDYxLjk5OTk5NyBMMzk4LjIyMDI3OCw0NjIuMDA1MTggQzM5OC4yMjAyNzgsNDY0LjA5NzYxNyAzOTkuNDE3MzczLDQ2NS44MDI4OTIgNDAxLjUxMDcxMiw0NjUuODAxMDg5IEM0MDMuNjIyNTMxLDQ2NS43OTgzODUgNDA5LjYwODY4Myw0NjUuODAxMDg5IDQwOS42MDg2ODMsNDY1LjgwMTA4OSBDNDA5Ljc4MTA4MSw0NjUuODAxMDg5IDQwOS45MjAzNTEsNDY1LjY2MTE0MyA0MDkuOTIwMzUxLDQ2NS40ODk0MjEgQzQwOS45MjAzNTEsNDY1LjMxNzAyMyA0MDkuNzczMTkzLDQ2NS4yMzA3MTEgNDA5LjYwOTU4NCw0NjUuMTc4NjU0IFoiPjwvcGF0aD4NCiAgICAgICAgPC9nPg0KICAgIDwvZz4NCjwvc3ZnPg==") repeat scroll 0% 0%;opacity:.5'></span><span id=ghostery-non-secure-tracker class=ghostery-pb-tracker title="Non-secure Trackers" style='background:rgba(0,0,0,0) url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+DQo8c3ZnIHdpZHRoPSIxOHB4IiBoZWlnaHQ9IjE4cHgiIHZpZXdCb3g9IjAgMCAxOCAxOCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4NCiAgICA8IS0tIEdlbmVyYXRvcjogU2tldGNoIDQwICgzMzc2MikgLSBodHRwOi8vd3d3LmJvaGVtaWFuY29kaW5nLmNvbS9za2V0Y2ggLS0+DQogICAgPHRpdGxlPndhcm5pbmc8L3RpdGxlPg0KICAgIDxkZXNjPkNyZWF0ZWQgd2l0aCBTa2V0Y2guPC9kZXNjPg0KICAgIDxkZWZzPjwvZGVmcz4NCiAgICA8ZyBpZD0iUHVycGxlLUJveCIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+DQogICAgICAgIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0zNzMuMDAwMDAwLCAtNDUzLjAwMDAwMCkiIGlkPSJ3YXJuaW5nIiBmaWxsPSIjRkVCMDMyIj4NCiAgICAgICAgICAgIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDM3My4wMDAwMDAsIDQ1My4wMDAwMDApIj4NCiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNOSwwLjYzMDQzNDc4MyBDNC4zODQxNDQ5MywwLjYzMDQzNDc4MyAwLjYzMDQzNDc4Myw0LjM4NDE0NDkzIDAuNjMwNDM0NzgzLDkgQzAuNjMwNDM0NzgzLDEzLjYxNTg1NTEgNC4zODQxNDQ5MywxNy4zNjk1NjUyIDksMTcuMzY5NTY1MiBDMTMuNjE1ODU1MSwxNy4zNjk1NjUyIDE3LjM2OTU2NTIsMTMuNjE1ODU1MSAxNy4zNjk1NjUyLDkgQzE3LjM2OTU2NTIsNC4zODQxNDQ5MyAxMy42MTU4NTUxLDAuNjMwNDM0NzgzIDksMC42MzA0MzQ3ODMgWiBNNC42NDI5MjgxMSwxMS43ODk4NTUxIEM1LjI1MDQxMTY1LDExLjc4OTg1NTEgNS43NTY5NTIzNCwxMS4zNjA3NTY3IDUuODc4NzE2OTMsMTAuODgxMzY5NSBDNi4wMDA0ODE1MiwxMS4zNjEyNDM3IDYuNTA3MDIyMjIsMTEuNzIzNzM2OSA3LjExNDM4NCwxMS43MjM3MzY5IEM3LjcyNDE4MTA2LDExLjcyMzczNjkgOC4yMzI2Njk5OSwxMS4zNjUwMTg0IDguMzUxNTEyMjMsMTAuODgyNzA4OSBDOC40NzA5NjMzLDExLjM2NTAxODQgOC45Nzk0NTIyMywxMS43MzY1MjIyIDkuNTg4NzYyMjQsMTEuNzM2NTIyMiBDMTAuMTk0NjYyOCwxMS43MzY1MjIyIDEwLjcwMTIwMzUsMTEuMzk0OTcyNSAxMC44MjM0NTUyLDEwLjkxNjU1OTQgQzEwLjk0NTcwNjgsMTEuMzk0OTcyNSAxMS40NTIyNDc1LDExLjc4OTM2OCAxMi4wNTgyNjk5LDExLjc4OTM2OCBDMTIuMzUzNjcwOCwxMS43ODkzNjggMTIuNjI0NzE4OCwxMS42OTkzODQgMTIuODM5NzU1LDExLjU1OTU5ODIgQzExLjAwOTUxMTUsOC43MTgwOTk3NSAxMi4xNDUzMzE2LDQuMTM3NjgxMTYgMTIuMTQ1MzMxNiw0LjEzNzY4MTE2IEM2Ljk0NjQ3MDYzLDUuMjMxNjE0MjQgNC42NjU4MTk4NSwxMC4xMDAzNzE0IDQuMDU3OTcxMDEsMTEuNjY2MTQyMiBDNC4yMzI5NDY3MywxMS43NDMyMTkyIDQuNDMxNzg4MzEsMTEuNzg5ODU1MSA0LjY0MjkyODExLDExLjc4OTg1NTEgWiIgaWQ9Indhcm5pbmd0cmFja2VycyI+PC9wYXRoPg0KICAgICAgICAgICAgPC9nPg0KICAgICAgICA8L2c+DQogICAgPC9nPg0KPC9zdmc+") repeat scroll 0% 0%;opacity:.5'></span></div><div id=ghostery-title hidden>Looking</div><div id=ghostery-minimize><span id=ghostery-minimize-icon></span></div><span id=ghostery-close style='background:rgba(0,0,0,0) url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+DQo8c3ZnIHdpZHRoPSIxNXB4IiBoZWlnaHQ9IjE1cHgiIHZpZXdCb3g9IjAgMCAxNSAxNSIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4NCiAgICA8IS0tIEdlbmVyYXRvcjogU2tldGNoIDMuNy4yICgyODI3NikgLSBodHRwOi8vd3d3LmJvaGVtaWFuY29kaW5nLmNvbS9za2V0Y2ggLS0+DQogICAgPHRpdGxlPmNvbGxhcHNlIGNvcHkgMjwvdGl0bGU+DQogICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+DQogICAgPGRlZnM+PC9kZWZzPg0KICAgIDxnIGlkPSJQdXJwbGUtQm94IiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4NCiAgICAgICAgPGcgaWQ9ImNvbGxhcHNlLWNvcHktMiI+DQogICAgICAgICAgICA8Y2lyY2xlIGlkPSJPdmFsLTMxNSIgZmlsbC1vcGFjaXR5PSIwLjI3MDE1Mzk4NiIgZmlsbD0iI0Q4RDhEOCIgY3g9IjcuNSIgY3k9IjcuNSIgcj0iNy41Ij48L2NpcmNsZT4NCiAgICAgICAgICAgIDxwYXRoIGQ9Ik00LjM2LDQuMzYgTDEwLjU3NDU2MzQsMTAuNTc0NTYzNCIgaWQ9IkxpbmUiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSI+PC9wYXRoPg0KICAgICAgICAgICAgPHBhdGggZD0iTTQuMzYsNC4zNiBMMTAuNTc0NTYzNCwxMC41NzQ1NjM0IiBpZD0iTGluZS1Db3B5IiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS1saW5lY2FwPSJzcXVhcmUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDcuNjAwMDAwLCA3LjYwMDAwMCkgc2NhbGUoLTEsIDEpIHRyYW5zbGF0ZSgtNy42MDAwMDAsIC03LjYwMDAwMCkgIj48L3BhdGg+DQogICAgICAgIDwvZz4NCiAgICA8L2c+DQo8L3N2Zz4=") repeat scroll 0% 0%'></span></div><div id=ghostery-pb-background><div id=ghostery-trackerList></div></div></div>
+ 
+ 
+ 
