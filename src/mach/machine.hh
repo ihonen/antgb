@@ -7,6 +7,7 @@ public:
     GBMachine();
     class CPU;
     class MMU;
+    class Peripheral;
 private:
     CPU* cpu;
     MMU* mmu;
