@@ -1,6 +1,6 @@
 #include "cpu.hh"
 
-GBMachine::CPU::CPU()
+GBMachine::CPU::CPU(GBMachine::MMU& memory) : mem(memory)
 {
     init();
 }
@@ -12,7 +12,7 @@ void GBMachine::CPU::restart()
 
 void GBMachine::CPU::init()
 {
-    mem = {0};
+    mem.clear_memory();
     reg = {0};
     curr_instr = nullptr;
     curr_interrupt = nullptr;

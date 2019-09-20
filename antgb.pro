@@ -41,4 +41,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     src/mach/cpu/cpu.hh \
-    src/mach/machine.hh
+    src/mach/machine.hh \
+    src/mach/mmu/mmu.hh

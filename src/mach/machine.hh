@@ -6,8 +6,10 @@ class GBMachine
 public:
     GBMachine();
     class CPU;
+    class MMU;
 private:
     CPU* cpu;
+    MMU* mmu;
 };
 
 #endif // GAMEBOY_HH

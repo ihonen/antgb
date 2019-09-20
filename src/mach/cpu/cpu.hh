@@ -2,6 +2,7 @@
 #define CPU_HH
 
 #include "../machine.hh"
+#include "../mmu/mmu.hh"
 #include <array>
 #include <cstdint>
 
@@ -21,7 +22,7 @@ public:
         uint8_t val_;
     };
 
-             CPU();
+             CPU(MMU& memory);
     void     restart();
     void     execute(const uint8_t* const instruction = nullptr);
     void     reset_cycles();
@@ -82,7 +83,7 @@ private:
     static const array<const IntInfo, 5> INTERRUPT_TABLE;
 
     // Main memory, 65 KB
-    array<uint8_t, 0x100> mem;
+    MMU& mem;
 
     // NOTE: Register order is based on that which appears in the
     // machine instructions.
