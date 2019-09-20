@@ -1,12 +1,13 @@
 #ifndef CPU_HH
 #define CPU_HH
 
+#include "../machine.hh"
 #include <array>
 #include <cstdint>
 
 using std::array;
 
-class CPU
+class GBMachine::CPU
 {
 public:
     class OpcodeError : public std::exception
@@ -25,6 +26,7 @@ public:
     void     execute(const uint8_t* const instruction = nullptr);
     void     reset_cycles();
     uint64_t get_cycles();
+    void     request_interrupt(uint8_t line);
 private:
     enum HWRegisterAddr : uint16_t
     {
@@ -79,9 +81,8 @@ private:
 
     static const array<const IntInfo, 5> INTERRUPT_TABLE;
 
-    // Main memory.
-    // TODO: Make a separate class with proper memory management.
-    array<uint8_t, 0x100> mem = {0}; // 65 KB, 16-bit memory space
+    // Main memory, 65 KB
+    array<uint8_t, 0x100> mem;
 
     // NOTE: Register order is based on that which appears in the
     // machine instructions.
@@ -132,7 +133,7 @@ private:
     const IntInfo* curr_interrupt = nullptr;
     bool is_interrupted = false;
 
-    void     CPU_init();
+    void     init();
     uint8_t  get_ALU_flag(enum ALUFlagPos pos);
     void     assign_ALU_flag(enum ALUFlagPos pos, uint8_t val);
     uint8_t  C_flag_get();

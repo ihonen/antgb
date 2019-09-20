@@ -6,8 +6,7 @@
 
 int main()
 {
-    CPU cpu;
-    cpu.execute();
+    GBMachine gb;
 
     return 0;
 }

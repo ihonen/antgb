@@ -1,6 +1,6 @@
 #include "cpu.hh"
 
-const array<const CPU::IntInfo,5> CPU::INTERRUPT_TABLE =
+const array<const GBMachine::CPU::IntInfo,5> GBMachine::CPU::INTERRUPT_TABLE =
 {{
     {IntID::VBLANK,      1, 0, 0x40},
     {IntID::LCDC_STATUS, 2, 1, 0x48},
@@ -9,7 +9,7 @@ const array<const CPU::IntInfo,5> CPU::INTERRUPT_TABLE =
     {IntID::KEYPAD,      5, 4, 0x60}
 }};
 
-const CPU::IntInfo* CPU::check_interrupts()
+const GBMachine::CPU::IntInfo* GBMachine::CPU::check_interrupts()
 {
     if (!IME_flag) return nullptr;
 
@@ -25,7 +25,7 @@ const CPU::IntInfo* CPU::check_interrupts()
     return nullptr;
 }
 
-void CPU::handle_interrupt(const CPU::IntInfo* int_info)
+void GBMachine::CPU::handle_interrupt(const GBMachine::CPU::IntInfo* int_info)
 {
     if (!int_info) return;
 
@@ -40,13 +40,13 @@ void CPU::handle_interrupt(const CPU::IntInfo* int_info)
     clock_cycles += 20;
 }
 
-void CPU::disable_interrupts_now()
+void GBMachine::CPU::disable_interrupts_now()
 {
     IME_flag_reset();
     DI_status = IMEStatus::DO_NOTHING;
 }
 
-void CPU::enable_interrupts_now()
+void GBMachine::CPU::enable_interrupts_now()
 {
     IME_flag_set();
     EI_status = IMEStatus::DO_NOTHING;

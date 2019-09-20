@@ -31,7 +31,8 @@ SOURCES += \
     src/mach/cpu/cpu_opmap.cc \
     src/mach/cpu/cpu_opcodes.cc \
     src/mach/cpu/cpu_interrupts.cc \
-    src/mach/cpu/cpu_operations.cc
+    src/mach/cpu/cpu_operations.cc \
+    src/mach/machine.cc \
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -39,4 +40,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    src/mach/cpu/cpu.hh
+    src/mach/cpu/cpu.hh \
+    src/mach/machine.hh

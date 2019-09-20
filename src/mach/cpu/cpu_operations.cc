@@ -2,12 +2,12 @@
 
 /* ADC */
 
-void CPU::ADC_A_HL()
+void GBMachine::CPU::ADC_A_HL()
 {
     ADC_A_n8(mem[HL]);
 }
 
-void CPU::ADC_A_n8(uint8_t n8)
+void GBMachine::CPU::ADC_A_n8(uint8_t n8)
 {
     uint16_t result = A + n8 + C_flag_get();
     C_flag_update(result > 0xFF);
@@ -17,19 +17,19 @@ void CPU::ADC_A_n8(uint8_t n8)
     A = static_cast<uint8_t>(result);
 }
 
-void CPU::ADC_A_r8(uint8_t& r8)
+void GBMachine::CPU::ADC_A_r8(uint8_t& r8)
 {
     ADC_A_n8(r8);
 }
 
 /* ADD */
 
-void CPU::ADD_A_HL()
+void GBMachine::CPU::ADD_A_HL()
 {
     ADD_A_n8(mem[HL]);
 }
 
-void CPU::ADD_A_n8(uint8_t n8)
+void GBMachine::CPU::ADD_A_n8(uint8_t n8)
 {
     uint16_t result = A + n8;
     C_flag_update(result > 0xFF);
@@ -39,12 +39,12 @@ void CPU::ADD_A_n8(uint8_t n8)
     A = static_cast<uint8_t>(result);
 }
 
-void CPU::ADD_A_r8(uint8_t& r8)
+void GBMachine::CPU::ADD_A_r8(uint8_t& r8)
 {
     ADD_A_n8(r8);
 }
 
-void CPU::ADD_HL_r16(uint16_t& r16)
+void GBMachine::CPU::ADD_HL_r16(uint16_t& r16)
 {
     uint32_t result = HL + r16;
     C_flag_update(result > 0xFFFF);
@@ -53,7 +53,7 @@ void CPU::ADD_HL_r16(uint16_t& r16)
     HL = static_cast<uint16_t>(result);
 }
 
-void CPU::ADD_SP_e8(int8_t e8)
+void GBMachine::CPU::ADD_SP_e8(int8_t e8)
 {
     uint32_t result = static_cast<uint32_t>(SP) + e8;
     C_flag_update(result > 0xFFFF);
@@ -65,7 +65,7 @@ void CPU::ADD_SP_e8(int8_t e8)
 
 /* AND */
 
-void CPU::AND_n8(uint8_t n8)
+void GBMachine::CPU::AND_n8(uint8_t n8)
 {
     A &= n8;
     C_flag_reset();
@@ -74,23 +74,23 @@ void CPU::AND_n8(uint8_t n8)
     Z_flag_update(A == 0);
 }
 
-void CPU::AND_HL()
+void GBMachine::CPU::AND_HL()
 {
     AND_n8(mem[HL]);
 }
 
-void CPU::AND_r8(uint8_t& r8)
+void GBMachine::CPU::AND_r8(uint8_t& r8)
 {
     AND_n8(r8);
 }
 
 /* BIT */
-void CPU::BIT_n3_HL(uint8_t n3)
+void GBMachine::CPU::BIT_n3_HL(uint8_t n3)
 {
     BIT_n3_r8(n3, mem[HL]);
 }
 
-void CPU::BIT_n3_r8(uint8_t n3, uint8_t& r8)
+void GBMachine::CPU::BIT_n3_r8(uint8_t n3, uint8_t& r8)
 {
     H_flag_set();
     N_flag_reset();
@@ -99,13 +99,13 @@ void CPU::BIT_n3_r8(uint8_t n3, uint8_t& r8)
 
 /* CALL */
 
-void CPU::CALL_n16(uint16_t n16)
+void GBMachine::CPU::CALL_n16(uint16_t n16)
 {
     PUSH_r16(PC);
     PC = n16;
 }
 
-void CPU::CALL_cc_n16(bool cc, uint16_t n16)
+void GBMachine::CPU::CALL_cc_n16(bool cc, uint16_t n16)
 {
     if (cc)
     {
@@ -117,7 +117,7 @@ void CPU::CALL_cc_n16(bool cc, uint16_t n16)
 
 /* CCF */
 
-void CPU::CCF()
+void GBMachine::CPU::CCF()
 {
     C_flag_update(!C_flag_get());
     H_flag_reset();
@@ -126,12 +126,12 @@ void CPU::CCF()
 
 /* CP */
 
-void CPU::CP_HL()
+void GBMachine::CPU::CP_HL()
 {
     CP_n8(mem[HL]);
 }
 
-void CPU::CP_n8(uint8_t n8)
+void GBMachine::CPU::CP_n8(uint8_t n8)
 {
     C_flag_update(A < n8);
     H_flag_update((A & 0x0F) < (n8 & 0x0F));
@@ -139,21 +139,21 @@ void CPU::CP_n8(uint8_t n8)
     Z_flag_update(A == n8);
 }
 
-void CPU::CP_r8(uint8_t& r8)
+void GBMachine::CPU::CP_r8(uint8_t& r8)
 {
     CP_n8(r8);
 }
 
 /* CPL */
 
-void CPU::CPL()
+void GBMachine::CPU::CPL()
 {
     A = ~(A);
 }
 
 /* DAA */
 
-void CPU::DAA()
+void GBMachine::CPU::DAA()
 {
     if (!N_flag_get())
     {
@@ -179,17 +179,17 @@ void CPU::DAA()
 
 /* DEC */
 
-void CPU::DEC_HL()
+void GBMachine::CPU::DEC_HL()
 {
     DEC_r8(mem[HL]);
 }
 
-void CPU::DEC_r16(uint16_t& r16)
+void GBMachine::CPU::DEC_r16(uint16_t& r16)
 {
     --(r16);
 }
 
-void CPU::DEC_r8(uint8_t& r8)
+void GBMachine::CPU::DEC_r8(uint8_t& r8)
 {
     --(r8);
     H_flag_update((r8 & 0x0F) == 0x0F);
@@ -199,14 +199,14 @@ void CPU::DEC_r8(uint8_t& r8)
 
 /* DI */
 
-void CPU::DI()
+void GBMachine::CPU::DI()
 {
     if (DI_status == IMEStatus::DO_NOTHING)
         DI_status = IMEStatus::RESET_NEXT_CYCLE;
 }
 
 /* EI */
-void CPU::EI()
+void GBMachine::CPU::EI()
 {
     if (EI_status == IMEStatus::DO_NOTHING)
         EI_status = IMEStatus::SET_NEXT_CYCLE;
@@ -214,24 +214,24 @@ void CPU::EI()
 
 /* HALT */
 
-void CPU::HALT()
+void GBMachine::CPU::HALT()
 {
     is_halted = true;
 }
 
 /* INC */
 
-void CPU::INC_HL()
+void GBMachine::CPU::INC_HL()
 {
     INC_r8(mem[HL]);
 }
 
-void CPU::INC_r16(uint16_t& r16)
+void GBMachine::CPU::INC_r16(uint16_t& r16)
 {
     ++(r16);
 }
 
-void CPU::INC_r8(uint8_t& r8)
+void GBMachine::CPU::INC_r8(uint8_t& r8)
 {
     uint16_t result = r8 + 1;
     H_flag_update((r8 & 0x0F) + 1 > 0x0F);
@@ -242,12 +242,12 @@ void CPU::INC_r8(uint8_t& r8)
 
 /* JP */
 
-void CPU::JP_HL()
+void GBMachine::CPU::JP_HL()
 {
     JP_n16(HL);
 }
 
-void CPU::JP_cc_n16(bool cc, uint16_t n16)
+void GBMachine::CPU::JP_cc_n16(bool cc, uint16_t n16)
 {
     if (cc)
     {
@@ -257,14 +257,14 @@ void CPU::JP_cc_n16(bool cc, uint16_t n16)
     else branch_taken = false;
 }
 
-void CPU::JP_n16(uint16_t n16)
+void GBMachine::CPU::JP_n16(uint16_t n16)
 {
     PC = n16;
 }
 
 /* JR */
 
-void CPU::JR_cc_n8(bool cc, int8_t n8)
+void GBMachine::CPU::JR_cc_n8(bool cc, int8_t n8)
 {
     if (cc)
     {
@@ -274,60 +274,60 @@ void CPU::JR_cc_n8(bool cc, int8_t n8)
     else branch_taken = false;
 }
 
-void CPU::JR_n8(int8_t n8)
+void GBMachine::CPU::JR_n8(int8_t n8)
 {
     PC += n8;
 }
 
 /* LD */
 
-void CPU::LD_C_A()
+void GBMachine::CPU::LD_C_A()
 {
     mem[0xFF00 + C] = A;
 }
 
-void CPU::LD_HL_n8(uint8_t n8)
+void GBMachine::CPU::LD_HL_n8(uint8_t n8)
 {
     mem[HL] = n8;
 }
 
-void CPU::LD_HL_r8(uint8_t& r8)
+void GBMachine::CPU::LD_HL_r8(uint8_t& r8)
 {
     LD_HL_n8(r8);
 }
 
-void CPU::LD_n16_A(uint16_t n16)
+void GBMachine::CPU::LD_n16_A(uint16_t n16)
 {
     mem[n16] = A;
 }
 
-void CPU::LD_n16_SP(uint16_t n16)
+void GBMachine::CPU::LD_n16_SP(uint16_t n16)
 {
     // TODO: Check if both bytes of SP should be written.
     mem[n16] = static_cast<uint8_t>(SP);
 }
 
-void CPU::LD_r16_A(uint16_t& r16)
+void GBMachine::CPU::LD_r16_A(uint16_t& r16)
 {
     LD_n16_A(r16);
 }
 
-void CPU::LD_A_C()
+void GBMachine::CPU::LD_A_C()
 {
     A = mem[0xFF00 + C];
 }
 
-void CPU::LD_A_n16(uint16_t n16)
+void GBMachine::CPU::LD_A_n16(uint16_t n16)
 {
     A = mem[n16];
 }
 
-void CPU::LD_A_r16(uint16_t& r16)
+void GBMachine::CPU::LD_A_r16(uint16_t& r16)
 {
     LD_A_n16(r16);
 }
 
-void CPU::LD_HL_SP_e8(int8_t e8)
+void GBMachine::CPU::LD_HL_SP_e8(int8_t e8)
 {
     uint32_t result =static_cast<uint32_t>(SP) + e8;
     C_flag_update(result > 0xFFFF);
@@ -337,60 +337,60 @@ void CPU::LD_HL_SP_e8(int8_t e8)
     HL = static_cast<uint16_t>(result);
 }
 
-void CPU::LD_r16_n16(uint16_t& r16, uint16_t n16)
+void GBMachine::CPU::LD_r16_n16(uint16_t& r16, uint16_t n16)
 {
     r16 = n16;
 }
 
-void CPU::LD_r8_HL(uint8_t& r8)
+void GBMachine::CPU::LD_r8_HL(uint8_t& r8)
 {
     r8 = mem[HL];
 }
 
-void CPU::LD_r8_n8(uint8_t& r8, uint8_t n8)
+void GBMachine::CPU::LD_r8_n8(uint8_t& r8, uint8_t n8)
 {
     r8 = n8;
 }
 
-void CPU::LD_r8_r8(uint8_t& r8_1, uint8_t& r8_2)
+void GBMachine::CPU::LD_r8_r8(uint8_t& r8_1, uint8_t& r8_2)
 {
     r8_1 = r8_2;
 }
 
-void CPU::LD_SP_HL()
+void GBMachine::CPU::LD_SP_HL()
 {
     SP = HL;
 }
 
-void CPU::LDD_HL_A()
+void GBMachine::CPU::LDD_HL_A()
 {
     mem[HL] = A;
     --(HL);
 }
 
-void CPU::LDD_A_HL()
+void GBMachine::CPU::LDD_A_HL()
 {
     A = mem[HL];
     --(HL);
 }
 
-void CPU::LDH_n8_A(uint8_t n8)
+void GBMachine::CPU::LDH_n8_A(uint8_t n8)
 {
     mem[0xFF00 + n8] = A;
 }
 
-void CPU::LDH_A_n8(uint8_t n8)
+void GBMachine::CPU::LDH_A_n8(uint8_t n8)
 {
     A = mem[0xFF00 + n8];
 }
 
-void CPU::LDI_HL_A()
+void GBMachine::CPU::LDI_HL_A()
 {
     mem[HL] = A;
     ++(HL);
 }
 
-void CPU::LDI_A_HL()
+void GBMachine::CPU::LDI_A_HL()
 {
     A = mem[HL];
     ++(HL);
@@ -398,19 +398,19 @@ void CPU::LDI_A_HL()
 
 /* NOP */
 
-void CPU::NOP()
+void GBMachine::CPU::NOP()
 {
 
 }
 
 /* OR */
 
-void CPU::OR_HL()
+void GBMachine::CPU::OR_HL()
 {
     OR_n8(mem[HL]);
 }
 
-void CPU::OR_n8(uint8_t n8)
+void GBMachine::CPU::OR_n8(uint8_t n8)
 {
     A |= n8;
     C_flag_reset();
@@ -419,14 +419,14 @@ void CPU::OR_n8(uint8_t n8)
     Z_flag_update(A == 0);
 }
 
-void CPU::OR_r8(uint8_t& r8)
+void GBMachine::CPU::OR_r8(uint8_t& r8)
 {
     OR_n8(r8);
 }
 
 /* POP */
 
-void CPU::POP_r16(uint16_t& r16)
+void GBMachine::CPU::POP_r16(uint16_t& r16)
 {
     ++(SP);
     r16 |= mem[SP];
@@ -436,7 +436,7 @@ void CPU::POP_r16(uint16_t& r16)
 
 /* PUSH */
 
-void CPU::PUSH_r16(uint16_t& r16)
+void GBMachine::CPU::PUSH_r16(uint16_t& r16)
 {
     mem[SP] = static_cast<uint8_t>(r16);
     --(SP);
@@ -446,19 +446,19 @@ void CPU::PUSH_r16(uint16_t& r16)
 
 /* RES */
 
-void CPU::RES_n3_HL(uint8_t n3)
+void GBMachine::CPU::RES_n3_HL(uint8_t n3)
 {
     RES_n3_r8(n3, mem[HL]);
 }
 
-void CPU::RES_n3_r8(uint8_t n3, uint8_t& r8)
+void GBMachine::CPU::RES_n3_r8(uint8_t n3, uint8_t& r8)
 {
     r8 &= ~(0x01 << n3);
 }
 
 /* RET */
 
-void CPU::RET()
+void GBMachine::CPU::RET()
 {
     ++(SP);
     PC |= mem[SP];
@@ -466,7 +466,7 @@ void CPU::RET()
     PC |= mem[SP] << 8;
 }
 
-void CPU::RET_cc(bool cc)
+void GBMachine::CPU::RET_cc(bool cc)
 {
     if (cc)
     {
@@ -478,7 +478,7 @@ void CPU::RET_cc(bool cc)
 
 /* RETI */
 
-void CPU::RETI()
+void GBMachine::CPU::RETI()
 {
     RET();
     if (is_interrupted)
@@ -489,12 +489,12 @@ void CPU::RETI()
     enable_interrupts_now();
 }
 
-void CPU::RL_HL()
+void GBMachine::CPU::RL_HL()
 {
     RL_r8(mem[HL]);
 }
 
-void CPU::RL_r8(uint8_t& r8)
+void GBMachine::CPU::RL_r8(uint8_t& r8)
 {
     uint8_t result = r8;
     uint8_t msbit = (result >> 7) & 0x01;
@@ -509,19 +509,19 @@ void CPU::RL_r8(uint8_t& r8)
 
 /* RLA */
 
-void CPU::RLA()
+void GBMachine::CPU::RLA()
 {
     RL_r8(A);
 }
 
 /* RLC */
 
-void CPU::RLC_HL()
+void GBMachine::CPU::RLC_HL()
 {
     RLC_r8(mem[HL]);
 }
 
-void CPU::RLC_r8(uint8_t& r8)
+void GBMachine::CPU::RLC_r8(uint8_t& r8)
 {
     uint8_t result = r8;
     uint8_t msbit = (result >> 7) & 0x01;
@@ -536,19 +536,19 @@ void CPU::RLC_r8(uint8_t& r8)
 
 /* RLCA */
 
-void CPU::RLCA()
+void GBMachine::CPU::RLCA()
 {
     RLC_r8(A);
 }
 
 /* RR */
 
-void CPU::RR_HL()
+void GBMachine::CPU::RR_HL()
 {
     RR_r8(mem[HL]);
 }
 
-void CPU::RR_r8(uint8_t& r8)
+void GBMachine::CPU::RR_r8(uint8_t& r8)
 {
     uint8_t result = r8;
     uint8_t lsbit = result & 0x01;
@@ -563,19 +563,19 @@ void CPU::RR_r8(uint8_t& r8)
 
 /* RRA */
 
-void CPU::RRA()
+void GBMachine::CPU::RRA()
 {
     RR_r8(A);
 }
 
 /* RRC */
 
-void CPU::RRC_HL()
+void GBMachine::CPU::RRC_HL()
 {
     RRC_r8(mem[HL]);
 }
 
-void CPU::RRC_r8(uint8_t& r8)
+void GBMachine::CPU::RRC_r8(uint8_t& r8)
 {
     uint8_t result = r8;
     uint8_t lsbit = result & 0x01;
@@ -590,12 +590,12 @@ void CPU::RRC_r8(uint8_t& r8)
 
 /* RRCA */
 
-void CPU::RRCA()
+void GBMachine::CPU::RRCA()
 {
     RRC_r8(A);
 }
 
-void CPU::RST_f(uint8_t f)
+void GBMachine::CPU::RST_f(uint8_t f)
 {
     PUSH_r16(PC);
     PC = 0x0000 + f;
@@ -603,12 +603,12 @@ void CPU::RST_f(uint8_t f)
 
 /* SBC */
 
-void CPU::SBC_A_HL()
+void GBMachine::CPU::SBC_A_HL()
 {
     SBC_A_n8(mem[HL]);
 }
 
-void CPU::SBC_A_n8(uint8_t n8)
+void GBMachine::CPU::SBC_A_n8(uint8_t n8)
 {
     uint16_t result = A - n8 - C_flag_get();
     H_flag_update((A & 0x0F) - (n8 & 0x0F) - C_flag_get() > 0x0F);
@@ -618,19 +618,19 @@ void CPU::SBC_A_n8(uint8_t n8)
     A = static_cast<uint8_t>(result);
 }
 
-void CPU::SBC_A_r8(uint8_t& r8)
+void GBMachine::CPU::SBC_A_r8(uint8_t& r8)
 {
     SBC_A_n8(r8);
 }
 
-void CPU::SUB_A_HL()
+void GBMachine::CPU::SUB_A_HL()
 {
     SUB_A_n8(mem[HL]);
 }
 
 /* SCF */
 
-void CPU::SCF()
+void GBMachine::CPU::SCF()
 {
     C_flag_set();
     H_flag_reset();
@@ -639,24 +639,24 @@ void CPU::SCF()
 
 /* SET */
 
-void CPU::SET_n3_HL(uint8_t n3)
+void GBMachine::CPU::SET_n3_HL(uint8_t n3)
 {
     SET_n3_r8(n3, mem[HL]);
 }
 
-void CPU::SET_n3_r8(uint8_t n3, uint8_t& r8)
+void GBMachine::CPU::SET_n3_r8(uint8_t n3, uint8_t& r8)
 {
     r8 |= 0x01 << n3;
 }
 
 /* SLA */
 
-void CPU::SLA_HL()
+void GBMachine::CPU::SLA_HL()
 {
     SLA_r8(mem[HL]);
 }
 
-void CPU::SLA_r8(uint8_t& r8)
+void GBMachine::CPU::SLA_r8(uint8_t& r8)
 {
     uint8_t result = r8;
     result <<= 1;
@@ -670,12 +670,12 @@ void CPU::SLA_r8(uint8_t& r8)
 
 /* SRA */
 
-void CPU::SRA_HL()
+void GBMachine::CPU::SRA_HL()
 {
     SRA_r8(mem[HL]);
 }
 
-void CPU::SRA_r8(uint8_t& r8)
+void GBMachine::CPU::SRA_r8(uint8_t& r8)
 {
     uint8_t result = r8;
     uint8_t msb = r8 & (0x01 << 7);
@@ -690,12 +690,12 @@ void CPU::SRA_r8(uint8_t& r8)
 
 /* SRL */
 
-void CPU::SRL_HL()
+void GBMachine::CPU::SRL_HL()
 {
     SRL_r8(mem[HL]);
 }
 
-void CPU::SRL_r8(uint8_t& r8)
+void GBMachine::CPU::SRL_r8(uint8_t& r8)
 {
     uint8_t result = r8;
     result >>= 1;
@@ -709,7 +709,7 @@ void CPU::SRL_r8(uint8_t& r8)
 
 /* STOP */
 
-void CPU::STOP()
+void GBMachine::CPU::STOP()
 {
     is_stopped = true;
     // TODO: Turn off display
@@ -717,7 +717,7 @@ void CPU::STOP()
 
 /* SUB */
 
-void CPU::SUB_A_n8(uint8_t n8)
+void GBMachine::CPU::SUB_A_n8(uint8_t n8)
 {
     uint16_t result = A - n8;
     C_flag_update(result > 0xFF);
@@ -727,19 +727,19 @@ void CPU::SUB_A_n8(uint8_t n8)
     A = static_cast<uint8_t>(result);
 }
 
-void CPU::SUB_A_r8(uint8_t& r8)
+void GBMachine::CPU::SUB_A_r8(uint8_t& r8)
 {
     SUB_A_n8(r8);
 }
 
 /* SWAP */
 
-void CPU::SWAP_HL()
+void GBMachine::CPU::SWAP_HL()
 {
     SWAP_r8(mem[HL]);
 }
 
-void CPU::SWAP_r8(uint8_t& r8)
+void GBMachine::CPU::SWAP_r8(uint8_t& r8)
 {
     r8 = static_cast<uint8_t>(((r8 & 0x0F) << 4) | ((r8 & 0xF0) >> 4));
     C_flag_reset();
@@ -750,12 +750,12 @@ void CPU::SWAP_r8(uint8_t& r8)
 
 /* XOR */
 
-void CPU::XOR_HL()
+void GBMachine::CPU::XOR_HL()
 {
     XOR_n8(mem[HL]);
 }
 
-void CPU::XOR_n8(uint8_t n8)
+void GBMachine::CPU::XOR_n8(uint8_t n8)
 {
     A ^= n8;
     C_flag_reset();
@@ -764,7 +764,7 @@ void CPU::XOR_n8(uint8_t n8)
     Z_flag_update(A == 0);
 }
 
-void CPU::XOR_r8(uint8_t& r8)
+void GBMachine::CPU::XOR_r8(uint8_t& r8)
 {
     XOR_n8(r8);
 }
