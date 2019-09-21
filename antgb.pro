@@ -26,14 +26,14 @@ CONFIG += c++14
 
 SOURCES += \
     src/mach/cpu/cpu.cc \
+    src/mach/peripheral/ppu.cc \
     src/main.cc \
     src/mach/cpu/cpu_flags.cc \
     src/mach/cpu/cpu_opmap.cc \
     src/mach/cpu/cpu_opcodes.cc \
     src/mach/cpu/cpu_interrupts.cc \
     src/mach/cpu/cpu_operations.cc \
-    src/mach/machine.cc \
-    src/mach/peripheral/lcdcontrol.cc
+    src/mach/machine.cc
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -45,4 +45,4 @@ HEADERS += \
     src/mach/machine.hh \
     src/mach/mmu/mmu.hh \
     src/mach/peripheral/peripheral.hh \
-    src/mach/peripheral/lcdcontrol.hh
+    src/mach/peripheral/ppu.hh

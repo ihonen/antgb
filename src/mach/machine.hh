@@ -10,12 +10,12 @@ public:
     class CPU;
     class MMU;
     class Peripheral;
-    class LCDControl;
+    class PPU;
 private:
     static const uint16_t PPU_IO_BASE_ADDR = 0xFF40;
     CPU* cpu;
     MMU* mmu;
-    LCDControl* lcd;
+    PPU* lcd;
 };
 
 #endif // GAMEBOY_HH

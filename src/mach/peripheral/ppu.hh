@@ -1,5 +1,5 @@
-#ifndef LCDCONTROL_HH
-#define LCDCONTROL_HH
+#ifndef PPU_HH
+#define PPU_HH
 
 #include "../machine.hh"
 #include "peripheral.hh"
@@ -7,10 +7,10 @@
 
 using std::array;
 
-class GBMachine::LCDControl : public GBMachine::Peripheral
+class GBMachine::PPU : public GBMachine::Peripheral
 {
 public:
-    LCDControl(CPU& cpu, uint8_t interrupt_line);
+    PPU(CPU& cpu, uint8_t interrupt_line);
     static const uint8_t IO_REGION_SIZE = 12;
 private:
     array<uint8_t, 12> registers_;
@@ -30,4 +30,4 @@ private:
     uint8_t* io_base_ = &registers_[0];
 };
 
-#endif // LCDCONTROL_HH
+#endif // PPU_HH
