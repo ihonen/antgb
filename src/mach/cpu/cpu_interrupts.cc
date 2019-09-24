@@ -9,6 +9,11 @@ const array<const GBMachine::CPU::IntInfo,5> GBMachine::CPU::INTERRUPT_TABLE =
     {IntID::KEYPAD,      5, 4, 0x60}
 }};
 
+void GBMachine::CPU::request_interrupt(uint8_t line)
+{
+    mem[HWREG_IF_ADDR] |= 0x01 << line;
+}
+
 const GBMachine::CPU::IntInfo* GBMachine::CPU::check_interrupts()
 {
     if (!IME_flag) return nullptr;
