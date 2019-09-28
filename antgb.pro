@@ -33,7 +33,8 @@ SOURCES += \
     src/mach/cpu/cpu_opcodes.cc \
     src/mach/cpu/cpu_interrupts.cc \
     src/mach/cpu/cpu_operations.cc \
-    src/mach/machine.cc
+    src/mach/machine.cc \
+    src/ui/mainwindow.cc
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -45,4 +46,5 @@ HEADERS += \
     src/mach/machine.hh \
     src/mach/mmu/mmu.hh \
     src/mach/peripheral/peripheral.hh \
-    src/mach/peripheral/ppu.hh
+    src/mach/peripheral/ppu.hh \
+    src/ui/mainwindow.hh
