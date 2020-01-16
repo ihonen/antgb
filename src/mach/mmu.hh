@@ -20,7 +20,6 @@ public:
         return mem[address];
     }
 
-private:
     Memory mem;
 };
 

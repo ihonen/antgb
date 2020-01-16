@@ -4,6 +4,7 @@
 #include "cpu.hh"
 #include "memory.hh"
 #include "mmu.hh"
+#include "ppu.hh"
 #include <cstdint>
 
 class Machine
@@ -11,9 +12,10 @@ class Machine
 public:
     Machine();
     ~Machine();
-private:
+
     CPU* cpu;
     MMU* mmu;
+    PPU* ppu;
 };
 
 #endif // GAMEBOY_HH
