@@ -25,14 +25,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++14
 
 SOURCES += \
-    src/mach/cpu/cpu.cc \
-    src/mach/mmu/memory.cc \
+    src/mach/cpu.cc \
+    src/mach/memory.cc \
+    src/mach/ppu.cc \
     src/main.cc \
-    src/mach/cpu/cpu_flags.cc \
-    src/mach/cpu/cpu_opmap.cc \
-    src/mach/cpu/cpu_opcodes.cc \
-    src/mach/cpu/cpu_interrupts.cc \
-    src/mach/cpu/cpu_operations.cc \
+    src/mach/cpu_flags.cc \
+    src/mach/cpu_opmap.cc \
+    src/mach/cpu_opcodes.cc \
+    src/mach/cpu_interrupts.cc \
+    src/mach/cpu_operations.cc \
     src/mach/machine.cc \
     src/ui/mainwindow.cc
 
@@ -42,8 +43,10 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    src/mach/cpu/cpu.hh \
+    src/mach/cpu.hh \
     src/mach/machine.hh \
-    src/mach/mmu/memory.hh \
-    src/mach/mmu/mmu.hh \
+    src/mach/memory.hh \
+    src/mach/mmu.hh \
+    src/mach/ppu.hh \
+    src/mach/sprite.hh \
     src/ui/mainwindow.hh
