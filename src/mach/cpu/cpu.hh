@@ -1,14 +1,13 @@
 #ifndef CPU_HH
 #define CPU_HH
 
-#include "../machine.hh"
 #include "../mmu/mmu.hh"
 #include <array>
 #include <cstdint>
 
 using std::array;
 
-class GBMachine::CPU
+class CPU
 {
 public:
     class OpcodeError : public std::exception

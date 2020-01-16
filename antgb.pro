@@ -26,7 +26,7 @@ CONFIG += c++14
 
 SOURCES += \
     src/mach/cpu/cpu.cc \
-    src/mach/peripheral/ppu.cc \
+    src/mach/mmu/memory.cc \
     src/main.cc \
     src/mach/cpu/cpu_flags.cc \
     src/mach/cpu/cpu_opmap.cc \
@@ -44,7 +44,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     src/mach/cpu/cpu.hh \
     src/mach/machine.hh \
+    src/mach/mmu/memory.hh \
     src/mach/mmu/mmu.hh \
-    src/mach/peripheral/peripheral.hh \
-    src/mach/peripheral/ppu.hh \
     src/ui/mainwindow.hh

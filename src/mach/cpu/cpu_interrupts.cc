@@ -1,6 +1,6 @@
 #include "cpu.hh"
 
-const array<const GBMachine::CPU::IntInfo,5> GBMachine::CPU::INTERRUPT_TABLE =
+const array<const CPU::IntInfo,5> CPU::INTERRUPT_TABLE =
 {{
     {IntID::VBLANK,      1, 0, 0x40},
     {IntID::LCDC_STATUS, 2, 1, 0x48},
@@ -9,12 +9,12 @@ const array<const GBMachine::CPU::IntInfo,5> GBMachine::CPU::INTERRUPT_TABLE =
     {IntID::KEYPAD,      5, 4, 0x60}
 }};
 
-void GBMachine::CPU::request_interrupt(uint8_t line)
+void CPU::request_interrupt(uint8_t line)
 {
     mem[HWREG_IF_ADDR] |= 0x01 << line;
 }
 
-const GBMachine::CPU::IntInfo* GBMachine::CPU::check_interrupts()
+const CPU::IntInfo* CPU::check_interrupts()
 {
     if (!IME_flag) return nullptr;
 
@@ -30,7 +30,7 @@ const GBMachine::CPU::IntInfo* GBMachine::CPU::check_interrupts()
     return nullptr;
 }
 
-void GBMachine::CPU::handle_interrupt(const GBMachine::CPU::IntInfo* int_info)
+void CPU::handle_interrupt(const CPU::IntInfo* int_info)
 {
     if (!int_info) return;
 
@@ -45,13 +45,13 @@ void GBMachine::CPU::handle_interrupt(const GBMachine::CPU::IntInfo* int_info)
     clock_cycles += 20;
 }
 
-void GBMachine::CPU::disable_interrupts_now()
+void CPU::disable_interrupts_now()
 {
     IME_flag_reset();
     DI_status = IMEStatus::DO_NOTHING;
 }
 
-void GBMachine::CPU::enable_interrupts_now()
+void CPU::enable_interrupts_now()
 {
     IME_flag_set();
     EI_status = IMEStatus::DO_NOTHING;

@@ -1,21 +1,19 @@
 #ifndef GAMEBOY_HH
 #define GAMEBOY_HH
 
+#include "cpu/cpu.hh"
+#include "mmu/memory.hh"
+#include "mmu/mmu.hh"
 #include <cstdint>
 
-class GBMachine
+class Machine
 {
 public:
-    GBMachine();
-    class CPU;
-    class MMU;
-    class Peripheral;
-    class PPU;
+    Machine();
+    ~Machine();
 private:
-    static const uint16_t PPU_IO_BASE_ADDR = 0xFF40;
     CPU* cpu;
     MMU* mmu;
-    PPU* lcd;
 };
 
 #endif // GAMEBOY_HH

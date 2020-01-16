@@ -1,18 +1,17 @@
 #include "cpu.hh"
 
-GBMachine::CPU::CPU(GBMachine::MMU& memory) : mem(memory)
+CPU::CPU(MMU& memory) : mem(memory)
 {
     init();
 }
 
-void GBMachine::CPU::restart()
+void CPU::restart()
 {
     init();
 }
 
-void GBMachine::CPU::init()
+void CPU::init()
 {
-    mem.clear_memory();
     reg = {0};
     curr_instr = nullptr;
     curr_interrupt = nullptr;
@@ -67,7 +66,7 @@ void GBMachine::CPU::init()
     PC = 0x0100;
 }
 
-void GBMachine::CPU::execute(const uint8_t* instruction)
+void CPU::execute(const uint8_t* instruction)
 {
     if (!instruction) instruction = &mem[PC];
     curr_instr = instruction;
@@ -114,30 +113,30 @@ void GBMachine::CPU::execute(const uint8_t* instruction)
     else if (EI_status == IMEStatus::SET_THIS_CYCLE) enable_interrupts_now();
 }
 
-uint8_t GBMachine::CPU::extract_immediate8(const uint8_t* instruction)
+uint8_t CPU::extract_immediate8(const uint8_t* instruction)
 {
     if (!instruction) instruction = curr_instr;
     return curr_instr[1];
 }
 
-uint16_t GBMachine::CPU::extract_immediate16(const uint8_t* instruction)
+uint16_t CPU::extract_immediate16(const uint8_t* instruction)
 {
     if (!instruction) instruction = curr_instr;
     return (static_cast<uint16_t>(instruction[1])) |
            (static_cast<uint16_t>(instruction[2]) << 8);
 }
 
-uint64_t GBMachine::CPU::get_cycles()
+uint64_t CPU::get_cycles()
 {
     return clock_cycles;
 }
 
-void GBMachine::CPU::reset_cycles()
+void CPU::reset_cycles()
 {
     clock_cycles = 0;
 }
 
-void GBMachine::CPU::invalid_opcode()
+void CPU::invalid_opcode()
 {
     throw OpcodeError(PC, mem[PC]);
 }

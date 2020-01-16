@@ -1,4 +1,4 @@
-#include "mach/cpu/cpu.hh"
+#include "mach/machine.hh"
 #include "ui/mainwindow.hh"
 
 #include <QApplication>
@@ -8,7 +8,7 @@
 
 int main(int argc, char* argv[])
 {
-    GBMachine gb;
+    Machine gb;
 
     QApplication app(argc, argv);
     MainWindow main_window(nullptr);
