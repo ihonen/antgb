@@ -1,7 +1,7 @@
 #ifndef CPU_HH
 #define CPU_HH
 
-#include "../mmu/mmu.hh"
+#include "mmu.hh"
 #include <array>
 #include <cstdint>
 
