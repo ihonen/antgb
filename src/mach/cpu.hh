@@ -27,7 +27,7 @@ public:
     void     reset_cycles();
     uint64_t get_cycles();
     void     request_interrupt(uint8_t line);
-private:
+
     enum HWRegisterAddr : uint16_t
     {
         HWREG_IF_ADDR  = 0xFF0F, // Interrupt flag register

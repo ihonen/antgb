@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
     Machine gb;
 
     QApplication app(argc, argv);
-    MainWindow main_window(nullptr);
+    MainWindow main_window(gb, nullptr);
     main_window.show();
     app.exec();
 

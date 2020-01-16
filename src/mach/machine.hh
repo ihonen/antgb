@@ -12,6 +12,8 @@ class Machine
 public:
     Machine();
     ~Machine();
+    void load_rom(void* rom, size_t size);
+    void tick();
 
     CPU* cpu;
     MMU* mmu;
