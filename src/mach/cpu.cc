@@ -98,14 +98,17 @@ void CPU::execute(const uint8_t* instruction)
     else if (EI_status == IMEStatus::SET_NEXT_CYCLE)
         EI_status = IMEStatus::SET_THIS_CYCLE;
 
-
-    std::cout << std::hex << "@" << std::setw(6) << PC << ":   "
-              << disassembler.disassemble(const_cast<uint8_t*>(instruction))
-              << std::endl;
-
     const InstrInfo* op_info = (*curr_instr == 0xCB) ?
                                 &CB_INSTR_TABLE[curr_instr[1]] :
                                 &INSTR_TABLE[*curr_instr];
+
+    std::cout << /*std::hex <<*/ "@" << std::setw(5) << std::left << PC << ":   "
+              << std::setw(16) << std::left << disassembler.disassemble(const_cast<uint8_t*>(instruction))
+              << static_cast<int>(op_info->len_bytes) << " bytes"
+              << std::endl;
+
+    // PC has to be incremented before instruction execution.
+    PC += op_info->len_bytes;
 
     if (op_info->handler) (this->*(op_info->handler))();
     else invalid_opcode();
@@ -115,8 +118,7 @@ void CPU::execute(const uint8_t* instruction)
     else
     {
         clock_cycles += op_info->cycles_on_no_action;
-        // Only increment PC if did not branch.
-        PC += op_info->len_bytes;
+        //PC += op_info->len_bytes;
     }
 
     if (DI_status == IMEStatus::RESET_THIS_CYCLE) disable_interrupts_now();
@@ -148,5 +150,5 @@ void CPU::reset_cycles()
 
 void CPU::invalid_opcode()
 {
-    throw OpcodeError(PC, mmu.mem[PC]);
+    throw OpcodeError(0, *curr_instr);
 }
