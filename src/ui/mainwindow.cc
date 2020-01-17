@@ -11,7 +11,8 @@ static const uint16_t RES_UPSCALE_FACTOR = 4;
 MainWindow::MainWindow(Machine& machine_, QWidget* parent) :
     QMainWindow(parent),
     machine(machine_),
-    is_emulation_on(false)
+    is_emulation_on(false),
+    tick_interval(100)
 {
     display_view_ = new QGraphicsView(this);
     display_view_->resize(RES_X * RES_UPSCALE_FACTOR, RES_Y * RES_UPSCALE_FACTOR);
@@ -31,10 +32,25 @@ MainWindow::~MainWindow()
 
 void MainWindow::keyPressEvent(QKeyEvent* event)
 {
+    // Handle joypad input:
     auto joypad_mapping = KEYMAP.find(event->key());
     if (joypad_mapping != KEYMAP.end())
     {
         machine.button_pressed(joypad_mapping->second);
+        return;
+    }
+
+    // Handle GUI input:
+    switch (event->key())
+    {
+        case Qt::Key_Plus:
+            tick_interval = std::max(tick_interval - 5, 1);
+            break;
+        case Qt::Key_Minus:
+            tick_interval = std::min(tick_interval + 5, 2000);
+            break;
+        default:
+            break;
     }
 }
 
@@ -103,7 +119,7 @@ void MainWindow::start_emulation()
     while (is_emulation_on)
     {
         machine.tick();
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(tick_interval));
     }
 }
 

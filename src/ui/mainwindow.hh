@@ -50,6 +50,8 @@ private:
     std::thread* emulation_thread;
 
     bool is_emulation_on;
+
+    int tick_interval;
 };
 
 #endif // MAINWINDOW_HH
