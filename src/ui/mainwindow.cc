@@ -55,6 +55,8 @@ void MainWindow::load_rom_act()
 
 void MainWindow::load_rom(QString& filepath)
 {
+    if (filepath.size() == 0) return;
+
     QFile file(filepath);
     if (!file.open(QIODevice::ReadOnly))
     {
