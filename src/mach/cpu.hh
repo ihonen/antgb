@@ -2,6 +2,7 @@
 #define CPU_HH
 
 #include "mmu.hh"
+#include "../exception.hh"
 #include <array>
 #include <cstdint>
 
@@ -10,17 +11,6 @@ using std::array;
 class CPU
 {
 public:
-    class OpcodeError : public std::exception
-    {
-    public:
-        OpcodeError(uint16_t addr, uint8_t val) : addr_(addr), val_(val) {}
-        uint16_t address() { return addr_; }
-        uint8_t value() { return val_; }
-    private:
-        uint16_t addr_;
-        uint8_t val_;
-    };
-
              CPU(MMU& memory);
     void     restart();
     void     execute(const uint8_t* const instruction = nullptr);
@@ -52,15 +42,6 @@ public:
         Z_FLAG = 7
     };
 
-    enum IntFlagPos : uint8_t
-    {
-        VBLANK = 0,
-        LCDC = 1,
-        TIMER_OVERFLOW = 2,
-        SERIAL_TRANSFER = 3,
-        PIN_P10_P13_CHANGE = 4
-    };
-
     typedef struct
     {
         uint8_t len_bytes;
@@ -82,7 +63,7 @@ public:
     static const array<const IntInfo, 5> INTERRUPT_TABLE;
 
     // Main memory, 65 KB
-    MMU& mem;
+    MMU& mmu;
 
     // NOTE: Register order is based on that which appears in the
     // machine instructions.
@@ -265,6 +246,7 @@ public:
     void XOR_n8(uint8_t n8);
     void XOR_r8(uint8_t& r8);
 
+    // Single-byte opcodes:
     void op_00(); void op_01(); void op_02(); void op_03();
     void op_04(); void op_05(); void op_06(); void op_07();
     void op_08(); void op_09(); void op_0A(); void op_0B();
@@ -330,6 +312,7 @@ public:
     void op_F8(); void op_F9(); void op_FA(); void op_FB();
     void op_FC(); void op_FD(); void op_FE(); void op_FF();
 
+    // Two-byte opcodes:
     void op_CB_00(); void op_CB_01(); void op_CB_02(); void op_CB_03();
     void op_CB_04(); void op_CB_05(); void op_CB_06(); void op_CB_07();
     void op_CB_08(); void op_CB_09(); void op_CB_0A(); void op_CB_0B();

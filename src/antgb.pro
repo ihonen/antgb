@@ -36,6 +36,7 @@ SOURCES += \
     mach/cpu_interrupts.cc \
     mach/cpu_operations.cc \
     mach/machine.cc \
+    mach/mmu.cc \
     ui/mainwindow.cc
 
 # Default rules for deployment.
@@ -45,6 +46,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     disassembler.hh \
+    exception.hh \
     mach/cpu.hh \
     mach/joypad.hh \
     mach/machine.hh \

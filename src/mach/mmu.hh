@@ -10,15 +10,15 @@ using std::array;
 class MMU
 {
 public:
-    MMU()
-    {
-        mem = Memory();
-    }
+    MMU();
 
-    uint8_t& operator[](uint16_t address)
-    {
-        return mem[address];
-    }
+    uint8_t read(memaddr_t address);
+
+    bool write(memaddr_t address, uint8_t value);
+
+    bool can_read(memaddr_t address);
+
+    bool can_write(memaddr_t address);
 
     Memory mem;
 };

@@ -23,8 +23,8 @@ const CPU::IntInfo* CPU::check_interrupts()
     for (size_t i = 0; i < INTERRUPT_TABLE.size(); ++i)
     {
         const IntInfo* int_info = &INTERRUPT_TABLE[i];
-        if (((mem[HWREG_IF_ADDR] >> int_info->flag_position) & 0x01)
-            && ((mem[HWREG_IE_ADDR] >> int_info->flag_position) & 0x01))
+        if (((mmu.read(HWREG_IF_ADDR) >> int_info->flag_position) & 0x01)
+            && ((mmu.read(HWREG_IE_ADDR) >> int_info->flag_position) & 0x01))
             return &INTERRUPT_TABLE[i];
     }
 
@@ -36,11 +36,11 @@ void CPU::handle_interrupt(const CPU::IntInfo* int_info)
     if (!int_info) return;
 
     is_interrupted = true;
-    mem[HWREG_IF_ADDR] &=  ~(0x01 << int_info->flag_position);
+    mmu.write(HWREG_IF_ADDR, mmu.read(HWREG_IF_ADDR) & ~(0x01 << int_info->flag_position));
     disable_interrupts_now();
     PUSH_r16(PC);
     PC = int_info->jump_address;
-    curr_instr = &mem[PC];
+    curr_instr = &mmu.mem[PC];
     DI_status = IMEStatus::DO_NOTHING;
     EI_status = IMEStatus::DO_NOTHING;
     clock_cycles += 20;
