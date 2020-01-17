@@ -25,17 +25,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++14
 
 SOURCES += \
-    src/mach/cpu.cc \
-    src/mach/memory.cc \
-    src/mach/ppu.cc \
-    src/main.cc \
-    src/mach/cpu_flags.cc \
-    src/mach/cpu_opmap.cc \
-    src/mach/cpu_opcodes.cc \
-    src/mach/cpu_interrupts.cc \
-    src/mach/cpu_operations.cc \
-    src/mach/machine.cc \
-    src/ui/mainwindow.cc
+    mach/cpu.cc \
+    mach/memory.cc \
+    mach/ppu.cc \
+    main.cc \
+    mach/cpu_flags.cc \
+    mach/cpu_opmap.cc \
+    mach/cpu_opcodes.cc \
+    mach/cpu_interrupts.cc \
+    mach/cpu_operations.cc \
+    mach/machine.cc \
+    ui/mainwindow.cc
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -43,10 +43,10 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    src/mach/cpu.hh \
-    src/mach/machine.hh \
-    src/mach/memory.hh \
-    src/mach/mmu.hh \
-    src/mach/ppu.hh \
-    src/mach/sprite.hh \
-    src/ui/mainwindow.hh
+    mach/cpu.hh \
+    mach/machine.hh \
+    mach/memory.hh \
+    mach/mmu.hh \
+    mach/ppu.hh \
+    mach/sprite.hh \
+    ui/mainwindow.hh
