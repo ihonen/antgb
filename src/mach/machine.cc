@@ -8,7 +8,8 @@ using namespace std;
 Machine::Machine()
 {
     mmu = new MMU();
-    cpu = new CPU(*mmu);
+    irc = new IRC(*mmu);
+    cpu = new CPU(*mmu, *irc);
     ppu = new PPU(*mmu);
 }
 
@@ -83,7 +84,7 @@ void Machine::button_pressed(JoypadButton button)
         }
     }
 
-    cpu->request_joypad_interrupt();
+    irc->request_interrupt(IRC::JoypadInterrupt);
 }
 
 void Machine::button_released(JoypadButton button)

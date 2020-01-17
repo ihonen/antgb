@@ -6,7 +6,9 @@
 
 Disassembler disassembler;
 
-CPU::CPU(MMU& memory) : mmu(memory)
+CPU::CPU(MMU& mmu_, IRC& irc_) :
+    mmu(mmu_),
+    irc(irc_)
 {
     init();
 }
@@ -20,7 +22,6 @@ void CPU::init()
 {
     reg = {0};
     curr_instr = nullptr;
-    curr_interrupt = nullptr;
     branch_taken = false;
     DI_status = IMEStatus::DO_NOTHING;
     EI_status = IMEStatus::DO_NOTHING;
@@ -29,7 +30,7 @@ void CPU::init()
     clock_cycles = 0;
     is_interrupted = false;
 
-    IME_flag = 0x00;
+    irc.ime_flag_clear();
     mmu.write(HWREG_IF_ADDR, 0x00);
     mmu.write(HWREG_IF_ADDR, 0x00);
     AF = 0x01B0;
@@ -80,14 +81,17 @@ void CPU::execute(const uint8_t* instruction)
 
     // Nested interrupts are possible if the user has set IME
     // in the handler, so no if statement here.
-    const IntInfo* int_info = check_interrupts();
-    if (int_info)
+    if (irc.has_active_requests())
     {
-        if (is_halted) is_halted = false;
-        if (is_stopped && int_info->id == IntID::KEYPAD)
-            is_stopped = false;
-        curr_interrupt = int_info;
-        handle_interrupt(curr_interrupt);
+        auto interrupt = irc.accept_next_request();
+        if (interrupt.source != IRC::NoInterrupt)
+        {
+            if (is_halted) is_halted = false;
+            if (is_stopped && interrupt.source == IRC::JoypadInterrupt)
+                is_stopped = false;
+            jump_to_isr(interrupt.vector_address);
+        }
+
     }
 
     if (is_halted) return;
@@ -121,8 +125,8 @@ void CPU::execute(const uint8_t* instruction)
         //PC += op_info->len_bytes;
     }
 
-    if (DI_status == IMEStatus::RESET_THIS_CYCLE) disable_interrupts_now();
-    else if (EI_status == IMEStatus::SET_THIS_CYCLE) enable_interrupts_now();
+    if (DI_status == IMEStatus::RESET_THIS_CYCLE) irc.ime_flag_clear();
+    else if (EI_status == IMEStatus::SET_THIS_CYCLE) irc.ime_flag_set();
 }
 
 uint8_t CPU::extract_immediate8(const uint8_t* instruction)

@@ -1,6 +1,7 @@
 #ifndef CPU_HH
 #define CPU_HH
 
+#include "irc.hh"
 #include "mmu.hh"
 #include "../exception.hh"
 #include <array>
@@ -11,12 +12,13 @@ using std::array;
 class CPU
 {
 public:
-             CPU(MMU& memory);
+             CPU(MMU& mmu, IRC& irc);
     void     restart();
     void     execute(const uint8_t* const instruction = nullptr);
     void     reset_cycles();
     uint64_t get_cycles();
     bool     request_joypad_interrupt();
+    void     jump_to_isr(memaddr_t vector_address);
 
     enum HWRegisterAddr : uint16_t
     {
@@ -50,20 +52,11 @@ public:
         void   (CPU::*handler)();
     } InstrInfo;
 
-    enum class IntID {VBLANK, LCDC_STATUS, TIMER_OVF, SERIAL, KEYPAD};
-
-    typedef struct
-    {
-        IntID      id;
-        uint8_t    priority;
-        uint8_t    flag_position;
-        uint8_t    jump_address;
-    } IntInfo;
-
-    static const array<const IntInfo, 5> INTERRUPT_TABLE;
-
     // Main memory, 65 KB
     MMU& mmu;
+
+    // Interrupt controller
+    IRC& irc;
 
     // NOTE: Register order is based on that which appears in the
     // machine instructions.
@@ -83,9 +76,6 @@ public:
     uint8_t&  L  = *(reinterpret_cast<uint8_t*>(&HL) + 1);
     uint8_t&  A  = *(reinterpret_cast<uint8_t*>(&AF) + 0);
     uint8_t&  F  = *(reinterpret_cast<uint8_t*>(&AF) + 1);
-
-    // Interrupt master enable
-    uint8_t IME_flag = 0x00;
 
     // This table will contain the information related to "normal" opcodes.
     static const array<const InstrInfo, 256> INSTR_TABLE;
@@ -108,11 +98,8 @@ public:
 
     bool is_halted = false;
     bool is_stopped = false;
-
-    uint64_t clock_cycles = 0;
-
-    const IntInfo* curr_interrupt = nullptr;
     bool is_interrupted = false;
+    uint64_t clock_cycles = 0;
 
     void     init();
     uint8_t  get_ALU_flag(enum ALUFlagPos pos);
@@ -133,16 +120,9 @@ public:
     void     H_flag_update(bool cond);
     void     N_flag_update(bool cond);
     void     Z_flag_update(bool cond);
-    uint8_t  IME_flag_get();
-    void     IME_flag_reset();
-    void     IME_flag_set();
-    void     disable_interrupts_now();
-    void     enable_interrupts_now();
     void     invalid_opcode();
     uint8_t  extract_immediate8(const uint8_t* instruction = nullptr);
     uint16_t extract_immediate16(const uint8_t* instruction = nullptr);
-    const IntInfo* check_interrupts();
-    void           handle_interrupt(const IntInfo* int_info);
 
     void ADC_A_HL();
     void ADC_A_n8(uint8_t u8);

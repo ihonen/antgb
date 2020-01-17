@@ -495,9 +495,8 @@ void CPU::RETI()
     if (is_interrupted)
     {
         is_interrupted = false;
-        curr_interrupt = nullptr;
     }
-    enable_interrupts_now();
+    irc.ime_flag_set();
 }
 
 void CPU::RL_HL()

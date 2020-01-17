@@ -27,6 +27,7 @@ CONFIG += c++14
 SOURCES += \
     disassembler.cc \
     mach/cpu.cc \
+    mach/irc.cc \
     mach/memory.cc \
     mach/ppu.cc \
     main.cc \
@@ -49,6 +50,7 @@ HEADERS += \
     disassembler.hh \
     exception.hh \
     mach/cpu.hh \
+    mach/irc.hh \
     mach/joypad.hh \
     mach/machine.hh \
     mach/memory.hh \

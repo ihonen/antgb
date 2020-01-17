@@ -2,6 +2,7 @@
 #define GAMEBOY_HH
 
 #include "cpu.hh"
+#include "irc.hh"
 #include "joypad.hh"
 #include "memory.hh"
 #include "mmu.hh"
@@ -19,6 +20,7 @@ public:
     void button_released(JoypadButton button);
 
     CPU* cpu;
+    IRC* irc;
     MMU* mmu;
     PPU* ppu;
 };

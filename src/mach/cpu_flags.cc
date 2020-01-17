@@ -94,18 +94,3 @@ void CPU::Z_flag_update(bool cond)
     if (cond) Z_flag_set();
     else Z_flag_reset();
 }
-
-uint8_t CPU::IME_flag_get()
-{
-    return IME_flag;
-}
-
-void CPU::IME_flag_set()
-{
-    IME_flag = 0x01;
-}
-
-void CPU::IME_flag_reset()
-{
-    IME_flag = 0x00;
-}
