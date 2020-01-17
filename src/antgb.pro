@@ -37,6 +37,7 @@ SOURCES += \
     mach/cpu_operations.cc \
     mach/machine.cc \
     mach/mmu.cc \
+    ui/display.cc \
     ui/mainwindow.cc
 
 # Default rules for deployment.
@@ -54,5 +55,6 @@ HEADERS += \
     mach/mmu.hh \
     mach/ppu.hh \
     mach/sprite.hh \
+    ui/display.hh \
     ui/keymappings.hh \
     ui/mainwindow.hh

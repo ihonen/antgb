@@ -2,6 +2,7 @@
 #define MAINWINDOW_HH
 
 #include "../mach/machine.hh"
+#include "display.hh"
 
 #include <QMainWindow>
 #include <QGraphicsView>
@@ -44,6 +45,8 @@ private:
     QAction* load_rom_act_;
 
     QMenu* options_menu_;
+
+    Display* display_;
 
     Machine& machine;
 

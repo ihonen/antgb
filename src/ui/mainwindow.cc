@@ -14,15 +14,15 @@ MainWindow::MainWindow(Machine& machine_, QWidget* parent) :
     is_emulation_on(false),
     tick_interval(100)
 {
-    display_view_ = new QGraphicsView(this);
-    display_view_->resize(RES_X * RES_UPSCALE_FACTOR, RES_Y * RES_UPSCALE_FACTOR);
+    display_ = new Display(*machine.ppu);
+    display_view_ = new QGraphicsView(display_, this);
+    display_view_->resize(160 * 4 + 4, 144 * 4 + 4);
+    display_view_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    display_view_->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setCentralWidget(display_view_);
 
-    main_layout_ = new QHBoxLayout(this);
-    main_layout_->insertWidget(0, display_view_);
-    setLayout(main_layout_);
     init_menubar();
     init_signals();
-    resize(display_view_->size());
 }
 
 MainWindow::~MainWindow()
