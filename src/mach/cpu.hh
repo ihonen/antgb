@@ -26,7 +26,7 @@ public:
     void     execute(const uint8_t* const instruction = nullptr);
     void     reset_cycles();
     uint64_t get_cycles();
-    void     request_interrupt(uint8_t line);
+    bool     request_joypad_interrupt();
 
     enum HWRegisterAddr : uint16_t
     {

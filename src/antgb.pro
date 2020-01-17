@@ -25,6 +25,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++14
 
 SOURCES += \
+    disassembler.cc \
     mach/cpu.cc \
     mach/memory.cc \
     mach/ppu.cc \
@@ -43,10 +44,13 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    disassembler.hh \
     mach/cpu.hh \
+    mach/joypad.hh \
     mach/machine.hh \
     mach/memory.hh \
     mach/mmu.hh \
     mach/ppu.hh \
     mach/sprite.hh \
+    ui/keymappings.hh \
     ui/mainwindow.hh

@@ -9,9 +9,10 @@ const array<const CPU::IntInfo,5> CPU::INTERRUPT_TABLE =
     {IntID::KEYPAD,      5, 4, 0x60}
 }};
 
-void CPU::request_interrupt(uint8_t line)
+bool CPU::request_joypad_interrupt()
 {
-    mem[HWREG_IF_ADDR] |= 0x01 << line;
+    is_stopped = false;
+    return true;
 }
 
 const CPU::IntInfo* CPU::check_interrupts()

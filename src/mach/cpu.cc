@@ -1,5 +1,11 @@
 #include "cpu.hh"
 
+#include "../disassembler.hh"
+#include <iomanip>
+#include <iostream>
+
+Disassembler disassembler;
+
 CPU::CPU(MMU& memory) : mem(memory)
 {
     init();
@@ -92,6 +98,10 @@ void CPU::execute(const uint8_t* instruction)
     else if (EI_status == IMEStatus::SET_NEXT_CYCLE)
         EI_status = IMEStatus::SET_THIS_CYCLE;
 
+
+    std::cout << std::hex << "@" << std::setw(6) << PC << ":   "
+              << disassembler.disassemble(const_cast<uint8_t*>(instruction))
+              << std::endl;
 
     const InstrInfo* op_info = (*curr_instr == 0xCB) ?
                                 &CB_INSTR_TABLE[curr_instr[1]] :

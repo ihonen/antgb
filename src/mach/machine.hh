@@ -2,6 +2,7 @@
 #define GAMEBOY_HH
 
 #include "cpu.hh"
+#include "joypad.hh"
 #include "memory.hh"
 #include "mmu.hh"
 #include "ppu.hh"
@@ -14,6 +15,8 @@ public:
     ~Machine();
     void load_rom(void* rom, size_t size);
     void tick();
+    void button_pressed(JoypadButton button);
+    void button_released(JoypadButton button);
 
     CPU* cpu;
     MMU* mmu;

@@ -1,5 +1,7 @@
 #include "mainwindow.hh"
 
+#include "keymappings.hh"
+#include <thread>
 #include <QFileDialog>
 
 static const uint16_t RES_X = 160;
@@ -8,7 +10,8 @@ static const uint16_t RES_UPSCALE_FACTOR = 4;
 
 MainWindow::MainWindow(Machine& machine_, QWidget* parent) :
     QMainWindow(parent),
-    machine(machine_)
+    machine(machine_),
+    is_emulation_on(false)
 {
     display_view_ = new QGraphicsView(this);
     display_view_->resize(RES_X * RES_UPSCALE_FACTOR, RES_Y * RES_UPSCALE_FACTOR);
@@ -19,6 +22,29 @@ MainWindow::MainWindow(Machine& machine_, QWidget* parent) :
     init_menubar();
     init_signals();
     resize(display_view_->size());
+}
+
+MainWindow::~MainWindow()
+{
+    stop_emulation();
+}
+
+void MainWindow::keyPressEvent(QKeyEvent* event)
+{
+    auto joypad_mapping = KEYMAP.find(event->key());
+    if (joypad_mapping != KEYMAP.end())
+    {
+        machine.button_pressed(joypad_mapping->second);
+    }
+}
+
+void MainWindow::keyReleaseEvent(QKeyEvent* event)
+{
+    auto joypad_mapping = KEYMAP.find(event->key());
+    if (joypad_mapping != KEYMAP.end())
+    {
+        machine.button_released(joypad_mapping->second);
+    }
 }
 
 void MainWindow::init_menubar()
@@ -46,10 +72,13 @@ void MainWindow::init_signals()
 
 void MainWindow::load_rom_act()
 {
+    /*
     auto filepath = QFileDialog::getOpenFileName(this,
                                                  "Choose Game Boy ROM",
                                                  ".",
                                                  "Game Boy ROMs (*.gb)");
+    */
+    QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\tetris_jue_v1_1.gb");
     load_rom(filepath);
 }
 
@@ -65,14 +94,26 @@ void MainWindow::load_rom(QString& filepath)
 
     QByteArray executable = file.readAll();
     machine.load_rom(executable.data(), (size_t)executable.size() - 1);
-    start_emulation();
+    emulation_thread = new std::thread(&MainWindow::start_emulation, this);
 }
 
 void MainWindow::start_emulation()
 {
-    for (uint64_t i = 0; i < 10000; ++i)
+    is_emulation_on = true;
+    while (is_emulation_on)
     {
-        cout << machine.cpu->PC << endl;
+        for (uint64_t i = 0; i < 1000; ++i);
         machine.tick();
+    }
+}
+
+void MainWindow::stop_emulation()
+{
+    if (emulation_thread)
+    {
+        is_emulation_on = false;
+        emulation_thread->join();
+        delete emulation_thread;
+        emulation_thread = nullptr;
     }
 }
