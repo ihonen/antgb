@@ -251,6 +251,7 @@ void CPU::INC_r8(uint8_t& r8)
 void CPU::JP_HL()
 {
     JP_n16(HL);
+    branch_taken = true;
 }
 
 void CPU::JP_cc_n16(bool cc, uint16_t n16)
@@ -266,6 +267,7 @@ void CPU::JP_cc_n16(bool cc, uint16_t n16)
 void CPU::JP_n16(uint16_t n16)
 {
     PC = n16;
+    branch_taken = true;
 }
 
 /* JR */
@@ -283,6 +285,7 @@ void CPU::JR_cc_n8(bool cc, int8_t n8)
 void CPU::JR_n8(int8_t n8)
 {
     PC += n8;
+    branch_taken = true;
 }
 
 /* LD */

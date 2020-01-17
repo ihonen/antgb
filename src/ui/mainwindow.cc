@@ -102,8 +102,8 @@ void MainWindow::start_emulation()
     is_emulation_on = true;
     while (is_emulation_on)
     {
-        for (uint64_t i = 0; i < 1000; ++i);
         machine.tick();
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }
 
