@@ -16,13 +16,14 @@ public:
     ~Machine();
     void load_rom(void* rom, size_t size);
     void tick();
-    void button_pressed(JoypadButton button);
-    void button_released(JoypadButton button);
+    void button_pressed(Joypad::Button button);
+    void button_released(Joypad::Button button);
 
     CPU* cpu;
     IRC* irc;
     MMU* mmu;
     PPU* ppu;
+    Joypad* joypad;
 };
 
 #endif // GAMEBOY_HH
