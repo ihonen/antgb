@@ -20,6 +20,8 @@ public:
     bool     request_joypad_interrupt();
     void     jump_to_isr(memaddr_t vector_address);
 
+    static const uint64_t CLK_FREQ_Hz = 4194304;
+
     enum HWRegisterAddr : uint16_t
     {
         HWREG_IF_ADDR  = 0xFF0F, // Interrupt flag register
