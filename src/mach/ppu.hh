@@ -108,7 +108,7 @@ public:
     uint8_t* obp1;
     uint8_t* dma;
 
-    array<SpriteAttribute, 10> sprite_attribute_buffer;
+    vector<SpriteAttribute*> sprite_attribute_buffer;
     array<array<uint8_t, 144>, 160> display_buffer;
 
 };

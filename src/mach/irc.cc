@@ -48,7 +48,6 @@ void IRC::ime_flag_clear()
 
 void IRC::request_interrupt(int source)
 {
-    cout << "Interrupt from source " << source << endl;
     *interrupt_flag |= 0x01 << source;
 }
 
