@@ -1,5 +1,6 @@
 #include "ppu.hh"
 
+#include "bitmanip.hh"
 #include <cassert>
 #include <iostream>
 using namespace std;
@@ -19,6 +20,7 @@ PPU::PPU(MMU& mmu_, IRC& irc_) :
     obp1 = &mmu.mem[OBP1_ADDRESS];
     dma = &mmu.mem[DMA_ADDRESS];
 
+    status.mode_task_complete = false;
     status.frame_ready = false;
     status.unemulated_cpu_cycles = 0;
     status.cpu_cycles_spent_in_mode = 0;
@@ -29,7 +31,6 @@ PPU::PPU(MMU& mmu_, IRC& irc_) :
 void PPU::emulate(uint64_t cpu_cycles)
 {
     status.unemulated_cpu_cycles += cpu_cycles;
-    status.cpu_cycles_spent_in_mode += cpu_cycles;
 
     if (has_dma_request())
     {
@@ -38,6 +39,7 @@ void PPU::emulate(uint64_t cpu_cycles)
 
     process_mode();
     status.unemulated_cpu_cycles -= cpu_cycles;
+    status.cpu_cycles_spent_in_mode += cpu_cycles;
     if (mode_ending())
     {
         next_mode();
@@ -63,6 +65,19 @@ void PPU::launch_dma(memaddr_t src_address)
 
 void PPU::process_mode()
 {
+    switch (status.current_mode)
+    {
+        case Mode::ScanningOAM:
+            scan_oam();
+            break;
+        case Mode::DrawingLine:
+            break;
+        case Mode::HBlanking:
+            break;
+        case Mode::VBlanking:
+            break;
+    }
+
     return;
 }
 
@@ -75,30 +90,64 @@ void PPU::next_mode()
 {
     if (status.cpu_cycles_spent_in_mode > MODE_DURATION[status.current_mode])
     {
-        //cout << status.cpu_cycles_spent_in_mode << endl;
         status.cpu_cycles_spent_in_mode -= MODE_DURATION[status.current_mode];
+        status.unemulated_cpu_cycles = status.cpu_cycles_spent_in_mode;
     }
     else
     {
         status.cpu_cycles_spent_in_mode = 0;
     }
 
+    // TODO: Only interrupt when moving from "no interrupt condition"
+    // to "any interrupt condition".
     switch (status.current_mode)
     {
         case Mode::ScanningOAM:
             status.current_mode = Mode::DrawingLine;
+            ++(*ly);
+            if (get_bit(stat, LYCInterrupt) && *ly == *lyc)
+            {
+                irc.request_interrupt(IRC::LcdStatInterrupt);
+            }
             break;
+
         case Mode::DrawingLine:
             status.current_mode = Mode::HBlanking;
+            if (get_bit(stat, HBlankInterrupt))
+            {
+                irc.request_interrupt(IRC::LcdStatInterrupt);
+            }
             break;
+
         case Mode::HBlanking:
             status.current_mode = Mode::VBlanking;
+            if (get_bit(stat, VBlankInterrupt))
+            {
+                irc.request_interrupt(IRC::VBlankInterrupt);
+            }
             break;
+
         case Mode::VBlanking:
-            irc.request_interrupt(IRC::VBlankInterrupt);
             status.current_mode = Mode::ScanningOAM;
+            if (get_bit(stat, OAMInterrupt))
+            {
+                irc.request_interrupt(IRC::LcdStatInterrupt);
+            }
             break;
     }
+
+    *stat |= status.current_mode & MODE_FLAG_MASK;
+
+    status.mode_task_complete = false;
+    status.frame_ready = false;
+    status.cpu_cycles_spent_in_mode = 0;
+}
+
+void PPU::scan_oam()
+{
+    if (status.mode_task_complete) return;
+
+    status.mode_task_complete;
 }
 
 vector<vector<uint8_t>> PPU::read_tile(void* address_)

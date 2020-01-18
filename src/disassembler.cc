@@ -149,7 +149,7 @@ std::string Disassembler::disassemble(void* instruction_)
         case 0xF9: return "LD SP, HL";
         case 0xFA: return "LD A, ($" + imm16 + ")";
         case 0xFB: return "EI";
-        case 0xFE: return "CP $" + imm8 + ")";
+        case 0xFE: return "CP $" + imm8;
         case 0xFF: return "RST $38";
     }
 

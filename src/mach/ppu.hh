@@ -60,6 +60,7 @@ public:
 
     struct
     {
+        bool mode_task_complete;
         bool frame_ready;
         uint64_t cpu_cycles_spent_in_mode;
         Mode current_mode;
@@ -76,6 +77,7 @@ public:
     void process_mode();
     bool mode_ending();
     void next_mode();
+    void scan_oam();
     vector<vector<uint8_t>> read_tile(void* address);
 
     IRC& irc;
