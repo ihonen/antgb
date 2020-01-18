@@ -9,17 +9,20 @@ Machine::Machine()
 {
     mmu = new MMU();
     irc = new IRC(*mmu);
-    cpu = new CPU(*mmu, *irc);
     ppu = new PPU(*mmu, *irc);
+    cpu = new CPU(*mmu, *irc);
     joypad = new Joypad(*mmu, *irc);
     timer_divider = new TimerDivider(*mmu, *irc);
 }
 
 Machine::~Machine()
 {
-    delete cpu;
     delete mmu;
+    delete irc;
     delete ppu;
+    delete cpu;
+    delete joypad;
+    delete timer_divider;
 }
 
 void Machine::load_rom(void* rom, size_t size)
@@ -32,6 +35,7 @@ void Machine::tick()
 {
     uint64_t cpu_cycles = cpu_tick();
     timer_divider->emulate(cpu_cycles);
+    mmu->emulate(cpu_cycles);
     ppu->emulate(cpu_cycles);
 }
 

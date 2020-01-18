@@ -5,20 +5,21 @@
 using namespace std;
 
 PPU::PPU(MMU& mmu_, IRC& irc_) :
-    mmu(mmu_),
-    irc(irc_)
+    irc(irc_),
+    mmu(mmu_)
 {
-    uint8_t* lcdc = &mmu.mem[LCDC_ADDRESS];
-    uint8_t* stat = &mmu.mem[STAT_ADDRESS];
-    uint8_t* scy = &mmu.mem[SCY_ADDRESS];
-    uint8_t* ly = &mmu.mem[LY_ADDRESS];
-    uint8_t* lyc = &mmu.mem[LYC_ADDRESS];
-    uint8_t* wy = &mmu.mem[WY_ADDRESS];
-    uint8_t* bgp = &mmu.mem[BGP_ADDRESS];
-    uint8_t* obp0 = &mmu.mem[OBP0_ADDRESS];
-    uint8_t* obp1 = &mmu.mem[OBP1_ADDRESS];
-    uint8_t* dma = &mmu.mem[DMA_ADDRESS];
+    lcdc = &mmu.mem[LCDC_ADDRESS];
+    stat = &mmu.mem[STAT_ADDRESS];
+    scy = &mmu.mem[SCY_ADDRESS];
+    ly = &mmu.mem[LY_ADDRESS];
+    lyc = &mmu.mem[LYC_ADDRESS];
+    wy = &mmu.mem[WY_ADDRESS];
+    bgp = &mmu.mem[BGP_ADDRESS];
+    obp0 = &mmu.mem[OBP0_ADDRESS];
+    obp1 = &mmu.mem[OBP1_ADDRESS];
+    dma = &mmu.mem[DMA_ADDRESS];
 
+    status.frame_ready = false;
     status.unemulated_cpu_cycles = 0;
     status.cpu_cycles_spent_in_mode = 0;
     status.current_mode = ScanningOAM;
@@ -30,12 +31,34 @@ void PPU::emulate(uint64_t cpu_cycles)
     status.unemulated_cpu_cycles += cpu_cycles;
     status.cpu_cycles_spent_in_mode += cpu_cycles;
 
+    if (has_dma_request())
+    {
+        launch_dma(dma_src_address());
+    }
+
     process_mode();
     status.unemulated_cpu_cycles -= cpu_cycles;
     if (mode_ending())
     {
         next_mode();
     }
+}
+
+bool PPU::has_dma_request()
+{
+    return *dma != 0x00;
+}
+
+memaddr_t PPU::dma_src_address()
+{
+    return *dma * 0x100;
+}
+
+void PPU::launch_dma(memaddr_t src_address)
+{
+    cout << "DMA" << endl;
+    *dma = 0x00;
+    mmu.launch_oam_dma(0xFE00, src_address, 160);
 }
 
 void PPU::process_mode()

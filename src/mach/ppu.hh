@@ -60,6 +60,7 @@ public:
 
     struct
     {
+        bool frame_ready;
         uint64_t cpu_cycles_spent_in_mode;
         Mode current_mode;
         uint64_t unemulated_cpu_cycles;
@@ -69,6 +70,9 @@ public:
 
     PPU(MMU& mmu, IRC& irc);
     void emulate(uint64_t cpu_cycles);
+    bool has_dma_request();
+    memaddr_t dma_src_address();
+    void launch_dma(memaddr_t src_address);
     void process_mode();
     bool mode_ending();
     void next_mode();
