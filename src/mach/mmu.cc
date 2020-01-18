@@ -1,5 +1,9 @@
 #include "mmu.hh"
 
+#include <iostream>
+
+using namespace std;
+
 MMU::MMU()
 {
     mem = Memory();
@@ -78,6 +82,7 @@ void MMU::unlock_region(memaddr_t low, memaddr_t high)
         if (it->first == low && it->second == high)
         {
             locked_regions.erase(it);
+            break;
         }
         ++it;
     }

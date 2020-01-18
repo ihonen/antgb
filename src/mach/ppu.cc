@@ -107,7 +107,12 @@ void PPU::next_mode()
             ++(*ly);
             if (get_bit(stat, LYCInterrupt) && *ly == *lyc)
             {
+                set_bit(stat, CoincidenceFlag);
                 irc.request_interrupt(IRC::LcdStatInterrupt);
+            }
+            else
+            {
+                clear_bit(stat, CoincidenceFlag);
             }
             break;
 

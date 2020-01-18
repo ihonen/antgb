@@ -106,12 +106,12 @@ void CPU::execute(const uint8_t* instruction)
     const InstrInfo* op_info = (*curr_instr == 0xCB) ?
                                 &CB_INSTR_TABLE[curr_instr[1]] :
                                 &INSTR_TABLE[*curr_instr];
-
+/*
     std::cout << "@" << std::setw(5) << std::left << PC << ":   "
               << std::setw(16) << std::left << disassembler.disassemble(const_cast<uint8_t*>(instruction))
               << static_cast<int>(op_info->len_bytes) << " bytes"
               << std::endl;
-
+*/
     // PC has to be incremented before instruction execution.
     PC += op_info->len_bytes;
 
