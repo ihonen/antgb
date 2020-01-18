@@ -119,7 +119,7 @@ void MainWindow::start_emulation()
     while (is_emulation_on)
     {
         machine.tick();
-        std::this_thread::sleep_for(std::chrono::milliseconds(tick_interval));
+        //std::this_thread::sleep_for(std::chrono::milliseconds(tick_interval));
     }
 }
 

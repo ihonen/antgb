@@ -10,7 +10,7 @@ Machine::Machine()
     mmu = new MMU();
     irc = new IRC(*mmu);
     cpu = new CPU(*mmu, *irc);
-    ppu = new PPU(*mmu);
+    ppu = new PPU(*mmu, *irc);
     joypad = new Joypad(*mmu, *irc);
     timer_divider = new TimerDivider(*mmu, *irc);
 }
@@ -32,6 +32,7 @@ void Machine::tick()
 {
     uint64_t cpu_cycles = cpu_tick();
     timer_divider->emulate(cpu_cycles);
+    ppu->emulate(cpu_cycles);
 }
 
 uint64_t Machine::cpu_tick()
@@ -40,7 +41,7 @@ uint64_t Machine::cpu_tick()
     cpu->execute();
     uint64_t cpu_cycle_count_after = cpu->get_cycles();
     cpu->reset_cycles();
-    return cpu_cycle_count_before - cpu_cycle_count_after;
+    return cpu_cycle_count_after - cpu_cycle_count_before;
 }
 
 void Machine::button_pressed(Joypad::Button button)
