@@ -7,6 +7,7 @@
 #include "memory.hh"
 #include "mmu.hh"
 #include "ppu.hh"
+#include "timerdivider.hh"
 #include <cstdint>
 
 class Machine
@@ -16,6 +17,7 @@ public:
     ~Machine();
     void load_rom(void* rom, size_t size);
     void tick();
+    uint64_t cpu_tick();
     void button_pressed(Joypad::Button button);
     void button_released(Joypad::Button button);
 
@@ -24,6 +26,7 @@ public:
     MMU* mmu;
     PPU* ppu;
     Joypad* joypad;
+    TimerDivider* timer_divider;
 };
 
 #endif // GAMEBOY_HH

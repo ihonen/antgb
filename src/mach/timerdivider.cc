@@ -33,6 +33,12 @@ void TimerDivider::emulate_timer(uint64_t cpu_cycles)
 {
     timer.unemulated_cpu_cycles += cpu_cycles;
 
+    if (!(*timer.control & TimerEnable))
+    {
+        timer.unemulated_cpu_cycles = 0;
+        return;
+    }
+
     uint64_t clk_select = *timer.control & (timer.CLK_SELECT_MASK);
     uint64_t cpu_cycles_per_tick = CPU::CLK_FREQ_Hz / timer.FREQ_DIVIDER[clk_select];
 
