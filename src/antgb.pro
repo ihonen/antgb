@@ -32,6 +32,7 @@ SOURCES += \
     mach/joypad.cc \
     mach/memory.cc \
     mach/ppu.cc \
+    mach/sprite.cc \
     mach/timerdivider.cc \
     main.cc \
     mach/cpu_flags.cc \

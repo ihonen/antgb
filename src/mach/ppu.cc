@@ -152,9 +152,9 @@ void PPU::scan_oam()
 {
     if (status.mode_task_complete) return;
 
-    sprite_attribute_buffer.clear();
-    sprite_attribute_buffer.reserve(10);
-
+    sprite_buffer.clear();
+    sprite_buffer.reserve(10);
+/*
     auto sprite = (SpriteAttribute*)&(mmu.mem[SPRITE_ATTRIBUTE_TABLE_ADDRESS]);
 
     for (int i = 0; i < SPRITE_ATTRIBUTE_TABLE_SIZE_B; ++i)
@@ -162,11 +162,11 @@ void PPU::scan_oam()
         auto sprite_height = *lcdc & ObjSize ? 16 : 8;
         if (sprite->y_pos - sprite_height >= *ly)
         {
-            sprite_attribute_buffer.push_back(sprite);
+            sprite_buffer.push_back(sprite);
         }
         ++sprite;
     }
-
+*/
     status.mode_task_complete = true;
 }
 
