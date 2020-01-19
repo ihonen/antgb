@@ -1,9 +1,10 @@
 #ifndef SPRITE_HH
 #define SPRITE_HH
 
-#include <cstdint>
+#include "tile.hh"
 
 #include <cassert>
+#include <cstdint>
 #include <iostream>
 
 using namespace std;
@@ -48,7 +49,7 @@ public:
 
     uint8_t width;
     uint8_t height;
-    uint8_t* data;
+    Tile* data;
     Attribute* attribute;
 };
 

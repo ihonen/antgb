@@ -33,6 +33,7 @@ SOURCES += \
     mach/memory.cc \
     mach/ppu.cc \
     mach/sprite.cc \
+    mach/tile.cc \
     mach/timerdivider.cc \
     main.cc \
     mach/cpu_flags.cc \
@@ -62,6 +63,7 @@ HEADERS += \
     mach/mmu.hh \
     mach/ppu.hh \
     mach/sprite.hh \
+    mach/tile.hh \
     mach/timerdivider.hh \
     ui/display.hh \
     ui/keymappings.hh \

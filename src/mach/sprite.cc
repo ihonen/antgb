@@ -10,7 +10,7 @@ Sprite::Sprite(uint8_t width_,
     width = width_;
     height = height_;
     attribute = attribute_;
-    data = (uint8_t*)data_;
+    data = (Tile*)data_;
 }
 
 uint8_t Sprite::top()
@@ -77,11 +77,16 @@ uint8_t Sprite::get_pixel(uint8_t sprite_x, uint8_t sprite_y)
         sprite_y = (height - 1) - sprite_y;
     }
 
-    uint8_t* row_low = &data[sprite_y * 2];
-    uint8_t* row_high = row_low + 1;
-    uint8_t low_bit = (*row_low & (0x01 << sprite_x)) >> sprite_x;
-    uint8_t high_bit = (*row_high & (0x01 << sprite_x)) >> (sprite_x);
-    return (high_bit << 1) | low_bit;
+    uint8_t  tile_y = sprite_y;
+    Tile* pointed_tile = data;
+
+    if (sprite_y >= 8)
+    {
+        tile_y -= 8;
+        ++pointed_tile;
+    }
+
+    return pointed_tile->get_pixel(sprite_x, tile_y);
 }
 
 bool Sprite::is_above_background()
