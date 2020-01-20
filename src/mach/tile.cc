@@ -2,7 +2,7 @@
 
 uint8_t Tile::get_pixel(uint8_t tile_x, uint8_t tile_y)
 {
-    if (tile_x >= 7 || tile_y >= 7)
+    if (tile_x > 7 || tile_y > 7)
     {
         return 0x00;
     }
