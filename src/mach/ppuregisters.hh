@@ -27,12 +27,10 @@ struct PPUReg
         ModeFlag0 = 0
     };
 
-    memaddr_t SPRITE_ATTRIBUTE_TABLE_ADDRESS = 0xFE00;
-    memaddr_t SPRITE_ATTRIBUTE_TABLE_SIZE_B = 160;
-
     memaddr_t LCDC_ADDRESS = 0xFF40;
     memaddr_t STAT_ADDRESS = 0xFF41;
     memaddr_t SCY_ADDRESS = 0xFF42;
+    memaddr_t SCX_ADDRESS = 0xFF43;
     memaddr_t LY_ADDRESS = 0xFF44;
     memaddr_t LYC_ADDRESS = 0xFF45;
     memaddr_t WY_ADDRESS = 0xFF4A;
@@ -43,6 +41,7 @@ struct PPUReg
 
     uint8_t* lcdc;
     uint8_t* stat;
+    uint8_t* scx;
     uint8_t* scy;
     uint8_t* ly;
     uint8_t* lyc;

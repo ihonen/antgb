@@ -12,6 +12,7 @@ PPU::PPU(MMU& mmu_, IRC& irc_) :
     reg.lcdc = &mmu.mem[reg.LCDC_ADDRESS];
     reg.stat = &mmu.mem[reg.STAT_ADDRESS];
     reg.scy = &mmu.mem[reg.SCY_ADDRESS];
+    reg.scx = &mmu.mem[reg.SCX_ADDRESS];
     reg.ly = &mmu.mem[reg.LY_ADDRESS];
     reg.lyc = &mmu.mem[reg.LYC_ADDRESS];
     reg.wy = &mmu.mem[reg.WY_ADDRESS];
