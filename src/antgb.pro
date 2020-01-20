@@ -29,6 +29,7 @@ SOURCES += \
     mach/background.cc \
     mach/bitmanip.cc \
     mach/cpu.cc \
+    mach/graphicsfetcher.cc \
     mach/irc.cc \
     mach/joypad.cc \
     mach/memory.cc \
@@ -58,12 +59,14 @@ HEADERS += \
     mach/background.hh \
     mach/bitmanip.hh \
     mach/cpu.hh \
+    mach/graphicsfetcher.hh \
     mach/irc.hh \
     mach/joypad.hh \
     mach/machine.hh \
     mach/memory.hh \
     mach/mmu.hh \
     mach/ppu.hh \
+    mach/ppuregisters.hh \
     mach/sprite.hh \
     mach/tile.hh \
     mach/timerdivider.hh \

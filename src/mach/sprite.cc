@@ -3,14 +3,14 @@
 Sprite::Sprite(uint8_t width_,
                uint8_t height_,
                Attribute* attribute_,
-               void* data_)
+               Tile* data_)
 {
     assert(width == 8);
     assert(height == 8 || height == 16);
     width = width_;
     height = height_;
     attribute = attribute_;
-    data = (Tile*)data_;
+    data = data_;
 }
 
 uint8_t Sprite::top()

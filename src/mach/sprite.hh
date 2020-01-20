@@ -31,7 +31,7 @@ public:
     Sprite(uint8_t width_,
            uint8_t height_,
            Attribute* attribute_,
-           void* data_);
+           Tile* data_);
 
     uint8_t top();
     uint8_t bottom();
