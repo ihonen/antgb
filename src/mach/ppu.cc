@@ -9,16 +9,16 @@ PPU::PPU(MMU& mmu_, IRC& irc_) :
     irc(irc_),
     mmu(mmu_)
 {
-    lcdc = &mmu.mem[LCDC_ADDRESS];
-    stat = &mmu.mem[STAT_ADDRESS];
-    scy = &mmu.mem[SCY_ADDRESS];
-    ly = &mmu.mem[LY_ADDRESS];
-    lyc = &mmu.mem[LYC_ADDRESS];
-    wy = &mmu.mem[WY_ADDRESS];
-    bgp = &mmu.mem[BGP_ADDRESS];
-    obp0 = &mmu.mem[OBP0_ADDRESS];
-    obp1 = &mmu.mem[OBP1_ADDRESS];
-    dma = &mmu.mem[DMA_ADDRESS];
+    reg.lcdc = &mmu.mem[reg.LCDC_ADDRESS];
+    reg.stat = &mmu.mem[reg.STAT_ADDRESS];
+    reg.scy = &mmu.mem[reg.SCY_ADDRESS];
+    reg.ly = &mmu.mem[reg.LY_ADDRESS];
+    reg.lyc = &mmu.mem[reg.LYC_ADDRESS];
+    reg.wy = &mmu.mem[reg.WY_ADDRESS];
+    reg.bgp = &mmu.mem[reg.BGP_ADDRESS];
+    reg.obp0 = &mmu.mem[reg.OBP0_ADDRESS];
+    reg.obp1 = &mmu.mem[reg.OBP1_ADDRESS];
+    reg.dma = &mmu.mem[reg.DMA_ADDRESS];
 
     status.mode_task_complete = false;
     status.frame_ready = false;
@@ -48,18 +48,18 @@ void PPU::emulate(uint64_t cpu_cycles)
 
 bool PPU::has_dma_request()
 {
-    return *dma != 0x00;
+    return *reg.dma != 0x00;
 }
 
 memaddr_t PPU::dma_src_address()
 {
-    return *dma * 0x100;
+    return *reg.dma * 0x100;
 }
 
 void PPU::launch_dma(memaddr_t src_address)
 {
     cout << "DMA" << endl;
-    *dma = 0x00;
+    *reg.dma = 0x00;
     mmu.launch_oam_dma(0xFE00, src_address, 160);
 }
 
@@ -104,21 +104,21 @@ void PPU::next_mode()
     {
         case Mode::ScanningOAM:
             status.current_mode = Mode::DrawingLine;
-            ++(*ly);
-            if (get_bit(stat, LYCInterrupt) && *ly == *lyc)
+            ++(*reg.ly);
+            if (get_bit(reg.stat, reg.LYCInterrupt) && *reg.ly == *reg.lyc)
             {
-                set_bit(stat, CoincidenceFlag);
+                set_bit(reg.stat, reg.CoincidenceFlag);
                 irc.request_interrupt(IRC::LcdStatInterrupt);
             }
             else
             {
-                clear_bit(stat, CoincidenceFlag);
+                clear_bit(reg.stat, reg.CoincidenceFlag);
             }
             break;
 
         case Mode::DrawingLine:
             status.current_mode = Mode::HBlanking;
-            if (get_bit(stat, HBlankInterrupt))
+            if (get_bit(reg.stat, reg.HBlankInterrupt))
             {
                 irc.request_interrupt(IRC::LcdStatInterrupt);
             }
@@ -126,7 +126,7 @@ void PPU::next_mode()
 
         case Mode::HBlanking:
             status.current_mode = Mode::VBlanking;
-            if (get_bit(stat, VBlankInterrupt))
+            if (get_bit(reg.stat, reg.VBlankInterrupt))
             {
                 irc.request_interrupt(IRC::VBlankInterrupt);
             }
@@ -134,14 +134,14 @@ void PPU::next_mode()
 
         case Mode::VBlanking:
             status.current_mode = Mode::ScanningOAM;
-            if (get_bit(stat, OAMInterrupt))
+            if (get_bit(reg.stat, reg.OAMInterrupt))
             {
                 irc.request_interrupt(IRC::LcdStatInterrupt);
             }
             break;
     }
 
-    *stat |= status.current_mode & MODE_FLAG_MASK;
+    *reg.stat |= status.current_mode & MODE_FLAG_MASK;
 
     status.mode_task_complete = false;
     status.frame_ready = false;
