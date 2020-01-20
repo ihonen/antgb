@@ -26,6 +26,7 @@ CONFIG += c++14
 
 SOURCES += \
     disassembler.cc \
+    mach/background.cc \
     mach/bitmanip.cc \
     mach/cpu.cc \
     mach/irc.cc \
@@ -54,6 +55,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     disassembler.hh \
     exception.hh \
+    mach/background.hh \
     mach/bitmanip.hh \
     mach/cpu.hh \
     mach/irc.hh \
