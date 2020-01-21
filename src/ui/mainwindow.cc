@@ -98,10 +98,11 @@ void MainWindow::load_rom_act()
                                                  "Game Boy ROMs (*.gb)");
     */
     QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\tetris_jue_v1_1.gb");
-    load_rom(filepath);
+    load_rom(filepath, machine.mmu->mem.data);
+    emulation_thread = new std::thread(&MainWindow::start_emulation, this);
 }
 
-void MainWindow::load_rom(QString& filepath)
+void MainWindow::load_rom(QString& filepath, uint8_t* memory)
 {
     if (filepath.size() == 0) return;
 
@@ -112,10 +113,10 @@ void MainWindow::load_rom(QString& filepath)
     }
 
     QByteArray executable = file.readAll();
-    machine.load_rom(executable.data(), (size_t)executable.size() - 1);
+    memcpy(memory, executable.data(), (size_t)executable.size() - 1);
 //    emulation_qthread = QThread::create([&]() { MainWindow::start_emulation(); });
 //    emulation_qthread->start();
-    emulation_thread = new std::thread(&MainWindow::start_emulation, this);
+
 }
 
 void MainWindow::start_emulation()

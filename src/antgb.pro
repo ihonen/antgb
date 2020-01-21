@@ -77,6 +77,5 @@ HEADERS += \
     ui/keymappings.hh \
     ui/mainwindow.hh
 
-DISTFILES += \
-    test/tetris_game.dump \
-    test/tetris_menu.dump
+RESOURCES += \
+    dump.qrc

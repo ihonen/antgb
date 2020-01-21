@@ -14,7 +14,7 @@ Machine::Machine()
     cpu = new CPU(*mmu, *irc);
     joypad = new Joypad(*mmu, *irc);
     timer_divider = new TimerDivider(*mmu, *irc);
-    renderer = new Renderer();
+    renderer = new Renderer(mmu->mem.data);
 }
 
 Machine::~Machine()
@@ -46,6 +46,7 @@ void Machine::tick()
 
     if (i == 4)
     {
+        cout << "frame" << endl;
         renderer->render_frame();
         i = 0;
     }

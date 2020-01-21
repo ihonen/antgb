@@ -35,7 +35,7 @@ public:
 
     void init_menubar();
     void init_signals();
-    void load_rom(QString& filepath);
+    static void load_rom(QString& filepath, uint8_t* memory);
     void start_emulation();
     void stop_emulation();
 

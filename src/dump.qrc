@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>dump/tetris_game.dump</file>
+        <file>dump/tetris_menu.dump</file>
+    </qresource>
+</RCC>
