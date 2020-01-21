@@ -1,5 +1,6 @@
 #include "machine.hh"
 
+#include "../gfx/renderer.hh"
 #include <iostream>
 #include <cstring>
 
@@ -13,6 +14,7 @@ Machine::Machine()
     cpu = new CPU(*mmu, *irc);
     joypad = new Joypad(*mmu, *irc);
     timer_divider = new TimerDivider(*mmu, *irc);
+    renderer = new Renderer();
 }
 
 Machine::~Machine()
@@ -23,6 +25,7 @@ Machine::~Machine()
     delete cpu;
     delete joypad;
     delete timer_divider;
+    delete renderer;
 }
 
 void Machine::load_rom(void* rom, size_t size)
@@ -37,6 +40,15 @@ void Machine::tick()
     timer_divider->emulate(cpu_cycles);
     mmu->emulate(cpu_cycles);
     ppu->emulate(cpu_cycles);
+
+    static size_t i = 0;
+    ++i;
+
+    if (i == 4)
+    {
+        renderer->render_frame();
+        i = 0;
+    }
 }
 
 uint64_t Machine::cpu_tick()

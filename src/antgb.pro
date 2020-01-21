@@ -26,6 +26,7 @@ CONFIG += c++14
 
 SOURCES += \
     disassembler.cc \
+    gfx/renderer.cc \
     mach/background.cc \
     mach/bitmanip.cc \
     mach/cpu.cc \
@@ -56,6 +57,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     disassembler.hh \
     exception.hh \
+    gfx/renderer.hh \
     mach/background.hh \
     mach/bitmanip.hh \
     mach/cpu.hh \
@@ -70,6 +72,11 @@ HEADERS += \
     mach/sprite.hh \
     mach/tile.hh \
     mach/timerdivider.hh \
+    test/tilemap.hh \
     ui/display.hh \
     ui/keymappings.hh \
     ui/mainwindow.hh
+
+DISTFILES += \
+    test/tetris_game.dump \
+    test/tetris_menu.dump

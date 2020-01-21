@@ -12,11 +12,12 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-    Machine gb;
-
     QApplication app(argc, argv);
+
+    Machine gb;
     MainWindow main_window(gb, nullptr);
     main_window.show();
+
     app.exec();
 
     return 0;

@@ -11,6 +11,7 @@
 #include <QLabel>
 #include <QMenuBar>
 #include <QString>
+#include <QThread>
 
 #include <thread>
 
@@ -22,13 +23,16 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 public slots:
     void load_rom_act();
-public:
-    explicit MainWindow(Machine& machine, QWidget* parent = nullptr);
-    virtual ~MainWindow() override;
+
 protected:
     virtual void keyPressEvent(QKeyEvent* event) override;
     virtual void keyReleaseEvent(QKeyEvent* event) override;
-private:
+
+public:
+
+    explicit MainWindow(Machine& machine, QWidget* parent = nullptr);
+    virtual ~MainWindow() override;
+
     void init_menubar();
     void init_signals();
     void load_rom(QString& filepath);
@@ -51,6 +55,8 @@ private:
     Machine& machine;
 
     std::thread* emulation_thread;
+
+    QThread* emulation_qthread;
 
     bool is_emulation_on;
 

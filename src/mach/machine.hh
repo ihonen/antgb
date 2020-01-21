@@ -1,6 +1,7 @@
 #ifndef GAMEBOY_HH
 #define GAMEBOY_HH
 
+#include "../gfx/renderer.hh"
 #include "cpu.hh"
 #include "irc.hh"
 #include "joypad.hh"
@@ -27,6 +28,7 @@ public:
     PPU* ppu;
     Joypad* joypad;
     TimerDivider* timer_divider;
+    Renderer* renderer;
 };
 
 #endif // GAMEBOY_HH

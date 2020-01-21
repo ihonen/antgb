@@ -7,8 +7,26 @@ static const uint32_t DARK_GRAY = 0xFF555555;
 static const uint32_t LIGHT_GRAY = 0xFFAAAAAA;
 static const uint32_t WHITE = 0xFFFFFFFF;
 
-Display::Display(PPU& ppu_, QObject* parent) :
+#include <chrono>
+
+void Display::on_frame_ready()
+{
+    auto frame_buffer = renderer.get_frame_buffer();
+
+    for (size_t y = 0; y < 144; ++y)
+    {
+        for (size_t x = 0; x < 160; ++x)
+        {
+            set_pixel(x, y, frame_buffer[y * 160 + x]);
+        }
+    }
+
+    item->setPixmap(QPixmap::fromImage(image));
+}
+
+Display::Display(PPU& ppu_, Renderer& renderer_, QObject* parent) :
     QGraphicsScene(parent),
+    renderer(renderer_),
     ppu(ppu_)
 {
     image = QImage(160 * 4, 144 * 4, QImage::Format_ARGB32);
@@ -28,5 +46,4 @@ void Display::set_pixel(int x, int y, uint32_t color)
                                 QColor(color));
         }
     }
-    item->setPixmap(QPixmap::fromImage(image));
 }

@@ -61,7 +61,9 @@ void PPU::launch_dma(memaddr_t src_address)
 {
     cout << "DMA" << endl;
     *reg.dma = 0x00;
+    /*
     mmu.launch_oam_dma(0xFE00, src_address, 160);
+    */
 }
 
 void PPU::process_mode()

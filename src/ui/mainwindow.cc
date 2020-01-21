@@ -14,7 +14,7 @@ MainWindow::MainWindow(Machine& machine_, QWidget* parent) :
     is_emulation_on(false),
     tick_interval(100)
 {
-    display_ = new Display(*machine.ppu);
+    display_ = new Display(*machine.ppu, *machine.renderer);
     display_view_ = new QGraphicsView(display_, this);
     display_view_->resize(160 * 4 + 4, 144 * 4 + 4);
     display_view_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -23,6 +23,9 @@ MainWindow::MainWindow(Machine& machine_, QWidget* parent) :
 
     init_menubar();
     init_signals();
+
+    QObject::connect(machine.renderer, &Renderer::frame_ready,
+                     display_, &Display::on_frame_ready);
 }
 
 MainWindow::~MainWindow()
@@ -110,6 +113,8 @@ void MainWindow::load_rom(QString& filepath)
 
     QByteArray executable = file.readAll();
     machine.load_rom(executable.data(), (size_t)executable.size() - 1);
+//    emulation_qthread = QThread::create([&]() { MainWindow::start_emulation(); });
+//    emulation_qthread->start();
     emulation_thread = new std::thread(&MainWindow::start_emulation, this);
 }
 
@@ -119,12 +124,20 @@ void MainWindow::start_emulation()
     while (is_emulation_on)
     {
         machine.tick();
-        //std::this_thread::sleep_for(std::chrono::milliseconds(tick_interval));
+        std::this_thread::sleep_for(std::chrono::milliseconds(tick_interval));
     }
 }
 
 void MainWindow::stop_emulation()
 {
+    /*
+    if (emulation_qthread)
+    {
+        is_emulation_on = false;
+        emulation_qthread->exit();
+
+    }
+        */
     if (emulation_thread)
     {
         is_emulation_on = false;
@@ -132,4 +145,6 @@ void MainWindow::stop_emulation()
         delete emulation_thread;
         emulation_thread = nullptr;
     }
+    /*
+    */
 }
