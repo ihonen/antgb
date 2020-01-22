@@ -5,7 +5,6 @@
 #include "irc.hh"
 #include "mmu.hh"
 #include "ppuregisters.hh"
-#include "sprite.hh"
 #include <chrono>
 #include <map>
 #include <vector>
@@ -61,9 +60,6 @@ public:
 
     IRC& irc;
     MMU& mmu;
-
-    vector<Sprite> sprite_buffer;
-    array<array<uint8_t, 144>, 160> display_buffer;
 
     PPUReg reg;
 };

@@ -2,8 +2,8 @@
 #define GRAPHICSFETCHER_HH
 
 #include "background.hh"
-#include "mmu.hh"
-#include "ppuregisters.hh"
+#include "../mach/mmu.hh"
+#include "../mach/ppuregisters.hh"
 #include "tile.hh"
 #include "sprite.hh"
 

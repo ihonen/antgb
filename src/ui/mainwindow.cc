@@ -8,6 +8,17 @@ static const uint16_t RES_X = 160;
 static const uint16_t RES_Y = 144;
 static const uint16_t RES_UPSCALE_FACTOR = 4;
 
+static uint8_t tetris_memdump1[0x10000];
+static uint8_t tetris_memdump2[0x10000];
+
+static void load_tetris_dumps()
+{
+    QString dump1_path = ":/dump/tetris_menu.dump";
+    QString dump2_path = ":/dump/tetris_game.dump";
+    MainWindow::load_rom(dump1_path, tetris_memdump1);
+    MainWindow::load_rom(dump2_path, tetris_memdump2);
+}
+
 MainWindow::MainWindow(Machine& machine_, QWidget* parent) :
     QMainWindow(parent),
     machine(machine_),
@@ -26,6 +37,8 @@ MainWindow::MainWindow(Machine& machine_, QWidget* parent) :
 
     QObject::connect(machine.renderer, &Renderer::frame_ready,
                      display_, &Display::on_frame_ready);
+
+    load_tetris_dumps();
 }
 
 MainWindow::~MainWindow()
@@ -121,9 +134,21 @@ void MainWindow::load_rom(QString& filepath, uint8_t* memory)
 
 void MainWindow::start_emulation()
 {
+    static uint8_t i = 0;
+
     is_emulation_on = true;
     while (is_emulation_on)
     {
+        if (i % 8 == 0)
+        {
+            machine.renderer->set_memory(tetris_memdump1);
+        }
+        else if (i % 4 == 0)
+        {
+            machine.renderer->set_memory(tetris_memdump2);
+        }
+        ++i;
+
         machine.tick();
         std::this_thread::sleep_for(std::chrono::milliseconds(tick_interval));
     }

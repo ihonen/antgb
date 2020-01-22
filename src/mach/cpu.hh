@@ -3,7 +3,7 @@
 
 #include "irc.hh"
 #include "mmu.hh"
-#include "../exception.hh"
+#include "../error/exception.hh"
 #include <array>
 #include <cstdint>
 

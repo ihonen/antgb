@@ -1,7 +1,7 @@
 #include "renderer.hh"
 
 #include <cstdlib>
-#include "../mach/tile.hh"
+#include "tile.hh"
 
 static const uint32_t colors[4] =
 {

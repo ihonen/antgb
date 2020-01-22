@@ -26,7 +26,6 @@ PPU::PPU(MMU& mmu_, IRC& irc_) :
     status.unemulated_cpu_cycles = 0;
     status.cpu_cycles_spent_in_mode = 0;
     status.current_mode = ScanningOAM;
-    memset(display_buffer.data(), 0x00, 144 * 160);
 }
 
 void PPU::emulate(uint64_t cpu_cycles)
@@ -71,7 +70,6 @@ void PPU::process_mode()
     switch (status.current_mode)
     {
         case Mode::ScanningOAM:
-            scan_oam();
             break;
         case Mode::DrawingLine:
             break;
@@ -149,52 +147,4 @@ void PPU::next_mode()
     status.mode_task_complete = false;
     status.frame_ready = false;
     status.cpu_cycles_spent_in_mode = 0;
-}
-
-void PPU::scan_oam()
-{
-    if (status.mode_task_complete) return;
-
-    sprite_buffer.clear();
-    sprite_buffer.reserve(10);
-/*
-    auto sprite = (SpriteAttribute*)&(mmu.mem[SPRITE_ATTRIBUTE_TABLE_ADDRESS]);
-
-    for (int i = 0; i < SPRITE_ATTRIBUTE_TABLE_SIZE_B; ++i)
-    {
-        auto sprite_height = *lcdc & ObjSize ? 16 : 8;
-        if (sprite->y_pos - sprite_height >= *ly)
-        {
-            sprite_buffer.push_back(sprite);
-        }
-        ++sprite;
-    }
-*/
-    status.mode_task_complete = true;
-}
-
-vector<vector<uint8_t>> PPU::read_tile(void* address_)
-{
-    vector<vector<uint8_t>> pixels;
-    uint8_t* tile_start = (uint8_t*)address_;
-
-    for (uint8_t row = 0; row < 8; ++row)
-    {
-        pixels.push_back({});
-        const uint8_t& lower_byte = tile_start[row + 1];
-        const uint8_t& upper_byte = tile_start[row];
-
-        for (int8_t column = 7; column >= 0; --column)
-        {
-            // Bit 0 from lower byte, bit 1 from upper byte:
-            uint8_t lower_bit = (upper_byte & (0x01 << column))
-                                  >> column;
-            uint8_t upper_bit = (lower_byte & (0x01 << column))
-                                  >> column;
-            uint8_t pixel_value = (upper_bit << 1) | lower_bit;
-            pixels.at(row).push_back(pixel_value);
-        }
-    }
-
-    return pixels;
 }

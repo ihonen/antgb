@@ -1,6 +1,6 @@
 #include "cpu.hh"
 
-#include "../disassembler.hh"
+#include "../util/disassembler.hh"
 #include <iomanip>
 #include <iostream>
 

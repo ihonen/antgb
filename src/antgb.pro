@@ -25,18 +25,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++14
 
 SOURCES += \
-    disassembler.cc \
+    gfx/background.cc \
+    gfx/graphicsfetcher.cc \
     gfx/renderer.cc \
-    mach/background.cc \
+    gfx/sprite.cc \
+    gfx/tile.cc \
     mach/bitmanip.cc \
     mach/cpu.cc \
-    mach/graphicsfetcher.cc \
     mach/irc.cc \
     mach/joypad.cc \
-    mach/memory.cc \
     mach/ppu.cc \
-    mach/sprite.cc \
-    mach/tile.cc \
     mach/timerdivider.cc \
     main.cc \
     mach/cpu_flags.cc \
@@ -47,7 +45,8 @@ SOURCES += \
     mach/machine.cc \
     mach/mmu.cc \
     ui/display.cc \
-    ui/mainwindow.cc
+    ui/mainwindow.cc \
+    util/disassembler.cc
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -55,13 +54,14 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    disassembler.hh \
-    exception.hh \
+    error/exception.hh \
+    gfx/background.hh \
+    gfx/graphicsfetcher.hh \
     gfx/renderer.hh \
-    mach/background.hh \
+    gfx/sprite.hh \
+    gfx/tile.hh \
     mach/bitmanip.hh \
     mach/cpu.hh \
-    mach/graphicsfetcher.hh \
     mach/irc.hh \
     mach/joypad.hh \
     mach/machine.hh \
@@ -69,13 +69,12 @@ HEADERS += \
     mach/mmu.hh \
     mach/ppu.hh \
     mach/ppuregisters.hh \
-    mach/sprite.hh \
-    mach/tile.hh \
     mach/timerdivider.hh \
     test/tilemap.hh \
     ui/display.hh \
     ui/keymappings.hh \
-    ui/mainwindow.hh
+    ui/mainwindow.hh \
+    util/disassembler.hh
 
 RESOURCES += \
     dump.qrc
