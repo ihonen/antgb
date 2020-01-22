@@ -46,6 +46,7 @@ struct PPUReg
     uint8_t* ly;
     uint8_t* lyc;
     uint8_t* wy;
+    uint8_t* wx;
     uint8_t* bgp;
     uint8_t* obp0;
     uint8_t* obp1;

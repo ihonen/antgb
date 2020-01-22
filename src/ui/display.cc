@@ -2,10 +2,31 @@
 
 #include <QGraphicsRectItem>
 
-static const uint32_t BLACK = 0xFF000000;
-static const uint32_t DARK_GRAY = 0xFF555555;
-static const uint32_t LIGHT_GRAY = 0xFFAAAAAA;
-static const uint32_t WHITE = 0xFFFFFFFF;
+/*
+static const uint32_t colors[4] =
+{
+    0xFFE0F8D0, // very light green
+    0xFF88C070, // light green
+    0xFF346856, // green
+    0xFF081820, // dark green
+};
+
+static const uint32_t colors[4] =
+{
+    0xFFABC418, // very light green
+    0xFF9DB618, // light green
+    0xFF3B7440, // green
+    0xFF0C4714, // dark green
+};
+*/
+
+static const uint32_t colors[4] =
+{
+    0xFFCDDE75, // light green
+    0xFF98AA4B, // very light green
+    0xFF406A3E, // green
+    0xFF142B13, // dark green
+};
 
 #include <chrono>
 
@@ -17,8 +38,8 @@ void Display::on_frame_ready()
     {
         for (size_t x = 0; x < 160; ++x)
         {
-            set_pixel(x, y, frame_buffer[y * 160 + x]);
-        }
+            set_pixel(x, y, colors[frame_buffer[y * 160 + x]]);
+       }
     }
 
     item->setPixmap(QPixmap::fromImage(image));
@@ -30,7 +51,7 @@ Display::Display(PPU& ppu_, Renderer& renderer_, QObject* parent) :
     ppu(ppu_)
 {
     image = QImage(160 * 4, 144 * 4, QImage::Format_ARGB32);
-    image.fill(QColor(BLACK));
+    image.fill(QColor(colors[3]));
     item = new QGraphicsPixmapItem(QPixmap::fromImage(image));
     addItem(item);
 }

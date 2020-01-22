@@ -26,7 +26,6 @@ CONFIG += c++14
 
 SOURCES += \
     gfx/background.cc \
-    gfx/graphicsfetcher.cc \
     gfx/renderer.cc \
     gfx/sprite.cc \
     gfx/tile.cc \
@@ -56,7 +55,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     error/exception.hh \
     gfx/background.hh \
-    gfx/graphicsfetcher.hh \
     gfx/renderer.hh \
     gfx/sprite.hh \
     gfx/tile.hh \

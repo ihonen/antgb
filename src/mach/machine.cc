@@ -14,7 +14,7 @@ Machine::Machine()
     cpu = new CPU(*mmu, *irc);
     joypad = new Joypad(*mmu, *irc);
     timer_divider = new TimerDivider(*mmu, *irc);
-    renderer = new Renderer(mmu->mem.data);
+    renderer = new Renderer(&ppu->reg, mmu->mem.data);
 }
 
 Machine::~Machine()

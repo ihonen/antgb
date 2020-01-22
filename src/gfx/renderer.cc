@@ -3,30 +3,30 @@
 #include <cstdlib>
 #include "tile.hh"
 
-static const uint32_t colors[4] =
-{
-    /*
-    0xFFFFFFFF,
-    0xFFAAAAAA,
-    0xFF555555,
-    0xFF000000
-    */
-    0xFFE0F8D0,
-    0xFF88C070,
-    0xFF346856,
-    0xFF081820,
-};
-
-Renderer::Renderer(uint8_t* memory_, QObject* parent) :
+Renderer::Renderer(PPUReg* ppu_reg, uint8_t* memory_, QObject* parent) :
     QObject(parent),
-    memory(memory_)
+    memory(memory_),
+    ppureg(ppu_reg),
+    background(Background(Background::Type::BG, ppureg, memory)),
+    window(Background(Background::Type::Window, ppureg, memory))
 {
-    srand(time(NULL));
+
 }
 
 void Renderer::set_memory(uint8_t* memory_)
 {
     memory = memory_;
+
+    PPUReg* ppu_reg_new = new PPUReg;
+    ppu_reg_new->lcdc = &memory[0xFF40];
+    ppu_reg_new->scy = &memory[0xFF42];
+    ppu_reg_new->scx = &memory[0xFF43];
+    ppu_reg_new->wy = &memory[0xFF4A];
+    ppu_reg_new->wx = &memory[0xFF4B];
+    background.set_ppu_reg(ppu_reg_new);
+    background.set_memory(memory);
+    window.set_ppu_reg(ppu_reg_new);
+    window.set_memory(memory);
 }
 
 void Renderer::render_frame()
@@ -35,21 +35,7 @@ void Renderer::render_frame()
     {
         for (size_t x = 0; x < 160; ++x)
         {
-            size_t tile_y = (y / 8);
-            size_t tile_x = (x / 8);
-
-            /*
-            size_t tmp = tile_y;
-            tile_y = tile_x;
-            tile_x = tmp;
-*/
-            uint8_t tile_no = memory[0x9800 + tile_y * 32 + tile_x];
-            Tile* tile_base = (Tile*)(&memory[0x8000]);
-            Tile* tile = &tile_base[tile_no];
-
-            frame_buffer[y][x] = colors[tile->get_pixel(x % 8, y % 8)];
-
-//            frame_buffer[y][x] = colors[rand() % 4];
+            frame_buffer[y][x] = background.get_pixel_at(x, y);
         }
     }
 

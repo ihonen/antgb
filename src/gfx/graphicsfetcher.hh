@@ -26,8 +26,6 @@ public:
     vector<Sprite> sprite_buffer;
     Background background_buffer;
     Background window_buffer;
-    Background::TileMap bg_tilemap;
-    Background::TileMap window_tilemap;
 };
 
 #endif // GRAPHICSFETCHER_HH

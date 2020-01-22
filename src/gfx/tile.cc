@@ -1,5 +1,9 @@
 #include "tile.hh"
 
+#include <iostream>
+
+using namespace std;
+
 uint8_t Tile::get_pixel(uint8_t tile_x, uint8_t tile_y)
 {
     if (tile_x > 7 || tile_y > 7)
