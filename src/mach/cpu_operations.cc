@@ -438,19 +438,25 @@ void CPU::OR_r8(uint8_t& r8)
 void CPU::POP_r16(uint16_t& r16)
 {
     ++(SP);
-    r16 |= mmu.read(SP);
+    r16 = static_cast<uint16_t>(mmu.read(SP));
     ++(SP);
-    r16 |= mmu.read(SP) << 8;
+    r16 |= static_cast<uint16_t>(mmu.read(SP)) << 8;
+
+    uint8_t low = mmu.read(SP - 1);
+    uint8_t high = mmu.read(SP);
 }
 
 /* PUSH */
 
 void CPU::PUSH_r16(uint16_t& r16)
 {
-    mmu.write(SP, static_cast<uint8_t>(r16));
-    --(SP);
     mmu.write(SP, static_cast<uint8_t>(r16 >> 8));
     --(SP);
+    mmu.write(SP, static_cast<uint8_t>(r16));
+    --(SP);
+
+    uint8_t low = mmu.read(SP + 1);
+    uint8_t high = mmu.read(SP + 2);
 }
 
 /* RES */
@@ -471,10 +477,7 @@ void CPU::RES_n3_r8(uint8_t n3, uint8_t& r8)
 
 void CPU::RET()
 {
-    ++(SP);
-    PC |= mmu.read(SP);
-    ++(SP);
-    PC |= mmu.read(SP) << 8;
+    POP_r16(PC);
 }
 
 void CPU::RET_cc(bool cc)
