@@ -1,18 +1,5 @@
 #include "sprite.hh"
 
-Sprite::Sprite(uint8_t width_,
-               uint8_t height_,
-               Attribute* attribute_,
-               Tile* data_)
-{
-    assert(width == 8);
-    assert(height == 8 || height == 16);
-    width = width_;
-    height = height_;
-    attribute = attribute_;
-    data = data_;
-}
-
 uint8_t Sprite::top()
 {
     return attribute->y_pos - 16;
@@ -30,7 +17,12 @@ uint8_t Sprite::left()
 
 uint8_t Sprite::right()
 {
-    return top() + width - 1;
+    return left() + width - 1;
+}
+
+bool Sprite::includes(uint8_t display_row, uint8_t display_column)
+{
+    return includes_row(display_row) && includes_column(display_column);
 }
 
 bool Sprite::includes_row(uint8_t display_row)

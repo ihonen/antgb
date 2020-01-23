@@ -2,6 +2,7 @@
 #define RENDERER_HH
 
 #include "background.hh"
+#include "sprites.hh"
 #include <array>
 #include <cstdint>
 #include <iostream>
@@ -31,6 +32,7 @@ private:
     PPUReg* ppureg;
     Background background;
     Background window;
+    Sprites sprites;
 };
 
 #endif // RENDERER_HH

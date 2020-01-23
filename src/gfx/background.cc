@@ -113,7 +113,7 @@ size_t Background::bottom()
 {
     if (type == Type::BG)
     {
-        return *ppureg->scy + 144 % BG_HEIGHT_PIXELS;
+        return (*ppureg->scy + 144 - 1) % BG_HEIGHT_PIXELS;
     }
 
     return 144;
@@ -133,7 +133,7 @@ size_t Background::right()
 {
     if (type == Type::BG)
     {
-        return *ppureg->scx + 160 % BG_WIDTH_PIXELS;
+        return (*ppureg->scx + 160 - 1) % BG_WIDTH_PIXELS;
     }
 
     return 160;

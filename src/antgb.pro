@@ -28,6 +28,7 @@ SOURCES += \
     gfx/background.cc \
     gfx/renderer.cc \
     gfx/sprite.cc \
+    gfx/sprites.cc \
     gfx/tile.cc \
     mach/bitmanip.cc \
     mach/cpu.cc \
@@ -57,6 +58,7 @@ HEADERS += \
     gfx/background.hh \
     gfx/renderer.hh \
     gfx/sprite.hh \
+    gfx/sprites.hh \
     gfx/tile.hh \
     mach/bitmanip.hh \
     mach/cpu.hh \

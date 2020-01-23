@@ -28,15 +28,11 @@ public:
         } flags;
     } Attribute;
 
-    Sprite(uint8_t width_,
-           uint8_t height_,
-           Attribute* attribute_,
-           Tile* data_);
-
     uint8_t top();
     uint8_t bottom();
     uint8_t left();
     uint8_t right();
+    bool includes(uint8_t display_row, uint8_t display_column);
     bool includes_row(uint8_t display_row);
     bool includes_column(uint8_t display_column);
     bool is_offscreen();

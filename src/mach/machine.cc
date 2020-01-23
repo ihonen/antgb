@@ -36,17 +36,17 @@ void Machine::load_rom(void* rom, size_t size)
 
 void Machine::tick()
 {
+    /*
     uint64_t cpu_cycles = cpu_tick();
     timer_divider->emulate(cpu_cycles);
     mmu->emulate(cpu_cycles);
     ppu->emulate(cpu_cycles);
-
+    */
     static size_t i = 0;
     ++i;
 
     if (i == 4)
     {
-        cout << "frame" << endl;
         renderer->render_frame();
         i = 0;
     }
