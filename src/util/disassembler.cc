@@ -97,6 +97,7 @@ std::string Disassembler::disassemble(void* instruction_)
         case 0x3D: return "DEC A";
         case 0x3E: return "LD A, $" + imm8;
         case 0x3F: return "CCF";
+        case 0x77: return "LD (HL), A";
         case 0x76: return "HALT";
         case 0xC0: return "RET NZ";
         case 0xC1: return "POP BC";
@@ -180,7 +181,7 @@ std::string Disassembler::disassemble(void* instruction_)
         {
             mnemonic += "";
         }
-        else if (*instruction >= 0x70 && *instruction <= 0x77)
+        else if (*instruction >= 0x70 && *instruction <= 0x76)
         {
             mnemonic += "LD (HL), ";
         }
@@ -364,7 +365,7 @@ std::string Disassembler::disassemble(void* instruction_)
         return "";
     }
 
-    switch (*instruction & 0x0F)
+    switch (instruction[1] & 0x0F)
     {
         case 0x00: case 0x08: return mnemonic + "B";
         case 0x01: case 0x09: return mnemonic + "C";

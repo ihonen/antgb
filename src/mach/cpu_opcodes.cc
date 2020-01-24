@@ -228,7 +228,7 @@ const array<const CPU::InstrInfo, 256> CPU::INSTR_TABLE =
     {1, 16, 16, &CPU::op_DF},
     {2, 12, 12, &CPU::op_E0},
     {1, 12, 12, &CPU::op_E1},
-    {2, 8,  8,  &CPU::op_E2},
+    {1, 8,  8,  &CPU::op_E2},
     {0, 0,  0,  &CPU::invalid_opcode},
     {0, 0,  0,  &CPU::invalid_opcode},
     {1, 16, 16, &CPU::op_E5},

@@ -71,14 +71,14 @@ public:
     uint16_t& AF = reg[3];
     uint16_t& PC = reg[4];
     uint16_t& SP = reg[5];
-    uint8_t&  B  = *(reinterpret_cast<uint8_t*>(&BC) + 0);
-    uint8_t&  C  = *(reinterpret_cast<uint8_t*>(&BC) + 1);
-    uint8_t&  D  = *(reinterpret_cast<uint8_t*>(&DE) + 0);
-    uint8_t&  E  = *(reinterpret_cast<uint8_t*>(&DE) + 1);
-    uint8_t&  H  = *(reinterpret_cast<uint8_t*>(&HL) + 0);
-    uint8_t&  L  = *(reinterpret_cast<uint8_t*>(&HL) + 1);
-    uint8_t&  A  = *(reinterpret_cast<uint8_t*>(&AF) + 0);
-    uint8_t&  F  = *(reinterpret_cast<uint8_t*>(&AF) + 1);
+    uint8_t&  B  = *(reinterpret_cast<uint8_t*>(&BC) + 1);
+    uint8_t&  C  = *(reinterpret_cast<uint8_t*>(&BC) + 0);
+    uint8_t&  D  = *(reinterpret_cast<uint8_t*>(&DE) + 1);
+    uint8_t&  E  = *(reinterpret_cast<uint8_t*>(&DE) + 0);
+    uint8_t&  H  = *(reinterpret_cast<uint8_t*>(&HL) + 1);
+    uint8_t&  L  = *(reinterpret_cast<uint8_t*>(&HL) + 0);
+    uint8_t&  A  = *(reinterpret_cast<uint8_t*>(&AF) + 1);
+    uint8_t&  F  = *(reinterpret_cast<uint8_t*>(&AF) + 0);
 
     // This table will contain the information related to "normal" opcodes.
     static const array<const InstrInfo, 256> INSTR_TABLE;

@@ -18,7 +18,7 @@ uint8_t MMU::read(memaddr_t address)
     if (!can_read(address)) return 0xFF;
     */
 
-    if (address <= 0x00FF && is_bootrom_enabled)
+    if (address <= 0x0133 && is_bootrom_enabled)
     {
         return bootrom.data[address];
     }
