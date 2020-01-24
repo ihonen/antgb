@@ -13,6 +13,7 @@ class CPU
 {
 public:
              CPU(MMU& mmu, IRC& irc);
+    void     set_PC(uint16_t value);
     void     restart();
     void     execute(const uint8_t* const instruction = nullptr);
     void     reset_cycles();

@@ -1,6 +1,7 @@
 #ifndef MMU_HH
 #define MMU_HH
 
+#include "bootrom.hh"
 #include "memory.hh"
 #include <cstdint>
 #include <array>
@@ -24,11 +25,12 @@ public:
     void lock_region(memaddr_t low, memaddr_t high);
     void unlock_region(memaddr_t low, memaddr_t high);
     void emulate(uint64_t cpu_cycles);
-    void emulate_dma(uint64_t cpu_cycles);
-    void end_dma();
-    void clear_dma_data();
+    void emulate_oam_dma(uint64_t cpu_cycles);
+    void end_oam_dma();
+    void clear_dma_status();
 
     Memory mem;
+    BootROM bootrom;
 
     struct
     {
@@ -42,6 +44,7 @@ public:
     } dma;
 
     vector<pair<memaddr_t, memaddr_t>> locked_regions;
+    bool is_bootrom_enabled;
 };
 
 #endif // MMU_HH

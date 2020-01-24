@@ -1,6 +1,7 @@
 #ifndef PPU_HH
 #define PPU_HH
 
+#include "../gfx/renderer.hh"
 #include "cpu.hh"
 #include "irc.hh"
 #include "mmu.hh"
@@ -47,21 +48,27 @@ public:
 
     const uint8_t MODE_FLAG_MASK = 0x03; // Bits 0-1
 
-    PPU(MMU& mmu, IRC& irc);
+    PPU(MMU* mmu, IRC* irc);
+    ~PPU();
     void emulate(uint64_t cpu_cycles);
+    void emulate_mode0();
+    void emulate_mode1();
+    void emulate_mode2();
+    void emulate_mode3();
     bool has_dma_request();
     memaddr_t dma_src_address();
     void launch_dma(memaddr_t src_address);
-    void process_mode();
+    void emulate_current_mode();
     bool mode_ending();
-    void next_mode();
+    Mode next_mode();
+    void transition_to_mode(Mode mode);
     void scan_oam();
     vector<vector<uint8_t>> read_tile(void* address);
 
-    IRC& irc;
-    MMU& mmu;
-
-    PPUReg reg;
+    IRC* irc;
+    MMU* mmu;
+    PPUReg* reg;
+    Renderer* renderer;
 };
 
 #endif // PPU_HH

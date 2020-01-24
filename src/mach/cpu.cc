@@ -13,6 +13,11 @@ CPU::CPU(MMU& mmu_, IRC& irc_) :
     init();
 }
 
+void CPU::set_PC(uint16_t value)
+{
+    PC = value;
+}
+
 void CPU::restart()
 {
     init();
@@ -28,49 +33,9 @@ void CPU::init()
     is_halted = false;
     is_stopped = false;
     clock_cycles = 0;
-    is_interrupted = false;
 
-    irc.ime_flag_clear();
-    mmu.write(HWREG_IF_ADDR, 0x00);
-    mmu.write(HWREG_IF_ADDR, 0x00);
-    AF = 0x01B0;
-    BC = 0x0013;
-    DE = 0x00D8;
-    HL = 0x014D;
-    SP = 0xFFFE;
-    mmu.write(0xFF05, 0x00); // TIMA
-    mmu.write(0xFF06, 0x00); // TMA
-    mmu.write(0xFF07, 0x00); // TAC
-    mmu.write(0xFF10, 0x80); // NR10
-    mmu.write(0xFF11, 0xBF); // NR11
-    mmu.write(0xFF12, 0xF3); // NR12
-    mmu.write(0xFF14, 0xBF); // NR14
-    mmu.write(0xFF16, 0x3F); // NR21
-    mmu.write(0xFF17, 0x00); // NR22
-    mmu.write(0xFF19, 0xBF); // NR24
-    mmu.write(0xFF1A, 0x7F); // NR30
-    mmu.write(0xFF1B, 0xFF); // NR31
-    mmu.write(0xFF1C, 0x9F); // NR32
-    mmu.write(0xFF1E, 0xBF); // NR33
-    mmu.write(0xFF20, 0xFF); // NR41
-    mmu.write(0xFF21, 0x00); // NR42
-    mmu.write(0xFF22, 0x00); // NR43
-    mmu.write(0xFF23, 0xBF); // NR44
-    mmu.write(0xFF24, 0x77); // NR50
-    mmu.write(0xFF25, 0xF3); // NR51
-    mmu.write(0xFF26, 0xF1); // NR52
-    mmu.write(0xFF40, 0x91); // LCDC
-    mmu.write(0xFF42, 0x00); // SCY
-    mmu.write(0xFF43, 0x00); // SCX
-    mmu.write(0xFF45, 0x00); // LYC
-    mmu.write(0xFF47, 0xFC); // BGP
-    mmu.write(0xFF48, 0xFF); // OBP0
-    mmu.write(0xFF49, 0xFF); // OBP1
-    mmu.write(0xFF4A, 0x00); // WY
-    mmu.write(0xFF4B, 0x00); // WX
-    mmu.write(0xFFFF, 0x00); // IE
-
-    PC = 0x0100;
+    // PC = 0x0100;
+    set_PC(0x0000);
 }
 
 void CPU::execute(const uint8_t* instruction)
@@ -92,7 +57,6 @@ void CPU::execute(const uint8_t* instruction)
             jump_to_isr(interrupt.vector_address);
             return;
         }
-
     }
 
     if (is_halted) return;
@@ -107,12 +71,12 @@ void CPU::execute(const uint8_t* instruction)
                                 &CB_INSTR_TABLE[curr_instr[1]] :
                                 &INSTR_TABLE[*curr_instr];
 
-/*
+
     std::cout << "@" << std::setw(5) << std::left << PC << ":   "
               << std::setw(16) << std::left << disassembler.disassemble(const_cast<uint8_t*>(instruction))
               << static_cast<int>(op_info->len_bytes) << " bytes"
               << std::endl;
-*/
+
     // PC has to be incremented before instruction execution.
     PC += op_info->len_bytes;
 

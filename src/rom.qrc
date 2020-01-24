@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>rom/boot.bin</file>
+    </qresource>
+</RCC>

@@ -7,23 +7,47 @@ using namespace std;
 MMU::MMU()
 {
     mem = Memory();
-
-    clear_dma_data();
+    bootrom = BootROM();
+    is_bootrom_enabled = true;
+    clear_dma_status();
 }
 
 uint8_t MMU::read(memaddr_t address)
 {
+    /*
     if (!can_read(address)) return 0xFF;
+    */
+
+    if (address <= 0x00FF && is_bootrom_enabled)
+    {
+        return bootrom.data[address];
+    }
+
     return mem[address];
 }
 
 bool MMU::write(memaddr_t address, uint8_t value)
-{
+{   /*
     if (!can_write(address)) return false;
+    */
+
+    if (address <= 0x00FF && is_bootrom_enabled)
+    {
+        return false;
+    }
+
+    // Disable boot ROM on first write to 0xFF50.
+    if (address == 0xFF50)
+    {
+        is_bootrom_enabled = false;
+    }
+
     mem[address] = value;
+
     return true;
 }
 
+/*
 bool MMU::can_read(memaddr_t address)
 {
     if ((address >= 0xFEA0 && address < 0xFF00)
@@ -43,6 +67,7 @@ bool MMU::can_write(memaddr_t address)
     if (!can_read(address)) return false;
     return true;
 }
+*/
 
 void MMU::launch_oam_dma(memaddr_t destination, memaddr_t source, memaddr_t size)
 {
@@ -90,10 +115,10 @@ void MMU::unlock_region(memaddr_t low, memaddr_t high)
 
 void MMU::emulate(uint64_t cpu_cycles)
 {
-    emulate_dma(cpu_cycles);
+    emulate_oam_dma(cpu_cycles);
 }
 
-void MMU::emulate_dma(uint64_t cpu_cycles)
+void MMU::emulate_oam_dma(uint64_t cpu_cycles)
 {
     dma.unemulated_cpu_cycles += cpu_cycles;
 
@@ -106,18 +131,18 @@ void MMU::emulate_dma(uint64_t cpu_cycles)
 
     if (dma.cpu_cycles_left < 4)
     {
-        end_dma();
+        end_oam_dma();
     }
 }
 
-void MMU::end_dma()
+void MMU::end_oam_dma()
 {
-    clear_dma_data();
+    clear_dma_status();
 
     unlock_region(0x0000, 0xFF7F);
 }
 
-void MMU::clear_dma_data()
+void MMU::clear_dma_status()
 {
     dma.unemulated_cpu_cycles = 0;
     dma.cpu_cycles_left = 0;

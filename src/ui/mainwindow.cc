@@ -1,5 +1,6 @@
 #include "mainwindow.hh"
 
+#include "../util/fileio.hh"
 #include "keymappings.hh"
 #include <thread>
 #include <QFileDialog>
@@ -15,8 +16,8 @@ static void load_tetris_dumps()
 {
     QString dump1_path = ":/dump/tetris_menu.dump";
     QString dump2_path = ":/dump/tetris_game.dump";
-    MainWindow::load_rom(dump1_path, tetris_memdump1);
-    MainWindow::load_rom(dump2_path, tetris_memdump2);
+    load_rom(dump1_path, tetris_memdump1);
+    load_rom(dump2_path, tetris_memdump2);
 }
 
 MainWindow::MainWindow(Machine& machine_, QWidget* parent) :
@@ -110,64 +111,35 @@ void MainWindow::load_rom_act()
                                                  ".",
                                                  "Game Boy ROMs (*.gb)");
     */
-    QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\tetris_jue_v1_1.gb");
-    //load_rom(filepath, machine.mmu->mem.data);
-    machine.load_rom(tetris_memdump2, 0x10000);
-    emulation_thread = new std::thread(&MainWindow::start_emulation, this);
-}
-
-void MainWindow::load_rom(QString& filepath, uint8_t* memory)
-{
-    if (filepath.size() == 0) return;
-
-    QFile file(filepath);
-    if (!file.open(QIODevice::ReadOnly))
-    {
-        assert(false && "Couldn't open ROM file");
-    }
-
-    QByteArray executable = file.readAll();
-    memcpy(memory, executable.data(), (size_t)executable.size() - 1);
-//    emulation_qthread = QThread::create([&]() { MainWindow::start_emulation(); });
-//    emulation_qthread->start();
-
+    QString filepath(":/rom/boot.bin");
+    //QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\cpu_instrs\\cpu_instrs\\cpu_instrs.gb");
+    //QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\tetris_jue_v1_1.gb");
+    load_rom(filepath, machine.mmu->mem.data);
+    //machine.load_rom(tetris_memdump2, 0x10000);
+    //emulation_thread = new std::thread(&MainWindow::start_emulation, this);
+    emulation_qthread = QThread::create([&]() { MainWindow::start_emulation(); });
+    emulation_qthread->start();
+    emulation_qthread->setPriority(QThread::TimeCriticalPriority);
 }
 
 void MainWindow::start_emulation()
 {
-    static uint8_t i = 0;
-
-    machine.renderer->set_memory(tetris_memdump2);
     is_emulation_on = true;
     while (is_emulation_on)
     {
-        /*
-        if (i % 8 == 0)
-        {
-            machine.renderer->set_memory(tetris_memdump1);
-        }
-        else if (i % 4 == 0)
-        {
-            machine.renderer->set_memory(tetris_memdump2);
-        }
-        ++i;
-        */
-
         machine.tick();
-        std::this_thread::sleep_for(std::chrono::milliseconds(tick_interval));
+        //std::this_thread::sleep_for(std::chrono::milliseconds(tick_interval));
     }
 }
 
 void MainWindow::stop_emulation()
 {
-    /*
     if (emulation_qthread)
     {
         is_emulation_on = false;
         emulation_qthread->exit();
-
     }
-        */
+    /*
     if (emulation_thread)
     {
         is_emulation_on = false;
@@ -175,6 +147,7 @@ void MainWindow::stop_emulation()
         delete emulation_thread;
         emulation_thread = nullptr;
     }
+        */
     /*
     */
 }

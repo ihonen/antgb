@@ -46,7 +46,8 @@ SOURCES += \
     mach/mmu.cc \
     ui/display.cc \
     ui/mainwindow.cc \
-    util/disassembler.cc
+    util/disassembler.cc \
+    util/fileio.cc
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -61,6 +62,7 @@ HEADERS += \
     gfx/sprites.hh \
     gfx/tile.hh \
     mach/bitmanip.hh \
+    mach/bootrom.hh \
     mach/cpu.hh \
     mach/irc.hh \
     mach/joypad.hh \
@@ -74,7 +76,9 @@ HEADERS += \
     ui/display.hh \
     ui/keymappings.hh \
     ui/mainwindow.hh \
-    util/disassembler.hh
+    util/disassembler.hh \
+    util/fileio.hh
 
 RESOURCES += \
-    dump.qrc
+    dump.qrc \
+    rom.qrc

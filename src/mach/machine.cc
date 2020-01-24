@@ -1,8 +1,10 @@
 #include "machine.hh"
 
 #include "../gfx/renderer.hh"
+#include "bootrom.hh"
 #include <iostream>
 #include <cstring>
+#include <thread>
 
 using namespace std;
 
@@ -10,11 +12,11 @@ Machine::Machine()
 {
     mmu = new MMU();
     irc = new IRC(*mmu);
-    ppu = new PPU(*mmu, *irc);
+    ppu = new PPU(mmu, irc);
     cpu = new CPU(*mmu, *irc);
     joypad = new Joypad(*mmu, *irc);
     timer_divider = new TimerDivider(*mmu, *irc);
-    renderer = new Renderer(&ppu->reg, mmu->mem.data);
+    renderer = new Renderer(ppu->reg, mmu->mem.data);
 }
 
 Machine::~Machine()
@@ -32,23 +34,37 @@ void Machine::load_rom(void* rom, size_t size)
 {
     memcpy(mmu->mem.data, rom, size);
     cpu->restart();
+    // TODO: Do this in a cleverer way
+    cpu->set_PC(0x0000);
 }
 
 void Machine::tick()
 {
-    /*
+    static auto last_frame_time = std::chrono::high_resolution_clock::now();
+    auto now = std::chrono::high_resolution_clock::now();
+
+    static uint64_t cycles_since_last_frame = 0;
+
+
     uint64_t cpu_cycles = cpu_tick();
     timer_divider->emulate(cpu_cycles);
     mmu->emulate(cpu_cycles);
     ppu->emulate(cpu_cycles);
-    */
-    static size_t i = 0;
-    ++i;
 
-    if (i == 4)
+    cycles_since_last_frame += cpu_cycles;
+
+    if (cycles_since_last_frame >= 17476)
     {
         renderer->render_frame();
-        i = 0;
+        cycles_since_last_frame = 0;
+        now = std::chrono::high_resolution_clock::now();
+        std::chrono::milliseconds ms_since_last_frame = std::chrono::milliseconds(std::chrono::duration_cast<std::chrono::milliseconds>((now - last_frame_time)).count());
+        std::chrono::milliseconds sleep_time = std::chrono::milliseconds(17) - ms_since_last_frame;
+        if (sleep_time.count() > 0)
+        {
+            std::this_thread::sleep_for(sleep_time);
+        }
+        last_frame_time = now;
     }
 }
 

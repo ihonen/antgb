@@ -43,8 +43,10 @@ void Renderer::render_frame()
         sprites.refresh();
         for (size_t x = 0; x < 160; ++x)
         {
-
-            frame_buffer[y][x] = background.get_pixel_at(x, y);
+            if (background.includes(x, y))
+            {
+                frame_buffer[y][x] = background.get_pixel_at(x, y);
+            }
 
             Sprite* sprite = sprites.get_sprite_at_x(x);
             if (sprite)
