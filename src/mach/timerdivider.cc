@@ -1,5 +1,8 @@
 #include "timerdivider.hh"
 
+#include <iostream>
+using namespace std;
+
 TimerDivider::TimerDivider(MMU& mmu_, IRC& irc_) :
     mmu(mmu_),
     irc(irc_)
@@ -42,8 +45,9 @@ void TimerDivider::emulate_timer(uint64_t cpu_cycles)
     uint64_t clk_select = *timer.control & (timer.CLK_SELECT_MASK);
     uint64_t cpu_cycles_per_tick = CPU::CLK_FREQ_Hz / timer.FREQ_DIVIDER[clk_select];
 
-    while (timer.unemulated_cpu_cycles <= cpu_cycles_per_tick)
+    while (timer.unemulated_cpu_cycles >= cpu_cycles_per_tick)
     {
+        cout << *timer.counter << endl;
         if (*timer.counter == 0xFF)
         {
             *timer.counter = *timer.modulo;
