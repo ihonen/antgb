@@ -17,6 +17,7 @@ Machine::Machine()
     joypad = new Joypad(*mmu, *irc);
     timer_divider = new TimerDivider(*mmu, *irc);
     renderer = new Renderer(ppu->reg, mmu->mem.data);
+    cartridge = nullptr;
 }
 
 Machine::~Machine()
@@ -28,6 +29,13 @@ Machine::~Machine()
     delete joypad;
     delete timer_divider;
     delete renderer;
+    delete cartridge;
+}
+
+void Machine::insert_cartridge(Cartridge* cartridge_)
+{
+    cartridge = cartridge_;
+    mmu->set_cartridge(cartridge);
 }
 
 void Machine::load_rom(void* rom, size_t size)

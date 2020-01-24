@@ -2,6 +2,7 @@
 #define GAMEBOY_HH
 
 #include "../gfx/renderer.hh"
+#include "cartridge.hh"
 #include "cpu.hh"
 #include "irc.hh"
 #include "joypad.hh"
@@ -16,6 +17,7 @@ class Machine
 public:
     Machine();
     ~Machine();
+    void insert_cartridge(Cartridge* cartridge);
     void load_rom(void* rom, size_t size);
     void tick();
     uint64_t cpu_tick();
@@ -29,6 +31,7 @@ public:
     Joypad* joypad;
     TimerDivider* timer_divider;
     Renderer* renderer;
+    Cartridge* cartridge;
 };
 
 #endif // GAMEBOY_HH

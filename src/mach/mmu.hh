@@ -2,10 +2,12 @@
 #define MMU_HH
 
 #include "bootrom.hh"
+#include "cartridge.hh"
 #include "memory.hh"
 #include <cstdint>
 #include <array>
 #include <vector>
+
 
 using namespace std;
 
@@ -28,9 +30,11 @@ public:
     void emulate_oam_dma(uint64_t cpu_cycles);
     void end_oam_dma();
     void clear_dma_status();
+    void set_cartridge(Cartridge* cartridge);
 
     Memory mem;
     BootROM bootrom;
+    Cartridge* cartridge;
 
     struct
     {

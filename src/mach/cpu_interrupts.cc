@@ -13,7 +13,7 @@ void CPU::jump_to_isr(memaddr_t vector_address)
     irc.ime_flag_clear();
     PUSH_r16(PC);
     PC = vector_address;
-    curr_instr = &mmu.mem[PC];
+    curr_instr = &mmu.cartridge->data[PC];
     DI_status = IMEStatus::DO_NOTHING;
     EI_status = IMEStatus::DO_NOTHING;
     clock_cycles += 20;

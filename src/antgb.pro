@@ -31,6 +31,7 @@ SOURCES += \
     gfx/sprites.cc \
     gfx/tile.cc \
     mach/bitmanip.cc \
+    mach/cartridge.cc \
     mach/cpu.cc \
     mach/irc.cc \
     mach/joypad.cc \
@@ -63,6 +64,7 @@ HEADERS += \
     gfx/tile.hh \
     mach/bitmanip.hh \
     mach/bootrom.hh \
+    mach/cartridge.hh \
     mach/cpu.hh \
     mach/irc.hh \
     mach/joypad.hh \

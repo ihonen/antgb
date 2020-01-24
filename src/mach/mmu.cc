@@ -8,6 +8,7 @@ MMU::MMU()
 {
     mem = Memory();
     bootrom = BootROM();
+    cartridge = nullptr;
     is_bootrom_enabled = true;
     clear_dma_status();
 }
@@ -18,9 +19,17 @@ uint8_t MMU::read(memaddr_t address)
     if (!can_read(address)) return 0xFF;
     */
 
-    if (address <= 0x0133 && is_bootrom_enabled)
+    if (address <= 0x00FF && is_bootrom_enabled)
     {
         return bootrom.data[address];
+    }
+    else if (address <= 0x7FFF)
+    {
+        if (cartridge)
+        {
+            return cartridge->data[address];
+        }
+        return 0xFF;
     }
 
     return mem[address];
@@ -32,6 +41,10 @@ bool MMU::write(memaddr_t address, uint8_t value)
     */
 
     if (address <= 0x00FF && is_bootrom_enabled)
+    {
+        return false;
+    }
+    else if (address <= 0x7FFF && cartridge)
     {
         return false;
     }
@@ -151,4 +164,9 @@ void MMU::clear_dma_status()
     dma.src_low = 0x0000;
     dma.src_high = 0x0000;
     dma.size = 0;
+}
+
+void MMU::set_cartridge(Cartridge* cartridge_)
+{
+    cartridge = cartridge_;
 }

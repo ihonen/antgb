@@ -1,5 +1,6 @@
 #include "mainwindow.hh"
 
+#include "../mach/cartridge.hh"
 #include "../util/fileio.hh"
 #include "keymappings.hh"
 #include <thread>
@@ -114,7 +115,10 @@ void MainWindow::load_rom_act()
     QString filepath(":/rom/boot.bin");
     //QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\cpu_instrs\\cpu_instrs\\cpu_instrs.gb");
     //QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\tetris_jue_v1_1.gb");
-    load_rom(filepath, machine.mmu->mem.data);
+    auto cartridge = new Cartridge();
+    load_rom(filepath, cartridge->data);
+    cartridge->size = 0x8000;
+    machine.insert_cartridge(cartridge);
     //machine.load_rom(tetris_memdump2, 0x10000);
     //emulation_thread = new std::thread(&MainWindow::start_emulation, this);
     emulation_qthread = QThread::create([&]() { MainWindow::start_emulation(); });

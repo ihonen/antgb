@@ -40,7 +40,7 @@ void CPU::init()
 
 void CPU::execute(const uint8_t* instruction)
 {
-    if (!instruction) instruction = &mmu.mem[PC];
+    if (!instruction) instruction = &mmu.cartridge->data[PC];
     curr_instr = instruction;
     branch_taken = false;
 
