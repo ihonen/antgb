@@ -2,6 +2,7 @@
 #define RENDERER_HH
 
 #include "background.hh"
+#include "../mach/mmu.hh"
 #include "sprites.hh"
 #include <array>
 #include <cstdint>
@@ -14,9 +15,9 @@ class Renderer : public QObject
 {
     Q_OBJECT
 public:
-    Renderer(PPUReg* ppu_reg, uint8_t* memory, QObject* parent = nullptr);
+    Renderer(MMU* mem, QObject* parent = nullptr);
     virtual ~Renderer() override = default;
-    void set_memory(uint8_t* memory);
+    void set_memory(uint8_t* mem);
     void render_frame();
 
     uint32_t* get_frame_buffer();
@@ -26,10 +27,9 @@ private:
 
     uint16_t TILE_DATA_BASE = 0x8000;
 
-    uint8_t* memory;
+    MMU* mem;
     uint32_t frame_buffer[144][160];
 
-    PPUReg* ppureg;
     Background background;
     Background window;
     Sprites sprites;

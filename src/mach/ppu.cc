@@ -9,20 +9,7 @@ PPU::PPU(MMU* mmu_, IRC* irc_) :
     irc(irc_),
     mmu(mmu_)
 {    
-    reg = new PPUReg;
-    renderer = new Renderer(reg, mmu->mem.data);
-
-    reg->lcdc = &mmu->mem[reg->LCDC_ADDRESS];
-    reg->stat = &mmu->mem[reg->STAT_ADDRESS];
-    reg->scy = &mmu->mem[reg->SCY_ADDRESS];
-    reg->scx = &mmu->mem[reg->SCX_ADDRESS];
-    reg->ly = &mmu->mem[reg->LY_ADDRESS];
-    reg->lyc = &mmu->mem[reg->LYC_ADDRESS];
-    reg->wy = &mmu->mem[reg->WY_ADDRESS];
-    reg->bgp = &mmu->mem[reg->BGP_ADDRESS];
-    reg->obp0 = &mmu->mem[reg->OBP0_ADDRESS];
-    reg->obp1 = &mmu->mem[reg->OBP1_ADDRESS];
-    reg->dma = &mmu->mem[reg->DMA_ADDRESS];
+    renderer = new Renderer(mmu);
 
     status.mode_task_complete = false;
     status.frame_ready = false;
@@ -34,7 +21,6 @@ PPU::PPU(MMU* mmu_, IRC* irc_) :
 PPU::~PPU()
 {
     delete renderer;
-    delete reg;
 }
 
 void PPU::emulate(uint64_t cpu_cycles)
@@ -77,17 +63,17 @@ void PPU::emulate_mode3()
 
 bool PPU::has_dma_request()
 {
-    return *reg->dma != 0x00;
+    return mmu->hff46_dma;
 }
 
 memaddr_t PPU::dma_src_address()
 {
-    return *reg->dma * 0x100;
+    return mmu->hff46_dma * 0x100;
 }
 
 void PPU::launch_dma(memaddr_t src_address)
 {
-    *reg->dma = 0x00;
+    mmu->hff46_dma = 0x00;
     mmu->launch_oam_dma(0xFE00, src_address, 160);
 }
 
@@ -126,7 +112,7 @@ PPU::Mode PPU::next_mode()
         case Mode::DrawingLine:
             return Mode::HBlanking;
         case Mode::HBlanking:
-            return *reg->ly < 144 ? Mode::ScanningOAM : Mode::VBlanking;
+            return mmu->hff44_ly < 144 ? Mode::ScanningOAM : Mode::VBlanking;
         case Mode::VBlanking:
             return Mode::ScanningOAM;
     }
@@ -150,21 +136,21 @@ void PPU::transition_to_mode(PPU::Mode mode)
     switch (mode)
     {
         case Mode::ScanningOAM:
-            if (get_bit(reg->stat, reg->OAMInterrupt))
+            if (get_bit(&mmu->hff41_stat, MMU::OAMInterrupt))
             {
                 irc->request_interrupt(IRC::LcdStatInterrupt);
             }
 
-            ++(*reg->ly);
-            if (get_bit(reg->stat, reg->LYCInterrupt)
-                && *reg->ly == *reg->lyc)
+            ++(mmu->hff44_ly);
+            if (get_bit(&mmu->hff41_stat, MMU::LYCInterrupt)
+                && mmu->hff44_ly == mmu->hff45_lyc)
             {
-                set_bit(reg->stat, reg->CoincidenceFlag);
+                set_bit(&mmu->hff41_stat, MMU::CoincidenceFlag);
                 irc->request_interrupt(IRC::LcdStatInterrupt);
             }
             else
             {
-                clear_bit(reg->stat, reg->CoincidenceFlag);
+                clear_bit(&mmu->hff41_stat, MMU::CoincidenceFlag);
             }
             break;
 
@@ -172,22 +158,22 @@ void PPU::transition_to_mode(PPU::Mode mode)
             break;
 
         case Mode::HBlanking:
-            if (get_bit(reg->stat, reg->HBlankInterrupt))
+            if (get_bit(&mmu->hff41_stat, MMU::HBlankInterrupt))
             {
                 irc->request_interrupt(IRC::LcdStatInterrupt);
             }
             break;
 
         case Mode::VBlanking:
-            if (get_bit(reg->stat, reg->VBlankInterrupt))
+            if (get_bit(&mmu->hff41_stat, MMU::VBlankInterrupt))
             {
                 irc->request_interrupt(IRC::VBlankInterrupt);
             }
             break;
     }
 
-    *reg->stat &= ~(status.current_mode & MODE_FLAG_MASK);
-    *reg->stat |= status.current_mode & MODE_FLAG_MASK;
+    mmu->hff41_stat &= ~(status.current_mode & MODE_FLAG_MASK);
+    mmu->hff41_stat |= status.current_mode & MODE_FLAG_MASK;
     status.mode_task_complete = false;
     status.frame_ready = false;
     status.current_mode = mode;

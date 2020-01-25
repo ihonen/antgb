@@ -5,7 +5,6 @@
 #include "cpu.hh"
 #include "irc.hh"
 #include "mmu.hh"
-#include "ppuregisters.hh"
 #include <chrono>
 #include <map>
 #include <vector>
@@ -67,7 +66,6 @@ public:
 
     IRC* irc;
     MMU* mmu;
-    PPUReg* reg;
     Renderer* renderer;
 };
 

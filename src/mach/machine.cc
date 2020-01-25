@@ -16,8 +16,8 @@ Machine::Machine()
     cpu = new CPU(*mmu, *irc);
     joypad = new Joypad(*mmu, *irc);
     timer_divider = new TimerDivider(*mmu, *irc);
-    renderer = new Renderer(ppu->reg, mmu->mem.data);
     cartridge = nullptr;
+    renderer = new Renderer(mmu);
 }
 
 Machine::~Machine()
@@ -36,14 +36,8 @@ void Machine::insert_cartridge(Cartridge* cartridge_)
 {
     cartridge = cartridge_;
     mmu->set_cartridge(cartridge);
-}
-
-void Machine::load_rom(void* rom, size_t size)
-{
-    memcpy(mmu->mem.data, rom, size);
     cpu->restart();
-    // TODO: Do this in a cleverer way
-    cpu->set_PC(0x0000);
+    cpu->set_PC(0x0100);
 }
 
 void Machine::tick()
@@ -53,7 +47,6 @@ void Machine::tick()
 
     static uint64_t cycles_since_last_frame = 0;
 
-
     uint64_t cpu_cycles = cpu_tick();
     timer_divider->emulate(cpu_cycles);
     mmu->emulate(cpu_cycles);
@@ -61,10 +54,10 @@ void Machine::tick()
 
     cycles_since_last_frame += cpu_cycles;
 
-    if (cycles_since_last_frame >= 17476)
+    if (cycles_since_last_frame >= 69905)
     {
         renderer->render_frame();
-        cycles_since_last_frame = 0;
+        cycles_since_last_frame -= 69905;
         now = std::chrono::high_resolution_clock::now();
         std::chrono::milliseconds ms_since_last_frame = std::chrono::milliseconds(std::chrono::duration_cast<std::chrono::milliseconds>((now - last_frame_time)).count());
         std::chrono::milliseconds sleep_time = std::chrono::milliseconds(17) - ms_since_last_frame;
@@ -74,6 +67,7 @@ void Machine::tick()
         }
         last_frame_time = now;
     }
+
 }
 
 uint64_t Machine::cpu_tick()

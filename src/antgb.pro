@@ -72,9 +72,7 @@ HEADERS += \
     mach/memory.hh \
     mach/mmu.hh \
     mach/ppu.hh \
-    mach/ppuregisters.hh \
     mach/timerdivider.hh \
-    test/tilemap.hh \
     ui/display.hh \
     ui/keymappings.hh \
     ui/mainwindow.hh \

@@ -48,4 +48,10 @@ public:
     uint8_t data[SIZE];
 };
 
+
+struct AddressableMemory
+{
+
+};
+
 #endif // MEMORY_HH

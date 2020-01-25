@@ -7,12 +7,12 @@ TimerDivider::TimerDivider(MMU& mmu_, IRC& irc_) :
     mmu(mmu_),
     irc(irc_)
 {
-    timer.counter = &mmu.mem[timer.COUNTER_ADDRESS];
-    timer.modulo = &mmu.mem[timer.MODULO_ADDRESS];
-    timer.control = &mmu.mem[timer.CONTROL_ADDRESS];
+    timer.counter = mmu.get(timer.COUNTER_ADDRESS);
+    timer.modulo = mmu.get(timer.MODULO_ADDRESS);
+    timer.control = mmu.get(timer.CONTROL_ADDRESS);
     timer.unemulated_cpu_cycles = 0;
 
-    divider.counter = &mmu.mem[divider.REGISTER_ADDRESS];
+    divider.counter = mmu.get(divider.REGISTER_ADDRESS);
     divider.unemulated_cpu_cycles = 0;
 }
 

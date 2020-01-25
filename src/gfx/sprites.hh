@@ -1,7 +1,7 @@
 #ifndef SPRITES_HH
 #define SPRITES_HH
 
-#include "../mach/ppuregisters.hh"
+#include "../mach/mmu.hh"
 #include "sprite.hh"
 #include <array>
 
@@ -10,9 +10,8 @@ using namespace std;
 class Sprites
 {
 public:
-    Sprites(PPUReg* ppu_reg, uint8_t* memory);
+    Sprites(MMU* memory);
     virtual ~Sprites();
-    void set_ppu_reg(PPUReg* ppu_reg);
     void set_memory(uint8_t* memory);
     void refresh();
     memaddr_t sprite_attributes_address();
@@ -28,8 +27,7 @@ public:
     array<Sprite, 10> sprite_buffer;
     size_t sprite_buffer_size;
 
-    PPUReg* ppureg;
-    uint8_t* mem;
+    MMU* mem;
 };
 
 #endif // SPRITES_HH

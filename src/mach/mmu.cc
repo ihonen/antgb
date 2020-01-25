@@ -6,124 +6,103 @@ using namespace std;
 
 MMU::MMU()
 {
-    mem = Memory();
-    bootrom = BootROM();
+    memset(h8000_vram, 0x00, VRAM.size);
+    memset(hc000_wram0, 0x00, WRAM0.size);
+    memset(hd000_wram1, 0x00, WRAM1.size);
+    memset(hfe00_oam, 0x00, OAM.size);
+    memset(hff00_io, 0x00, IO.size);
+    memset(hff80_hram, 0x00, HRAM.size);
+    memset(hffff_ie, 0x00, IE.size);
+
     cartridge = nullptr;
-    is_bootrom_enabled = true;
     clear_dma_status();
+}
+
+uint8_t* MMU::get(memaddr_t address)
+{
+    if (address <= ROM1.high)
+    {
+        if (cartridge) return &cartridge->data[address];
+        else return nullptr;
+    }
+    else if (address <= VRAM.high)
+    {
+        return &h8000_vram[address - VRAM.low];
+    }
+    else if (address <= ERAM.high)
+    {
+        return nullptr;
+    }
+    else if (address <= WRAM0.high)
+    {
+        return &hc000_wram0[address - WRAM0.low];
+    }
+    else if (address <= WRAM1.high)
+    {
+        return &hd000_wram1[address -WRAM1.low];
+    }
+    else if (address <= ECHO.high)
+    {
+        return get(WRAM0.low + (address - ECHO.low));
+    }
+    else if (address <= OAM.high)
+    {
+        return &hfe00_oam[address - OAM.low];
+    }
+    else if (address <= UNUSABLE.high)
+    {
+        return nullptr;
+    }
+    else if (address <= IO.high)
+    {
+        return &hff00_io[address - IO.low];
+    }
+    else if (address <= HRAM.high)
+    {
+        return &hff80_hram[address - HRAM.low];
+    }
+    else
+    {
+        return hffff_ie;
+    }
 }
 
 uint8_t MMU::read(memaddr_t address)
 {
-    /*
-    if (!can_read(address)) return 0xFF;
-    */
-
-    if (address <= 0x00FF && is_bootrom_enabled)
+    uint8_t* source = get(address);
+    if (source)
     {
-        return bootrom.data[address];
+        return *source;
     }
-    else if (address <= 0x7FFF)
-    {
-        if (cartridge)
-        {
-            return cartridge->data[address];
-        }
-        return 0xFF;
-    }
-
-    return mem[address];
+    return 0xFF;
 }
 
 bool MMU::write(memaddr_t address, uint8_t value)
-{   /*
-    if (!can_write(address)) return false;
-    */
-
-    if (address <= 0x00FF && is_bootrom_enabled)
-    {
-        return false;
-    }
-    else if (address <= 0x7FFF && cartridge)
-    {
-        return false;
-    }
-
-    // Disable boot ROM on first write to 0xFF50.
-    if (address == 0xFF50)
-    {
-        is_bootrom_enabled = false;
-    }
-
-    mem[address] = value;
-
-    return true;
-}
-
-/*
-bool MMU::can_read(memaddr_t address)
 {
-    if ((address >= 0xFEA0 && address < 0xFF00)
-        || (address >= 0xFF4C && address < 0xFF80))
+    uint8_t* dest = get(address);
+    if (!dest)
     {
         return false;
     }
-    else if (is_in_locked_region(address))
-    {
-        return false;
-    }
-    return true;
-}
 
-bool MMU::can_write(memaddr_t address)
-{
-    if (!can_read(address)) return false;
+    *dest = value;
+    if (address == 0xFF02)
+    {
+        cout << *get(0xFF01);
+    }
+
     return true;
 }
-*/
 
 void MMU::launch_oam_dma(memaddr_t destination, memaddr_t source, memaddr_t size)
 {
-    dma.unemulated_cpu_cycles = 0;
-    dma.cpu_cycles_left = 640;
-    dma.dest_pointer = destination;
-    dma.src_pointer = source;
-    dma.src_low = source;
-    dma.src_high = source + size - 1;
-    dma.size = size;
-
-    lock_region(0x00, 0xFF7F);
-}
-
-bool MMU::is_in_locked_region(memaddr_t address)
-{
-    for (auto& region : locked_regions)
-    {
-        if (region.first <= address && region.second >= address)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
-void MMU::lock_region(memaddr_t low, memaddr_t high)
-{
-    locked_regions.push_back({low, high});
-}
-
-void MMU::unlock_region(memaddr_t low, memaddr_t high)
-{
-    auto it = locked_regions.begin();
-    while (it != locked_regions.end())
-    {
-        if (it->first == low && it->second == high)
-        {
-            locked_regions.erase(it);
-            break;
-        }
-        ++it;
-    }
+    dma_status.unemulated_cpu_cycles = 0;
+    dma_status.cpu_cycles_left = 640;
+    dma_status.dest_pointer = destination;
+    dma_status.src_pointer = source;
+    dma_status.src_low = source;
+    dma_status.src_high = source + size - 1;
+    dma_status.size = size;
 }
 
 void MMU::emulate(uint64_t cpu_cycles)
@@ -133,16 +112,17 @@ void MMU::emulate(uint64_t cpu_cycles)
 
 void MMU::emulate_oam_dma(uint64_t cpu_cycles)
 {
-    dma.unemulated_cpu_cycles += cpu_cycles;
+    dma_status.unemulated_cpu_cycles += cpu_cycles;
 
-    while (dma.unemulated_cpu_cycles >= 4 && dma.cpu_cycles_left >= 4)
+    while (dma_status.unemulated_cpu_cycles >= 4 && dma_status.cpu_cycles_left >= 4)
     {
-        mem[dma.dest_pointer] = mem[dma.src_pointer];
-        dma.unemulated_cpu_cycles -= 4;
-        dma.cpu_cycles_left -= 4;
+        *get(dma_status.dest_pointer) = *get(dma_status.src_pointer);
+        write(dma_status.dest_pointer, read(dma_status.src_pointer));
+        dma_status.unemulated_cpu_cycles -= 4;
+        dma_status.cpu_cycles_left -= 4;
     }
 
-    if (dma.cpu_cycles_left < 4)
+    if (dma_status.cpu_cycles_left < 4)
     {
         end_oam_dma();
     }
@@ -151,19 +131,17 @@ void MMU::emulate_oam_dma(uint64_t cpu_cycles)
 void MMU::end_oam_dma()
 {
     clear_dma_status();
-
-    unlock_region(0x0000, 0xFF7F);
 }
 
 void MMU::clear_dma_status()
 {
-    dma.unemulated_cpu_cycles = 0;
-    dma.cpu_cycles_left = 0;
-    dma.src_pointer = 0x0000;
-    dma.dest_pointer = 0x0000;
-    dma.src_low = 0x0000;
-    dma.src_high = 0x0000;
-    dma.size = 0;
+    dma_status.unemulated_cpu_cycles = 0;
+    dma_status.cpu_cycles_left = 0;
+    dma_status.src_pointer = 0x0000;
+    dma_status.dest_pointer = 0x0000;
+    dma_status.src_low = 0x0000;
+    dma_status.src_high = 0x0000;
+    dma_status.size = 0;
 }
 
 void MMU::set_cartridge(Cartridge* cartridge_)

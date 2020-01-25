@@ -15,21 +15,10 @@ const memaddr_t Background::TILE_MAP_BASE[2] =
    Background::TILE_MAP1_BASE
 };
 
-Background::Background(Type type_, PPUReg* ppu_reg, uint8_t* memory)
+Background::Background(Type type_, MMU* memory)
 {
-    ppureg = ppu_reg;
     mem = memory;
     type = type_;
-}
-
-void Background::set_ppu_reg(PPUReg* ppu_reg)
-{
-    ppureg = ppu_reg;
-}
-
-void Background::set_memory(uint8_t* memory)
-{
-    mem = memory;
 }
 
 uint8_t Background::get_pixel_at(size_t display_x, size_t display_y)
@@ -72,25 +61,25 @@ memaddr_t Background::tile_map_address()
 {
     if (type == Type::BG)
     {
-        return TILE_MAP_BASE[get_bit(ppureg->lcdc, PPUReg::BgTileMapDisplaySelect)];
+        return TILE_MAP_BASE[get_bit(mem->get(mem->LCDC_ADDRESS), MMU::BgTileMapDisplaySelect)];
     }
 
-    return TILE_MAP_BASE[get_bit(ppureg->lcdc, PPUReg::WindowTileMapDisplaySelect)];
+    return TILE_MAP_BASE[get_bit(mem->get(mem->LCDC_ADDRESS), MMU::WindowTileMapDisplaySelect)];
 }
 
 uint8_t* Background::tile_map_base()
 {
-    return &mem[tile_map_address()];
+    return mem->get(tile_map_address());
 }
 
 memaddr_t Background::tile_data_address()
 {
-    return TILE_DATA_BASE[get_bit(ppureg->lcdc, PPUReg::BgAndWindowTileDataSelect)];
+    return TILE_DATA_BASE[get_bit(mem->get(mem->LCDC_ADDRESS), MMU::BgAndWindowTileDataSelect)];
 }
 
 Tile* Background::tile_data_base()
 {
-    return (Tile*)&mem[tile_data_address()];
+    return (Tile*)mem->get(tile_data_address());
 }
 
 bool Background::includes(size_t display_x, size_t display_y)
@@ -103,17 +92,17 @@ size_t Background::top()
 {
     if (type == Type::BG)
     {
-        return *ppureg->scy;
+        return *mem->get(mem->SCY_ADDRESS);
     }
 
-    return *ppureg->wy;
+    return *mem->get(mem->WY_ADDRESS);
 }
 
 size_t Background::bottom()
 {
     if (type == Type::BG)
     {
-        return (*ppureg->scy + 144 - 1) % BG_HEIGHT_PIXELS;
+        return (*mem->get(mem->SCY_ADDRESS) + 144 - 1) % BG_HEIGHT_PIXELS;
     }
 
     return 144;
@@ -123,17 +112,17 @@ size_t Background::left()
 {
     if (type == Type::BG)
     {
-        return *ppureg->scx;
+        return *mem->get(mem->SCX_ADDRESS);
     }
 
-    return *ppureg->wx - 7;
+    return *mem->get(mem->WX_ADDRESS);
 }
 
 size_t Background::right()
 {
     if (type == Type::BG)
     {
-        return (*ppureg->scx + 160 - 1) % BG_WIDTH_PIXELS;
+        return (*mem->get(mem->SCX_ADDRESS) + 160 - 1) % BG_WIDTH_PIXELS;
     }
 
     return 160;
@@ -143,9 +132,9 @@ bool Background::is_enabled()
 {
     if (type == Type::BG)
     {
-        return get_bit(ppureg->lcdc, PPUReg::BgAndWindowDisplayEnable);
+        return get_bit(&mem->hff40_lcdc, MMU::BgAndWindowDisplayEnable);
     }
 
-    return get_bit(ppureg->lcdc, PPUReg::BgAndWindowDisplayEnable)
-            && get_bit(ppureg->lcdc, PPUReg::WindowDisplayEnable);
+    return get_bit(&mem->hff40_lcdc, MMU::BgAndWindowDisplayEnable)
+            && get_bit(&mem->hff40_lcdc, MMU::WindowDisplayEnable);
 }

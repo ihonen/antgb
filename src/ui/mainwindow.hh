@@ -46,7 +46,6 @@ public:
     QMenu* options_menu_;
     Display* display_;
     Machine& machine;
-    std::thread* emulation_thread;
     QThread* emulation_qthread;
     bool is_emulation_on;
     int tick_interval;

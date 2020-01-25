@@ -7,7 +7,7 @@ Joypad::Joypad(MMU& mmu_, IRC& irc_) :
     mmu(mmu_),
     irc(irc_)
 {
-    io_register = &mmu.mem[IO_REG_ADDRESS];
+    io_register = mmu.get(IO_REG_ADDRESS);
 
     button_status =
     {

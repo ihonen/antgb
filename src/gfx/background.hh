@@ -1,7 +1,7 @@
 #ifndef BACKGROUND_HH
 #define BACKGROUND_HH
 
-#include "../mach/ppuregisters.hh"
+#include "../mach/mmu.hh"
 #include "tile.hh"
 #include <array>
 #include <iostream>
@@ -28,8 +28,7 @@ public:
     static const memaddr_t TILE_MAP1_BASE = 0x9C00;
     static const memaddr_t TILE_MAP_BASE[2];
 
-    Background(Type type, PPUReg* ppu_reg, uint8_t* memory);
-    void set_ppu_reg(PPUReg* ppu_reg);
+    Background(Type type, MMU* memory);
     void set_memory(uint8_t* memory);
     uint8_t get_pixel_at(size_t display_x, size_t display_y);
     uint8_t get_pixel(size_t background_x, size_t background_y);
@@ -44,8 +43,7 @@ public:
     size_t right();
     bool is_enabled();
 
-    PPUReg* ppureg;
-    uint8_t* mem;
+    MMU* mem;
     Type type;
 };
 

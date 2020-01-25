@@ -13,9 +13,8 @@ static bool sprite_priority_comp(const Sprite& a, const Sprite& b)
     return a.attribute->tile_number <= b.attribute->tile_number;
 }
 
-Sprites::Sprites(PPUReg* ppu_reg, uint8_t* memory)
+Sprites::Sprites(MMU* memory)
 {
-    ppureg = ppu_reg;
     mem = memory;
     sprite_buffer_size = 0;
 }
@@ -23,16 +22,6 @@ Sprites::Sprites(PPUReg* ppu_reg, uint8_t* memory)
 Sprites::~Sprites()
 {
 
-}
-
-void Sprites::set_ppu_reg(PPUReg* ppu_reg)
-{
-    ppureg = ppu_reg;
-}
-
-void Sprites::set_memory(uint8_t* memory)
-{
-    mem = memory;
 }
 
 void Sprites::refresh()
@@ -54,8 +43,8 @@ void Sprites::refresh()
         }
         */
 
-        if (sprite_attributes->y_pos - 16 <= *ppureg->ly
-            && sprite_attributes->y_pos - 9 /*- 16 + sprite_height()*/ >= *ppureg->ly)
+        if (sprite_attributes->y_pos - 16 <= mem->read(mem->LY_ADDRESS)
+            && sprite_attributes->y_pos - 9 /*- 16 + sprite_height()*/ >= mem->read(mem->LY_ADDRESS))
         {
             Sprite& sprite = sprite_buffer[sprite_buffer_size];
             assemble_sprite_info(sprite, sprite_attributes);
@@ -73,7 +62,7 @@ memaddr_t Sprites::sprite_attributes_address()
 
 Sprite::Attribute* Sprites::sprite_attributes_base()
 {
-    return (Sprite::Attribute*)(&mem[sprite_attributes_address()]);
+    return (Sprite::Attribute*)(mem->get(sprite_attributes_address()));
 }
 
 memaddr_t Sprites::sprite_data_address()
@@ -83,17 +72,17 @@ memaddr_t Sprites::sprite_data_address()
 
 Tile* Sprites::sprite_data_base()
 {
-    return (Tile*)(&mem[sprite_data_address()]);
+    return (Tile*)(mem->get(sprite_data_address()));
 }
 
 uint8_t Sprites::sprite_height()
 {
-    return get_bit(ppureg->lcdc, PPUReg::ObjSize) ? 16 : 8;
+    return get_bit(mem->get(mem->LCDC_ADDRESS), MMU::ObjSize) ? 16 : 8;
 }
 
 bool Sprites::enabled()
 {
-    return get_bit(ppureg->lcdc, PPUReg::ObjDisplayEnable);
+    return get_bit(mem->get(mem->LCDC_ADDRESS), MMU::ObjDisplayEnable);
 }
 
 void Sprites::assemble_sprite_info(Sprite& sprite, Sprite::Attribute* attributes)

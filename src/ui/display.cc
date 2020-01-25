@@ -32,7 +32,7 @@ static const uint32_t colors[4] =
 
 void Display::on_frame_ready()
 {
-    auto frame_buffer = renderer.get_frame_buffer();
+    auto frame_buffer = renderer->get_frame_buffer();
 
     for (size_t y = 0; y < 144; ++y)
     {
@@ -45,7 +45,7 @@ void Display::on_frame_ready()
     item->setPixmap(QPixmap::fromImage(image));
 }
 
-Display::Display(PPU& ppu_, Renderer& renderer_, QObject* parent) :
+Display::Display(PPU& ppu_, Renderer* renderer_, QObject* parent) :
     QGraphicsScene(parent),
     renderer(renderer_),
     ppu(ppu_)

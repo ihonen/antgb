@@ -10,10 +10,10 @@ class Display : public QGraphicsScene
 public slots:
     void on_frame_ready();
 public:
-    Display(PPU& ppu, Renderer& renderer, QObject* parent = nullptr);
+    Display(PPU& ppu, Renderer* renderer, QObject* parent = nullptr);
     void set_pixel(int x, int y, uint32_t color);
 
-    Renderer& renderer;
+    Renderer* renderer;
     PPU& ppu;
     QImage image;
     QGraphicsPixmapItem* item;

@@ -7,8 +7,8 @@ using namespace std;
 IRC::IRC(MMU& mmu_) :
     mmu(mmu_)
 {
-    interrupt_enable = &mmu.mem[0xFFFF];
-    interrupt_flag = &mmu.mem[0xFF0F];
+    interrupt_enable = mmu.get(0xFFFF);
+    interrupt_flag = mmu.get(0xFF0F);
 }
 
 bool IRC::has_active_requests()

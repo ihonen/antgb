@@ -27,7 +27,7 @@ MainWindow::MainWindow(Machine& machine_, QWidget* parent) :
     is_emulation_on(false),
     tick_interval(100)
 {
-    display_ = new Display(*machine.ppu, *machine.renderer);
+    display_ = new Display(*machine.ppu, machine.renderer);
     display_view_ = new QGraphicsView(display_, this);
     display_view_->resize(160 * 4 + 4, 144 * 4 + 4);
     display_view_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -112,15 +112,15 @@ void MainWindow::load_rom_act()
                                                  ".",
                                                  "Game Boy ROMs (*.gb)");
     */
-    QString filepath(":/rom/boot.bin");
+    //QString filepath(":/rom/boot.bin");
     //QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\cpu_instrs\\cpu_instrs\\cpu_instrs.gb");
     //QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\tetris_jue_v1_1.gb");
+    QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\cpu_instrs\\cpu_instrs\\individual\\03-op sp,hl.gb");
     auto cartridge = new Cartridge();
     load_rom(filepath, cartridge->data);
     cartridge->size = 0x8000;
     machine.insert_cartridge(cartridge);
     //machine.load_rom(tetris_memdump2, 0x10000);
-    //emulation_thread = new std::thread(&MainWindow::start_emulation, this);
     emulation_qthread = QThread::create([&]() { MainWindow::start_emulation(); });
     emulation_qthread->start();
     emulation_qthread->setPriority(QThread::TimeCriticalPriority);
@@ -132,7 +132,6 @@ void MainWindow::start_emulation()
     while (is_emulation_on)
     {
         machine.tick();
-        //std::this_thread::sleep_for(std::chrono::milliseconds(tick_interval));
     }
 }
 
@@ -141,17 +140,8 @@ void MainWindow::stop_emulation()
     if (emulation_qthread)
     {
         is_emulation_on = false;
-        emulation_qthread->exit();
+        emulation_qthread->wait();
+        delete emulation_qthread;
+        emulation_qthread = nullptr;
     }
-    /*
-    if (emulation_thread)
-    {
-        is_emulation_on = false;
-        emulation_thread->join();
-        delete emulation_thread;
-        emulation_thread = nullptr;
-    }
-        */
-    /*
-    */
 }
