@@ -3,10 +3,10 @@
 #include <cstdlib>
 #include "tile.hh"
 
-Renderer::Renderer(MMU* memory, QObject* parent) :
+Renderer::Renderer(Memory* memory, QObject* parent) :
     QObject(parent),
     mem(memory),
-    background(Background(Background::Type::BG, mem)),
+    background(Background(Background::Type::Background, mem)),
     window(Background(Background::Type::Window, mem)),
     sprites(Sprites(memory))
 {

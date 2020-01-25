@@ -30,23 +30,22 @@ SOURCES += \
     gfx/sprite.cc \
     gfx/sprites.cc \
     gfx/tile.cc \
-    mach/bitmanip.cc \
     mach/cartridge.cc \
     mach/cpu.cc \
-    mach/irc.cc \
+    mach/interrupts.cc \
     mach/joypad.cc \
+    mach/memory.cc \
     mach/ppu.cc \
-    mach/timerdivider.cc \
+    mach/timer.cc \
     main.cc \
     mach/cpu_flags.cc \
     mach/cpu_opmap.cc \
     mach/cpu_opcodes.cc \
-    mach/cpu_interrupts.cc \
     mach/cpu_operations.cc \
     mach/machine.cc \
-    mach/mmu.cc \
     ui/display.cc \
     ui/mainwindow.cc \
+    util/bitmanip.cc \
     util/disassembler.cc \
     util/fileio.cc
 
@@ -62,23 +61,20 @@ HEADERS += \
     gfx/sprite.hh \
     gfx/sprites.hh \
     gfx/tile.hh \
-    mach/bitmanip.hh \
-    mach/bootrom.hh \
     mach/cartridge.hh \
     mach/cpu.hh \
-    mach/irc.hh \
+    mach/interrupts.hh \
     mach/joypad.hh \
     mach/machine.hh \
     mach/memory.hh \
-    mach/mmu.hh \
     mach/ppu.hh \
-    mach/timerdivider.hh \
+    mach/timer.hh \
     ui/display.hh \
-    ui/keymappings.hh \
+    ui/keybindings.hh \
     ui/mainwindow.hh \
+    util/bitmanip.hh \
     util/disassembler.hh \
-    util/fileio.hh
+    util/fileio.hh \
+    util/typedefs.hh
 
-RESOURCES += \
-    dump.qrc \
-    rom.qrc
+RESOURCES +=

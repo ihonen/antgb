@@ -1,6 +1,6 @@
 #include "sprites.hh"
 
-#include "../mach/bitmanip.hh"
+#include "../util/bitmanip.hh"
 #include <algorithm>
 
 static bool sprite_priority_comp(const Sprite& a, const Sprite& b)
@@ -13,7 +13,7 @@ static bool sprite_priority_comp(const Sprite& a, const Sprite& b)
     return a.attribute->tile_number <= b.attribute->tile_number;
 }
 
-Sprites::Sprites(MMU* memory)
+Sprites::Sprites(Memory* memory)
 {
     mem = memory;
     sprite_buffer_size = 0;
@@ -77,12 +77,12 @@ Tile* Sprites::sprite_data_base()
 
 uint8_t Sprites::sprite_height()
 {
-    return get_bit(mem->get(mem->LCDC_ADDRESS), MMU::ObjSize) ? 16 : 8;
+    return get_bit(mem->get(mem->LCDC_ADDRESS), Memory::ObjSize) ? 16 : 8;
 }
 
 bool Sprites::enabled()
 {
-    return get_bit(mem->get(mem->LCDC_ADDRESS), MMU::ObjDisplayEnable);
+    return get_bit(mem->get(mem->LCDC_ADDRESS), Memory::ObjDisplayEnable);
 }
 
 void Sprites::assemble_sprite_info(Sprite& sprite, Sprite::Attribute* attributes)

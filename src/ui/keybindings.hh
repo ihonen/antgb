@@ -1,5 +1,5 @@
-#ifndef KEYMAPPINGS_HH
-#define KEYMAPPINGS_HH
+#ifndef KEYBINDINGS_HH
+#define KEYBINDINGS_HH
 
 #include "../mach/joypad.hh"
 #include <map>
@@ -17,4 +17,4 @@ const std::map<int, Joypad::Button> KEYMAP
     {Qt::Key_Period,    Joypad::Button::Start}
 };
 
-#endif // KEYMAPPINGS_HH
+#endif // KEYBINDINGS_HH

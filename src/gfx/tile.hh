@@ -1,7 +1,7 @@
 #ifndef TILE_HH
 #define TILE_HH
 
-#include <cstdint>
+#include "../util/typedefs.hh"
 
 struct Tile
 {

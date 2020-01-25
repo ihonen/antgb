@@ -45,10 +45,10 @@ void Display::on_frame_ready()
     item->setPixmap(QPixmap::fromImage(image));
 }
 
-Display::Display(PPU& ppu_, Renderer* renderer_, QObject* parent) :
+Display::Display(Memory* memory, Renderer* renderer_, QObject* parent) :
     QGraphicsScene(parent),
     renderer(renderer_),
-    ppu(ppu_)
+    mem(memory)
 {
     image = QImage(160 * 4, 144 * 4, QImage::Format_ARGB32);
     image.fill(QColor(colors[3]));

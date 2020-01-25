@@ -1,11 +1,11 @@
 #include "ppu.hh"
 
-#include "bitmanip.hh"
+#include "../util/bitmanip.hh"
 #include <cassert>
 #include <iostream>
 using namespace std;
 
-PPU::PPU(MMU* mmu_, IRC* irc_) :
+Ppu::Ppu(Memory* mmu_, InterruptController* irc_) :
     irc(irc_),
     mmu(mmu_)
 {    
@@ -18,12 +18,12 @@ PPU::PPU(MMU* mmu_, IRC* irc_) :
     status.current_mode = ScanningOAM;
 }
 
-PPU::~PPU()
+Ppu::~Ppu()
 {
     delete renderer;
 }
 
-void PPU::emulate(uint64_t cpu_cycles)
+void Ppu::emulate(uint64_t cpu_cycles)
 {
     status.unemulated_cpu_cycles += cpu_cycles;
 
@@ -41,43 +41,43 @@ void PPU::emulate(uint64_t cpu_cycles)
     }
 }
 
-void PPU::emulate_mode0()
+void Ppu::emulate_mode0()
 {
 
 }
 
-void PPU::emulate_mode1()
+void Ppu::emulate_mode1()
 {
 
 }
 
-void PPU::emulate_mode2()
+void Ppu::emulate_mode2()
 {
 
 }
 
-void PPU::emulate_mode3()
+void Ppu::emulate_mode3()
 {
 
 }
 
-bool PPU::has_dma_request()
+bool Ppu::has_dma_request()
 {
     return mmu->hff46_dma;
 }
 
-memaddr_t PPU::dma_src_address()
+memaddr_t Ppu::dma_src_address()
 {
     return mmu->hff46_dma * 0x100;
 }
 
-void PPU::launch_dma(memaddr_t src_address)
+void Ppu::launch_dma(memaddr_t src_address)
 {
     mmu->hff46_dma = 0x00;
     mmu->launch_oam_dma(0xFE00, src_address, 160);
 }
 
-void PPU::emulate_current_mode()
+void Ppu::emulate_current_mode()
 {
     switch (status.current_mode)
     {
@@ -98,12 +98,12 @@ void PPU::emulate_current_mode()
     return;
 }
 
-bool PPU::mode_ending()
+bool Ppu::mode_ending()
 {
     return status.cpu_cycles_spent_in_mode >= MODE_DURATION[status.current_mode];
 }
 
-PPU::Mode PPU::next_mode()
+Ppu::Mode Ppu::next_mode()
 {
     switch (status.current_mode)
     {
@@ -118,7 +118,7 @@ PPU::Mode PPU::next_mode()
     }
 }
 
-void PPU::transition_to_mode(PPU::Mode mode)
+void Ppu::transition_to_mode(Ppu::Mode mode)
 {
     if (status.cpu_cycles_spent_in_mode > MODE_DURATION[status.current_mode])
     {
@@ -136,21 +136,21 @@ void PPU::transition_to_mode(PPU::Mode mode)
     switch (mode)
     {
         case Mode::ScanningOAM:
-            if (get_bit(&mmu->hff41_stat, MMU::OAMInterrupt))
+            if (get_bit(&mmu->hff41_stat, Memory::OAMInterrupt))
             {
-                irc->request_interrupt(IRC::LcdStatInterrupt);
+                irc->request_interrupt(InterruptController::LcdStatInterrupt);
             }
 
             ++(mmu->hff44_ly);
-            if (get_bit(&mmu->hff41_stat, MMU::LYCInterrupt)
+            if (get_bit(&mmu->hff41_stat, Memory::LYCInterrupt)
                 && mmu->hff44_ly == mmu->hff45_lyc)
             {
-                set_bit(&mmu->hff41_stat, MMU::CoincidenceFlag);
-                irc->request_interrupt(IRC::LcdStatInterrupt);
+                set_bit(&mmu->hff41_stat, Memory::CoincidenceFlag);
+                irc->request_interrupt(InterruptController::LcdStatInterrupt);
             }
             else
             {
-                clear_bit(&mmu->hff41_stat, MMU::CoincidenceFlag);
+                clear_bit(&mmu->hff41_stat, Memory::CoincidenceFlag);
             }
             break;
 
@@ -158,16 +158,16 @@ void PPU::transition_to_mode(PPU::Mode mode)
             break;
 
         case Mode::HBlanking:
-            if (get_bit(&mmu->hff41_stat, MMU::HBlankInterrupt))
+            if (get_bit(&mmu->hff41_stat, Memory::HBlankInterrupt))
             {
-                irc->request_interrupt(IRC::LcdStatInterrupt);
+                irc->request_interrupt(InterruptController::LcdStatInterrupt);
             }
             break;
 
         case Mode::VBlanking:
-            if (get_bit(&mmu->hff41_stat, MMU::VBlankInterrupt))
+            if (get_bit(&mmu->hff41_stat, Memory::VBlankInterrupt))
             {
-                irc->request_interrupt(IRC::VBlankInterrupt);
+                irc->request_interrupt(InterruptController::VBlankInterrupt);
             }
             break;
     }

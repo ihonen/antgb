@@ -2,20 +2,18 @@
 #define RENDERER_HH
 
 #include "background.hh"
-#include "../mach/mmu.hh"
+#include "../mach/memory.hh"
 #include "sprites.hh"
 #include <array>
 #include <cstdint>
 #include <iostream>
 #include <QObject>
 
-using namespace std;
-
 class Renderer : public QObject
 {
     Q_OBJECT
 public:
-    Renderer(MMU* mem, QObject* parent = nullptr);
+    Renderer(Memory* mem, QObject* parent = nullptr);
     virtual ~Renderer() override = default;
     void set_memory(uint8_t* mem);
     void render_frame();
@@ -27,7 +25,7 @@ private:
 
     uint16_t TILE_DATA_BASE = 0x8000;
 
-    MMU* mem;
+    Memory* mem;
     uint32_t frame_buffer[144][160];
 
     Background background;

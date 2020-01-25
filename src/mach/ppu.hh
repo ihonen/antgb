@@ -3,15 +3,15 @@
 
 #include "../gfx/renderer.hh"
 #include "cpu.hh"
-#include "irc.hh"
-#include "mmu.hh"
+#include "interrupts.hh"
+#include "memory.hh"
 #include <chrono>
 #include <map>
 #include <vector>
 
 using std::vector;
 
-class PPU
+class Ppu
 {
 public:
 
@@ -47,8 +47,8 @@ public:
 
     const uint8_t MODE_FLAG_MASK = 0x03; // Bits 0-1
 
-    PPU(MMU* mmu, IRC* irc);
-    ~PPU();
+    Ppu(Memory* mmu, InterruptController* irc);
+    ~Ppu();
     void emulate(uint64_t cpu_cycles);
     void emulate_mode0();
     void emulate_mode1();
@@ -64,8 +64,8 @@ public:
     void scan_oam();
     vector<vector<uint8_t>> read_tile(void* address);
 
-    IRC* irc;
-    MMU* mmu;
+    InterruptController* irc;
+    Memory* mmu;
     Renderer* renderer;
 };
 

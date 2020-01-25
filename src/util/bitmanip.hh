@@ -1,7 +1,7 @@
 #ifndef BITMANIP_HH
 #define BITMANIP_HH
 
-#include <cstdint>
+#include "../util/typedefs.hh"
 
 void set_bit(uint8_t* byte, uint8_t bit_index);
 

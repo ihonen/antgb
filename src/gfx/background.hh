@@ -1,7 +1,7 @@
 #ifndef BACKGROUND_HH
 #define BACKGROUND_HH
 
-#include "../mach/mmu.hh"
+#include "../mach/memory.hh"
 #include "tile.hh"
 #include <array>
 #include <iostream>
@@ -13,7 +13,7 @@ class Background
 {
 public:
 
-    enum class Type {BG, Window};
+    enum class Type {Background, Window};
 
     static const size_t BG_HEIGHT_PIXELS = 256;
     static const size_t BG_WIDTH_PIXELS = 256;
@@ -28,7 +28,7 @@ public:
     static const memaddr_t TILE_MAP1_BASE = 0x9C00;
     static const memaddr_t TILE_MAP_BASE[2];
 
-    Background(Type type, MMU* memory);
+    Background(Type type, Memory* memory);
     void set_memory(uint8_t* memory);
     uint8_t get_pixel_at(size_t display_x, size_t display_y);
     uint8_t get_pixel(size_t background_x, size_t background_y);
@@ -43,7 +43,7 @@ public:
     size_t right();
     bool is_enabled();
 
-    MMU* mem;
+    Memory* mem;
     Type type;
 };
 

@@ -1,7 +1,7 @@
 #ifndef CARTRIDGE_HH
 #define CARTRIDGE_HH
 
-#include <cstdint>
+#include "../util/typedefs.hh"
 #include <string>
 
 class Cartridge

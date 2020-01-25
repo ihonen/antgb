@@ -29,7 +29,7 @@ protected:
     virtual void keyReleaseEvent(QKeyEvent* event) override;
 
 public:
-    explicit MainWindow(Machine& machine, QWidget* parent = nullptr);
+    explicit MainWindow(Machine* machine, QWidget* parent = nullptr);
     virtual ~MainWindow() override;
 
     void init_menubar();
@@ -37,18 +37,15 @@ public:
     void start_emulation();
     void stop_emulation();
 
-    QGraphicsView* display_view_;
-    QHBoxLayout* main_layout_;
-    QLabel* debug_window_;
-    QMenuBar* menubar_;
-    QMenu* file_menu_;
-    QAction* load_rom_act_;
-    QMenu* options_menu_;
-    Display* display_;
-    Machine& machine;
-    QThread* emulation_qthread;
-    bool is_emulation_on;
-    int tick_interval;
+    QGraphicsView*  display_view;
+    QMenuBar*       menubar;
+    QMenu*          file_menu;
+    QAction*        load_rom_action;
+    QMenu*          options_menu;
+    Display*        display;
+    Machine*        machine;
+    QThread*        emulation_qthread;
+    bool            is_emulation_on;
 };
 
 #endif // MAINWINDOW_HH

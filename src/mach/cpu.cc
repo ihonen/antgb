@@ -6,24 +6,24 @@
 
 Disassembler disassembler;
 
-CPU::CPU(MMU& mmu_, IRC& irc_) :
-    mmu(mmu_),
+Cpu::Cpu(Memory* memory, InterruptController* irc_) :
+    mem(memory),
     irc(irc_)
 {
     init();
 }
 
-void CPU::set_PC(uint16_t value)
+void Cpu::set_PC(uint16_t value)
 {
     PC = value;
 }
 
-void CPU::restart()
+void Cpu::restart()
 {
     init();
 }
 
-void CPU::init()
+void Cpu::init()
 {
     reg = {0};
     curr_instr = nullptr;
@@ -37,22 +37,21 @@ void CPU::init()
     set_PC(0x0000);
 }
 
-void CPU::execute(const uint8_t* instruction)
+void Cpu::execute(const uint8_t* instruction)
 {
-    if (!instruction) instruction = mmu.get(PC);
-        //instruction = &mmu.cartridge->data[PC];
+    if (!instruction) instruction = mem->get(PC);
     curr_instr = instruction;
     branch_taken = false;
 
     // Nested interrupts are possible if the user has set IME
     // in the handler, so no if statement here.
-    if (irc.has_active_requests())
+    if (irc->has_active_requests())
     {
-        auto interrupt = irc.accept_next_request();
-        if (interrupt.source != IRC::NoInterrupt)
+        auto interrupt = irc->accept_next_request();
+        if (interrupt.source != InterruptController::NoInterrupt)
         {
             if (is_halted) is_halted = false;
-            if (is_stopped && interrupt.source == IRC::JoypadInterrupt)
+            if (is_stopped && interrupt.source == InterruptController::JoypadInterrupt)
                 is_stopped = false;
             jump_to_isr(interrupt.vector_address);
             return;
@@ -70,14 +69,14 @@ void CPU::execute(const uint8_t* instruction)
     const InstrInfo* op_info = (*curr_instr == 0xCB) ?
                                 &CB_INSTR_TABLE[curr_instr[1]] :
                                 &INSTR_TABLE[*curr_instr];
-/*
+
+    /*
     std::cout << "@" << std::setw(5) << std::left << PC << ":   "
               << std::setw(16) << std::left << disassembler.disassemble(const_cast<uint8_t*>(instruction))
               << static_cast<int>(op_info->len_bytes) << " bytes"
               << std::endl;
-*/
+    */
 
-    // PC has to be incremented before instruction execution.
     PC += op_info->len_bytes;
 
     if (op_info->handler) (this->*(op_info->handler))();
@@ -88,37 +87,52 @@ void CPU::execute(const uint8_t* instruction)
     else
     {
         clock_cycles += op_info->cycles_on_no_action;
-        //PC += op_info->len_bytes;
     }
 
-    if (DI_status == IMEStatus::RESET_THIS_CYCLE) irc.ime_flag_clear();
-    else if (EI_status == IMEStatus::SET_THIS_CYCLE) irc.ime_flag_set();
+    if (DI_status == IMEStatus::RESET_THIS_CYCLE) irc->ime_flag_clear();
+    else if (EI_status == IMEStatus::SET_THIS_CYCLE) irc->ime_flag_set();
 }
 
-uint8_t CPU::extract_immediate8(const uint8_t* instruction)
+uint8_t Cpu::extract_immediate8(const uint8_t* instruction)
 {
     if (!instruction) instruction = curr_instr;
     return curr_instr[1];
 }
 
-uint16_t CPU::extract_immediate16(const uint8_t* instruction)
+uint16_t Cpu::extract_immediate16(const uint8_t* instruction)
 {
     if (!instruction) instruction = curr_instr;
     return (static_cast<uint16_t>(instruction[1])) |
            (static_cast<uint16_t>(instruction[2]) << 8);
 }
 
-uint64_t CPU::get_cycles()
+uint64_t Cpu::get_cycles()
 {
     return clock_cycles;
 }
 
-void CPU::reset_cycles()
+void Cpu::reset_cycles()
 {
     clock_cycles = 0;
 }
 
-void CPU::invalid_opcode()
+void Cpu::invalid_opcode()
 {
     throw OpcodeError(0, *curr_instr);
+}
+
+void Cpu::jump_to_isr(memaddr_t vector_address)
+{
+    if (vector_address == 0x00) return;
+
+    cout << "Jumping to interrupt vector @ " << vector_address << endl;
+
+    is_interrupted = true;
+    irc->ime_flag_clear();
+    PUSH_r16(PC);
+    PC = vector_address;
+    curr_instr = mem->get(PC);
+    DI_status = IMEStatus::DO_NOTHING;
+    EI_status = IMEStatus::DO_NOTHING;
+    clock_cycles += 20;
 }

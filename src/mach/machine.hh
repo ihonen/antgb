@@ -1,16 +1,15 @@
 #ifndef GAMEBOY_HH
 #define GAMEBOY_HH
 
-#include "../gfx/renderer.hh"
 #include "cartridge.hh"
 #include "cpu.hh"
-#include "irc.hh"
+#include "interrupts.hh"
 #include "joypad.hh"
 #include "memory.hh"
-#include "mmu.hh"
 #include "ppu.hh"
-#include "timerdivider.hh"
-#include <cstdint>
+#include "timer.hh"
+#include "../gfx/renderer.hh"
+#include "../util/typedefs.hh"
 
 class Machine
 {
@@ -24,12 +23,12 @@ public:
     void button_pressed(Joypad::Button button);
     void button_released(Joypad::Button button);
 
-    CPU* cpu;
-    IRC* irc;
-    MMU* mmu;
-    PPU* ppu;
+    Cpu* cpu;
+    InterruptController* irc;
+    Memory* mem;
+    Ppu* ppu;
     Joypad* joypad;
-    TimerDivider* timer_divider;
+    Timer* timer_divider;
     Renderer* renderer;
     Cartridge* cartridge;
 };

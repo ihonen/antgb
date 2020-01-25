@@ -1,10 +1,9 @@
-#include "mmu.hh"
+#include "memory.hh"
 
 #include <iostream>
+#include <cstring>
 
-using namespace std;
-
-MMU::MMU()
+Memory::Memory()
 {
     memset(h8000_vram, 0x00, VRAM.size);
     memset(hc000_wram0, 0x00, WRAM0.size);
@@ -18,7 +17,7 @@ MMU::MMU()
     clear_dma_status();
 }
 
-uint8_t* MMU::get(memaddr_t address)
+uint8_t* Memory::get(memaddr_t address)
 {
     if (address <= ROM1.high)
     {
@@ -67,7 +66,7 @@ uint8_t* MMU::get(memaddr_t address)
     }
 }
 
-uint8_t MMU::read(memaddr_t address)
+uint8_t Memory::read(memaddr_t address)
 {
     uint8_t* source = get(address);
     if (source)
@@ -77,7 +76,7 @@ uint8_t MMU::read(memaddr_t address)
     return 0xFF;
 }
 
-bool MMU::write(memaddr_t address, uint8_t value)
+bool Memory::write(memaddr_t address, uint8_t value)
 {
     uint8_t* dest = get(address);
     if (!dest)
@@ -94,7 +93,7 @@ bool MMU::write(memaddr_t address, uint8_t value)
     return true;
 }
 
-void MMU::launch_oam_dma(memaddr_t destination, memaddr_t source, memaddr_t size)
+void Memory::launch_oam_dma(memaddr_t destination, memaddr_t source, memaddr_t size)
 {
     dma_status.unemulated_cpu_cycles = 0;
     dma_status.cpu_cycles_left = 640;
@@ -105,12 +104,12 @@ void MMU::launch_oam_dma(memaddr_t destination, memaddr_t source, memaddr_t size
     dma_status.size = size;
 }
 
-void MMU::emulate(uint64_t cpu_cycles)
+void Memory::emulate(uint64_t cpu_cycles)
 {
     emulate_oam_dma(cpu_cycles);
 }
 
-void MMU::emulate_oam_dma(uint64_t cpu_cycles)
+void Memory::emulate_oam_dma(uint64_t cpu_cycles)
 {
     dma_status.unemulated_cpu_cycles += cpu_cycles;
 
@@ -128,12 +127,12 @@ void MMU::emulate_oam_dma(uint64_t cpu_cycles)
     }
 }
 
-void MMU::end_oam_dma()
+void Memory::end_oam_dma()
 {
     clear_dma_status();
 }
 
-void MMU::clear_dma_status()
+void Memory::clear_dma_status()
 {
     dma_status.unemulated_cpu_cycles = 0;
     dma_status.cpu_cycles_left = 0;
@@ -144,7 +143,7 @@ void MMU::clear_dma_status()
     dma_status.size = 0;
 }
 
-void MMU::set_cartridge(Cartridge* cartridge_)
+void Memory::set_cartridge(Cartridge* cartridge_)
 {
     cartridge = cartridge_;
 }

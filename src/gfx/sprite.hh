@@ -2,12 +2,7 @@
 #define SPRITE_HH
 
 #include "tile.hh"
-
-#include <cassert>
-#include <cstdint>
-#include <iostream>
-
-using namespace std;
+#include "../util/typedefs.hh"
 
 class Sprite
 {

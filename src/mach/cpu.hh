@@ -1,18 +1,18 @@
 #ifndef CPU_HH
 #define CPU_HH
 
-#include "irc.hh"
-#include "mmu.hh"
+#include "interrupts.hh"
+#include "memory.hh"
 #include "../error/exception.hh"
+#include "../util/typedefs.hh"
 #include <array>
-#include <cstdint>
 
 using std::array;
 
-class CPU
+class Cpu
 {
 public:
-             CPU(MMU& mmu, IRC& irc);
+             Cpu(Memory* mem, InterruptController* irc);
     void     set_PC(uint16_t value);
     void     restart();
     void     execute(const uint8_t* const instruction = nullptr);
@@ -52,14 +52,14 @@ public:
         uint8_t len_bytes;
         uint8_t cycles_on_action;
         uint8_t cycles_on_no_action;
-        void   (CPU::*handler)();
+        void   (Cpu::*handler)();
     } InstrInfo;
 
     // Main memory, 65 KB
-    MMU& mmu;
+    Memory* mem;
 
     // Interrupt controller
-    IRC& irc;
+    InterruptController* irc;
 
     // NOTE: Register order is based on that which appears in the
     // machine instructions.

@@ -1,16 +1,14 @@
 #ifndef SPRITES_HH
 #define SPRITES_HH
 
-#include "../mach/mmu.hh"
 #include "sprite.hh"
+#include "../mach/memory.hh"
 #include <array>
-
-using namespace std;
 
 class Sprites
 {
 public:
-    Sprites(MMU* memory);
+    Sprites(Memory* memory);
     virtual ~Sprites();
     void set_memory(uint8_t* memory);
     void refresh();
@@ -27,7 +25,7 @@ public:
     array<Sprite, 10> sprite_buffer;
     size_t sprite_buffer_size;
 
-    MMU* mem;
+    Memory* mem;
 };
 
 #endif // SPRITES_HH

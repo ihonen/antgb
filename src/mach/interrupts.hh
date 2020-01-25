@@ -1,12 +1,12 @@
-#ifndef IRC_HH
-#define IRC_HH
+#ifndef INTERRUPTS_HH
+#define INTERRUPTS_HH
 
-#include "mmu.hh"
+#include "memory.hh"
 
-class IRC
+class InterruptController
 {
 public:
-    enum InterruptSource
+    enum InterruptId
     {
         VBlankInterrupt = 0x00,
         LcdStatInterrupt = 0x01,
@@ -27,11 +27,11 @@ public:
 
     typedef struct
     {
-        InterruptSource source;
+        InterruptId source;
         memaddr_t vector_address;
     } InterruptInfo;
 
-    IRC(MMU& mmu);
+    InterruptController(Memory* mem);
 
     bool has_active_requests();
     InterruptInfo accept_next_request();
@@ -47,9 +47,7 @@ public:
     void enable_interrupt(int source);
 
     uint8_t interrupt_master_enable;
-    uint8_t* interrupt_enable;
-    uint8_t* interrupt_flag;
-    MMU& mmu;
+    Memory* mem;
 };
 
-#endif // IRC_HH
+#endif // INTERRUPTS_HH

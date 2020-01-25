@@ -1,13 +1,13 @@
 #include "joypad.hh"
 
-#include "bitmanip.hh"
+#include "../util/bitmanip.hh"
 #include <iostream>
 
-Joypad::Joypad(MMU& mmu_, IRC& irc_) :
-    mmu(mmu_),
+Joypad::Joypad(Memory* memory, InterruptController* irc_) :
+    mem(memory),
     irc(irc_)
 {
-    io_register = mmu.get(IO_REG_ADDRESS);
+    io_register = mem->get(IO_REG_ADDRESS);
 
     button_status =
     {
@@ -58,7 +58,7 @@ void Joypad::button_pressed(Button button)
     if (button_status[button].pressed == false)
     {
         button_status[button].pressed = true;
-        irc.request_interrupt(IRC::JoypadInterrupt);
+        irc->request_interrupt(InterruptController::JoypadInterrupt);
     }
 }
 

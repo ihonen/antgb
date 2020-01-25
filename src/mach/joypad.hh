@@ -1,9 +1,9 @@
 #ifndef JOYPAD_HH
 #define JOYPAD_HH
 
-#include "irc.hh"
-#include "mmu.hh"
-#include <cstdint>
+#include "interrupts.hh"
+#include "memory.hh"
+#include "../util/typedefs.hh"
 #include <map>
 
 using namespace std;
@@ -45,15 +45,15 @@ public:
         bool pressed;
     };
 
-    Joypad(MMU& mmu, IRC& irc);
+    Joypad(Memory* mem, InterruptController* irc);
     void button_pressed(Button button);
     void button_released(Button button);
 
     const size_t BUTTON_COUNT = 8;
     const memaddr_t IO_REG_ADDRESS = 0xFF00;
     uint8_t* io_register;
-    MMU& mmu;
-    IRC& irc;
+    Memory* mem;
+    InterruptController* irc;
 
     map<Button, ButtonState> button_status;
 };

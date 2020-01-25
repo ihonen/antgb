@@ -1,7 +1,6 @@
 #include "machine.hh"
 
 #include "../gfx/renderer.hh"
-#include "bootrom.hh"
 #include <iostream>
 #include <cstring>
 #include <thread>
@@ -10,19 +9,19 @@ using namespace std;
 
 Machine::Machine()
 {
-    mmu = new MMU();
-    irc = new IRC(*mmu);
-    ppu = new PPU(mmu, irc);
-    cpu = new CPU(*mmu, *irc);
-    joypad = new Joypad(*mmu, *irc);
-    timer_divider = new TimerDivider(*mmu, *irc);
+    mem = new Memory();
+    irc = new InterruptController(mem);
+    ppu = new Ppu(mem, irc);
+    cpu = new Cpu(mem, irc);
+    joypad = new Joypad(mem, irc);
+    timer_divider = new Timer(mem, irc);
     cartridge = nullptr;
-    renderer = new Renderer(mmu);
+    renderer = new Renderer(mem);
 }
 
 Machine::~Machine()
 {
-    delete mmu;
+    delete mem;
     delete irc;
     delete ppu;
     delete cpu;
@@ -35,7 +34,7 @@ Machine::~Machine()
 void Machine::insert_cartridge(Cartridge* cartridge_)
 {
     cartridge = cartridge_;
-    mmu->set_cartridge(cartridge);
+    mem->set_cartridge(cartridge);
     cpu->restart();
     cpu->set_PC(0x0100);
 }
@@ -49,7 +48,7 @@ void Machine::tick()
 
     uint64_t cpu_cycles = cpu_tick();
     timer_divider->emulate(cpu_cycles);
-    mmu->emulate(cpu_cycles);
+    mem->emulate(cpu_cycles);
     ppu->emulate(cpu_cycles);
 
     cycles_since_last_frame += cpu_cycles;
