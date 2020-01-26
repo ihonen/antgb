@@ -14,7 +14,6 @@ int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
 
-    Memory* mem = new Memory();
     Machine gb;
     MainWindow main_window(&gb, nullptr);
     main_window.show();

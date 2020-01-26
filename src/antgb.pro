@@ -77,4 +77,5 @@ HEADERS += \
     util/fileio.hh \
     util/typedefs.hh
 
-RESOURCES +=
+RESOURCES += \
+    memdump.qrc

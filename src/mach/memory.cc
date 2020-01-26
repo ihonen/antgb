@@ -1,7 +1,8 @@
 #include "memory.hh"
 
-#include <iostream>
+#include "../util/fileio.hh"
 #include <cstring>
+#include <iostream>
 
 Memory::Memory()
 {
@@ -20,6 +21,20 @@ void Memory::hard_reset()
     memset(hff80_hram, 0x00, HRAM.size);
     memset(hffff_ie, 0x00, IE.size);
 
+    // Load memory contents after boot ROM execution.
+    QString dump_filepath = ":/memdump/afterboot.dump";
+    uint8_t* afterboot_dump = new uint8_t[0x10000];
+    load_rom(dump_filepath, afterboot_dump);
+    for (size_t i = 0; i < 0x10000; ++i)
+    {
+        if (afterboot_dump[i] != 0x00 && i >= VRAM.low)
+        {
+                write(i, afterboot_dump[i]);
+        }
+    }
+    delete[] afterboot_dump;
+
+    /*
     hff05_tima = 0x00;
     hff06_tma = 0x00;
     hff07_tac = 0x00;
@@ -54,6 +69,10 @@ void Memory::hard_reset()
     hff4a_wy = 0x00;
     hff4b_wx = 0x00;
     *hffff_ie = 0x00;
+    */
+
+    // VRAM (Nintendo logo etc.)
+
 }
 
 uint8_t* Memory::get(memaddr_t address)
