@@ -10,7 +10,7 @@ Cpu::Cpu(Memory* memory, InterruptController* irc_) :
     mem(memory),
     irc(irc_)
 {
-    init();
+    hard_reset();
 }
 
 void Cpu::set_PC(uint16_t value)
@@ -20,10 +20,10 @@ void Cpu::set_PC(uint16_t value)
 
 void Cpu::restart()
 {
-    init();
+    hard_reset();
 }
 
-void Cpu::init()
+void Cpu::hard_reset()
 {
     reg = {0};
     curr_instr = nullptr;
@@ -34,7 +34,12 @@ void Cpu::init()
     is_stopped = false;
     clock_cycles = 0;
 
-    set_PC(0x0000);
+    AF = 0x01B0;
+    BC = 0x0013;
+    DE = 0x00D8;
+    HL = 0x014D;
+    SP = 0xFFFE;
+    PC = 0x0100;
 }
 
 void Cpu::execute(const uint8_t* instruction)

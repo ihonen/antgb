@@ -22,6 +22,7 @@ public:
     uint64_t cpu_tick();
     void button_pressed(Joypad::Button button);
     void button_released(Joypad::Button button);
+    void hard_reset();
 
     Cpu* cpu;
     InterruptController* irc;

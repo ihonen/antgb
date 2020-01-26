@@ -104,7 +104,7 @@ public:
     bool is_interrupted = false;
     uint64_t clock_cycles = 0;
 
-    void     init();
+    void     hard_reset();
     uint8_t  get_ALU_flag(enum ALUFlagPos pos);
     void     assign_ALU_flag(enum ALUFlagPos pos, uint8_t val);
     uint8_t  C_flag_get();

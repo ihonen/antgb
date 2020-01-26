@@ -96,7 +96,7 @@ void MainWindow::load_rom_act()
     */
     //QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\cpu_instrs\\cpu_instrs\\cpu_instrs.gb");
     //QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\tetris_jue_v1_1.gb");
-    QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\cpu_instrs\\cpu_instrs\\individual\\03-op sp,hl.gb");
+    QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\blargg\\cpu_instrs\\individual\\03-op sp,hl.gb");
     auto cartridge = new Cartridge();
     load_rom(filepath, cartridge->data);
     cartridge->size = 0x8000;

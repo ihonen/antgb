@@ -7,7 +7,12 @@ using namespace std;
 InterruptController::InterruptController(Memory* memory) :
     mem(memory)
 {
+    hard_reset();
+}
 
+void InterruptController::hard_reset()
+{
+    interrupt_master_enable = 0x00;
 }
 
 bool InterruptController::has_active_requests()

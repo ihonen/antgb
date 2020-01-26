@@ -35,8 +35,7 @@ void Machine::insert_cartridge(Cartridge* cartridge_)
 {
     cartridge = cartridge_;
     mem->set_cartridge(cartridge);
-    cpu->restart();
-    cpu->set_PC(0x0100);
+    hard_reset();
 }
 
 void Machine::tick()
@@ -53,16 +52,16 @@ void Machine::tick()
 
     cycles_since_last_frame += cpu_cycles;
 
-    if (cycles_since_last_frame >= 69905)
+    if (cycles_since_last_frame >= 1000000)
     {
         renderer->render_frame();
-        cycles_since_last_frame -= 69905;
+        cycles_since_last_frame -= 1000000;
         now = std::chrono::high_resolution_clock::now();
         std::chrono::milliseconds ms_since_last_frame = std::chrono::milliseconds(std::chrono::duration_cast<std::chrono::milliseconds>((now - last_frame_time)).count());
         std::chrono::milliseconds sleep_time = std::chrono::milliseconds(17) - ms_since_last_frame;
         if (sleep_time.count() > 0)
         {
-            std::this_thread::sleep_for(sleep_time);
+//            std::this_thread::sleep_for(sleep_time);
         }
         last_frame_time = now;
     }
@@ -86,4 +85,11 @@ void Machine::button_pressed(Joypad::Button button)
 void Machine::button_released(Joypad::Button button)
 {
     joypad->button_released(button);
+}
+
+void Machine::hard_reset()
+{
+    mem->hard_reset();
+    cpu->hard_reset();
+    irc->hard_reset();
 }

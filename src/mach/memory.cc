@@ -5,6 +5,13 @@
 
 Memory::Memory()
 {
+    hard_reset();
+    cartridge = nullptr;
+    clear_dma_status();
+}
+
+void Memory::hard_reset()
+{
     memset(h8000_vram, 0x00, VRAM.size);
     memset(hc000_wram0, 0x00, WRAM0.size);
     memset(hd000_wram1, 0x00, WRAM1.size);
@@ -13,8 +20,40 @@ Memory::Memory()
     memset(hff80_hram, 0x00, HRAM.size);
     memset(hffff_ie, 0x00, IE.size);
 
-    cartridge = nullptr;
-    clear_dma_status();
+    hff05_tima = 0x00;
+    hff06_tma = 0x00;
+    hff07_tac = 0x00;
+    hff10_nr10 = 0x80;
+    hff11_nr11 = 0xBF;
+    hff12_nr12 = 0xF3;
+    hff14_nr14 = 0xBF;
+    hff16_nr21 = 0x3F;
+    hff17_nr22 = 0x00;
+    hff19_nr24 = 0xBF;
+    hff1a_nr30 = 0x7F;
+    hff1b_nr31 = 0xFF;
+    hff1c_nr32 = 0x9F;
+
+    // TODO: Check if correct
+    hff1e_nr34 = 0x9F;
+
+    hff20_nr_41 = 0xFF;
+    hff21_nr_42 = 0x00;
+    hff22_nr_43 = 0x00;
+    hff23_nr_44 = 0xBF;
+    hff24_nr_50 = 0x77;
+    hff25_nr_51 = 0xF3;
+    hff26_nr_52 = 0xF1;
+    hff40_lcdc = 0x91;
+    hff42_scy = 0x00;
+    hff43_scx = 0x00;
+    hff45_lyc = 0x00;
+    hff47_bgp = 0xFC;
+    hff48_obp0 = 0xFF;
+    hff49_obp1 = 0xFF;
+    hff4a_wy = 0x00;
+    hff4b_wx = 0x00;
+    *hffff_ie = 0x00;
 }
 
 uint8_t* Memory::get(memaddr_t address)

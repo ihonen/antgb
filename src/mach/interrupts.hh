@@ -33,12 +33,12 @@ public:
 
     InterruptController(Memory* mem);
 
+    void hard_reset();
     bool has_active_requests();
     InterruptInfo accept_next_request();
     uint8_t ime_flag_get();
     void ime_flag_set();
     void ime_flag_clear();
-
     void request_interrupt(int source);
     bool interrupt_requested(int source);
     bool interrupt_enabled(int source);

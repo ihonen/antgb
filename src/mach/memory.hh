@@ -19,6 +19,7 @@ public:
 
     Memory();
 
+    void hard_reset();
     uint8_t* get(memaddr_t address);
     uint8_t read(memaddr_t address);
     bool write(memaddr_t address, uint8_t value);
@@ -66,15 +67,6 @@ public:
     static constexpr MemoryRegion TILEMAP1 = {0x8800, 0x8FFF, 0x0800};
     static constexpr MemoryRegion TILEMAP2 = {0x9000, 0x97FF, 0x0800};
 
-    static constexpr MemoryRegion UNUSED_REGIONS[] =
-    {
-        {0xFF03, 0xFF03, 1},
-        {0xFF08, 0xFF0E, 7},
-        {0xFF15, 0xFF15, 1},
-        {0xFF27, 0xFF2F, 9},
-        {0xFEA0, 0xFEFF, 96}
-    };
-
     memaddr_t LCDC_ADDRESS = 0xFF40;
     memaddr_t STAT_ADDRESS = 0xFF41;
     memaddr_t SCY_ADDRESS = 0xFF42;
@@ -110,7 +102,7 @@ public:
         ModeFlag0 = 0
     };
 
-    union
+    union __attribute__((packed))
     {
         uint8_t h8000_vram[VRAM.size];
         struct __attribute__((packed))
@@ -123,7 +115,7 @@ public:
     uint8_t hc000_wram0[WRAM0.size];
     uint8_t hd000_wram1[WRAM1.size];
     uint8_t hfe00_oam[OAM.size];
-    union
+    union __attribute__((packed))
     {
         uint8_t hff00_io[IO.size];
         struct __attribute__((packed))

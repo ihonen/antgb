@@ -49,6 +49,7 @@ public:
 
     Ppu(Memory* mmu, InterruptController* irc);
     ~Ppu();
+    void hard_reset();
     void emulate(uint64_t cpu_cycles);
     void emulate_mode0();
     void emulate_mode1();

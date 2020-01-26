@@ -10,17 +10,21 @@ Ppu::Ppu(Memory* mmu_, InterruptController* irc_) :
     mmu(mmu_)
 {    
     renderer = new Renderer(mmu);
-
-    status.mode_task_complete = false;
-    status.frame_ready = false;
-    status.unemulated_cpu_cycles = 0;
-    status.cpu_cycles_spent_in_mode = 0;
-    status.current_mode = ScanningOAM;
+    hard_reset();
 }
 
 Ppu::~Ppu()
 {
     delete renderer;
+}
+
+void Ppu::hard_reset()
+{
+    status.mode_task_complete = false;
+    status.frame_ready = false;
+    status.unemulated_cpu_cycles = 0;
+    status.cpu_cycles_spent_in_mode = 0;
+    status.current_mode = ScanningOAM;
 }
 
 void Ppu::emulate(uint64_t cpu_cycles)
