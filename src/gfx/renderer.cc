@@ -15,6 +15,8 @@ Renderer::Renderer(Memory* memory, QObject* parent) :
 
 void Renderer::render_frame()
 {    
+    auto ly_backup = mem->hff44_ly;
+
     for (size_t y = 0; y < 144; ++y)
     {
         mem->hff44_ly = y;
@@ -33,6 +35,8 @@ void Renderer::render_frame()
             }
         }
     }
+
+    mem->hff44_ly = ly_backup;
 
     emit(frame_ready());
 }

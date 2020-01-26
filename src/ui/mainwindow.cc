@@ -11,7 +11,7 @@ MainWindow::MainWindow(Machine* machine_, QWidget* parent) :
     machine(machine_),
     is_emulation_on(false)
 {
-    display = new Display(machine->mem, machine->renderer);
+    display = new Display(machine->mem, machine->ppu->renderer);
     display_view = new QGraphicsView(display, this);
     display_view->resize(Display::REAL_RES_X + display_view->frameWidth(),
                           Display::REAL_RES_Y + display_view->frameWidth());
@@ -80,7 +80,7 @@ void MainWindow::init_signals()
             &QAction::triggered,
             this,
             &MainWindow::load_rom_act);
-    connect(machine->renderer,
+    connect(machine->ppu->renderer,
             &Renderer::frame_ready,
             display,
             &Display::on_frame_ready);

@@ -16,7 +16,6 @@ Machine::Machine()
     joypad = new Joypad(mem, irc);
     timer_divider = new Timer(mem, irc);
     cartridge = nullptr;
-    renderer = new Renderer(mem);
 }
 
 Machine::~Machine()
@@ -27,7 +26,6 @@ Machine::~Machine()
     delete cpu;
     delete joypad;
     delete timer_divider;
-    delete renderer;
     delete cartridge;
 }
 
@@ -40,20 +38,10 @@ void Machine::insert_cartridge(Cartridge* cartridge_)
 
 void Machine::tick()
 {
-
     uint64_t cpu_cycles = cpu_tick();
     timer_divider->emulate(cpu_cycles);
     mem->emulate(cpu_cycles);
     ppu->emulate(cpu_cycles);
-
-    static uint64_t cycles_since_last_frame = 0;
-    cycles_since_last_frame += cpu_cycles;
-    if (cycles_since_last_frame >= 70224)
-    {
-        renderer->render_frame();
-        cycles_since_last_frame -= 70224;
-        std::this_thread::sleep_for(std::chrono::milliseconds(16));
-    }
 }
 
 uint64_t Machine::cpu_tick()

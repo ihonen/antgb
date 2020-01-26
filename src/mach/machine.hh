@@ -30,7 +30,6 @@ public:
     Ppu* ppu;
     Joypad* joypad;
     Timer* timer_divider;
-    Renderer* renderer;
     Cartridge* cartridge;
 };
 
