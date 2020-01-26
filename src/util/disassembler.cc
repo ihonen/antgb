@@ -4,9 +4,10 @@
 
 #include <map>
 using namespace std;
-
+/*
 #define imm8 to_string(extract_immediate8(instruction))
 #define imm16 to_string(extract_immediate16(instruction))
+*/
 
 static uint8_t extract_immediate8(const uint8_t* instruction)
 {
@@ -27,6 +28,13 @@ Disassembler::Disassembler()
 std::string Disassembler::disassemble(void* instruction_)
 {
     uint8_t* instruction = (uint8_t*)instruction_;
+    char imm8_[32];
+    char imm16_[32];
+
+    sprintf(imm8_, "%X", extract_immediate8(instruction));
+    sprintf(imm16_, "%X", extract_immediate16(instruction));
+    std::string imm8(imm8_);
+    std::string imm16(imm16_);
 
     std::string mnemonic = "";
 
