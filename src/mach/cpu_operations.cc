@@ -13,7 +13,7 @@ void Cpu::ADC_A_n8(uint8_t n8)
     C_flag_update(result > 0xFF);
     H_flag_update((A & 0x0F) + (n8 & 0x0F) + C_flag_get() > 0x0F);
     N_flag_reset();
-    Z_flag_update(result == 0);
+    Z_flag_update((uint8_t)result == 0);
     A = static_cast<uint8_t>(result);
 }
 
@@ -35,7 +35,7 @@ void Cpu::ADD_A_n8(uint8_t n8)
     C_flag_update(result > 0xFF);
     H_flag_update((A & 0x0F) + (n8 & 0x0F) > 0x0F);
     N_flag_reset();
-    Z_flag_update(result == 0);
+    Z_flag_update((uint8_t)result == 0);
     A = static_cast<uint8_t>(result);
 }
 
@@ -87,7 +87,7 @@ void Cpu::AND_r8(uint8_t& r8)
 /* BIT */
 void Cpu::BIT_n3_HL(uint8_t n3)
 {
-    auto temp = mem->read(HL);
+    uint8_t temp = mem->read(HL);
     BIT_n3_r8(n3, temp);
     mem->write(HL, temp);
 }
@@ -183,7 +183,7 @@ void Cpu::DAA()
 
 void Cpu::DEC_HL()
 {
-    auto temp = mem->read(HL);
+    uint8_t temp = mem->read(HL);
     DEC_r8(temp);
     mem->write(HL, temp);
 }
@@ -227,7 +227,7 @@ void Cpu::HALT()
 
 void Cpu::INC_HL()
 {
-    auto temp = mem->read(HL);
+    uint8_t temp = mem->read(HL);
     INC_r8(temp);
     mem->write(HL, temp);
 }
@@ -242,7 +242,7 @@ void Cpu::INC_r8(uint8_t& r8)
     uint16_t result = r8 + 1;
     H_flag_update((r8 & 0x0F) + 1 > 0x0F);
     N_flag_reset();
-    Z_flag_update(result == 0);
+    Z_flag_update((uint8_t)result == 0);
     r8 = static_cast<uint8_t>(result);
 }
 
@@ -318,7 +318,7 @@ void Cpu::LD_n16_SP(uint16_t n16)
 
 void Cpu::LD_r16_A(uint16_t& r16)
 {
-    r16 = A;
+    mem->write(r16, A);
 }
 
 void Cpu::LD_A_C()
@@ -338,7 +338,7 @@ void Cpu::LD_A_r16(uint16_t& r16)
 
 void Cpu::LD_HL_SP_e8(int8_t e8)
 {
-    uint32_t result =static_cast<uint32_t>(SP) + e8;
+    uint32_t result = static_cast<uint32_t>(SP) + e8;
     C_flag_update(result > 0xFFFF);
     H_flag_update((SP & 0x000F) + static_cast<uint16_t>(e8 & 0x0F) > 0x0F);
     N_flag_reset();
@@ -441,9 +441,6 @@ void Cpu::POP_r16(uint16_t& r16)
     r16 = static_cast<uint16_t>(mem->read(SP));
     ++(SP);
     r16 |= static_cast<uint16_t>(mem->read(SP)) << 8;
-
-    uint8_t low = mem->read(SP - 1);
-    uint8_t high = mem->read(SP);
 }
 
 /* PUSH */
@@ -454,16 +451,13 @@ void Cpu::PUSH_r16(uint16_t& r16)
     --(SP);
     mem->write(SP, static_cast<uint8_t>(r16));
     --(SP);
-
-    uint8_t low = mem->read(SP + 1);
-    uint8_t high = mem->read(SP + 2);
 }
 
 /* RES */
 
 void Cpu::RES_n3_HL(uint8_t n3)
 {
-    auto temp = mem->read(HL);
+    uint8_t temp = mem->read(HL);
     RES_n3_r8(n3, temp);
     mem->write(HL, temp);
 }
@@ -504,7 +498,7 @@ void Cpu::RETI()
 
 void Cpu::RL_HL()
 {
-    auto temp = mem->read(HL);
+    uint8_t temp = mem->read(HL);
     RL_r8(temp);
     mem->write(HL, temp);
 }
@@ -533,7 +527,7 @@ void Cpu::RLA()
 
 void Cpu::RLC_HL()
 {
-    auto temp = mem->read(HL);
+    uint8_t temp = mem->read(HL);
     RLC_r8(temp);
     mem->write(HL, temp);
 }
@@ -562,7 +556,7 @@ void Cpu::RLCA()
 
 void Cpu::RR_HL()
 {
-    auto temp = mem->read(HL);
+    uint8_t temp = mem->read(HL);
     RR_r8(temp);
     mem->write(HL, temp);
 }
@@ -591,7 +585,7 @@ void Cpu::RRA()
 
 void Cpu::RRC_HL()
 {
-    auto temp = mem->read(HL);
+    uint8_t temp = mem->read(HL);
     RRC_r8(temp);
     mem->write(HL, temp);
 }
@@ -626,7 +620,7 @@ void Cpu::RST_f(uint8_t f)
 
 void Cpu::SBC_A_HL()
 {
-    auto temp = mem->read(HL);
+    uint8_t temp = mem->read(HL);
     SBC_A_n8(temp);
     mem->write(HL, temp);
 }
@@ -637,7 +631,7 @@ void Cpu::SBC_A_n8(uint8_t n8)
     H_flag_update((A & 0x0F) - (n8 & 0x0F) - C_flag_get() > 0x0F);
     C_flag_update(result > 0xFF);
     N_flag_set();
-    Z_flag_update(result == 0);
+    Z_flag_update((uint8_t)result == 0);
     A = static_cast<uint8_t>(result);
 }
 
@@ -648,7 +642,7 @@ void Cpu::SBC_A_r8(uint8_t& r8)
 
 void Cpu::SUB_A_HL()
 {
-    auto temp = mem->read(HL);
+    uint8_t temp = mem->read(HL);
     SUB_A_n8(temp);
     mem->write(HL, temp);
 }
@@ -666,7 +660,7 @@ void Cpu::SCF()
 
 void Cpu::SET_n3_HL(uint8_t n3)
 {
-    auto temp = mem->read(HL);
+    uint8_t temp = mem->read(HL);
     SET_n3_r8(n3, temp);
     mem->write(HL, temp);
 }
@@ -680,7 +674,7 @@ void Cpu::SET_n3_r8(uint8_t n3, uint8_t& r8)
 
 void Cpu::SLA_HL()
 {
-    auto temp = mem->read(HL);
+    uint8_t temp = mem->read(HL);
     SLA_r8(temp);
     mem->write(HL, temp);
 }
@@ -701,7 +695,7 @@ void Cpu::SLA_r8(uint8_t& r8)
 
 void Cpu::SRA_HL()
 {
-    auto temp = mem->read(HL);
+    uint8_t temp = mem->read(HL);
     SRA_r8(temp);
     mem->write(HL, temp);
 }
@@ -723,7 +717,7 @@ void Cpu::SRA_r8(uint8_t& r8)
 
 void Cpu::SRL_HL()
 {
-    auto temp = mem->read(HL);
+    uint8_t temp = mem->read(HL);
     SRL_r8(temp);
     mem->write(HL, temp);
 }
@@ -756,7 +750,7 @@ void Cpu::SUB_A_n8(uint8_t n8)
     C_flag_update(result > 0xFF);
     H_flag_update((A & 0x0F) - (n8 & 0x0F) > 0x0F);
     N_flag_set();
-    Z_flag_update(result == 0);
+    Z_flag_update((uint8_t)result == 0);
     A = static_cast<uint8_t>(result);
 }
 
@@ -769,7 +763,7 @@ void Cpu::SUB_A_r8(uint8_t& r8)
 
 void Cpu::SWAP_HL()
 {
-    auto temp = mem->read(HL);
+    uint8_t temp = mem->read(HL);
     SWAP_r8(temp);
     mem->write(HL, temp);
 }
@@ -787,7 +781,7 @@ void Cpu::SWAP_r8(uint8_t& r8)
 
 void Cpu::XOR_HL()
 {
-    auto temp = mem->read(HL);
+    uint8_t temp = mem->read(HL);
     XOR_n8(temp);
     mem->write(HL, temp);
 }
