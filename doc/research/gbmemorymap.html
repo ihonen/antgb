@@ -1,0 +1,462 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"> <html style><!--
+ Page saved with SingleFile 
+ url: http://gameboy.mongenel.com/dmg/asmmemmap.html 
+ saved date: Fri Jan 24 2020 20:31:50 GMT+0200 (Eastern European Standard Time)
+--><meta charset=utf-8>
+<title>
+DuoDreamer's Dreamscape
+</title>
+<meta name=title content="DuoDreamer's Dreamscape">
+<meta name=keywords content="poetry,poems,midi,mod,mods,midis,gameboy,gb,pokemon,emulate,emulation,emulators,console,computer,mame,raiden,nesticle,rage,callus,nocash,zsnes,snes9x,arcade,classic,video games,roms">
+<style><!----></style>
+<link type=image/x-icon rel="shortcut icon" href="data:image/x-icon;base64,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"></head>
+<body>
+<div align=center>
+<br>
+<table width=700 cellspacing=0 cellpadding=0 border=0>
+<tbody><tr>
+<td width=700 valign=top>
+<div>
+<table width=700 cellspacing=0 cellpadding=0 border=0>
+<tbody><tr>
+<td class=tableborder width=2 height=2></td>
+<td class=tableborder width=692 height=2></td>
+<td class=tableborder width=2 height=2></td>
+<td class=bodybackground width=4 height=2></td>
+</tr>
+<tr>
+<td class=tableborder width=2 height=2></td>
+<td class=tablebody width=692 height=2></td>
+<td class=tableborder width=2 height=2></td>
+<td class=bodybackground width=4 height=2></td>
+</tr>
+<tr>
+<td class=tableborder width=2 height=2></td>
+<td class=tablebody width=692 height=2></td>
+<td class=tableborder width=2 height=2></td>
+<td class=tableshadow width=4 height=2></td>
+</tr>
+</table>
+<table width=700 cellspacing=0 cellpadding=0 border=0>
+<tbody><tr>
+<td class=tableborder width=2>
+<br>
+</td>
+<td class=tablebody width=8>
+<br>
+</td>
+<td class=tablebody width=680 valign=top>
+<h3>GameBoy Memory Map</h3>
+The GameBoy contains an 8-bit processor, meaning it can access 8-bits of data at one time. 
+To access this data, it has a 16-bit address bus, which can address 65,536 positions of memory. 
+This address space is split into the following areas.<br><br>
+<div align=center>
+<img src="data:image/gif;base64,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" width=567 height=74></div>
+<br>
+<table width=500 cellspacing=2 cellpadding=2 border=0 align=center>
+<tbody><tr>
+ <td class=gray colspan=3 align=center>GameBoy Memory Areas</td>
+</tr>
+<tr>
+ <td bgcolor=#FF00FF></td>
+ <td class=gray>$FFFF</td>
+ <td class=gray>Interrupt Enable Flag</td>
+</tr>
+<tr>
+ <td bgcolor=#FF00FF></td>
+ <td class=gray>$FF80-$FFFE</td>
+ <td class=gray>Zero Page - 127 bytes</td>
+</tr>
+<tr>
+ <td bgcolor=#FF00FF></td>
+ <td class=gray>$FF00-$FF7F</td>
+ <td class=gray>Hardware I/O Registers</td>
+</tr>
+<tr>
+ <td bgcolor=#FF00FF></td>
+ <td class=gray>$FEA0-$FEFF</td>
+ <td class=gray>Unusable Memory</td>
+</tr>
+<tr>
+ <td bgcolor=#FF00FF></td>
+ <td class=gray>$FE00-$FE9F</td>
+ <td class=gray>OAM - Object Attribute Memory</td>
+</tr>
+<tr>
+ <td bgcolor=#000000></td>
+ <td class=gray>$E000-$FDFF</td>
+ <td class=gray>Echo RAM - Reserved, Do Not Use</td>
+</tr>
+<tr>
+ <td bgcolor=#FFFF00></td>
+ <td class=gray>$D000-$DFFF</td>
+ <td class=gray>Internal RAM - Bank 1-7 (switchable - CGB only)</td>
+</tr>
+<tr>
+ <td bgcolor=#FFFF00></td>
+ <td class=gray>$C000-$CFFF</td>
+ <td class=gray>Internal RAM - Bank 0 (fixed)</td>
+</tr>
+<tr>
+ <td bgcolor=#00FF00></td>
+ <td class=gray>$A000-$BFFF</td>
+ <td class=gray>Cartridge RAM (If Available)</td>
+</tr>
+<tr>
+ <td bgcolor=#0000FF></td>
+ <td class=gray>$9C00-$9FFF</td>
+ <td class=gray>BG Map Data 2</td>
+</tr>
+<tr>
+ <td bgcolor=#0000FF></td>
+ <td class=gray>$9800-$9BFF</td>
+ <td class=gray>BG Map Data 1</td>
+</tr>
+<tr>
+ <td bgcolor=#00FFFF></td>
+ <td class=gray>$8000-$97FF</td>
+ <td class=gray>Character RAM</td>
+</tr>
+<tr>
+ <td bgcolor=#FF0000></td>
+ <td class=gray>$4000-$7FFF</td>
+ <td class=gray>Cartridge ROM - Switchable Banks 1-xx</td>
+</tr>
+<tr>
+ <td bgcolor=#FF0000></td>
+ <td class=gray>$0150-$3FFF</td>
+ <td class=gray>Cartridge ROM - Bank 0 (fixed)</td>
+</tr>
+<tr>
+ <td bgcolor=#808080></td>
+ <td class=gray>$0100-$014F</td>
+ <td class=gray>Cartridge Header Area</td>
+</tr>
+<tr>
+ <td bgcolor=#c0c0c0></td>
+ <td class=gray>$0000-$00FF</td>
+ <td class=gray>Restart and Interrupt Vectors</td>
+</tr>
+</table>
+<br>
+<br>
+<hr size=4 noshade>
+<br>
+<h4>$0000-$00FF - Restart and Interrupt Vector Table</h4>
+The first 255 byte area in the Gameboy address space is reserved for Interrupt Vectors and 
+Restart Vectors. Interrupts are a break in program code generated by a piece of the hardware 
+when a certain condition is met. These conditions can be set by the programmer. There are several 
+different types of interrupts, and when an interrupt is generated, the program stops where it is, 
+and jumps to one of the specified locations in the Vector Table. The types of interrups are:<br>
+<ul>
+<li>V-Blank - This interrupt can be generated when the LCD has drawn the last line on the screen and gone into the vertical blanking period. When this Interrupt is triggered, the CPU stores the current point of execution on the Stack, and jumps to $0040, which will usually contain another jump to the location of the code you want executed during the v-blank period.</li>
+<li>LCDC - This interrupt can be generated by the LCD controller chip on various conditions, the most commonly used being the LYC condition, which is an interrupt generated when the LCD begins to draw a certain scanline. The scanline it generates an interrupt on is selectable. When triggered, this interrupt forces the CPU to jump to address $0048. For more information, see the section on I/O registers.</li>
+<li>Timer - The system timer can be set to count at specified frequencies, and will increment a count register. When this register overflows, an interrupt is generated and the CPU jumps to $0050. More information in the I/O register section.</li>
+<li>Serial - Generated by the serial link controller. The CPU jumps to $0058 when this interrupt is triggered. More info in the I/O register section.</li>
+<li>Joypad - Generated when a key is pressed. Due to button "bounce", this interrupt may occur several times when a button is pressed. More info in the I/O register section.</li>
+</ul>
+<hr size=4 noshade>
+<br>
+<h4>$0100-$014F - Cartridge Header Area</h4>
+This area in the GameBoy address space contains information about the cartridge that is inserted, including; 
+type of cartridge, size of rom, size of ram, a Nintendo logo, and other information. Also, at $0100, there is 
+a NOP instruction, followed by a JUMP to the start of the program, usually $0150. The GameBoy's CPU begins 
+execution at $0100, that is why this is included. If the Nintendo logo bytes are not correct, the GameBoy 
+will not execute the game. Upon power up, the system ROM in a GameBoy will verify that the logo is correct. 
+Nintendo has tried to use the logo to keep only authorized developers from publishing games, since the logo 
+is a registered trademark of Nintendo. But, a legal precedent was set in the United States in a case of 
+Sega vs. Accolade (c.1993). Sega's Genesis console also has a signature that is a copyright of Sega, and 
+Accolade used this logo so that their games, which were not approved by Sega, would be able to play on the 
+Genesis console. The judge ruled in favor of Accolade, stating that using a logo to that degree was an 
+anti-competetive practice, and therefore, Accolade was allowed to continue selling their games. At least, 
+that's what I heard. =P<br>
+<br>
+<table width=500 cellspacing=2 cellpadding=2 border=0 align=center>
+<tbody><tr>
+ <td colspan=2 class=gray align=center>Cart Header</td>
+</tr>
+<tr>
+ <td class=gray>$0100-$0103</td>
+ <td class=gray>NOP / JP $0150</td>
+</tr>
+<tr>
+ <td class=gray>$0104-$0133</td>
+ <td class=gray>Nintendo Logo</td>
+</tr>
+<tr>
+ <td class=gray>$0134-$013E</td>
+ <td class=gray>Game Title (Uppercase ASCII)</td>
+</tr>
+<tr>
+ <td class=gray>$013F-$0142</td>
+ <td class=gray>4-byte Game Designation</td>
+</tr>
+<tr>
+ <td class=gray>$0143</td>
+ <td class=gray>Color Compatibility byte</td>
+</tr>
+<tr>
+ <td class=gray>$0144-$0145</td>
+ <td class=gray>New Licensee Code</td>
+</tr>
+<tr>
+ <td class=gray>$0146</td>
+ <td class=gray>SGB Compatibility byte</td>
+</tr>
+<tr>
+ <td class=gray>$0147</td>
+ <td class=gray>Cart Type</td>
+</tr>
+<tr>
+ <td class=gray>$0148</td>
+ <td class=gray>Cart ROM size</td>
+</tr>
+<tr>
+ <td class=gray>$0149</td>
+ <td class=gray>Cart RAM size</td>
+</tr>
+<tr>
+ <td class=gray>$014A</td>
+ <td class=gray>Destination code</td>
+</tr>
+<tr>
+ <td class=gray>$014B</td>
+ <td class=gray>Old Licensee code</td>
+</tr>
+<tr>
+ <td class=gray>$014C</td>
+ <td class=gray>Mask ROM version</td>
+</tr>
+<tr>
+ <td class=gray>$014D</td>
+ <td class=gray>Complement checksum</td>
+</tr>
+<tr>
+ <td class=gray>$014E-$014F</td>
+ <td class=gray>Checksum</td>
+</tr>
+</table>
+<br>
+<hr size=4 noshade>
+<h4>$0150-$3FFF - ROM Bank 0</h4>
+Realistically, ROM Bank 0 includes all the data from $0000 to $014Fm but they were special areas, so I made them separate.
+ ROM Bank 0 is the home bank. It's the fist 16K bank of any ROM image, and is a fixed bank, which means you can't switch 
+ it out with other banks, like you can with the next section (which is discussed in the next section). When the GameBoy powers up, 
+program execution starts at $0100, which almost always has a jump to $0150 (jp $0150), the first byte of free space. So really, 
+$0150 will be the start of your programs. Since this bank is fixed and <b>CANNOT</b> be changed out, it usually contains the 
+majority of the game's engine, or core routines. So I guess you could say that instead of programming a 64K address space, you're 
+actually restricted to 16K for most things. 
+<br>
+<br>
+<hr size=4 noshade>
+<h4>$4000-$7FFF - ROM Bank n</h4>
+This is where alot of your game data will exist... in this 16K space. This area is switchable or <b>banked</b>. You can switch in 16K 
+chunks of the entire ROM in this area, through the use of the Memory Bank Controller (MBC) on the cartridge. How the MBC works is you 
+basically "write" to an area in ROM, and since ROM is by nature READ ONLY MEMORY, writing a value to ROM is futile, except 
+in the case of the MBC. It intercepts the attempted write to ROM and interprets it into a bank switch. the value you try to write 
+to ROM is generally the bank number you want to change to. For example, when using MBC1, one would do this to change to bank 5:<br>
+<ul>
+<li>LD A,5</li>
+<li>LD HL,$2000</li>
+<li>LD (HL),A</li>
+</ul>
+The first line loads the value 5 into register A. The second line loads register pair HL with $2000, our destination address. 
+The third line loads the value in register A into the address indexed by register pair HL. Easy, right?
+<br>
+<br>
+<hr size=4 noshade>
+<h4>$8000-$97FF - Character RAM</h4>
+This area is RAM inside the GB unit, and is used exclusively for video purposes. This area is also known as Tile RAM, since it holds 
+tiles. Each tile is 8x8 pixels of 2-bit color, which makes each tile 16 bytes long. This area is also divided up into two modes of 
+tiles, signed and unsigned. In unsigned mode, tiles are numbered from 0-255 at $8000-$9000. In signed mode, tiles are numbered in 
+two's complement from -127 to 128 at $87FF-$97FF. I think... lol. Generally most ppl use 0-255 tiles, since it's nice and easy.
+<br>
+<br>
+<hr size=4 noshade>
+<h4>$9800-$9BFF - BG Map Data 1</h4>
+This 1024-byte long area is what the video processor uses to build the display. Each byte in this space represnts an 8x8 pixel space 
+on the display. This area is 32x32 tiles large... EG: 1024 bytes. The display processor takes each byte and then goes into the Character RAM 
+area and gets the corresponding tile from that area and draws it to the screen. So, if the first byte in the Map area contained $40, the 
+display processor would get tile $40 from the Character RAM and put it in the top-left corner of the virtual screen. I say virtual screen 
+because the actual LCD is only 160x144 pixels in size and is basically a viewport that can be scrolled around the 32x32 tile (256x256 pixel) 
+background area in video memory.
+<br>
+<br>
+<hr size=4 noshade>
+<h4>$9C00-$9FFF - BG Map Data 2</h4>
+This area is just a second background map area like the previous one. To specify which map the video processor uses to build the 
+background image, change the apropriate bit in the LCDC I/O register, explained later.
+<br>
+<br>
+<hr size=4 noshade>
+<h4>$A000-$BFFF - External (cartridge) RAM</h4>
+If present on the cartridge, this area is mapped to the RAM on the cartridge.
+<br>
+<br>
+<hr size=4 noshade>
+<h4>$C000-$DFFF - Internal Work RAM</h4>
+This RAM in inside the GameBoy. Generally used for most common variables and such in games.
+<br>
+<br>
+<hr size=4 noshade>
+<h4>$E000-$FDFF - Reserved Area/Echo RAM</h4>
+This area echoes internal ram, but is specified by Nintendo as reserved and shouldn't be used at all. To keep with standards and 
+to keep compatibility, don't use this area.
+<br>
+<br>
+<hr size=4 noshade>
+<h4>$FE00-$FE9F - Object Attribute Memory (OAM)</h4>
+OAM is sprite RAM. This area is 40 sprites X 4 bytes long. When you with to display an object (sprite) you write 4 corresponding bytes to OAM. 
+These 4 bytes are:
+<ul>
+<li>Byte 1: X Location</li>
+<li>Byte 2: Y Location</li>
+<li>Tile Number (0-255)</li>
+<li>Attributes</li>
+</ul>
+The tile number is taken from the Character RAM, just a BG tiles are. The X and Y locations are slightly offset (8 pixels and 16 pixels), so you can have sprites 
+partially off of the left and top of the LCD. So if you set the location to 0,0 then the sprite would be off of the screen. To set a sprite to the 
+top-left corner, you'd set it's location to 8,16. Piece of cake. ;-)
+<br>
+<br>
+<hr size=4 noshade>
+<h4>$FEA0-$FEFF - Unused</h4>
+And it'd be smart to leave it that way. =)
+<br>
+<br>
+<hr size=4 noshade>
+<h4>$FF00-$FF7F - Hardware I/O Registers</h4>
+This area contains all the control registers for all the hardware on the GameBoy and is basically a memory-mapped I/O area. Details on 
+this area are in another section.
+<br>
+<br>
+<hr size=4 noshade>
+<h4>$FF80-$FFFE - High RAM Area</h4>
+Originally intended to be used as 127 bytes of stack space, this area is better suited for use as a Zero-Page, or a quick RAM access 
+area, since there is an instruction that accesses the area $FF00-$FFFF quicker than a regular LD instruction. Most coders nowadays just 
+set the stack to the TOP of internal RAM, since it works the same and frees the high RAM for quick variables and such.
+<br>
+<br>
+<hr size=4 noshade>
+<h4>$FFFF - Interrupt Enable Register</h4>
+This is another I/O register, which controls the interrupts.
+<br>
+<br>
+</td>
+<td class=tablebody width=4>
+<br>
+</td>
+<td class=tableborder width=2>
+<br>
+</td>
+<td class=tableshadow width=4>
+<br>
+</td>
+</tr>
+</table>
+<table width=700 cellspacing=0 cellpadding=0 border=0>
+<tbody><tr>
+<td class=tableborder width=2 height=3></td>
+<td class=tablebody width=2 height=3></td>
+<td class=tablebody width=690 height=3></td>
+<td class=tableborder width=2 height=3></td>
+<td class=tableshadow width=4 height=3></td>
+</tr>
+<tr>
+<td class=tableborder width=2 height=2></td>
+<td class=tableborder width=2 height=2></td>
+<td class=tableborder width=690 height=2></td>
+<td class=tableborder width=2 height=2></td>
+<td class=tableshadow width=4 height=2></td>
+</tr>
+<tr>
+<td class=bodybackground width=2 height=3></td>
+<td class=bodybackground width=2 height=3></td>
+<td class=tableshadow width=690 height=3></td>
+<td class=tableshadow width=2 height=3></td>
+<td class=tableshadow width=4 height=3></td>
+</tr>
+</table>
+</div>
+<br>
+<table width=700 cellspacing=0 cellpadding=0 border=0>
+<tbody><tr>
+<td class=tableborder width=2 height=2></td>
+<td class=tableborder width=692 height=2></td>
+<td class=tableborder width=2 height=2></td>
+<td class=bodybackground width=4 height=2></td>
+</tr>
+<tr>
+<td class=tableborder width=2 height=2></td>
+<td class=tablebody width=692 height=2></td>
+<td class=tableborder width=2 height=2></td>
+<td class=bodybackground width=4 height=2></td>
+</tr>
+<tr>
+<td class=tableborder width=2 height=2></td>
+<td class=tablebody width=692 height=2></td>
+<td class=tableborder width=2 height=2></td>
+<td class=tableshadow width=4 height=2></td>
+</tr>
+</table>
+<table width=700 cellspacing=0 cellpadding=0 border=0>
+<tbody><tr>
+<td class=tableborder width=2>
+<br>
+</td>
+<td class=tablebody width=8>
+<br>
+</td>
+<td class=tablebody width=680 valign=top>
+<div class=neg2>
+This webpage was designed to be viewed in any HTML 4.0/CSS1 compliant browser, but since Netscape sucks (opinions are like ass holes, everybody has got one), everything looks like sh*t in Netscape, so go get IE 5.5 or Opera 4.0, which both are great browsers (and consequently, display my webpage correctly).
+<br><br>
+DISCLAIMER: You will NOT find commercial ROMS on this website, nor will I answer e-mail in regards 
+to where you can find ROM's on the Internet. Downloading a ROM image of a game you do not own is 
+illegal. I will not answer e-mail regarding Pokémon<sup>TM</sup>. This website, to the best 
+of my knowledge does not contain any illegally obtained information, nor any illegal content. 
+Not everything on this webpage was created by me. Some of the content, images, etc, have come from 
+many places, and I thank the friends who have helped me with everything (that means you Sacher!).
+Should you not like my views, opinions, ideas, etc, etc, then pardon me and PISS OFF.
+</div>
+<br>
+</td>
+<td class=tablebody width=4>
+<br>
+</td>
+<td class=tableborder width=2>
+<br>
+</td>
+<td class=tableshadow width=4>
+<br>
+</td>
+</tr>
+</table>
+<table width=700 cellspacing=0 cellpadding=0 border=0>
+<tbody><tr>
+<td class=tableborder width=2 height=3></td>
+<td class=tablebody width=2 height=3></td>
+<td class=tablebody width=690 height=3></td>
+<td class=tableborder width=2 height=3></td>
+<td class=tableshadow width=4 height=3></td>
+</tr>
+<tr>
+<td class=tableborder width=2 height=2></td>
+<td class=tableborder width=2 height=2></td>
+<td class=tableborder width=690 height=2></td>
+<td class=tableborder width=2 height=2></td>
+<td class=tableshadow width=4 height=2></td>
+</tr>
+<tr>
+<td class=bodybackground width=2 height=3></td>
+<td class=bodybackground width=2 height=3></td>
+<td class=tableshadow width=690 height=3></td>
+<td class=tableshadow width=2 height=3></td>
+<td class=tableshadow width=4 height=3></td>
+</tr>
+</table>
+<br>
+</td>
+</tr>
+</table>
+</div>
