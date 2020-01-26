@@ -50,7 +50,7 @@ Display::Display(Memory* memory, Renderer* renderer_, QObject* parent) :
     renderer(renderer_),
     mem(memory)
 {
-    image = QImage(160 * 4, 144 * 4, QImage::Format_ARGB32);
+    image = QImage(160 * 2, 144 * 2, QImage::Format_ARGB32);
     image.fill(QColor(colors[3]));
     item = new QGraphicsPixmapItem(QPixmap::fromImage(image));
     addItem(item);
@@ -58,12 +58,12 @@ Display::Display(Memory* memory, Renderer* renderer_, QObject* parent) :
 
 void Display::set_pixel(int x, int y, uint32_t color)
 {
-    for (auto x_offset = 0; x_offset < 4; ++x_offset)
+    for (auto x_offset = 0; x_offset < 2; ++x_offset)
     {
-        for (auto y_offset = 0; y_offset < 4; ++y_offset)
+        for (auto y_offset = 0; y_offset < 2; ++y_offset)
         {
-            image.setPixelColor(x * 4 + x_offset,
-                                y * 4 + y_offset,
+            image.setPixelColor(x * 2 + x_offset,
+                                y * 2 + y_offset,
                                 QColor(color));
         }
     }

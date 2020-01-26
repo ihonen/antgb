@@ -40,32 +40,20 @@ void Machine::insert_cartridge(Cartridge* cartridge_)
 
 void Machine::tick()
 {
-    static auto last_frame_time = std::chrono::high_resolution_clock::now();
-    auto now = std::chrono::high_resolution_clock::now();
-
-    static uint64_t cycles_since_last_frame = 0;
 
     uint64_t cpu_cycles = cpu_tick();
     timer_divider->emulate(cpu_cycles);
     mem->emulate(cpu_cycles);
     ppu->emulate(cpu_cycles);
 
+    static uint64_t cycles_since_last_frame = 0;
     cycles_since_last_frame += cpu_cycles;
-
-    if (cycles_since_last_frame >= 1000000)
+    if (cycles_since_last_frame >= 70224)
     {
         renderer->render_frame();
-        cycles_since_last_frame -= 1000000;
-        now = std::chrono::high_resolution_clock::now();
-        std::chrono::milliseconds ms_since_last_frame = std::chrono::milliseconds(std::chrono::duration_cast<std::chrono::milliseconds>((now - last_frame_time)).count());
-        std::chrono::milliseconds sleep_time = std::chrono::milliseconds(17) - ms_since_last_frame;
-        if (sleep_time.count() > 0)
-        {
-//            std::this_thread::sleep_for(sleep_time);
-        }
-        last_frame_time = now;
+        cycles_since_last_frame -= 70224;
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
     }
-
 }
 
 uint64_t Machine::cpu_tick()

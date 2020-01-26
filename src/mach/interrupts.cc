@@ -52,7 +52,6 @@ void InterruptController::ime_flag_clear()
 
 void InterruptController::request_interrupt(int source)
 {
-    cout << "IR: " << source << endl;
     mem->hff0f_if |= 0x01 << source;
 }
 
