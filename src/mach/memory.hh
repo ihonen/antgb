@@ -156,6 +156,9 @@ public:
             uint8_t hff1c_nr32;
             uint8_t hff1d_nr33;
             uint8_t hff1e_nr34;
+
+            uint8_t hff1f_unused_in_dmg_4__;
+
             uint8_t hff20_nr_41;
             uint8_t hff21_nr_42;
             uint8_t hff22_nr_43;
@@ -163,7 +166,7 @@ public:
             uint8_t hff24_nr_50;
             uint8_t hff25_nr_51;
             uint8_t hff26_nr_52;
-            uint8_t hff27_io_unused_in_dmg_4__[9];
+            uint8_t hff27_io_unused_in_dmg_5__[9];
             uint8_t hff30_wave_pattern_ram[16];
 
             // LCD controller

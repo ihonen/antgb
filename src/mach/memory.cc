@@ -112,6 +112,7 @@ uint8_t* Memory::get(memaddr_t address)
     }
     else if (address <= IO.high)
     {
+        uint8_t a = hff44_ly;
         return &hff00_io[address - IO.low];
     }
     else if (address <= HRAM.high)
