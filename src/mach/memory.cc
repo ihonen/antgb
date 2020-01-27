@@ -143,10 +143,6 @@ bool Memory::write(memaddr_t address, uint8_t value)
     }
 
     *dest = value;
-    if (address == 0xFF02)
-    {
-        cout << *get(0xFF01);
-    }
 
     return true;
 }

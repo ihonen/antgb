@@ -15,6 +15,7 @@ Machine::Machine()
     cpu = new Cpu(mem, irc);
     joypad = new Joypad(mem, irc);
     timer_divider = new Timer(mem, irc);
+    serial = new Serial(mem ,irc);
     cartridge = nullptr;
 }
 
@@ -26,6 +27,7 @@ Machine::~Machine()
     delete cpu;
     delete joypad;
     delete timer_divider;
+    delete serial;
     delete cartridge;
 }
 
@@ -42,6 +44,7 @@ void Machine::tick()
     timer_divider->emulate(cpu_cycles);
     mem->emulate(cpu_cycles);
     ppu->emulate(cpu_cycles);
+    serial->emulate(cpu_cycles);
 }
 
 uint64_t Machine::cpu_tick()

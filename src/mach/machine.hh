@@ -7,6 +7,7 @@
 #include "joypad.hh"
 #include "memory.hh"
 #include "ppu.hh"
+#include "serial.hh"
 #include "timer.hh"
 #include "../gfx/renderer.hh"
 #include "../util/typedefs.hh"
@@ -30,6 +31,7 @@ public:
     Ppu* ppu;
     Joypad* joypad;
     Timer* timer_divider;
+    Serial* serial;
     Cartridge* cartridge;
 };
 

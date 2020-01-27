@@ -36,6 +36,7 @@ SOURCES += \
     mach/joypad.cc \
     mach/memory.cc \
     mach/ppu.cc \
+    mach/serial.cc \
     mach/timer.cc \
     main.cc \
     mach/cpu_flags.cc \
@@ -68,6 +69,7 @@ HEADERS += \
     mach/machine.hh \
     mach/memory.hh \
     mach/ppu.hh \
+    mach/serial.hh \
     mach/timer.hh \
     ui/display.hh \
     ui/keybindings.hh \
