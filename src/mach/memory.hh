@@ -63,9 +63,9 @@ public:
     static constexpr MemoryRegion IE = {0xFFFF, 0xFFFF, 0x0001};
 
     // Subregions
-    static constexpr MemoryRegion TILEMAP0 = {0x8000, 0x87FF, 0x0800};
-    static constexpr MemoryRegion TILEMAP1 = {0x8800, 0x8FFF, 0x0800};
-    static constexpr MemoryRegion TILEMAP2 = {0x9000, 0x97FF, 0x0800};
+    static constexpr MemoryRegion TILEDATA0 = {0x8000, 0x87FF, 0x0800};
+    static constexpr MemoryRegion TILEDATA1 = {0x8800, 0x8FFF, 0x0800};
+    static constexpr MemoryRegion TILEDATA2 = {0x9000, 0x97FF, 0x0800};
 
     memaddr_t LCDC_ADDRESS = 0xFF40;
     memaddr_t STAT_ADDRESS = 0xFF41;
@@ -107,9 +107,9 @@ public:
         uint8_t h8000_vram[VRAM.size];
         struct __attribute__((packed))
         {
-            uint8_t h8000_tilemap0[TILEMAP0.size];
-            uint8_t h8800_tilemap1[TILEMAP1.size];
-            uint8_t h8800_tilemap2[TILEMAP2.size];
+            uint8_t h8000_tilemap0[TILEDATA0.size];
+            uint8_t h8800_tilemap1[TILEDATA1.size];
+            uint8_t h8800_tilemap2[TILEDATA2.size];
         };
     };
     uint8_t hc000_wram0[WRAM0.size];

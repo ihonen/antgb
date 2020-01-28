@@ -45,6 +45,9 @@ void Machine::tick()
     mem->emulate(cpu_cycles);
     ppu->emulate(cpu_cycles);
     serial->emulate(cpu_cycles);
+    static uint64_t cpu_cycles_total = 0;
+    cpu_cycles_total += cpu_cycles;
+    cout << cpu_cycles_total << endl;
 }
 
 uint64_t Machine::cpu_tick()

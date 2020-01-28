@@ -512,7 +512,7 @@ void Cpu::RL_r8(uint8_t& r8)
     C_flag_update(msbit != 0);
     H_flag_reset();
     N_flag_reset();
-    C_flag_update(result == 0);
+    Z_flag_update(result == 0);
     r8 = result;
 }
 
@@ -541,7 +541,7 @@ void Cpu::RLC_r8(uint8_t& r8)
     C_flag_update(msbit != 0);
     H_flag_reset();
     N_flag_reset();
-    C_flag_update(result == 0);
+    Z_flag_update(result == 0);
     r8 = result;
 }
 
@@ -570,7 +570,7 @@ void Cpu::RR_r8(uint8_t& r8)
     C_flag_update(lsbit != 0);
     H_flag_reset();
     N_flag_reset();
-    C_flag_update(result == 0);
+    Z_flag_update(result == 0);
     r8 = result;
 }
 
@@ -599,7 +599,7 @@ void Cpu::RRC_r8(uint8_t& r8)
     C_flag_update(lsbit != 0);
     H_flag_reset();
     N_flag_reset();
-    C_flag_update(result == 0);
+    Z_flag_update(result == 0);
     r8 = result;
 }
 
@@ -748,6 +748,7 @@ void Cpu::SUB_A_n8(uint8_t n8)
 {
     uint16_t result = A - n8;
     C_flag_update(result > 0xFF);
+    // TODO: Check if H flag is handled correctly.
     H_flag_update((A & 0x0F) - (n8 & 0x0F) > 0x0F);
     N_flag_set();
     Z_flag_update((uint8_t)result == 0);

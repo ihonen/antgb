@@ -27,12 +27,13 @@ void Renderer::render_frame()
             {
                 frame_buffer[y][x] = background.get_pixel_at(x, y);
             }
-
+/*
             Sprite* sprite = sprites.get_sprite_at_x(x);
             if (sprite)
             {
                 frame_buffer[y][x] = sprite->get_pixel_at(x, y);
             }
+*/
         }
     }
 

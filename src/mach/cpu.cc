@@ -74,13 +74,38 @@ void Cpu::execute(const uint8_t* instruction)
     const InstrInfo* op_info = (*curr_instr == 0xCB) ?
                                 &CB_INSTR_TABLE[curr_instr[1]] :
                                 &INSTR_TABLE[*curr_instr];
-/*
-    std::cout << "@"
-              << std::setw(5) << std::left << std::hex
-              << PC
-              << disassembler.disassemble(const_cast<uint8_t*>(instruction))
-              << std::endl;
-*/
+
+    static bool do_print = false;
+
+    /*
+    if (PC == 0xc7eb)
+    {
+        do_print = true;
+    }
+    if (do_print)
+    {
+        std::cout << "\n";
+        std::cout << "AF: " << std::hex << AF << "\n";
+        std::cout << "BC: " << std::hex << BC << "\n";
+        std::cout << "DE: " << std::hex << DE << "\n";
+        std::cout << "HL: " << std::hex << HL << "\n";
+        std::cout << "SP: " << std::hex << SP << "\n";
+        std::cout << "PC: " << std::hex << PC << "\n";
+
+        std::cout << "@"
+                  << std::setw(5) << std::left << std::hex
+                  << PC
+                  << disassembler.disassemble(const_cast<uint8_t*>(instruction))
+                  << std::endl;
+    }
+    */
+
+    if (PC == 0xc018)
+    {
+        volatile int a = 0;
+        ++a;
+    }
+
     PC += op_info->len_bytes;
 
     if (op_info->handler) (this->*(op_info->handler))();

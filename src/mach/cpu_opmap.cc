@@ -1072,7 +1072,7 @@ void Cpu::op_D5()
 
 void Cpu::op_D6()
 {
-
+    SUB_A_n8(extract_immediate8());
 }
 
 void Cpu::op_D7()
