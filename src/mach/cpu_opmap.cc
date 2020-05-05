@@ -1208,6 +1208,9 @@ void Cpu::op_F0()
 void Cpu::op_F1()
 {
     POP_r16(AF);
+    // Only the upper nibble of F can be written into, so make sure the lower
+    // nibble is zero.
+    F &= 0xF0;
 }
 
 void Cpu::op_F2()
