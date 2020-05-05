@@ -152,6 +152,8 @@ void Cpu::CP_r8(uint8_t& r8)
 void Cpu::CPL()
 {
     A = ~(A);
+    H_flag_set();
+    N_flag_set();
 }
 
 /* DAA */
@@ -523,6 +525,8 @@ void Cpu::RL_r8(uint8_t& r8)
 void Cpu::RLA()
 {
     RL_r8(A);
+    // NOTE: The Z flag is also updated in RL_r8.
+    Z_flag_reset();
 }
 
 /* RLC */
@@ -552,6 +556,8 @@ void Cpu::RLC_r8(uint8_t& r8)
 void Cpu::RLCA()
 {
     RLC_r8(A);
+    // NOTE: The Z flag is also updated in RLC_r8.
+    Z_flag_reset();
 }
 
 /* RR */
@@ -581,6 +587,8 @@ void Cpu::RR_r8(uint8_t& r8)
 void Cpu::RRA()
 {
     RR_r8(A);
+    // NOTE: The Z flag is also updated in RR_r8.
+    Z_flag_reset();
 }
 
 /* RRC */
@@ -610,6 +618,8 @@ void Cpu::RRC_r8(uint8_t& r8)
 void Cpu::RRCA()
 {
     RRC_r8(A);
+    // NOTE: The Z flag is also updated in RRC_r8.
+    Z_flag_reset();
 }
 
 void Cpu::RST_f(uint8_t f)
