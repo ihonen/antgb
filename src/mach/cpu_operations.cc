@@ -10,8 +10,9 @@ void Cpu::ADC_A_HL()
 void Cpu::ADC_A_n8(uint8_t n8)
 {
     uint16_t result = A + n8 + C_flag_get();
+    H_flag_update(((A & 0x0F) + (n8 & 0x0F) + C_flag_get()) > 0x0F);
+    // Can't call before H_flag_update.
     C_flag_update(result > 0xFF);
-    H_flag_update((A & 0x0F) + (n8 & 0x0F) + C_flag_get() > 0x0F);
     N_flag_reset();
     Z_flag_update((uint8_t)result == 0);
     A = static_cast<uint8_t>(result);
@@ -629,7 +630,7 @@ void Cpu::SBC_A_HL()
 void Cpu::SBC_A_n8(uint8_t n8)
 {
     uint16_t result = A - n8 - C_flag_get();
-    H_flag_update((A & 0x0F) - (n8 & 0x0F) - C_flag_get() > 0x0F);
+    H_flag_update(((n8 & 0x0F) + C_flag_get()) > (A & 0x0F));
     C_flag_update(result > 0xFF);
     N_flag_set();
     Z_flag_update((uint8_t)result == 0);
@@ -749,8 +750,7 @@ void Cpu::SUB_A_n8(uint8_t n8)
 {
     uint16_t result = A - n8;
     C_flag_update(result > 0xFF);
-    // TODO: Check if H flag is handled correctly.
-    H_flag_update((A & 0x0F) - (n8 & 0x0F) > 0x0F);
+    H_flag_update((n8 & 0x0F) > (A & 0x0F));
     N_flag_set();
     Z_flag_update((uint8_t)result == 0);
     A = static_cast<uint8_t>(result);
