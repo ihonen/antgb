@@ -639,9 +639,9 @@ void Cpu::SBC_A_HL()
 
 void Cpu::SBC_A_n8(uint8_t n8)
 {
-    uint16_t result = A - n8 - C_flag_get();
+    uint16_t result = (uint16_t)A - n8 - C_flag_get();
     H_flag_update(((n8 & 0x0F) + C_flag_get()) > (A & 0x0F));
-    C_flag_update(result > 0xFF);
+    C_flag_update(A < n8 + C_flag_get());
     N_flag_set();
     Z_flag_update((uint8_t)result == 0);
     A = static_cast<uint8_t>(result);
@@ -650,13 +650,6 @@ void Cpu::SBC_A_n8(uint8_t n8)
 void Cpu::SBC_A_r8(uint8_t& r8)
 {
     SBC_A_n8(r8);
-}
-
-void Cpu::SUB_A_HL()
-{
-    uint8_t temp = mem->read(HL);
-    SUB_A_n8(temp);
-    mem->write(HL, temp);
 }
 
 /* SCF */
@@ -756,10 +749,18 @@ void Cpu::STOP()
 
 /* SUB */
 
+void Cpu::SUB_A_HL()
+{
+    uint8_t temp = mem->read(HL);
+    SUB_A_n8(temp);
+    mem->write(HL, temp);
+}
+
 void Cpu::SUB_A_n8(uint8_t n8)
 {
     uint16_t result = A - n8;
-    C_flag_update(result > 0xFF);
+    C_flag_update(A < n8);
+//    C_flag_update(result > 0xFF);
     H_flag_update((n8 & 0x0F) > (A & 0x0F));
     N_flag_set();
     Z_flag_update((uint8_t)result == 0);
