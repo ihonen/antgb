@@ -752,7 +752,8 @@ void Cpu::op_95()
 
 void Cpu::op_96()
 {
-
+    //
+    SUB_A_HL();
 }
 
 void Cpu::op_97()
