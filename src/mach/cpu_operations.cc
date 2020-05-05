@@ -167,7 +167,7 @@ void Cpu::DAA()
             A += 0x60;
             C_flag_set();
         }
-        if (H_flag_get() || (A & 0x0F) < 0x09)
+        if (H_flag_get() || (A & 0x0F) > 0x09)
         {
             A += 0x06;
         }
