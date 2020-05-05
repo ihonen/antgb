@@ -441,20 +441,20 @@ void Cpu::OR_r8(uint8_t& r8)
 
 void Cpu::POP_r16(uint16_t& r16)
 {
-    ++(SP);
     r16 = static_cast<uint16_t>(mem->read(SP));
     ++(SP);
     r16 |= static_cast<uint16_t>(mem->read(SP)) << 8;
+    ++(SP);
 }
 
 /* PUSH */
 
 void Cpu::PUSH_r16(uint16_t& r16)
 {
+    --(SP);
     mem->write(SP, static_cast<uint8_t>(r16 >> 8));
     --(SP);
     mem->write(SP, static_cast<uint8_t>(r16));
-    --(SP);
 }
 
 /* RES */
