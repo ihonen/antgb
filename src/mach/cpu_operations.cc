@@ -48,7 +48,7 @@ void Cpu::ADD_HL_r16(uint16_t& r16)
 {
     uint32_t result = HL + r16;
     C_flag_update(result > 0xFFFF);
-    H_flag_update(((HL >> 8) & 0x0F) + ((r16 >> 8) & 0x0F) > 0x0F);
+    H_flag_update(((HL & 0x0FFF) + (r16 & 0x0FFF)) > 0x0FFF);
     N_flag_reset();
     HL = static_cast<uint16_t>(result);
 }
@@ -56,7 +56,7 @@ void Cpu::ADD_HL_r16(uint16_t& r16)
 void Cpu::ADD_SP_e8(int8_t e8)
 {
     uint32_t result = static_cast<uint32_t>(SP) + e8;
-    C_flag_update(result > 0xFFFF);
+    C_flag_update(((SP & 0x00FF) + static_cast<uint8_t>(e8)) > 0x00FF);
     H_flag_update(((SP & 0x000F) + (static_cast<uint8_t>(e8 & 0x0F))) > 0x0F);
     N_flag_reset();
     Z_flag_reset();
@@ -339,7 +339,8 @@ void Cpu::LD_A_r16(uint16_t& r16)
 void Cpu::LD_HL_SP_e8(int8_t e8)
 {
     uint32_t result = static_cast<uint32_t>(SP) + e8;
-    C_flag_update(result > 0xFFFF);
+    C_flag_update(((SP & 0x00FF) + static_cast<uint8_t>(e8)) > 0x00FF);
+//    C_flag_update(result > 0xFFFF);
     H_flag_update((SP & 0x000F) + static_cast<uint16_t>(e8 & 0x0F) > 0x0F);
     N_flag_reset();
     Z_flag_reset();
