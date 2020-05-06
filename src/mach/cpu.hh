@@ -6,6 +6,7 @@
 #include "../error/exception.hh"
 #include "../util/typedefs.hh"
 #include <array>
+#include <fstream>
 
 using std::array;
 
@@ -54,6 +55,8 @@ public:
         uint8_t cycles_on_no_action;
         void   (Cpu::*handler)();
     } InstrInfo;
+
+    std::ofstream trace_log;
 
     // Main memory, 65 KB
     Memory* mem;

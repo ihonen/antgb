@@ -208,15 +208,21 @@ void Cpu::DEC_r8(uint8_t& r8)
 
 void Cpu::DI()
 {
+    DI_status = IMEStatus::RESET_NEXT_CYCLE;
+    /*
     if (DI_status == IMEStatus::DO_NOTHING)
         DI_status = IMEStatus::RESET_NEXT_CYCLE;
+    */
 }
 
 /* EI */
 void Cpu::EI()
 {
+    EI_status = IMEStatus::SET_NEXT_CYCLE;
+    /*
     if (EI_status == IMEStatus::DO_NOTHING)
         EI_status = IMEStatus::SET_NEXT_CYCLE;
+    */
 }
 
 /* HALT */
@@ -498,6 +504,8 @@ void Cpu::RETI()
         is_interrupted = false;
     }
     irc->ime_flag_set();
+    EI_status = IMEStatus::DO_NOTHING;
+    DI_status = IMEStatus::DO_NOTHING;
 }
 
 void Cpu::RL_HL()

@@ -10,6 +10,7 @@ Cpu::Cpu(Memory* memory, InterruptController* irc_) :
     mem(memory),
     irc(irc_)
 {
+    trace_log.open("trace.log", std::ofstream::out);
     hard_reset();
 }
 
@@ -77,34 +78,40 @@ void Cpu::execute(const uint8_t* instruction)
 
     static bool do_print = false;
 
-    /*
-    if (PC == 0xc7eb)
-    {
-        do_print = true;
-    }
+    do_print = true;
+
     if (do_print)
     {
-        std::cout << "\n";
-        std::cout << "AF: " << std::hex << AF << "\n";
-        std::cout << "BC: " << std::hex << BC << "\n";
-        std::cout << "DE: " << std::hex << DE << "\n";
-        std::cout << "HL: " << std::hex << HL << "\n";
-        std::cout << "SP: " << std::hex << SP << "\n";
-        std::cout << "PC: " << std::hex << PC << "\n";
+        /*
+        trace_log << "\n";
+        trace_log << "AF: " << std::hex << AF << "\n";
+        trace_log << "BC: " << std::hex << BC << "\n";
+        trace_log << "DE: " << std::hex << DE << "\n";
+        trace_log << "HL: " << std::hex << HL << "\n";
+        trace_log << "SP: " << std::hex << SP << "\n";
+        trace_log << "PC: " << std::hex << PC << "\n";
+        */
 
-        std::cout << "@"
+        /*
+        cout      << "@"
                   << std::setw(5) << std::left << std::hex
                   << PC
                   << disassembler.disassemble(const_cast<uint8_t*>(instruction))
                   << std::endl;
-    }
-    */
+        */
 
-    if (PC == 0xc018)
-    {
-        volatile int a = 0;
-        ++a;
+
+        /*
+        */
     }
+
+    do_print = false;
+
+    trace_log << "@"
+              << std::setw(5) << std::left << std::hex
+              << PC
+              << disassembler.disassemble(const_cast<uint8_t*>(instruction))
+              << std::endl;
 
     PC += op_info->len_bytes;
 
@@ -118,8 +125,16 @@ void Cpu::execute(const uint8_t* instruction)
         clock_cycles += op_info->cycles_on_no_action;
     }
 
-    if (DI_status == IMEStatus::RESET_THIS_CYCLE) irc->ime_flag_clear();
-    else if (EI_status == IMEStatus::SET_THIS_CYCLE) irc->ime_flag_set();
+    if (DI_status == IMEStatus::RESET_THIS_CYCLE)
+    {
+        irc->ime_flag_clear();
+        DI_status = IMEStatus::DO_NOTHING;
+    }
+    else if (EI_status == IMEStatus::SET_THIS_CYCLE)
+    {
+        irc->ime_flag_set();
+        DI_status = IMEStatus::DO_NOTHING;
+    }
 }
 
 uint8_t Cpu::extract_immediate8(const uint8_t* instruction)
@@ -154,7 +169,7 @@ void Cpu::jump_to_isr(memaddr_t vector_address)
 {
     if (vector_address == 0x00) return;
 
-    cout << "Jumping to interrupt vector @ " << vector_address << endl;
+    cout << "Jumping to interrupt vector @ " << std::hex << vector_address << endl;
 
     is_interrupted = true;
     irc->ime_flag_clear();

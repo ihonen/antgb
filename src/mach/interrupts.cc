@@ -62,7 +62,7 @@ bool InterruptController::interrupt_requested(int source)
 
 bool InterruptController::interrupt_enabled(int source)
 {
-    return (mem->hff0f_if & (0x01 << source)) != 0;
+    return (*mem->hffff_ie & (0x01 << source)) != 0;
 }
 
 void InterruptController::clear_interrupt(int source)
@@ -72,10 +72,10 @@ void InterruptController::clear_interrupt(int source)
 
 void InterruptController::disable_interrupt(int source)
 {
-    mem->hff0f_if &= ~(0x01 << source);
+    *mem->hffff_ie &= ~(0x01 << source);
 }
 
 void InterruptController::enable_interrupt(int source)
 {
-    mem->hff0f_if |= 0x01 << source;
+    *mem->hffff_ie |= 0x01 << source;
 }
