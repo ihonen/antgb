@@ -208,31 +208,26 @@ void Cpu::DEC_r8(uint8_t& r8)
 
 void Cpu::DI()
 {
-    DI_status = IMEStatus::RESET_NEXT_CYCLE;
-    /*
-    if (DI_status == IMEStatus::DO_NOTHING)
-        DI_status = IMEStatus::RESET_NEXT_CYCLE;
-    */
+    DI_action = IMEStatus::RESET_NEXT_CYCLE;
 }
 
 /* EI */
 void Cpu::EI()
 {
-    EI_status = IMEStatus::SET_NEXT_CYCLE;
-    /*
-    if (EI_status == IMEStatus::DO_NOTHING)
-        EI_status = IMEStatus::SET_NEXT_CYCLE;
-    */
+    EI_action = IMEStatus::SET_NEXT_CYCLE;
 }
 
 /* HALT */
 
 void Cpu::HALT()
 {
-    if (irc->ime_flag_get())
-        is_halted = true;
-    else
-        PC += 2; // Next instruction is skipped
+    // This is documented here:
+    // https://www.reddit.com/r/EmuDev/comments/5bfb2t/a_subtlety_about_the_gameboy_z80_halt_instruction/
+
+    // TODO: Implement more accurately.
+    is_halted = true;
+
+    PC += 1; // Next instruction is skipped (DMG bug)
 }
 
 /* INC */
@@ -502,13 +497,9 @@ void Cpu::RET_cc(bool cc)
 void Cpu::RETI()
 {
     RET();
-    if (is_interrupted)
-    {
-        is_interrupted = false;
-    }
     irc->ime_flag_set();
-    EI_status = IMEStatus::DO_NOTHING;
-    DI_status = IMEStatus::DO_NOTHING;
+    EI_action = IMEStatus::DO_NOTHING;
+    DI_action = IMEStatus::DO_NOTHING;
 }
 
 void Cpu::RL_HL()

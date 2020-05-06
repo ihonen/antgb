@@ -34,8 +34,8 @@ public:
     InterruptController(Memory* mem);
 
     void hard_reset();
-    bool has_active_requests();
-    InterruptInfo accept_next_request();
+    bool has_pending_requests();
+    InterruptInfo next_request();
     uint8_t ime_flag_get();
     void ime_flag_set();
     void ime_flag_clear();

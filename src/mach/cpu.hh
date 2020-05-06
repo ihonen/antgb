@@ -99,12 +99,11 @@ public:
     // on whether the condition was true (i.e. branch happened) or not.
     bool branch_taken = false;
 
-    enum IMEStatus DI_status = IMEStatus::DO_NOTHING;
-    enum IMEStatus EI_status = IMEStatus::DO_NOTHING;
+    enum IMEStatus DI_action = IMEStatus::DO_NOTHING;
+    enum IMEStatus EI_action = IMEStatus::DO_NOTHING;
 
     bool is_halted = false;
     bool is_stopped = false;
-    bool is_interrupted = false;
     uint64_t clock_cycles = 0;
 
     void     hard_reset();

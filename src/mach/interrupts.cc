@@ -15,19 +15,17 @@ void InterruptController::hard_reset()
     interrupt_master_enable = 0x00;
 }
 
-bool InterruptController::has_active_requests()
+bool InterruptController::has_pending_requests()
 {
-    return ime_flag_get() && (mem->hff0f_if & 0x1F) != 0;
+    return (mem->hff0f_if & 0x1F) != 0;
 }
 
-InterruptController::InterruptInfo InterruptController::accept_next_request()
+InterruptController::InterruptInfo InterruptController::next_request()
 {
     for (InterruptId i = VBlankInterrupt; i < JoypadInterrupt; i = (InterruptId)((int)i + 1))
     {
         if (interrupt_enabled(i) && interrupt_requested(i))
         {
-            ime_flag_clear();
-            clear_interrupt(i);
             return {(InterruptId)i, VECTOR_ADDRESS[i]};
         }
     }

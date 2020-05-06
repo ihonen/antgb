@@ -29,8 +29,8 @@ void Cpu::hard_reset()
     reg = {0};
     curr_instr = nullptr;
     branch_taken = false;
-    DI_status = IMEStatus::DO_NOTHING;
-    EI_status = IMEStatus::DO_NOTHING;
+    DI_action = IMEStatus::DO_NOTHING;
+    EI_action = IMEStatus::DO_NOTHING;
     is_halted = false;
     is_stopped = false;
     clock_cycles = 0;
@@ -49,91 +49,113 @@ void Cpu::execute(const uint8_t* instruction)
     curr_instr = instruction;
     branch_taken = false;
 
-    // Nested interrupts are possible if the user has set IME
-    // in the handler, so no if statement here.
-    if (irc->has_active_requests())
+    if (DI_action == IMEStatus::RESET_NEXT_CYCLE)
+        DI_action = IMEStatus::RESET_THIS_CYCLE;
+    else if (EI_action == IMEStatus::SET_NEXT_CYCLE)
+        EI_action = IMEStatus::SET_THIS_CYCLE;
+
+    if (irc->has_pending_requests())
     {
-        auto interrupt = irc->accept_next_request();
+        auto interrupt = irc->next_request();
+
         if (interrupt.source != InterruptController::NoInterrupt)
         {
-            if (is_halted) is_halted = false;
-            if (is_stopped && interrupt.source == InterruptController::JoypadInterrupt)
+            is_halted = false;
+            if (interrupt.source == InterruptController::JoypadInterrupt)
+            {
+                // TODO: Does this require an actual
+                // interrupt or just a button press?
                 is_stopped = false;
-            jump_to_isr(interrupt.vector_address);
-            return;
+            }
+
+            if (irc->ime_flag_get())
+            {
+                irc->ime_flag_clear();
+                irc->clear_interrupt(interrupt.source);
+                jump_to_isr(interrupt.vector_address);
+                return;
+            }
+
         }
     }
 
-    if (is_halted) return;
-    if (is_stopped) return;
-
-    if (DI_status == IMEStatus::RESET_NEXT_CYCLE)
-        DI_status = IMEStatus::RESET_THIS_CYCLE;
-    else if (EI_status == IMEStatus::SET_NEXT_CYCLE)
-        EI_status = IMEStatus::SET_THIS_CYCLE;
-
-    const InstrInfo* op_info = (*curr_instr == 0xCB) ?
-                                &CB_INSTR_TABLE[curr_instr[1]] :
-                                &INSTR_TABLE[*curr_instr];
-
-    static bool do_print = false;
-
-    do_print = true;
-
-    if (do_print)
+    if (!is_halted && !is_stopped)
     {
-        /*
-        trace_log << "\n";
-        trace_log << "AF: " << std::hex << AF << "\n";
-        trace_log << "BC: " << std::hex << BC << "\n";
-        trace_log << "DE: " << std::hex << DE << "\n";
-        trace_log << "HL: " << std::hex << HL << "\n";
-        trace_log << "SP: " << std::hex << SP << "\n";
-        trace_log << "PC: " << std::hex << PC << "\n";
-        */
+        const InstrInfo* op_info = (*curr_instr == 0xCB) ?
+                                    &CB_INSTR_TABLE[curr_instr[1]] :
+                                    &INSTR_TABLE[*curr_instr];
 
-        /*
-        cout      << "@"
+        static bool do_print = false;
+
+        do_print = true;
+
+        if (do_print)
+        {
+            /*
+            trace_log << "\n";
+            trace_log << "AF: " << std::hex << AF << "\n";
+            trace_log << "BC: " << std::hex << BC << "\n";
+            trace_log << "DE: " << std::hex << DE << "\n";
+            trace_log << "HL: " << std::hex << HL << "\n";
+            trace_log << "SP: " << std::hex << SP << "\n";
+            trace_log << "PC: " << std::hex << PC << "\n";
+            */
+
+            /*
+            cout      << "@"
+                      << std::setw(5) << std::left << std::hex
+                      << PC
+                      << disassembler.disassemble(const_cast<uint8_t*>(instruction))
+                      << std::endl;
+            */
+
+
+            /*
+            */
+        }
+
+        do_print = false;
+
+        trace_log << "@"
                   << std::setw(5) << std::left << std::hex
                   << PC
                   << disassembler.disassemble(const_cast<uint8_t*>(instruction))
                   << std::endl;
-        */
+        trace_log << std::flush;
 
+        if (PC == 0x51)
+        {
+            volatile int a = 0;
+        }
 
-        /*
-        */
+        PC += op_info->len_bytes;
+
+        if (op_info->handler) (this->*(op_info->handler))();
+        else invalid_opcode();
+
+        if (branch_taken)
+            clock_cycles += op_info->cycles_on_action;
+        else
+        {
+            clock_cycles += op_info->cycles_on_no_action;
+        }
+
     }
-
-    do_print = false;
-
-    trace_log << "@"
-              << std::setw(5) << std::left << std::hex
-              << PC
-              << disassembler.disassemble(const_cast<uint8_t*>(instruction))
-              << std::endl;
-
-    PC += op_info->len_bytes;
-
-    if (op_info->handler) (this->*(op_info->handler))();
-    else invalid_opcode();
-
-    if (branch_taken)
-        clock_cycles += op_info->cycles_on_action;
     else
     {
-        clock_cycles += op_info->cycles_on_no_action;
+        // Halted or stopped, so advance time by one machine cycle.
+        clock_cycles += 4;
     }
 
-    if (DI_status == IMEStatus::RESET_THIS_CYCLE)
+    if (DI_action == IMEStatus::RESET_THIS_CYCLE)
     {
         irc->ime_flag_clear();
-        DI_status = IMEStatus::DO_NOTHING;
+        DI_action = IMEStatus::DO_NOTHING;
     }
-    else if (EI_status == IMEStatus::SET_THIS_CYCLE)
+    else if (EI_action == IMEStatus::SET_THIS_CYCLE)
     {
         irc->ime_flag_set();
-        DI_status = IMEStatus::DO_NOTHING;
+        DI_action = IMEStatus::DO_NOTHING;
     }
 }
 
@@ -169,14 +191,15 @@ void Cpu::jump_to_isr(memaddr_t vector_address)
 {
     if (vector_address == 0x00) return;
 
+    /*
     cout << "Jumping to interrupt vector @ " << std::hex << vector_address << endl;
+    */
 
-    is_interrupted = true;
     irc->ime_flag_clear();
     PUSH_r16(PC);
     PC = vector_address;
     curr_instr = mem->get(PC);
-    DI_status = IMEStatus::DO_NOTHING;
-    EI_status = IMEStatus::DO_NOTHING;
+    DI_action = IMEStatus::DO_NOTHING;
+    EI_action = IMEStatus::DO_NOTHING;
     clock_cycles += 20;
 }
