@@ -229,7 +229,10 @@ void Cpu::EI()
 
 void Cpu::HALT()
 {
-    is_halted = true;
+    if (irc->ime_flag_get())
+        is_halted = true;
+    else
+        PC += 2; // Next instruction is skipped
 }
 
 /* INC */
