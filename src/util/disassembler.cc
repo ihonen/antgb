@@ -365,24 +365,42 @@ std::string Disassembler::disassemble(void* instruction_)
         }
         else
         {
-            return "";
+            volatile uint8_t second_byte = instruction[1];
+            return "INVALID OPCODE";
         }
     }
     else
     {
-        return "";
+        return "INVALID OPCODE (" + std::to_string(instruction[0]) + ")";
     }
 
-    switch (instruction[1] & 0x0F)
+    if (instruction[0] == 0xCB)
     {
-        case 0x00: case 0x08: return mnemonic + "B";
-        case 0x01: case 0x09: return mnemonic + "C";
-        case 0x02: case 0x0A: return mnemonic + "D";
-        case 0x03: case 0x0B: return mnemonic + "E";
-        case 0x04: case 0x0C: return mnemonic + "H";
-        case 0x05: case 0x0D: return mnemonic + "L";
-        case 0x06: case 0x0E: return mnemonic + "(HL)";
-        case 0x07: case 0x0F: return mnemonic + "A";
+        switch (instruction[1] & 0x0F)
+        {
+            case 0x00: case 0x08: return mnemonic + "B";
+            case 0x01: case 0x09: return mnemonic + "C";
+            case 0x02: case 0x0A: return mnemonic + "D";
+            case 0x03: case 0x0B: return mnemonic + "E";
+            case 0x04: case 0x0C: return mnemonic + "H";
+            case 0x05: case 0x0D: return mnemonic + "L";
+            case 0x06: case 0x0E: return mnemonic + "(HL)";
+            case 0x07: case 0x0F: return mnemonic + "A";
+        }
+    }
+    else
+    {
+        switch (instruction[0] & 0x0F)
+        {
+            case 0x00: case 0x08: return mnemonic + "B";
+            case 0x01: case 0x09: return mnemonic + "C";
+            case 0x02: case 0x0A: return mnemonic + "D";
+            case 0x03: case 0x0B: return mnemonic + "E";
+            case 0x04: case 0x0C: return mnemonic + "H";
+            case 0x05: case 0x0D: return mnemonic + "L";
+            case 0x06: case 0x0E: return mnemonic + "(HL)";
+            case 0x07: case 0x0F: return mnemonic + "A";
+        }
     }
 
     return mnemonic;
