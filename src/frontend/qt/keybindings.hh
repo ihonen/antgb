@@ -1,10 +1,9 @@
 #pragma once
 
 #include "../../core/joypad.hh"
-#include <map>
 #include <QKeyEvent>
 
-const std::map<int, Joypad::Button> KEYMAP
+const std::map<int, Joypad::Button> JOYPAD_KEYMAP
 {
     {Qt::Key_W,         Joypad::Button::Up},
     {Qt::Key_S,         Joypad::Button::Down},

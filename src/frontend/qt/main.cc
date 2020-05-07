@@ -2,6 +2,7 @@
 #include "mainwindow.hh"
 
 #include <QApplication>
+#include <QTextStream>
 #include <cstdint>
 #include <iostream>
 #include <cstdio>
@@ -14,8 +15,14 @@ int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
 
-    Emulator gb;
-    MainWindow main_window(&gb, nullptr);
+    QFile file(":/dark/dark.qss");
+    file.open(QFile::ReadOnly | QFile::Text);
+    QTextStream stream(&file);
+    app.setStyleSheet(stream.readAll());
+
+    Emulator emu;
+    DebugCore debugger(&emu);
+    MainWindow main_window(&emu, &debugger);
     main_window.show();
 
     app.exec();

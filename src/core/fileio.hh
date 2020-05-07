@@ -4,3 +4,5 @@
 #include <QString>
 
 void load_rom(QString& filepath, uint8_t* memory);
+
+#include <QFile>

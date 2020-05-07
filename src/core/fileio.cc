@@ -12,7 +12,6 @@ void load_rom(QString& filepath, uint8_t* memory)
         assert(false && "Couldn't open ROM file");
     }
 
-    QByteArray executable(file.readAll());
-    assert(executable.size() != 0);
+    QByteArray executable = file.readAll();
     memcpy(memory, executable.data(), (size_t)executable.size() - 1);
 }

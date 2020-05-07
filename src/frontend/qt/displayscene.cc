@@ -1,4 +1,4 @@
-#include "displaywidget.hh"
+#include "displayscene.hh"
 
 #include <QGraphicsRectItem>
 
@@ -30,7 +30,7 @@ static const uint32_t colors[4] =
 
 #include <chrono>
 
-void DisplayWidget::on_frame_ready()
+void DisplayScene::on_frame_ready()
 {
     auto frame_buffer = renderer->get_frame_buffer();
 
@@ -45,7 +45,7 @@ void DisplayWidget::on_frame_ready()
     item->setPixmap(QPixmap::fromImage(image));
 }
 
-DisplayWidget::DisplayWidget(Memory* memory, Renderer* renderer_, QObject* parent) :
+DisplayScene::DisplayScene(Memory* memory, Renderer* renderer_, QObject* parent) :
     QGraphicsScene(parent),
     renderer(renderer_),
     mem(memory)
@@ -56,7 +56,7 @@ DisplayWidget::DisplayWidget(Memory* memory, Renderer* renderer_, QObject* paren
     addItem(item);
 }
 
-void DisplayWidget::set_pixel(int x, int y, uint32_t color)
+void DisplayScene::set_pixel(int x, int y, uint32_t color)
 {
     for (auto x_offset = 0; x_offset < 2; ++x_offset)
     {

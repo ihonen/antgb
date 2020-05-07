@@ -366,12 +366,12 @@ std::string Disassembler::disassemble(void* instruction_)
         else
         {
             volatile uint8_t second_byte = instruction[1];
-            return "INVALID OPCODE";
+            return "---";
         }
     }
     else
     {
-        return "INVALID OPCODE (" + std::to_string(instruction[0]) + ")";
+        return "---";
     }
 
     if (instruction[0] == 0xCB)
@@ -404,4 +404,18 @@ std::string Disassembler::disassemble(void* instruction_)
     }
 
     return mnemonic;
+}
+
+size_t Disassembler::instr_len(void* instruction)
+{
+    uint8_t first_byte = ((uint8_t*)instruction)[0];
+    if (first_byte != 0xCB)
+    {
+        return Cpu::INSTR_TABLE[first_byte].len_bytes;
+    }
+    else
+    {
+        uint8_t second_byte = ((uint8_t*)instruction)[1];
+        return Cpu::CB_INSTR_TABLE[second_byte].len_bytes;
+    }
 }

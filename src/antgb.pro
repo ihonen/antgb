@@ -45,10 +45,31 @@ SOURCES += \
     core/sprites.cc \
     core/tile.cc \
     core/timer.cc \
+    debugger/debugcore.cc \
     debugger/disassembler.cc \
-    frontend/qt/displaywidget.cc \
+    frontend/qt/button.cc \
+    frontend/qt/buttoninputwidget.cc \
+    frontend/qt/colors.cc \
+    frontend/qt/datamodel.cc \
+    frontend/qt/dataviewer.cc \
+    frontend/qt/displayscene.cc \
+    frontend/qt/emulatorwidget.cc \
+    frontend/qt/fonts.cc \
+    frontend/qt/helper.cc \
+    frontend/qt/instructionmodel.cc \
+    frontend/qt/instructionview.cc \
+    frontend/qt/instructionviewer.cc \
     frontend/qt/main.cc \
-    frontend/qt/mainwindow.cc
+    frontend/qt/mainwindow.cc \
+    frontend/qt/memorymodel.cc \
+    frontend/qt/memoryviewer.cc \
+    frontend/qt/pixmaps.cc \
+    frontend/qt/registermodel.cc \
+    frontend/qt/registerviewer.cc \
+    frontend/qt/serialviewer.cc \
+    frontend/qt/stackmodel.cc \
+    frontend/qt/stackviewer.cc \
+    frontend/qt/vramviewer.cc
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -74,14 +95,37 @@ HEADERS += \
     core/tile.hh \
     core/timer.hh \
     core/types.hh \
+    debugger/debugcore.hh \
+    debugger/debugobserver.hh \
     debugger/disassembler.hh \
-    frontend/qt/displaywidget.hh \
+    frontend/qt/button.hh \
+    frontend/qt/buttoninputwidget.hh \
+    frontend/qt/colors.hh \
+    frontend/qt/datamodel.hh \
+    frontend/qt/dataviewer.hh \
+    frontend/qt/displayscene.hh \
+    frontend/qt/emulatorwidget.hh \
+    frontend/qt/fonts.hh \
+    frontend/qt/helper.hh \
+    frontend/qt/instructionmodel.hh \
+    frontend/qt/instructionview.hh \
+    frontend/qt/instructionviewer.hh \
     frontend/qt/keybindings.hh \
     frontend/qt/mainwindow.hh \
+    frontend/qt/memorymodel.hh \
+    frontend/qt/memoryviewer.hh \
+    frontend/qt/pixmaps.hh \
+    frontend/qt/registermodel.hh \
+    frontend/qt/registerviewer.hh \
+    frontend/qt/serialviewer.hh \
+    frontend/qt/stackmodel.hh \
+    frontend/qt/stackviewer.hh \
+    frontend/qt/vramviewer.hh \
     util/macros.hh
 
 RESOURCES += \
+    frontend/qt/dark.qrc \
+    frontend/qt/img.qrc \
     memdump.qrc
 
-FORMS += \
-    frontend/qt/debugwidget.ui
+FORMS +=

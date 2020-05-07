@@ -4,7 +4,7 @@
 #include <iomanip>
 #include <iostream>
 
-Disassembler disassembler;
+static Disassembler disassembler;
 
 Cpu::Cpu(Memory* memory, Irc* irc_) :
     mem(memory),
@@ -26,7 +26,7 @@ void Cpu::restart()
 
 void Cpu::hard_reset()
 {
-    reg = {0};
+    regs.reg = {0};
     curr_instr = nullptr;
     branch_taken = false;
     DI_action = IMEStatus::DO_NOTHING;

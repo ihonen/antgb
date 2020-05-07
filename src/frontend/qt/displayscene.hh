@@ -1,13 +1,14 @@
 #pragma once
+
 #include "../../core/renderer.hh"
 #include <QGraphicsScene>
 
-class DisplayWidget : public QGraphicsScene
+class DisplayScene : public QGraphicsScene
 {
 public slots:
     void on_frame_ready();
 public:    
-    DisplayWidget(Memory* memory, Renderer* renderer, QObject* parent = nullptr);
+    DisplayScene(Memory* memory, Renderer* renderer, QObject* parent = nullptr);
     void set_pixel(int x, int y, uint32_t color);
 
     static constexpr uint16_t RES_X = 160;

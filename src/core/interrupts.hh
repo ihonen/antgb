@@ -5,6 +5,15 @@
 class Irc
 {
 public:
+
+    // TODO: Deploy
+    struct Registers
+    {
+        uint8_t IME;
+        uint8_t IE;
+        uint8_t IF;
+    } regs;
+
     enum InterruptId
     {
         VBlankInterrupt = 0x00,

@@ -4,6 +4,8 @@
 #include <cstring>
 #include <iostream>
 
+#include <QFile>
+
 Memory::Memory()
 {
     hard_reset();
@@ -22,8 +24,17 @@ void Memory::hard_reset()
     memset(hffff_ie, 0x00, IE.size);
 
     // Load memory contents after boot ROM execution.
+    // TODO: Get rid of Qt dependency.
+
     QString dump_filepath = ":/memdump/afterboot.dump";
     uint8_t* afterboot_dump = new uint8_t[0x10000];
+/*
+    QFile file(dump_filepath);
+    file.open(QIODevice::ReadOnly);
+    QByteArray bytearray(file.readAll());
+    memcpy(afterboot_dump, bytearray.data(), 0x10000);
+    file.close();
+*/
     load_rom(dump_filepath, afterboot_dump);
     for (size_t i = 0; i < 0x10000; ++i)
     {
@@ -33,6 +44,7 @@ void Memory::hard_reset()
         }
     }
     delete[] afterboot_dump;
+
 
     /*
     hff05_tima = 0x00;
