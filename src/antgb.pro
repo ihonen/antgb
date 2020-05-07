@@ -25,30 +25,30 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++14
 
 SOURCES += \
-    gfx/background.cc \
-    gfx/renderer.cc \
-    gfx/sprite.cc \
-    gfx/sprites.cc \
-    gfx/tile.cc \
-    mach/cartridge.cc \
-    mach/cpu.cc \
-    mach/interrupts.cc \
-    mach/joypad.cc \
-    mach/memory.cc \
-    mach/ppu.cc \
-    mach/serial.cc \
-    mach/timer.cc \
-    main.cc \
-    mach/cpu_flags.cc \
-    mach/cpu_opmap.cc \
-    mach/cpu_opcodes.cc \
-    mach/cpu_operations.cc \
-    mach/machine.cc \
-    ui/display.cc \
-    ui/mainwindow.cc \
-    util/bitmanip.cc \
-    util/disassembler.cc \
-    util/fileio.cc
+    core/background.cc \
+    core/bitmanip.cc \
+    core/cartridge.cc \
+    core/cpu.cc \
+    core/cpu_flags.cc \
+    core/cpu_opcodes.cc \
+    core/cpu_operations.cc \
+    core/cpu_opmap.cc \
+    core/emulator.cc \
+    core/fileio.cc \
+    core/interrupts.cc \
+    core/joypad.cc \
+    core/memory.cc \
+    core/ppu.cc \
+    core/renderer.cc \
+    core/serial.cc \
+    core/sprite.cc \
+    core/sprites.cc \
+    core/tile.cc \
+    core/timer.cc \
+    debugger/disassembler.cc \
+    frontend/qt/displaywidget.cc \
+    frontend/qt/main.cc \
+    frontend/qt/mainwindow.cc
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -56,28 +56,32 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    error/exception.hh \
-    gfx/background.hh \
-    gfx/renderer.hh \
-    gfx/sprite.hh \
-    gfx/sprites.hh \
-    gfx/tile.hh \
-    mach/cartridge.hh \
-    mach/cpu.hh \
-    mach/interrupts.hh \
-    mach/joypad.hh \
-    mach/machine.hh \
-    mach/memory.hh \
-    mach/ppu.hh \
-    mach/serial.hh \
-    mach/timer.hh \
-    ui/display.hh \
-    ui/keybindings.hh \
-    ui/mainwindow.hh \
-    util/bitmanip.hh \
-    util/disassembler.hh \
-    util/fileio.hh \
-    util/typedefs.hh
+    core/background.hh \
+    core/bitmanip.hh \
+    core/cartridge.hh \
+    core/cpu.hh \
+    core/emulator.hh \
+    core/exceptions.hh \
+    core/fileio.hh \
+    core/interrupts.hh \
+    core/joypad.hh \
+    core/memory.hh \
+    core/ppu.hh \
+    core/renderer.hh \
+    core/serial.hh \
+    core/sprite.hh \
+    core/sprites.hh \
+    core/tile.hh \
+    core/timer.hh \
+    core/types.hh \
+    debugger/disassembler.hh \
+    frontend/qt/displaywidget.hh \
+    frontend/qt/keybindings.hh \
+    frontend/qt/mainwindow.hh \
+    util/macros.hh
 
 RESOURCES += \
     memdump.qrc
+
+FORMS += \
+    frontend/qt/debugwidget.ui
