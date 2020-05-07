@@ -60,6 +60,7 @@ void Cpu::execute(const uint8_t* instruction)
 
         if (interrupt.source != InterruptController::NoInterrupt)
         {
+            bool was_halted = is_halted;
             is_halted = false;
             if (interrupt.source == InterruptController::JoypadInterrupt)
             {
@@ -70,12 +71,12 @@ void Cpu::execute(const uint8_t* instruction)
 
             if (irc->ime_flag_get())
             {
+                if (was_halted) clock_cycles += 4;
                 irc->ime_flag_clear();
                 irc->clear_interrupt(interrupt.source);
                 jump_to_isr(interrupt.vector_address);
                 return;
             }
-
         }
     }
 
@@ -116,14 +117,16 @@ void Cpu::execute(const uint8_t* instruction)
 
         do_print = false;
 
+        /*
         trace_log << "@"
                   << std::setw(5) << std::left << std::hex
                   << PC
                   << disassembler.disassemble(const_cast<uint8_t*>(instruction))
                   << std::endl;
         trace_log << std::flush;
+        */
 
-        if (PC == 0x51)
+        if (PC == 0x06f1)
         {
             volatile int a = 0;
         }
@@ -191,9 +194,7 @@ void Cpu::jump_to_isr(memaddr_t vector_address)
 {
     if (vector_address == 0x00) return;
 
-    /*
-    cout << "Jumping to interrupt vector @ " << std::hex << vector_address << endl;
-    */
+    trace_log << "Jumping to interrupt vector @ " << std::hex << vector_address << endl;
 
     irc->ime_flag_clear();
     PUSH_r16(PC);

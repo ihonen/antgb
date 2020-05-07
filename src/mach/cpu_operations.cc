@@ -208,7 +208,8 @@ void Cpu::DEC_r8(uint8_t& r8)
 
 void Cpu::DI()
 {
-    DI_action = IMEStatus::RESET_NEXT_CYCLE;
+    // No delay in DI.
+    DI_action = IMEStatus::RESET_THIS_CYCLE;
 }
 
 /* EI */
