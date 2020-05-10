@@ -37,7 +37,7 @@ static std::map<memaddr_t, Mask> MASK
     // NR52
     {0xFF26, {0b11111111, 0b00000000, 0b00001111}},
     //STAT
-    {0xFF41, {0b01111111, 0b10000000, 0b10000011}},
+    {0xFF41, {0b01111111, 0b10000000, 0b10000111}},
     // IF
     {0xFF00, {0b00011111, 0b11100000, 0b11100000}},
     // IE
@@ -71,7 +71,7 @@ void Memory::hard_reset()
     {
         if (i >= VRAM.low)
         {
-            write(i, afterboot_dump[i]);
+            force_write(i, afterboot_dump[i]);
         }
     }
     delete[] afterboot_dump;
@@ -142,7 +142,6 @@ uint8_t Memory::read(memaddr_t address)
 
 bool Memory::write(memaddr_t address, uint8_t value)
 {
-
     uint8_t* dest = get(address);
     if (!dest) return false;
 
@@ -151,13 +150,8 @@ bool Memory::write(memaddr_t address, uint8_t value)
     if (MASK.count(address))
         readonly_mask = MASK[address].readonly;
 
-    if (address == 0xFF4A)
-    {
-        cerr << std::hex << (size_t)value << ", ";
-        cerr << std::hex << (size_t)(value | readonly_mask) << endl;
-
-        cerr << std::hex << (size_t)hff4a_wy << endl;
-    }
+    if (address == 0xFF41)
+        int a = 5;
 
     // DIV
     if (address == 0xFF04) value = 0x00;
@@ -167,13 +161,10 @@ bool Memory::write(memaddr_t address, uint8_t value)
     return true;
 }
 
-uint8_t Memory::force_read(memaddr_t)
+bool Memory::force_write(memaddr_t address, uint8_t value)
 {
-    return 0;
-}
-
-bool Memory::force_write(memaddr_t address)
-{
+    auto dest = get(address);
+    if (dest) *dest = value;
     return 0;
 }
 
