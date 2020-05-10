@@ -46,6 +46,7 @@ void Cpu::hard_reset()
 void Cpu::execute(const uint8_t* instruction)
 {
     if (!instruction) instruction = mem->get(PC);
+    assert(instruction);
     curr_instr = instruction;
     branch_taken = false;
 
@@ -90,7 +91,6 @@ void Cpu::execute(const uint8_t* instruction)
 
         if (do_print)
         {
-            /*
             trace_log << "\n";
             trace_log << "AF: " << std::hex << AF << "\n";
             trace_log << "BC: " << std::hex << BC << "\n";
@@ -98,6 +98,14 @@ void Cpu::execute(const uint8_t* instruction)
             trace_log << "HL: " << std::hex << HL << "\n";
             trace_log << "SP: " << std::hex << SP << "\n";
             trace_log << "PC: " << std::hex << PC << "\n";
+
+        trace_log << "@"
+                  << std::setw(5) << std::left << std::hex
+                  << PC
+                  << disassembler.disassemble(const_cast<uint8_t*>(instruction))
+                  << "\n";
+        trace_log << std::flush;
+        /*
             */
 
             /*
@@ -114,15 +122,6 @@ void Cpu::execute(const uint8_t* instruction)
         }
 
         do_print = false;
-
-        /*
-        trace_log << "@"
-                  << std::setw(5) << std::left << std::hex
-                  << PC
-                  << disassembler.disassemble(const_cast<uint8_t*>(instruction))
-                  << std::endl;
-        trace_log << std::flush;
-        */
 
         if (PC == 0x06f1)
         {

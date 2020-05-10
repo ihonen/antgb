@@ -22,6 +22,8 @@ public:
     uint8_t* get(memaddr_t address);
     uint8_t read(memaddr_t address);
     bool write(memaddr_t address, uint8_t value);
+    uint8_t force_read(memaddr_t);
+    bool force_write(memaddr_t address);
     bool can_read(memaddr_t address);
     bool can_write(memaddr_t address);
     void launch_oam_dma(memaddr_t destination,

@@ -17,7 +17,6 @@ public:
     Emulator();
     ~Emulator();
     void insert_cartridge(Cartridge* cartridge);
-    void load_rom(void* rom, size_t size);
     void tick();
     uint64_t cpu_tick();
     void button_pressed(Joypad::Button button);

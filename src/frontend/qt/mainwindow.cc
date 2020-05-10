@@ -231,7 +231,7 @@ void MainWindow::load_rom_act()
     // QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\tetris_jue_v1_1.gb");
 
     // PASSED:
-    QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\blargg\\cpu_instrs\\individual\\01-special.gb");
+    // QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\blargg\\cpu_instrs\\individual\\01-special.gb");
     // PASSED:
     // QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\blargg\\cpu_instrs\\individual\\02-interrupts.gb");
     // PASSED:
@@ -257,7 +257,7 @@ void MainWindow::load_rom_act()
     // QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\blargg\\instr_timing\\instr_timing.gb");
 
     // NOT PASSED:
-    // QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\blargg\\interrupt_time\\interrupt_time.gb");
+    QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\blargg\\interrupt_time\\interrupt_time.gb");
 
     emuwidget->load_rom(filepath);
 }
