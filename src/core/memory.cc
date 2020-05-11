@@ -150,14 +150,10 @@ bool Memory::write(memaddr_t address, uint8_t value)
     if (MASK.count(address))
         readonly_mask = MASK[address].readonly;
 
-    if (address == 0xFF41)
-        int a = 5;
-
     // DIV
     if (address == 0xFF04) value = 0x00;
 
-    //*dest &= (value | readonly_mask);
-    *dest &= (value | readonly_mask);
+    *dest = (*dest & readonly_mask) | (value & ~readonly_mask);
     return true;
 }
 

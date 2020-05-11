@@ -84,5 +84,6 @@ void ButtonInputWidget::keyReleaseEvent(QKeyEvent* event)
     auto button = buttons[JOYPAD_KEYMAP.at(event->key())];
     // TODO: Find a better solution.
     button->keyReleaseEvent(event);
+    debugger->button_pressed(button->id);
     QWidget::keyReleaseEvent(event);
 }

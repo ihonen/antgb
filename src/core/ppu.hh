@@ -16,10 +16,10 @@ public:
 
     enum Mode
     {
-        HBlanking = 0x00,
-        VBlanking = 0x01,
-        DrawingLine = 0x02,
-        ScanningOAM = 0x03
+        Hblank = 0x00,
+        Vblank = 0x01,
+        LineScan = 0x02,
+        OamScan = 0x03
     };
 
     static constexpr uint64_t CPU_CYCLES_PER_LY_INCREMENT = 456;
@@ -31,27 +31,30 @@ public:
 
     std::map<Mode, uint64_t> MODE_DURATION
     {
-        {HBlanking, 85},
-        {VBlanking, 4560},
-        {DrawingLine, 291},
-        {ScanningOAM, 80}
+        {Hblank, 85},
+        {Vblank, 4560},
+        {LineScan, 291},
+        {OamScan, 80}
     };
 
-    struct
-    {
-        bool mode_task_complete;
-        bool frame_ready;
-        uint64_t cpu_cycles_spent_in_mode;
-        Mode current_mode;
-        uint64_t unemulated_cpu_cycles;
-    } status;
+    bool mode_task_complete;
+    bool frame_ready;
+    uint64_t cpu_cycles_spent_in_mode;
+    Mode current_mode;
+    uint64_t unemulated_cpu_cycles;
+
+    uint64_t cpu_cycles_left_in_mode;
+    uint64_t cpu_cycles_until_ly;
+
+    uint64_t clocksum = 0;
+    uint64_t scanline = 0;
 
     const uint8_t MODE_FLAG_MASK = 0x03; // Bits 0-1
 
     Ppu(Memory* mem, Irc* irc);
     ~Ppu();
     void hard_reset();
-    void emulate(uint64_t cpu_cycles);
+    void step(uint64_t cpu_cycles);
     void emulate_current_mode(uint64_t cpu_cycles);
     void emulate_mode0(uint64_t cpu_cycles);
     void emulate_mode1(uint64_t cpu_cycles);

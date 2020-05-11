@@ -17,7 +17,7 @@ public:
     enum InterruptId
     {
         VBlankInterrupt = 0x00,
-        LcdStatInterrupt = 0x01,
+        LcdStatInt = 0x01,
         TimerInterrupt = 0x02,
         SerialInterrupt = 0x03,
         JoypadInterrupt = 0x04,

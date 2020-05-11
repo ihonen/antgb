@@ -42,7 +42,7 @@ std::string Disassembler::disassemble(void* instruction_)
     switch (*instruction)
     {
         case 0x00: return "NOP";
-        case 0x01: return "LD BC, $" + imm8;
+        case 0x01: return "LD BC, $" + imm16;
         case 0x02: return "LD (BC), A";
         case 0x03: return "INC BC";
         case 0x04: return "INC B";

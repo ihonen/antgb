@@ -50,6 +50,27 @@ void Irc::ime_flag_clear()
 
 void Irc::request_interrupt(int source)
 {
+    /*
+    switch (source)
+    {
+        case VBlankInterrupt:
+            cerr << "Vblank IRQ" << endl;
+            break;
+        case LcdStatInt:
+            cerr << "LCD STAT IRQ" << endl;
+            break;
+        case JoypadInterrupt:
+            cerr << "Joypad IRQ" << endl;
+            break;
+        case TimerInterrupt:
+            cerr << "Timer IRQ" << endl;
+            break;
+        case SerialInterrupt:
+            cerr << "Serial IRQ" << endl;
+            break;
+    }
+    */
+
     mem->hff0f_if |= 0x01 << source;
 }
 

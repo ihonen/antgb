@@ -51,12 +51,6 @@ void DebugCore::keep_running()
     while (do_run && !breakpoints.count(emu->cpu->PC))
     {
         execute_next();
-        ++i;
-        if (i == 16192)
-        {
-            emu->ppu->renderer->render_frame();
-            i = 0;
-        }
 
         /*
         vector<std::thread*> observer_threads;

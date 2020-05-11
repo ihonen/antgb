@@ -43,10 +43,11 @@ void Emulator::tick()
     uint64_t cpu_cycles = cpu_tick();
     timer_divider->emulate(cpu_cycles);
     mem->emulate(cpu_cycles);
-    ppu->emulate(cpu_cycles);
+    ppu->step(cpu_cycles);
     serial->emulate(cpu_cycles);
     static uint64_t cpu_cycles_total = 0;
     cpu_cycles_total += cpu_cycles;
+
     //cout << std::dec << cpu_cycles_total << endl;
 }
 

@@ -228,7 +228,7 @@ void MainWindow::load_rom_act()
                                                  "Game Boy ROMs (*.gb)");
     */
     // QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\blargg\\cpu_instrs\\cpu_instrs.gb");
-    // QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\tetris_jue_v1_1.gb");
+    QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\tetris_jue_v1_1.gb");
 
     // PASSED:
     // QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\blargg\\cpu_instrs\\individual\\01-special.gb");
@@ -257,7 +257,7 @@ void MainWindow::load_rom_act()
     // QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\blargg\\instr_timing\\instr_timing.gb");
 
     // NOT PASSED:
-    QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\blargg\\interrupt_time\\interrupt_time.gb");
+    //QString filepath("C:\\Users\\anton\\Desktop\\antgb\\testbin\\blargg\\interrupt_time\\interrupt_time.gb");
 
     emuwidget->load_rom(filepath);
 }

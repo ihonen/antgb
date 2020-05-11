@@ -326,6 +326,8 @@ void Cpu::LD_n16_SP(uint16_t n16)
 
 void Cpu::LD_r16_A(uint16_t& r16)
 {
+    if (r16 == 0xc000)
+        volatile int b;
     mem->write(r16, A);
 }
 

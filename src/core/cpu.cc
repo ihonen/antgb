@@ -99,12 +99,12 @@ void Cpu::execute(const uint8_t* instruction)
             trace_log << "SP: " << std::hex << SP << "\n";
             trace_log << "PC: " << std::hex << PC << "\n";
 
-        trace_log << "@"
-                  << std::setw(5) << std::left << std::hex
-                  << PC
-                  << disassembler.disassemble(const_cast<uint8_t*>(instruction))
-                  << "\n";
-        trace_log << std::flush;
+            trace_log << "@"
+                      << std::setw(5) << std::left << std::hex
+                      << PC
+                      << disassembler.disassemble(const_cast<uint8_t*>(instruction))
+                      << "\n";
+            trace_log << std::flush;
         /*
             */
 
@@ -122,11 +122,6 @@ void Cpu::execute(const uint8_t* instruction)
         }
 
         do_print = false;
-
-        if (PC == 0x06f1)
-        {
-            volatile int a = 0;
-        }
 
         PC += op_info->len_bytes;
 
@@ -191,7 +186,8 @@ void Cpu::jump_to_isr(memaddr_t vector_address)
 {
     if (vector_address == 0x00) return;
 
-    trace_log << "Jumping to interrupt vector @ " << std::hex << vector_address << endl;
+    // cerr << "Jumping to interrupt vector @ " << std::hex << vector_address << endl;
+    // trace_log << "Jumping to interrupt vector @ " << std::hex << vector_address << endl;
 
     irc->ime_flag_clear();
     PUSH_r16(PC);

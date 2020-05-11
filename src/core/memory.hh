@@ -93,11 +93,11 @@ public:
         DisplayEnable = 7,
 
         // STAT
-        LYCInterrupt = 6,
-        OAMInterrupt = 5,
+        LycInt = 6,
+        OamInt = 5,
         VBlankInterrupt = 4,
         HBlankInterrupt = 3,
-        CoincidenceFlag = 2,
+        LycCoincidence = 2,
         ModeFlag1 = 1,
         ModeFlag0 = 0
     };
