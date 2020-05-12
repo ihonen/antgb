@@ -136,4 +136,5 @@ RESOURCES += \
     frontend/qt/img.qrc \
     memdump.qrc
 
-FORMS +=
+FORMS += \
+    frontend/qt/form.ui

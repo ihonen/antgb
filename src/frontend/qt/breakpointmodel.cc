@@ -171,7 +171,13 @@ void BreakpointModel::on_memory_changed(uint16_t address)
 
 void BreakpointModel::on_rom_loaded()
 {
-
+    for (size_t i = 0; i < items_by_address.size(); ++i)
+    {
+        emit(dataChanged(index(i, 0),
+                         index(i, COLUMN_COUNT - 1),
+                         {Qt::DecorationRole,
+                          Qt::DisplayRole}));
+    }
 }
 
 void BreakpointModel::on_special_register_changed()
