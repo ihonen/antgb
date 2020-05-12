@@ -27,6 +27,8 @@ Disassembler::Disassembler()
 
 std::string Disassembler::disassemble(void* instruction_)
 {
+    if (!instruction_) return "-";
+
     uint8_t* instruction = (uint8_t*)instruction_;
     char imm8_[32];
     char imm16_[32];
@@ -408,6 +410,8 @@ std::string Disassembler::disassemble(void* instruction_)
 
 size_t Disassembler::instr_len(void* instruction)
 {
+    if (!instruction) return 0;
+
     uint8_t first_byte = ((uint8_t*)instruction)[0];
     if (first_byte != 0xCB)
     {

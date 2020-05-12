@@ -1,5 +1,6 @@
 #pragma once
 
+#include "breakpointview.hh"
 #include "instructionmodel.hh"
 #include "instructionview.hh"
 #include "../../debugger/debugcore.hh"
@@ -17,8 +18,8 @@ public slots:
     void search();
 public:
     QLineEdit* search_line = nullptr;
-    InstructionView* view = nullptr;
-    QPushButton* settings_button = nullptr;
+    InstructionView* instruction_view = nullptr;
+    BreakpointView* breakpoint_view = nullptr;
 
     InstructionViewer(DebugCore* debugger, InstructionModel* model, QWidget* parent = nullptr);
     void update();

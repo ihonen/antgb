@@ -47,6 +47,9 @@ SOURCES += \
     core/timer.cc \
     debugger/debugcore.cc \
     debugger/disassembler.cc \
+    frontend/qt/breakpointdelegate.cc \
+    frontend/qt/breakpointmodel.cc \
+    frontend/qt/breakpointview.cc \
     frontend/qt/button.cc \
     frontend/qt/buttoninputwidget.cc \
     frontend/qt/colors.cc \
@@ -99,6 +102,9 @@ HEADERS += \
     debugger/debugcore.hh \
     debugger/debugobserver.hh \
     debugger/disassembler.hh \
+    frontend/qt/breakpointdelegate.hh \
+    frontend/qt/breakpointmodel.hh \
+    frontend/qt/breakpointview.hh \
     frontend/qt/button.hh \
     frontend/qt/buttoninputwidget.hh \
     frontend/qt/colors.hh \

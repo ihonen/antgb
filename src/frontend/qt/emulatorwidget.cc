@@ -53,9 +53,9 @@ EmulatorWidget::EmulatorWidget(Emulator* emulator,
     main_layout->addWidget(display.view, 0, 0);
     main_layout->addWidget(button_input_widget, 0, 1);
     main_layout->addWidget(vram_viewer, 1, 0, 1, 2);
-    main_layout->addWidget(instruction_viewer, 2, 0, 1, 2);
-    main_layout->addWidget(data_viewer, 2, 2, 1, 2);
-    main_layout->addWidget(serial_viewer, 2, 4, 1, 1);
+    main_layout->addWidget(instruction_viewer, 2, 0, 1, 3);
+    main_layout->addWidget(data_viewer, 2, 3, 1, 2);
+    main_layout->addWidget(serial_viewer, 2, 5, 1, 1);
     main_layout->addWidget(register_viewer, 0, 2, 2, 1);
     main_layout->addWidget(stack_viewer, 0, 3, 2, 1);
     main_layout->addWidget(memory_viewer, 0, 4, 2, 1);

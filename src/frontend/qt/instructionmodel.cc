@@ -80,7 +80,6 @@ QVariant InstructionModel::data(const QModelIndex& index, int role) const
                 case HEX_DATA_COLUMN:
                     return hexstr(item->data, std::max(item->len, (uint8_t)1));
                 case DISASSEMBLY_COLUMN:
-                    if (item->address == 0x0100) cerr << debugger->disassembler.disassemble(item->data).c_str() << endl;
                     return debugger->disassembler.disassemble(item->data).c_str();
                 case LENGTH_COLUMN:
                     return std::max(item->len, (uint8_t)1);
@@ -163,15 +162,12 @@ void InstructionModel::update_all_from_row(int row)
 
         item->address = current_address;
 
-        uint8_t instruction[3];
+        // TODO: Only disassemble one byte if address == 0xFFFF.
+        uint8_t instruction[3] = {0xFF};
         size_t offset = 0;
-        for (; offset < 3 && (size_t)item->address + offset <= 0xFFFF; ++offset)
-        {
+        for (; offset < 3 && item->address + offset <= 0xFFFF; ++offset)
             instruction[offset] = debugger->emu->mem->read(item->address + offset);
-            if (item->address == 0x0100)
-                for (size_t i = 0; i < 3; ++i)
-                     cerr << std::hex << (size_t)instruction[i] << endl;
-        }
+
         item->has_breakpoint = debugger->breakpoints.count(item->address) != 0;
 
         if (item->address == debugger->emu->cpu->PC)

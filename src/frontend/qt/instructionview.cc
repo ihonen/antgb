@@ -93,7 +93,7 @@ InstructionView::InstructionView(DebugCore* debugger, InstructionModel* model, Q
     scroll_to_current();
 }
 
-void InstructionView::search(QString& text)
+void InstructionView::search_text(QString& text)
 {
     auto index = model->search(text);
     if (index.isValid()) scrollTo(index, ScrollHint::PositionAtTop);
