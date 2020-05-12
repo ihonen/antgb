@@ -147,7 +147,7 @@ void StackModel::on_memory_changed(uint16_t address)
 
 }
 
-void StackModel::on_whole_memory_changed()
+void StackModel::on_rom_loaded()
 {
 
 }

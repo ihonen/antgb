@@ -281,7 +281,7 @@ void RegisterModel::on_memory_changed(uint16_t address)
 
 }
 
-void RegisterModel::on_whole_memory_changed()
+void RegisterModel::on_rom_loaded()
 {
 
 }

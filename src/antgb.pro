@@ -56,6 +56,7 @@ SOURCES += \
     frontend/qt/emulatorwidget.cc \
     frontend/qt/fonts.cc \
     frontend/qt/helper.cc \
+    frontend/qt/instructiondelegate.cc \
     frontend/qt/instructionmodel.cc \
     frontend/qt/instructionview.cc \
     frontend/qt/instructionviewer.cc \
@@ -107,6 +108,7 @@ HEADERS += \
     frontend/qt/emulatorwidget.hh \
     frontend/qt/fonts.hh \
     frontend/qt/helper.hh \
+    frontend/qt/instructiondelegate.hh \
     frontend/qt/instructionmodel.hh \
     frontend/qt/instructionview.hh \
     frontend/qt/instructionviewer.hh \

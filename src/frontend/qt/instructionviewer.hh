@@ -14,7 +14,6 @@ class InstructionViewer : public QFrame
 {
     Q_OBJECT
 public slots:
-
     void search();
 public:
     QLineEdit* search_line = nullptr;

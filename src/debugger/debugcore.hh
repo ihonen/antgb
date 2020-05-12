@@ -28,7 +28,7 @@ struct DebugCore
     std::set<uint16_t> breakpoints;
     std::set<uint16_t> data_breakpoints;
 
-    std::set<DebugObserver*> observers;
+    std::vector<DebugObserver*> observers;
 
     std::thread* emulation_thread = nullptr;
 

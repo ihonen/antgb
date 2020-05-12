@@ -9,12 +9,13 @@ void InstructionViewer::search()
 {
     auto text = search_line->text();
     search_line->setPlaceholderText("Jump to");
-    view->search(text);
+    if (text != "") view->search(text);
+    else view->scroll_to_current();
 }
 
 InstructionViewer::InstructionViewer(DebugCore* debugger, InstructionModel* model, QWidget* parent) :
     QFrame(parent)
-{  
+{
     view = new InstructionView(debugger, model, this);
     search_line = new QLineEdit(this);
     settings_button = new QPushButton(this);
@@ -25,7 +26,7 @@ InstructionViewer::InstructionViewer(DebugCore* debugger, InstructionModel* mode
     layout->addWidget(view, 1, 0, 1, 2);
 
     connect(search_line,
-            &QLineEdit::returnPressed,
+            &QLineEdit::textChanged,
             this,
             &InstructionViewer::search);
 

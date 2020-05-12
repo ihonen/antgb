@@ -37,15 +37,25 @@ public:
     int visible_row_count = 0;
     int total_row_count = 0;
 
+    // More than 0xFFFF items are never needed, because every instruction
+    // occupies at least one byte. Statically reserve memory for that many
+    // items.
+    std::array<InstructionItem, 0xFFFF> item_pool;
+    // Actual items currently being shown in the view.
     QVector<InstructionItem*> items;
+    // NOTE: Multiple addresses will be referring to the same item if the item
+    // consists of multiple bytes.
     QMap<int, InstructionItem*> items_by_address;
+    // Points to the item that has the current address of the program counter.
     InstructionItem* PC = nullptr;
 
     DebugCore* debugger = nullptr;
-
     bool is_debugger_running = false;
 
+    bool is_updating = false;
+
     InstructionModel(DebugCore* debugger, QObject* parent = nullptr);
+    virtual ~InstructionModel() override;
 
     virtual Qt::ItemFlags flags(const QModelIndex &index) const override;
     virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
@@ -56,7 +66,7 @@ public:
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
     void update_all_from_row(int row);
     void clear_all();
-    QModelIndex search(const QString& text);
+    QModelIndex search(const QString& text, int starting_from = 0);
 
     virtual void on_breakpoint_added(uint16_t address) override;
     virtual void on_breakpoint_removed(uint16_t address) override;
@@ -65,6 +75,6 @@ public:
     virtual void on_debugging_resumed() override;
     virtual void on_debugging_paused() override;
     virtual void on_memory_changed(uint16_t address) override;
-    virtual void on_whole_memory_changed() override;
+    virtual void on_rom_loaded() override;
     virtual void on_special_register_changed() override;
 };

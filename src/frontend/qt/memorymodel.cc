@@ -148,7 +148,7 @@ void MemoryModel::on_memory_changed(uint16_t address)
 
 }
 
-void MemoryModel::on_whole_memory_changed()
+void MemoryModel::on_rom_loaded()
 {
 
 }

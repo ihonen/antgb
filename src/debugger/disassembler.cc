@@ -366,12 +366,12 @@ std::string Disassembler::disassemble(void* instruction_)
         else
         {
             volatile uint8_t second_byte = instruction[1];
-            return "---";
+            return "-";
         }
     }
     else
     {
-        return "---";
+        return "-";
     }
 
     if (instruction[0] == 0xCB)

@@ -50,6 +50,6 @@ public:
     virtual void on_data_breakpoint_added(uint16_t address) override;
     virtual void on_data_breakpoint_removed(uint16_t address) override;
     virtual void on_memory_changed(uint16_t address) override;
-    virtual void on_whole_memory_changed() override;
+    virtual void on_rom_loaded() override;
     virtual void on_special_register_changed() override;
 };

@@ -10,6 +10,8 @@
 #include "colors.hh"
 #include "pixmaps.hh"
 
+static const QVector<int> ALL_ROLES = {Qt::DecorationRole, Qt::DisplayRole, Qt::ForegroundRole};
+
 InstructionModel::InstructionModel(DebugCore* debugger, QObject* parent) :
     QAbstractTableModel(parent),
     debugger(debugger)
@@ -17,17 +19,34 @@ InstructionModel::InstructionModel(DebugCore* debugger, QObject* parent) :
     qRegisterMetaType<QVector<int> >("QVector<int>");
     debugger->add_observer(this);
 
-    for (size_t i = 0; i < 0x10000; ++i)
-        items.push_back(new InstructionItem);
-    total_row_count = 0x10000;
-    visible_row_count = 0x1000;
+    visible_row_count = 0;
+
+    // Populate the item pool.
+    // We need at most 0xFFFF items, so reserve that many for the duration
+    // of the program.
+    for (size_t address = 0; address < 0xFFFF; ++address)
+    {
+        auto item = &item_pool[address];
+        item->address = address;
+        item->row = address;
+
+        items_by_address[item->address] = item;
+
+        items.push_back(item);
+    }
 
     update_all_from_row(0);
 }
 
+InstructionModel::~InstructionModel()
+{
+    for (auto& item : items)
+        delete item;
+}
+
 Qt::ItemFlags InstructionModel::flags(const QModelIndex& index) const
 {
-    if (index.column() == 0 || index.column() == 1) return QAbstractTableModel::flags(index) & ~(Qt::ItemIsSelectable) & ~(Qt::ItemIsDragEnabled);
+    if (index.column() == 0 || index.column() == 1) return QAbstractTableModel::flags(index) & ~(Qt::ItemIsSelectable);
     else return QAbstractTableModel::flags(index);
 }
 
@@ -84,7 +103,12 @@ QVariant InstructionModel::data(const QModelIndex& index, int role) const
             {
                 default:
                     if (is_debugger_running) return *Colors::FG_LIGHT_GRAY;
-                    return item->is_current ? *Colors::FG_BLUE : QVariant();
+                    else
+                    {
+                        if (item->is_current) return *Colors::FG_BLUE;
+                        else if (item->has_breakpoint) return *Colors::FG_RED;
+                        else return QVariant();
+                    }
             }
         default:
             break;
@@ -111,67 +135,88 @@ bool InstructionModel::setData(const QModelIndex& index, const QVariant& value, 
     Q_UNUSED(value)
     Q_UNUSED(role)
     return false;
-    assert(index.isValid());
-//    items[index.row()]->data_by_column[index.column()][role] = value;
-    emit(dataChanged(index, index, {role}));
-    return true;
 }
 
 void InstructionModel::update_all_from_row(int row)
 {
-    size_t address = items[row]->address;
+    is_updating = true;
+
     int current_row = row;
+    size_t current_address = items.size() > row ? items[row]->address : 0x0000;
 
-    while (address < total_row_count)
+    while (current_address <= 0xFFFF)
     {
-        // Maximum instruction length is 3 bytes, so read that many.
-        // TODO: Don't overindex memory.
-        uint8_t instruction[3];
-        for (size_t i = 0; i < 3; ++i)
-            instruction[i] = debugger->emu->mem->read(address + i);
-
-        InstructionItem* item(items[current_row]);
-        // TODO: Actually check if there's a breakpoint here.
+        InstructionItem* item = &item_pool[current_row];
         item->row = current_row;
-        item->has_breakpoint = debugger->breakpoints.count(address) != 0;
-        item->address = address;
+        if (current_row < visible_row_count)
+        {
+            emit(dataChanged(index(current_row, 0),
+                             index(current_row, LENGTH_COLUMN),
+                             ALL_ROLES));
+        }
+        else
+        {
+            beginInsertRows(QModelIndex(), current_row, current_row);
+            endInsertRows();
+        }
+
+        uint8_t instruction[3];
+        size_t offset = 0;
+        for (; offset < 3 && item->address + offset <= 0xFFFF; ++offset)
+            instruction[offset] = debugger->emu->mem->read(item->address + offset);
+        item->has_breakpoint = debugger->breakpoints.count(item->address) != 0;
+        item->address = current_address;
+
         if (item->address == debugger->emu->cpu->PC)
         {
+
             if (PC) PC->is_current = false;
             item->is_current = true;
             PC = item;
         }
-        item->len = debugger->disassembler.instr_len(instruction);
-        auto effective_len = std::max(item->len, (uint8_t)1);
-        memcpy(item->data, instruction, effective_len);
+        else item->is_current = false;
 
-        for (size_t i = 0; i < effective_len; ++i)
-            items_by_address[address + i] = item;
+        //item->row = current_row;
+        item->len = std::max(debugger->disassembler.instr_len(instruction), (size_t)1);
 
-        emit(dataChanged(index(current_row, BREAKPOINT_COLUMN),
-                         index(current_row, LENGTH_COLUMN),
-                         {Qt::DisplayRole, Qt::DecorationRole, Qt::ForegroundRole}));
+        memcpy(item->data, instruction, item->len);
 
-        address += effective_len;
+        // Update containers
+        for (size_t i = 0; i < item->len; ++i)
+            items_by_address[item->address + i] = item;
+
+        current_address += item->len;
         ++current_row;
+    }
+
+    // Remove rows that are now invisible.
+    if (current_row < visible_row_count)
+    {
+        beginRemoveRows(QModelIndex(), current_row, visible_row_count - 1);
+        endRemoveRows();
     }
 
     visible_row_count = current_row;
 
+    is_updating = false;
 }
 
-QModelIndex InstructionModel::search(const QString& text)
+QModelIndex InstructionModel::search(const QString& anycase_text, int starting_from)
 {
+    auto lowercase_text = anycase_text.toLower();
+
+    if (lowercase_text == "pc") return index(PC->row, 0);
+
     bool is_hex = false;
-    auto value = text.toUInt(&is_hex, 16);
+    auto value = lowercase_text.toUInt(&is_hex, 16);
     if (is_hex && value <= 0xFFFF)
         for (size_t i = 0; i < items.size(); ++i)
             if (items[i]->address >= value)
                 return index(i, 0);
 
-    QRegularExpression regex(".*" + escape_regex_special_chars(text) + ".*");
+    QRegularExpression regex(".*" + escape_regex_special_chars(lowercase_text) + ".*");
     regex.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
-    for (size_t i = 0; i < items.size(); ++i)
+    for (size_t i = starting_from; i < visible_row_count; ++i)
     {
         auto match = regex.match(data(index(i, DISASSEMBLY_COLUMN), Qt::DisplayRole).toString());
         if (match.hasMatch()) return index(i, 0);
@@ -185,7 +230,7 @@ void InstructionModel::on_breakpoint_added(uint16_t address)
     auto item = items_by_address[address];
     item->has_breakpoint = true;
     emit(dataChanged(index(item->row, BREAKPOINT_COLUMN),
-                     index(item->row, BREAKPOINT_COLUMN),
+                     index(item->row, LENGTH_COLUMN),
                      {Qt::DecorationRole}));
 }
 
@@ -194,7 +239,7 @@ void InstructionModel::on_breakpoint_removed(uint16_t address)
     auto item = items_by_address[address];
     item->has_breakpoint = false;
     emit(dataChanged(index(item->row, BREAKPOINT_COLUMN),
-                     index(item->row, BREAKPOINT_COLUMN),
+                     index(item->row, LENGTH_COLUMN),
                      {Qt::DecorationRole}));
 }
 
@@ -228,43 +273,17 @@ void InstructionModel::on_debugging_paused()
 
 void InstructionModel::on_memory_changed(uint16_t address)
 {
-    // TODO: Do this more efficiently.
-    InstructionItem* first_to_change = nullptr;
-    for (size_t i = 0; !first_to_change; ++i)
-    {
-        assert(i < 5);
-        first_to_change = items_by_address[address - i];
-    }
+    InstructionItem* first_to_change = items_by_address[address];
     assert(first_to_change);
-    update_all_from_row(0);
+    update_all_from_row(first_to_change->row);
 }
 
-void InstructionModel::on_whole_memory_changed()
+void InstructionModel::on_rom_loaded()
 {
     update_all_from_row(0);
 }
 
 void InstructionModel::on_special_register_changed()
 {
-    /*
-    PC->is_current = false;
-    emit(dataChanged(index(PC->row, BREAKPOINT_COLUMN),
-                     index(PC->row, LENGTH_COLUMN),
-                     {Qt::DisplayRole, Qt::DecorationRole, Qt::ForegroundRole}));
 
-    for (int row = 0; row < items.size(); ++row)
-    {
-        auto item = items[row];
-        if (item->address == debugger->emu->cpu->PC)
-        {
-            item->is_current = true;
-            PC = item;
-            emit(dataChanged(index(PC->row, 0), index(PC->row, 0), {Qt::DisplayRole, Qt::DecorationRole, Qt::ForegroundRole}));
-            emit(dataChanged(index(PC->row, BREAKPOINT_COLUMN),
-                             index(PC->row, LENGTH_COLUMN),
-                             {Qt::DisplayRole, Qt::DecorationRole, Qt::ForegroundRole}));
-            break;
-        }
-    }
-    */
 }

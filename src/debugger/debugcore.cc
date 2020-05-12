@@ -16,7 +16,7 @@ void DebugCore::insert_cartridge(Cartridge* cartridge)
     emu->insert_cartridge(cartridge);
 
     for (auto& observer : observers)
-        observer->on_whole_memory_changed();
+        observer->on_rom_loaded();
 }
 
 void DebugCore::execute_next()
@@ -131,7 +131,7 @@ void DebugCore::toggle_data_breakpoint(uint16_t address)
 
 void DebugCore::add_observer(DebugObserver* observer)
 {
-    observers.insert(observer);
+    observers.push_back(observer);
 }
 
 void DebugCore::button_pressed(Joypad::Button button)
