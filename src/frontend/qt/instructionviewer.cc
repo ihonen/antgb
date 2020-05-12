@@ -49,7 +49,7 @@ InstructionViewer::InstructionViewer(DebugCore* debugger, InstructionModel* mode
             instruction_view,
             [&](const QModelIndex& index)
             {
-                QString str = hexstr16(breakpoint_view->model->get_row(index.row())->address);
+                QString str = hexstr16(breakpoint_view->model->get_row(index.row()));
                 instruction_view->search_text(str);
             });
 

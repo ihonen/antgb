@@ -7,24 +7,17 @@
 class BreakpointModel : public QAbstractTableModel, DebugObserver
 {
 public:
-    struct BreakpointItem
-    {
-        uint16_t address;
-    };
-
-    std::map<uint16_t, BreakpointItem*> items_by_address;
-
-//    std::set<uint16_t> addresses;
-
+    std::set<uint16_t> addresses;
     DebugCore* debugger = nullptr;
-
-    // TODO: Use in actual modeling.
+    uint16_t stored_pc = 0x0000;
+    bool pc_is_also_breakpoint = false;
 
     static const int BREAKPOINT_COLUMN = 0;
-    static const int ADDRESS_COLUMN = 1;
-    static const int DISASSEMBLY_COLUMN = 2;
+    static const int CURRENT_INSTR_COLUMN = 1;
+    static const int ADDRESS_COLUMN = 2;
+    static const int DISASSEMBLY_COLUMN = 3;
 
-    static const int COLUMN_COUNT = 3;
+    static const int COLUMN_COUNT = 4;
 
     BreakpointModel(DebugCore* debugger, QObject* parent = nullptr);
     virtual Qt::ItemFlags flags(const QModelIndex &index) const override;
@@ -34,7 +27,7 @@ public:
     virtual int columnCount(const QModelIndex& parent = QModelIndex()) const override;
     virtual bool setData(const QModelIndex& index, const QVariant &value, int role = Qt::EditRole) override;
 
-    BreakpointItem* get_row(int row) const;
+    uint16_t get_row(int row) const;
 
     /* Observer interface */
 

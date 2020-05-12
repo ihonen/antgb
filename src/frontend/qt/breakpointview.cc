@@ -31,9 +31,10 @@ BreakpointView::BreakpointView(DebugCore* debugger, QWidget* parent) :
     horizontalHeader()->setDefaultSectionSize(30);
     horizontalHeader()->setMaximumSectionSize(1000);
 
-    horizontalHeader()->resizeSection(0, 18);
-    horizontalHeader()->resizeSection(1, 50);
-    horizontalHeader()->resizeSection(2, 140);
+    horizontalHeader()->resizeSection(BreakpointModel::BREAKPOINT_COLUMN, 15);
+    horizontalHeader()->resizeSection(BreakpointModel::CURRENT_INSTR_COLUMN, 15);
+    horizontalHeader()->resizeSection(BreakpointModel::ADDRESS_COLUMN, 50);
+    horizontalHeader()->resizeSection(BreakpointModel::DISASSEMBLY_COLUMN, 140);
 
     setFont(*Fonts::COURIER);
 
@@ -45,5 +46,5 @@ BreakpointView::BreakpointView(DebugCore* debugger, QWidget* parent) :
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
-    setFixedWidth(213);
+    setFixedWidth(225);
 }

@@ -3,12 +3,18 @@
 #include "helper.hh"
 #include "pixmaps.hh"
 
+static const QVector<int> ALL_ROLES = {Qt::DecorationRole, Qt::DisplayRole};
+
 BreakpointModel::BreakpointModel(DebugCore* debugger, QObject* parent) :
     QAbstractTableModel(parent),
     DebugObserver(),
     debugger(debugger)
 {
     debugger->add_observer(this);
+
+    stored_pc = debugger->emu->cpu->PC;
+    addresses.insert(stored_pc);
+    pc_is_also_breakpoint = false;
 }
 
 Qt::ItemFlags BreakpointModel::flags(const QModelIndex& index) const
@@ -28,7 +34,7 @@ QVariant BreakpointModel::headerData(int section,
 
 QVariant BreakpointModel::data(const QModelIndex& index, int role) const
 {
-    auto item = get_row(index.row());
+    auto address = get_row(index.row());
 
     switch (role)
     {
@@ -36,13 +42,13 @@ QVariant BreakpointModel::data(const QModelIndex& index, int role) const
             switch (index.column())
             {
                 case ADDRESS_COLUMN:
-                    return hexstr16(item->address);
+                    return hexstr16(address).toUpper();
                 case DISASSEMBLY_COLUMN:
                 {
                     uint8_t instruction[3];
                     size_t offset = 0;
-                    for (; offset < 3 && item->address + offset <= 0xFFFF; ++offset)
-                        instruction[offset] = debugger->emu->mem->read(item->address + offset);
+                    for (; offset < 3 && address + offset <= 0xFFFF; ++offset)
+                        instruction[offset] = debugger->emu->mem->read(address + offset);
                     return debugger->disassembler.disassemble(instruction).c_str();
                 }
                 default: break;
@@ -53,7 +59,13 @@ QVariant BreakpointModel::data(const QModelIndex& index, int role) const
             switch (index.column())
             {
                 case BREAKPOINT_COLUMN:
-                    return Pixmaps::BREAKPOINT->scaled(9, 9);
+                    if (address != stored_pc || pc_is_also_breakpoint)
+                        return Pixmaps::BREAKPOINT->scaled(9, 9);
+                    break;
+                case CURRENT_INSTR_COLUMN:
+                    if (address == stored_pc)
+                        return Pixmaps::CURRENT_ARROW->scaled(11, 11);
+                    break;
                 default:
                     break;
             }
@@ -68,7 +80,7 @@ QVariant BreakpointModel::data(const QModelIndex& index, int role) const
 int BreakpointModel::rowCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent)
-    return static_cast<int>(items_by_address.size());
+    return static_cast<int>(addresses.size());
 }
 
 int BreakpointModel::columnCount(const QModelIndex& parent) const
@@ -87,17 +99,16 @@ bool BreakpointModel::setData(const QModelIndex& index,
     return false;
 }
 
-BreakpointModel::BreakpointItem* BreakpointModel::get_row(int row) const
+uint16_t BreakpointModel::get_row(int row) const
 {
     int current_row = 0;
-    for (const auto& item : items_by_address)
+    for (const auto& address : addresses)
     {
         if (current_row == row)
-            return item.second;
+            return address;
         ++current_row;
     }
-    assert(false);
-    return nullptr;
+    return 0xFFFF;
 }
 
 void BreakpointModel::on_debugging_resumed()
@@ -107,51 +118,74 @@ void BreakpointModel::on_debugging_resumed()
 
 void BreakpointModel::on_debugging_paused()
 {
+    // Erase old PC if it's not an actual breakpoint.
+    if (!pc_is_also_breakpoint) addresses.erase(stored_pc);
 
+    // Check if the new PC is an actual breakpoint.
+    stored_pc = debugger->emu->cpu->PC;
+    if (debugger->breakpoints.count(stored_pc))
+    {
+        pc_is_also_breakpoint = true;
+    }
+    else
+    {
+        addresses.insert(stored_pc);
+        pc_is_also_breakpoint = false;
+    }
+
+    emit(dataChanged(index(0, 0),
+                     index(addresses.size(), COLUMN_COUNT - 1),
+                     ALL_ROLES));
 }
 
 void BreakpointModel::on_breakpoint_added(uint16_t address)
 {
-    if (items_by_address.count(address) == 0)
+    if (address == stored_pc)
     {
-        items_by_address[address] = new BreakpointItem{address};
+        pc_is_also_breakpoint = true;
+    }
+    else
+    {
+        addresses.insert(address);
 
-        // Figure out the row.
         int row = 0;
-        for (auto& item : items_by_address)
+        for (auto item : addresses)
         {
-            if (item.second->address == address)
+            if (item == address)
             {
                 beginInsertRows(QModelIndex(), row, row);
                 endInsertRows();
-                emit(dataChanged(index(0, 0), index(items_by_address.size() - 1, 2), {Qt::DisplayRole, Qt::DecorationRole}));
-                break;
             }
             ++row;
         }
     }
+
+    emit(dataChanged(index(0, 0),
+                     index(addresses.size(), COLUMN_COUNT - 1),
+                     ALL_ROLES));
 }
 
 void BreakpointModel::on_breakpoint_removed(uint16_t address)
 {
-    if (items_by_address.count(address))
+    int row = 0;
+    for (auto item : addresses)
     {
-        // Figure out the row.
-        int row = 0;
-        for (auto it = items_by_address.begin(); it != items_by_address.end(); ++it)
-        {
-            if (it->second->address == address)
-            {
-                beginRemoveRows(QModelIndex(), row, row);
-                items_by_address.erase(it);
-                delete it->second;
-                endRemoveRows();
-                emit(dataChanged(index(0, 0), index(items_by_address.size() - 1, 2), {Qt::DisplayRole, Qt::DecorationRole}));
-                break;
-            }
-            ++row;
-        }
+        if (item == address) break;
+        ++row;
     }
+
+    if (address == stored_pc && pc_is_also_breakpoint)
+        pc_is_also_breakpoint = false;
+    else
+    {
+        addresses.erase(address);
+        beginRemoveRows(QModelIndex(), row, row);
+        endRemoveRows();
+    }
+
+    emit(dataChanged(index(0, 0),
+                     index(addresses.size(), COLUMN_COUNT - 1),
+                     ALL_ROLES));
 }
 
 void BreakpointModel::on_data_breakpoint_added(uint16_t address)
@@ -171,13 +205,21 @@ void BreakpointModel::on_memory_changed(uint16_t address)
 
 void BreakpointModel::on_rom_loaded()
 {
-    for (size_t i = 0; i < items_by_address.size(); ++i)
+    if (!pc_is_also_breakpoint)
+        addresses.erase(stored_pc);
+
+    stored_pc = debugger->emu->cpu->PC;
+    if (addresses.count(stored_pc))
+        pc_is_also_breakpoint = true;
+    else
     {
-        emit(dataChanged(index(i, 0),
-                         index(i, COLUMN_COUNT - 1),
-                         {Qt::DecorationRole,
-                          Qt::DisplayRole}));
+        addresses.insert(stored_pc);
+        pc_is_also_breakpoint = false;
     }
+
+    emit(dataChanged(index(0, 0),
+                     index(addresses.size(), COLUMN_COUNT - 1),
+                     ALL_ROLES));
 }
 
 void BreakpointModel::on_special_register_changed()
