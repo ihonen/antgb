@@ -1,7 +1,7 @@
 #pragma once
 
 #include "sprite.hh"
-#include "../core/memory.hh"
+#include "types.hh"
 #include <array>
 
 class Sprites
@@ -21,7 +21,7 @@ public:
     void sort();
     Sprite* get_sprite_at_x(size_t display_x);
 
-    array<Sprite, 10> sprite_buffer;
+    std::array<Sprite, 10> sprite_buffer;
     size_t sprite_buffer_size;
 
     Memory* mem;

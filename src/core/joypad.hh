@@ -1,7 +1,6 @@
 #pragma once
 
 #include "interrupts.hh"
-#include "memory.hh"
 #include "types.hh"
 #include <map>
 

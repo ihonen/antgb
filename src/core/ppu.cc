@@ -1,6 +1,7 @@
 #include "ppu.hh"
 
 #include "bitmanip.hh"
+#include "memory.hh"
 #include <cassert>
 #include <iostream>
 #include <thread>

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cartridge.hh"
+#include "ppu.hh"
 #include "types.hh"
 
 using namespace std;
@@ -15,6 +16,8 @@ public:
         memaddr_t high;
         memaddr_t size;
     };
+
+    Ppu::Registers ppureg;
 
     Memory();
 

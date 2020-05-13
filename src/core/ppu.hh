@@ -3,7 +3,7 @@
 #include "renderer.hh"
 #include "cpu.hh"
 #include "interrupts.hh"
-#include "memory.hh"
+#include "types.hh"
 #include <chrono>
 #include <map>
 #include <vector>
@@ -13,6 +13,12 @@ using std::vector;
 class Ppu
 {
 public:
+
+    struct Registers
+    {
+        uint8_t lcdc;
+        uint8_t stat;
+    } reg;
 
     enum Mode
     {

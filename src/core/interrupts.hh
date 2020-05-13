@@ -1,6 +1,6 @@
 #pragma once
 
-#include "memory.hh"
+#include "types.hh"
 
 class Irc
 {

@@ -1,6 +1,7 @@
 #include "background.hh"
 
 #include "bitmanip.hh"
+#include "memory.hh"
 #include <cassert>
 
 const memaddr_t Background::TILE_DATA_BASE[2] =

@@ -1,6 +1,7 @@
 #include "joypad.hh"
 
 #include "bitmanip.hh"
+#include "memory.hh"
 #include <iostream>
 
 Joypad::Joypad(Memory* memory, Irc* irc_) :

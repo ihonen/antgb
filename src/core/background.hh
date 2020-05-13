@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../core/memory.hh"
 #include "tile.hh"
+#include "types.hh"
 #include <array>
 #include <iostream>
 #include <vector>

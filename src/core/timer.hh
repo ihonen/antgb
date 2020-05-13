@@ -2,7 +2,7 @@
 
 #include "cpu.hh"
 #include "interrupts.hh"
-#include "memory.hh"
+#include "types.hh"
 
 class Timer
 {

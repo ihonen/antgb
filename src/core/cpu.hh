@@ -1,7 +1,6 @@
 #pragma once
 
 #include "interrupts.hh"
-#include "memory.hh"
 #include "exceptions.hh"
 #include "types.hh"
 #include <array>

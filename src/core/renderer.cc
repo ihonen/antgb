@@ -1,6 +1,7 @@
 #include "renderer.hh"
 
 #include <cstdlib>
+#include "memory.hh"
 #include "tile.hh"
 
 Renderer::Renderer(Memory* memory, QObject* parent) :

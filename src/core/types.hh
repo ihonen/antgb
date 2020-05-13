@@ -26,5 +26,6 @@ class Ppu;
 class Renderer;
 class Serial;
 class Sprite;
+class Sprites;
 class Tile;
 class Timer;

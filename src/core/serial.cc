@@ -1,5 +1,7 @@
 #include "serial.hh"
 
+#include "memory.hh"
+
 Serial::Serial(Memory* memory, Irc* irc_)
 {
     irc = irc_;

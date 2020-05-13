@@ -1,5 +1,6 @@
 #include "interrupts.hh"
 
+#include "memory.hh"
 #include <iostream>
 
 using namespace std;

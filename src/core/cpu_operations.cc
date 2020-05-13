@@ -1,4 +1,5 @@
 #include "cpu.hh"
+#include "memory.hh"
 
 /* ADC */
 

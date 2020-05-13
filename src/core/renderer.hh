@@ -1,8 +1,8 @@
 #pragma once
 
 #include "background.hh"
-#include "../core/memory.hh"
 #include "sprites.hh"
+#include "types.hh"
 #include <array>
 #include <cstdint>
 #include <iostream>

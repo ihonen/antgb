@@ -1,6 +1,7 @@
 #include "sprites.hh"
 
 #include "bitmanip.hh"
+#include "memory.hh"
 #include <algorithm>
 
 static bool sprite_priority_comp(const Sprite& a, const Sprite& b)
