@@ -9,6 +9,14 @@ using namespace std;
 class Joypad
 {
 public:
+    struct Registers
+    {
+        uint8_t joyp;
+    } reg;
+
+    static constexpr memaddr_t JOYP_ADDRESS = 0xFF00;
+    static constexpr memaddr_t LOW_ADDRESS = JOYP_ADDRESS;
+    static constexpr memaddr_t HIGH_ADDRESS = JOYP_ADDRESS;
 
     enum class Button
     {

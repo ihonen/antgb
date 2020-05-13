@@ -13,7 +13,7 @@ Irc::Irc(Memory* memory) :
 
 void Irc::hard_reset()
 {
-    interrupt_master_enable = 0x00;
+    IME = 0x00;
 }
 
 bool Irc::has_pending_requests()
@@ -27,7 +27,7 @@ Irc::InterruptInfo Irc::next_request()
     {
         if (interrupt_enabled(i) && interrupt_requested(i))
         {
-            return {(InterruptId)i, VECTOR_ADDRESS[i]};
+            return {(InterruptId)i, INTERRUPT_VECTOR[i]};
         }
     }
 
@@ -36,17 +36,17 @@ Irc::InterruptInfo Irc::next_request()
 
 uint8_t Irc::ime_flag_get()
 {
-    return interrupt_master_enable;
+    return IME;
 }
 
 void Irc::ime_flag_set()
 {
-    interrupt_master_enable = 0x01;
+    IME = 0x01;
 }
 
 void Irc::ime_flag_clear()
 {
-    interrupt_master_enable = 0x00;
+    IME = 0x00;
 }
 
 void Irc::request_interrupt(int source)

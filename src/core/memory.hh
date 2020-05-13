@@ -1,7 +1,12 @@
 #pragma once
 
+#include "apu.hh"
 #include "cartridge.hh"
+#include "interrupts.hh"
+#include "joypad.hh"
 #include "ppu.hh"
+#include "serial.hh"
+#include "timer.hh"
 #include "types.hh"
 
 using namespace std;
@@ -17,7 +22,12 @@ public:
         memaddr_t size;
     };
 
+    Apu::Registers apureg;
+    Irc::Registers ircreg;
+    Joypad::Registers joypadreg;
     Ppu::Registers ppureg;
+    Serial::Registers serialreg;
+    Timer::Registers timerreg;
 
     Memory();
 
@@ -69,41 +79,6 @@ public:
     static constexpr MemoryRegion TILEDATA0 = {0x8000, 0x87FF, 0x0800};
     static constexpr MemoryRegion TILEDATA1 = {0x8800, 0x8FFF, 0x0800};
     static constexpr MemoryRegion TILEDATA2 = {0x9000, 0x97FF, 0x0800};
-
-    memaddr_t LCDC_ADDRESS = 0xFF40;
-    memaddr_t STAT_ADDRESS = 0xFF41;
-    memaddr_t SCY_ADDRESS = 0xFF42;
-    memaddr_t SCX_ADDRESS = 0xFF43;
-    memaddr_t LY_ADDRESS = 0xFF44;
-    memaddr_t LYC_ADDRESS = 0xFF45;
-    memaddr_t WY_ADDRESS = 0xFF4A;
-    memaddr_t WX_ADDRESS = 0xFF4B;
-    memaddr_t BGP_ADDRESS = 0xFF47;
-    memaddr_t OBP0_ADDRESS = 0xFF48;
-    memaddr_t OBP1_ADDRESS = 0xFF49;
-    memaddr_t DMA_ADDRESS = 0xFF46;
-
-    enum BitPos
-    {
-        // LCDC
-        BgAndWindowDisplayEnable = 0,
-        ObjDisplayEnable = 1,
-        ObjSize = 2,
-        BgTileMapDisplaySelect = 3,
-        BgAndWindowTileDataSelect = 4,
-        WindowDisplayEnable = 5,
-        WindowTileMapDisplaySelect = 6,
-        DisplayEnable = 7,
-
-        // STAT
-        LycInt = 6,
-        OamInt = 5,
-        VBlankInterrupt = 4,
-        HBlankInterrupt = 3,
-        LycCoincidence = 2,
-        ModeFlag1 = 1,
-        ModeFlag0 = 0
-    };
 
     union __attribute__((packed))
     {

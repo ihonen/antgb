@@ -66,6 +66,50 @@ public:
     // machine instructions.
     // NOTE: Little-endian machine is assumed!
 
+    struct Registers
+    {
+        union
+        {
+            uint16_t BC;
+            struct { uint8_t C; uint8_t B; } __attribute__((packed));
+        };
+        union
+        {
+            uint16_t DE;
+            struct { uint8_t E; uint8_t D; } __attribute__((packed));
+        };
+        union
+        {
+            uint16_t HL;
+            struct { uint8_t H; uint8_t L; } __attribute__((packed));
+        };
+        union
+        {
+            uint16_t AF;
+            struct { uint8_t F; uint8_t A; } __attribute__((packed));
+        };
+        uint16_t SP;
+        uint16_t PC;
+    } reg;
+
+    // For a more pleasant syntax.
+
+    uint16_t& BC = reg.BC;
+    uint16_t& DE = reg.DE;
+    uint16_t& HL = reg.HL;
+    uint16_t& AF = reg.AF;
+    uint16_t& PC = reg.PC;
+    uint16_t& SP = reg.SP;
+    uint8_t&  B  = reg.B;
+    uint8_t&  C  = reg.C;
+    uint8_t&  D  = reg.D;
+    uint8_t&  E  = reg.E;
+    uint8_t&  H  = reg.H;
+    uint8_t&  L  = reg.L;
+    uint8_t&  A  = reg.A;
+    uint8_t&  F  = reg.F;
+
+    /*
     struct Registers {
         array<uint16_t, 6> reg = {0};
         uint16_t& BC = reg[0];
@@ -98,6 +142,7 @@ public:
     uint8_t&  L  = *(reinterpret_cast<uint8_t*>(&(regs.HL)) + 0);
     uint8_t&  A  = *(reinterpret_cast<uint8_t*>(&(regs.AF)) + 1);
     uint8_t&  F  = *(reinterpret_cast<uint8_t*>(&(regs.AF)) + 0);
+    */
 
     // This table will contain the information related to "normal" opcodes.
     static const array<const InstrInfo, 256> INSTR_TABLE;

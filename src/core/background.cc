@@ -62,10 +62,10 @@ memaddr_t Background::tile_map_address()
 {
     if (type == Type::Background)
     {
-        return TILE_MAP_BASE[get_bit(&mem->hff40_lcdc, Memory::BgTileMapDisplaySelect)];
+        return TILE_MAP_BASE[get_bit(&mem->hff40_lcdc, Ppu::BgTileMapDisplaySelect)];
     }
 
-    return TILE_MAP_BASE[get_bit(&mem->hff40_lcdc, Memory::WindowTileMapDisplaySelect)];
+    return TILE_MAP_BASE[get_bit(&mem->hff40_lcdc, Ppu::WindowTileMapDisplaySelect)];
 }
 
 uint8_t* Background::tile_map_base()
@@ -75,7 +75,7 @@ uint8_t* Background::tile_map_base()
 
 memaddr_t Background::tile_data_address()
 {
-    return TILE_DATA_BASE[get_bit(&mem->hff40_lcdc, Memory::BgAndWindowTileDataSelect)];
+    return TILE_DATA_BASE[get_bit(&mem->hff40_lcdc, Ppu::BgAndWindowTileDataSelect)];
 }
 
 Tile* Background::tile_data_base()
@@ -133,9 +133,9 @@ bool Background::is_enabled()
 {
     if (type == Type::Background)
     {
-        return get_bit(&mem->hff40_lcdc, Memory::BgAndWindowDisplayEnable);
+        return get_bit(&mem->hff40_lcdc, Ppu::BgAndWindowDisplayEnable);
     }
 
-    return get_bit(&mem->hff40_lcdc, Memory::BgAndWindowDisplayEnable)
-            && get_bit(&mem->hff40_lcdc, Memory::WindowDisplayEnable);
+    return get_bit(&mem->hff40_lcdc, Ppu::BgAndWindowDisplayEnable)
+            && get_bit(&mem->hff40_lcdc, Ppu::WindowDisplayEnable);
 }

@@ -27,7 +27,13 @@ void Cpu::restart()
 
 void Cpu::hard_reset()
 {
-    regs.reg = {0};
+    AF = 0x01B0;
+    BC = 0x0013;
+    DE = 0x00D8;
+    HL = 0x014D;
+    SP = 0xFFFE;
+    PC = 0x0100;
+
     curr_instr = nullptr;
     branch_taken = false;
     DI_action = IMEStatus::DO_NOTHING;
@@ -35,13 +41,6 @@ void Cpu::hard_reset()
     is_halted = false;
     is_stopped = false;
     clock_cycles = 0;
-
-    AF = 0x01B0;
-    BC = 0x0013;
-    DE = 0x00D8;
-    HL = 0x014D;
-    SP = 0xFFFE;
-    PC = 0x0100;
 }
 
 void Cpu::execute(const uint8_t* instruction)

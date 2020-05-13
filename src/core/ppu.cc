@@ -66,13 +66,13 @@ void Ppu::step(uint64_t cpu_cycles)
 
         // Check or clear LYC interrupt condition.
         if (mem->hff44_ly == mem->hff45_lyc
-            && get_bit(&mem->hff41_stat, Memory::LycInt))
+            && get_bit(&mem->hff41_stat, Ppu::LycInt))
         {
-            set_bit(&mem->hff41_stat, Memory::LycCoincidence);
+            set_bit(&mem->hff41_stat, Ppu::LycCoincidence);
             cerr << "sent LCD STAT IRQ" << endl;
             irc->request_interrupt(Irc::LcdStatInt);
         }
-        else clear_bit(&mem->hff41_stat, Memory::LycCoincidence);
+        else clear_bit(&mem->hff41_stat, Ppu::LycCoincidence);
 
         switch (current_mode)
         {
@@ -91,7 +91,7 @@ void Ppu::step(uint64_t cpu_cycles)
                     clocksum -= 291;
                     current_mode = Hblank;
                     // Hblank interrupt
-                    if (get_bit(&mem->hff41_stat, Memory::HBlankInterrupt))
+                    if (get_bit(&mem->hff41_stat, HBlankInterrupt))
                         irc->request_interrupt(Irc::LcdStatInt);
                 }
                 else stop = true;
@@ -106,7 +106,7 @@ void Ppu::step(uint64_t cpu_cycles)
                     {
                         current_mode = OamScan;
                         // OAM interrupt
-                        if (get_bit(&mem->hff41_stat, Memory::OamInt))
+                        if (get_bit(&mem->hff41_stat, OamInt))
                             irc->request_interrupt(Irc::LcdStatInt);
                     }
                     else
@@ -114,7 +114,7 @@ void Ppu::step(uint64_t cpu_cycles)
                         current_mode = Vblank;
                         renderer->render_frame();
                         irc->request_interrupt(Irc::VBlankInterrupt);
-                        if (get_bit(&mem->hff41_stat, Memory::VBlankInterrupt))
+                        if (get_bit(&mem->hff41_stat, VBlankInterrupt))
                             irc->request_interrupt(Irc::LcdStatInt);
                     }
                 }
@@ -130,7 +130,7 @@ void Ppu::step(uint64_t cpu_cycles)
                     clocksum -= 4560;
                     current_mode = OamScan;
                     // OAM interrupt
-                    if (get_bit(&mem->hff41_stat, Memory::OamInt))
+                    if (get_bit(&mem->hff41_stat, OamInt))
                         irc->request_interrupt(Irc::LcdStatInt);
 
                     //cerr << "vblank end @ " << total_cycles - clocksum << endl;
@@ -217,7 +217,7 @@ void Ppu::transition_to_mode(Ppu::Mode mode)
     switch (mode)
     {
         case Mode::OamScan:
-            if (get_bit(&mem->hff41_stat, Memory::OamInt))
+            if (get_bit(&mem->hff41_stat, OamInt))
             {
                 irc->request_interrupt(Irc::LcdStatInt);
             }
@@ -231,15 +231,15 @@ void Ppu::transition_to_mode(Ppu::Mode mode)
                 ++mem->hff44_ly;
             }
 
-            if (get_bit(&mem->hff41_stat, Memory::LycInt)
+            if (get_bit(&mem->hff41_stat, LycInt)
                 && mem->hff44_ly == mem->hff45_lyc)
             {
-                set_bit(&mem->hff41_stat, Memory::LycCoincidence);
+                set_bit(&mem->hff41_stat, LycCoincidence);
                 irc->request_interrupt(Irc::LcdStatInt);
             }
             else
             {
-                clear_bit(&mem->hff41_stat, Memory::LycCoincidence);
+                clear_bit(&mem->hff41_stat, LycCoincidence);
             }
 
             frame_ready = false;
@@ -249,7 +249,7 @@ void Ppu::transition_to_mode(Ppu::Mode mode)
             break;
 
         case Mode::Hblank:
-            if (get_bit(&mem->hff41_stat, Memory::HBlankInterrupt))
+            if (get_bit(&mem->hff41_stat, HBlankInterrupt))
             {
                 irc->request_interrupt(Irc::LcdStatInt);
             }
@@ -258,7 +258,7 @@ void Ppu::transition_to_mode(Ppu::Mode mode)
         case Mode::Vblank:
             renderer->render_frame();
             ++mem->hff44_ly;
-            if (get_bit(&mem->hff41_stat, Memory::VBlankInterrupt))
+            if (get_bit(&mem->hff41_stat, VBlankInterrupt))
             {
                 irc->request_interrupt(Irc::VBlankInterrupt);
             }

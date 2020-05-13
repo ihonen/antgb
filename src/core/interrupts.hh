@@ -5,14 +5,14 @@
 class Irc
 {
 public:
-
-    // TODO: Deploy
     struct Registers
     {
-        uint8_t IME;
         uint8_t IE;
         uint8_t IF;
-    } regs;
+    };
+
+    static constexpr memaddr_t IE_ADDRESS = 0xFFFF;
+    static constexpr memaddr_t IF_ADDRESS = 0xFF0F;
 
     enum InterruptId
     {
@@ -24,7 +24,7 @@ public:
         NoInterrupt = 0xFF
     };
 
-    const memaddr_t VECTOR_ADDRESS[5] =
+    const memaddr_t INTERRUPT_VECTOR[5] =
     {
         0x0040,
         0x0048,
@@ -54,6 +54,7 @@ public:
     void disable_interrupt(int source);
     void enable_interrupt(int source);
 
-    uint8_t interrupt_master_enable;
+    // TODO: Move into CPU.
+    uint8_t IME;
     Memory* mem;
 };

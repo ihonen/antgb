@@ -58,7 +58,7 @@ RegisterModel::RegisterModel(DebugCore* debugger, QObject* parent) :
     interrupts_item->name = "Interrupts";
     interrupts_item->children =
     {
-        new RegisterItem{interrupts_item, {}, "IME", 8, &debugger->emu->irc->interrupt_master_enable, {}},
+        new RegisterItem{interrupts_item, {}, "IME", 8, &debugger->emu->irc->IME, {}},
         new RegisterItem{interrupts_item, {}, "IE", 8, &debugger->emu->mem->hffff_ie, {}},
         new RegisterItem{interrupts_item, {}, "IF", 8, &debugger->emu->mem->hff0f_if, {}}
     };

@@ -44,8 +44,8 @@ void Sprites::refresh()
         }
         */
 
-        if (sprite_attributes->y_pos - 16 <= mem->read(mem->LY_ADDRESS)
-            && sprite_attributes->y_pos - 9 /*- 16 + sprite_height()*/ >= mem->read(mem->LY_ADDRESS))
+        if (sprite_attributes->y_pos - 16 <= mem->read(Ppu::LY_ADDRESS)
+            && sprite_attributes->y_pos - 9 /*- 16 + sprite_height()*/ >= mem->read(Ppu::LY_ADDRESS))
         {
             Sprite& sprite = sprite_buffer[sprite_buffer_size];
             assemble_sprite_info(sprite, sprite_attributes);
@@ -78,12 +78,12 @@ Tile* Sprites::sprite_data_base()
 
 uint8_t Sprites::sprite_height()
 {
-    return get_bit(mem->get(mem->LCDC_ADDRESS), Memory::ObjSize) ? 16 : 8;
+    return get_bit(mem->get(Ppu::LCDC_ADDRESS), Ppu::ObjSize) ? 16 : 8;
 }
 
 bool Sprites::enabled()
 {
-    return get_bit(mem->get(mem->LCDC_ADDRESS), Memory::ObjDisplayEnable);
+    return get_bit(mem->get(Ppu::LCDC_ADDRESS), Ppu::ObjDisplayEnable);
 }
 
 void Sprites::assemble_sprite_info(Sprite& sprite, Sprite::Attribute* attributes)

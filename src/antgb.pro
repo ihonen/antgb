@@ -25,6 +25,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++14
 
 SOURCES += \
+    core/apu.cc \
     core/background.cc \
     core/bitmanip.cc \
     core/cartridge.cc \
@@ -83,6 +84,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    core/apu.hh \
     core/background.hh \
     core/bitmanip.hh \
     core/cartridge.hh \

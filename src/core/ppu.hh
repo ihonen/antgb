@@ -13,12 +13,58 @@ using std::vector;
 class Ppu
 {
 public:
-
     struct Registers
     {
         uint8_t lcdc;
         uint8_t stat;
-    } reg;
+        uint8_t scy;
+        uint8_t scx;
+        uint8_t ly;
+        uint8_t lyc;
+        uint8_t dma;
+        uint8_t bgp;
+        uint8_t obp0;
+        uint8_t obp1;
+        uint8_t wy;
+        uint8_t wx;
+    };
+
+    static constexpr memaddr_t LCDC_ADDRESS = 0xFF40;
+    static constexpr memaddr_t STAT_ADDRESS = 0xFF41;
+    static constexpr memaddr_t SCY_ADDRESS = 0xFF42;
+    static constexpr memaddr_t SCX_ADDRESS = 0xFF43;
+    static constexpr memaddr_t LY_ADDRESS = 0xFF44;
+    static constexpr memaddr_t LYC_ADDRESS = 0xFF45;
+    static constexpr memaddr_t DMA_ADDRESS = 0xFF46;
+    static constexpr memaddr_t BGP_ADDRESS = 0xFF47;
+    static constexpr memaddr_t OBP0_ADDRESS = 0xFF48;
+    static constexpr memaddr_t OBP1_ADDRESS = 0xFF49;
+    static constexpr memaddr_t WY_ADDRESS = 0xFF4A;
+    static constexpr memaddr_t WX_ADDRESS = 0xFF4B;
+    static constexpr memaddr_t LOW_ADDRESS = LCDC_ADDRESS;
+    static constexpr memaddr_t HIGH_ADDRESS = WX_ADDRESS;
+
+    enum BitPos
+    {
+        // LCDC
+        BgAndWindowDisplayEnable = 0,
+        ObjDisplayEnable = 1,
+        ObjSize = 2,
+        BgTileMapDisplaySelect = 3,
+        BgAndWindowTileDataSelect = 4,
+        WindowDisplayEnable = 5,
+        WindowTileMapDisplaySelect = 6,
+        DisplayEnable = 7,
+
+        // STAT
+        LycInt = 6,
+        OamInt = 5,
+        VBlankInterrupt = 4,
+        HBlankInterrupt = 3,
+        LycCoincidence = 2,
+        ModeFlag1 = 1,
+        ModeFlag0 = 0
+    };
 
     enum Mode
     {
