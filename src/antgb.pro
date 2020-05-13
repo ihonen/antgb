@@ -53,6 +53,7 @@ SOURCES += \
     frontend/qt/button.cc \
     frontend/qt/buttoninputwidget.cc \
     frontend/qt/colors.cc \
+    frontend/qt/datadelegate.cc \
     frontend/qt/datamodel.cc \
     frontend/qt/dataviewer.cc \
     frontend/qt/displayscene.cc \
@@ -108,6 +109,7 @@ HEADERS += \
     frontend/qt/button.hh \
     frontend/qt/buttoninputwidget.hh \
     frontend/qt/colors.hh \
+    frontend/qt/datadelegate.hh \
     frontend/qt/datamodel.hh \
     frontend/qt/dataviewer.hh \
     frontend/qt/displayscene.hh \
