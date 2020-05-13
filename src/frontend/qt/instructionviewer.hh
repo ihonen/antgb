@@ -15,7 +15,7 @@ class InstructionViewer : public QFrame, public DebugObserver
 {
     Q_OBJECT
 public slots:
-    void search();
+    void on_search();
 public:
     QLineEdit* search_line = nullptr;
     InstructionView* instruction_view = nullptr;

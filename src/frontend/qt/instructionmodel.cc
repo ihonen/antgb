@@ -204,7 +204,7 @@ void InstructionModel::update_all_from_row(int row)
     is_updating = false;
 }
 
-QModelIndex InstructionModel::search(const QString& anycase_text, int starting_from)
+QModelIndex InstructionModel::search_text(const QString& anycase_text, int starting_from)
 {
     auto lowercase_text = anycase_text.toLower();
 

@@ -1,33 +1,23 @@
 #pragma once
 
-#include "datadelegate.hh"
-#include "datamodel.hh"
+#include "dataview.hh"
 #include "../../debugger/debugcore.hh"
+#include <QPushButton>
 #include <QFrame>
-#include <QLabel>
-#include <QGridLayout>
-#include <QTableWidget>
 
-class DataViewer : public QTableView
+class DataViewer : public QFrame
 {
     Q_OBJECT
 public slots:
-    Q_ALWAYS_INLINE void on_data_changed(const QModelIndex& top_left,
-                                         const QModelIndex& bottom_right,
-                                         const QVector<int>& roles);
+    void on_search_text();
+    void on_hover(const QModelIndex& index);
+    void on_hover_stopped();
+    void on_current_changed(const QModelIndex& current, const QModelIndex& previous);
 public:
+    DataViewer(DebugCore* debugger, QWidget* parent = nullptr);
 
+    DataView* data_view = nullptr;
+    QLineEdit* search_line = nullptr;
+    QLineEdit* status_line = nullptr;
     DebugCore* debugger = nullptr;
-    DataModel* model = nullptr;
-
-    DataViewer(DebugCore* debugger, DataModel* model, QWidget* parent = nullptr);
 };
-
-Q_ALWAYS_INLINE void DataViewer::on_data_changed(const QModelIndex& top_left,
-                                                 const QModelIndex& bottom_right,
-                                                 const QVector<int>& roles)
-{
-    Q_UNUSED(bottom_right)
-    Q_UNUSED(roles)
-    QTableView::update(top_left);
-}

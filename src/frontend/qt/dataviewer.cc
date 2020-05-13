@@ -1,46 +1,82 @@
 #include "dataviewer.hh"
 
-#include <QHeaderView>
+#include "fonts.hh"
+#include "helper.hh"
+#include <QVBoxLayout>
+#include <QLineEdit>
 
-DataViewer::DataViewer(DebugCore* debugger, DataModel* model, QWidget* parent) :
-    QTableView(parent),
-    debugger(debugger),
-    model(model)
+
+void DataViewer::on_search_text()
 {
-    setItemDelegate(new DataDelegate);
+    QString text = search_line->text();
+    data_view->search_text(text);
+}
 
-    verticalHeader()->setVisible(false);
-    horizontalHeader()->setVisible(false);
-    setShowGrid(false);
+void DataViewer::on_hover(const QModelIndex& index)
+{
+    if (!data_view->hasFocus())
+    {
+        if (data_view->model->index_has_address(index))
+        {
+            auto address = data_view->model->index_to_address(index);
+            status_line->setText(hexstr16(address).toUpper() + " " + register_name(address));
+        }
+        else status_line->setText("");
+    }
+}
 
-    verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-    verticalHeader()->setMinimumSectionSize(15);
-    verticalHeader()->setDefaultSectionSize(15);
-    verticalHeader()->setMaximumSectionSize(15);
+void DataViewer::on_hover_stopped()
+{
+    if (!data_view->hasFocus())
+        status_line->setText("");
+}
 
-    horizontalHeader()->setMinimumSectionSize(10);
-    horizontalHeader()->setDefaultSectionSize(22);
-    horizontalHeader()->setMaximumSectionSize(100);
+void DataViewer::on_current_changed(const QModelIndex& current,
+                                    const QModelIndex& previous)
+{
+    Q_UNUSED(previous)
+    auto address = data_view->model->index_to_address(current);
+    status_line->setText(hexstr16(address).toUpper() + " " + register_name(address));
+}
 
-    setModel(model);
+DataViewer::DataViewer(DebugCore* debugger, QWidget* parent) :
+    QFrame(parent),
+    debugger(debugger)
+{
+    data_view = new DataView(debugger, this);
 
-    horizontalHeader()->resizeSection(DataModel::MEM_NAME_COLUMN, 55);
-    horizontalHeader()->resizeSection(DataModel::ADDRESS_COLUMN, 45);
-    for (size_t i = 2; i < 18; ++i)
-        horizontalHeader()->resizeSection(i, 24);
-    for (size_t i = 18; i < model->columnCount(); ++i)
-        horizontalHeader()->resizeSection(i, 11);
+    search_line = new QLineEdit(this);
+    search_line->setFont(*Fonts::COURIER);
+    search_line->setPlaceholderText("Search");
 
-    setSelectionMode(QAbstractItemView::SingleSelection);
+    status_line = new QLineEdit(this);
+    status_line->setFont(*Fonts::COURIER);
+    status_line->setReadOnly(true);
 
-    setEditTriggers(QAbstractItemView::NoEditTriggers);
+    QGridLayout* layout = new QGridLayout(this);
+    layout->addWidget(search_line, 0, 0);
+    layout->addWidget(data_view, 1, 0);
+    layout->addWidget(status_line, 2, 0);
 
-    connect(model,
-            &DataModel::dataChanged,
+    setFrameStyle(QFrame::StyledPanel);
+
+    connect(search_line,
+            &QLineEdit::textChanged,
             this,
-            &DataViewer::on_data_changed);
+            &DataViewer::on_search_text);
 
-    auto font = QFont();
-    font.setFamily("Courier");
-    setFont(font);
+    connect(data_view,
+            &DataView::hover_index_changed,
+            this,
+            &DataViewer::on_hover);
+
+    connect(data_view,
+            &DataView::hover_stopped,
+            this,
+            &DataViewer::on_hover_stopped);
+
+    connect(data_view->selectionModel(),
+            &QItemSelectionModel::currentChanged,
+            this,
+            &DataViewer::on_current_changed);
 }

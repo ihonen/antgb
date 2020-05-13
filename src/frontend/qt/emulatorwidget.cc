@@ -29,8 +29,7 @@ EmulatorWidget::EmulatorWidget(Emulator* emulator,
     display.view->setFixedSize(DisplayScene::REAL_RES_X / 2 + display.view->frameWidth(),
                                DisplayScene::REAL_RES_Y / 2 + display.view->frameWidth());
 
-    auto data_model = new DataModel(debugger, this);
-    data_viewer = new DataViewer(debugger, data_model, this);
+    data_viewer = new DataViewer(debugger, this);
 
     auto instruction_model = new InstructionModel(debugger, this);
     instruction_viewer = new InstructionViewer(debugger, instruction_model, this);

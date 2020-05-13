@@ -6,7 +6,7 @@
 #include "helper.hh"
 #include "../../debugger/disassembler.hh"
 
-void InstructionViewer::search()
+void InstructionViewer::on_search()
 {
     auto text = search_line->text();
     search_line->setPlaceholderText("Jump to");
@@ -43,7 +43,7 @@ InstructionViewer::InstructionViewer(DebugCore* debugger, InstructionModel* mode
     connect(search_line,
             &QLineEdit::textChanged,
             this,
-            &InstructionViewer::search);
+            &InstructionViewer::on_search);
     connect(breakpoint_view,
             &BreakpointView::clicked,
             instruction_view,

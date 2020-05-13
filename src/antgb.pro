@@ -55,6 +55,7 @@ SOURCES += \
     frontend/qt/colors.cc \
     frontend/qt/datadelegate.cc \
     frontend/qt/datamodel.cc \
+    frontend/qt/dataview.cc \
     frontend/qt/dataviewer.cc \
     frontend/qt/displayscene.cc \
     frontend/qt/emulatorwidget.cc \
@@ -111,6 +112,7 @@ HEADERS += \
     frontend/qt/colors.hh \
     frontend/qt/datadelegate.hh \
     frontend/qt/datamodel.hh \
+    frontend/qt/dataview.hh \
     frontend/qt/dataviewer.hh \
     frontend/qt/displayscene.hh \
     frontend/qt/emulatorwidget.hh \
@@ -138,5 +140,4 @@ RESOURCES += \
     frontend/qt/img.qrc \
     memdump.qrc
 
-FORMS += \
-    frontend/qt/form.ui
+FORMS +=

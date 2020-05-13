@@ -66,7 +66,7 @@ public:
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
     void update_all_from_row(int row);
     void clear_all();
-    QModelIndex search(const QString& text, int starting_from = 0);
+    QModelIndex search_text(const QString& text, int starting_from = 0);
 
     virtual void on_breakpoint_added(uint16_t address) override;
     virtual void on_breakpoint_removed(uint16_t address) override;

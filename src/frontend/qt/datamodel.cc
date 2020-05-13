@@ -7,6 +7,7 @@ DataModel::DataModel(DebugCore* debugger, QObject* parent) :
     debugger(debugger)
 {
     debugger->add_observer(this);
+    items.reserve(ROW_COUNT);
 
     for (size_t row = 0; row < ROW_COUNT; ++row)
     {
@@ -57,7 +58,34 @@ void DataModel::update()
 
     emit(dataChanged(index(0, 0),
                      index(LAST_ROW, LAST_COLUMN),
-                     {Qt::DisplayRole}));
+    {Qt::DisplayRole}));
+}
+
+QModelIndex DataModel::search_text(const QString& anycase_text, int starting_from)
+{
+    auto lowercase_text = anycase_text.toLower();
+
+    bool is_hex = false;
+    auto value = lowercase_text.toUInt(&is_hex, 16);
+    if (is_hex && value <= 0xFFFF)
+        for (size_t i = 0; i < items.size(); ++i)
+            if (i / BYTES_PER_ROW >= value)
+                return index(i, 0);
+
+    return QModelIndex();
+}
+
+uint16_t DataModel::index_to_address(const QModelIndex& index)
+{
+    if (index.column() < HEX_COLUMN[0]) return 0xFFFF;
+    else if (index.column() <= HEX_COLUMN[BYTES_PER_ROW - 1])
+        return index.row() * BYTES_PER_ROW + index.column() - HEX_COLUMN[0];
+    else return index.row() * BYTES_PER_ROW + index.column() - ASCII_COLUMN[0];
+}
+
+bool DataModel::index_has_address(const QModelIndex& index)
+{
+    return index.isValid() && index.column() >= HEX_COLUMN[0];
 }
 
 void DataModel::on_debugging_resumed()

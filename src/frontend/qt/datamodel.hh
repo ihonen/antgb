@@ -50,7 +50,11 @@ public:
     virtual Q_ALWAYS_INLINE int rowCount(const QModelIndex& parent = QModelIndex()) const override;
     virtual Q_ALWAYS_INLINE int columnCount(const QModelIndex& parent = QModelIndex()) const override;
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
+
     void update();
+    QModelIndex search_text(const QString& anycase_text, int starting_from = 0);
+    bool index_has_address(const QModelIndex& index);
+    uint16_t index_to_address(const QModelIndex& index);
 
     virtual void on_debugging_resumed() override;
     virtual void on_debugging_paused() override;
@@ -65,7 +69,15 @@ public:
 
 Q_ALWAYS_INLINE Qt::ItemFlags DataModel::flags(const QModelIndex& index) const
 {
-    return QAbstractTableModel::flags(index);
+    auto flags = QAbstractTableModel::flags(index);
+    if (index.column() >= HEX_COLUMN[0])
+        flags |= Qt::ItemIsEditable;
+    else
+    {
+        flags &= ~Qt::ItemIsSelectable;
+        flags &= ~Qt::ItemIsEnabled;
+    }
+    return flags;
 }
 
 Q_ALWAYS_INLINE QVariant DataModel::headerData(int section,
@@ -93,8 +105,8 @@ Q_ALWAYS_INLINE int DataModel::columnCount(const QModelIndex& parent) const
 Q_ALWAYS_INLINE QVariant DataModel::data(const QModelIndex& index,
                                              int role) const
 {
-    auto item(items[index.row()]);
-    const auto col = index.column();
+    const auto item(items[index.row()]);
+    const auto col(index.column());
 
     switch (role)
     {

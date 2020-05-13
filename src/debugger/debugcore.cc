@@ -47,23 +47,13 @@ void DebugCore::step_out()
 
 void DebugCore::keep_running()
 {
-    size_t i = 0;
-    while (do_run && !breakpoints.count(emu->cpu->PC))
+    // To prevent being stuck in the current breakpoint.
+    bool is_first_instruction = true;
+    while ((do_run && !breakpoints.count(emu->cpu->PC))
+           || (do_run && is_first_instruction))
     {
+        is_first_instruction = false;
         execute_next();
-
-        /*
-        vector<std::thread*> observer_threads;
-        for (const auto& observer : observers)
-            observer_threads.push_back(new std::thread([&]() { observer->on_debugging_paused(); }));
-        for (const auto& thread : observer_threads)
-        {
-            thread->join();
-            delete thread;
-        }
-        */
-
-//        std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
 
     for (auto& observer : observers)
