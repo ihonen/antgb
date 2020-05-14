@@ -106,6 +106,7 @@ HEADERS += \
     debugger/debugcore.hh \
     debugger/debugobserver.hh \
     debugger/disassembler.hh \
+    frontend/cartridge.hh \
     frontend/qt/breakpointdelegate.hh \
     frontend/qt/breakpointmodel.hh \
     frontend/qt/breakpointview.hh \
