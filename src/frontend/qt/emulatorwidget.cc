@@ -49,6 +49,8 @@ EmulatorWidget::EmulatorWidget(Emulator* emulator,
 
     serial_viewer = new SerialViewer(debugger, this);
 
+    cartridge_viewer = new CartridgeViewer(debugger, this);
+
     main_layout->addWidget(display.view, 0, 0);
     main_layout->addWidget(button_input_widget, 0, 1);
     main_layout->addWidget(vram_viewer, 1, 0, 1, 2);
@@ -58,6 +60,7 @@ EmulatorWidget::EmulatorWidget(Emulator* emulator,
     main_layout->addWidget(register_viewer, 0, 2, 2, 1);
     main_layout->addWidget(stack_viewer, 0, 3, 2, 1);
     main_layout->addWidget(memory_viewer, 0, 4, 2, 1);
+    main_layout->addWidget(cartridge_viewer, 0, 5, 2, 3);
     setLayout(main_layout);
 }
 
@@ -72,6 +75,11 @@ void EmulatorWidget::load_rom(QString& filepath)
 
     auto cartridge = new Cartridge();
     ::load_rom(filepath, cartridge->data);
+    cerr << "Logo valid: " << cartridge->is_nintendo_logo_valid() << endl;
+    cerr << "Title: " << cartridge->title() << endl;
+    cerr << "Manufacturer code: " << std::hex << (size_t)cartridge->manufacturer_code() << endl;
+    cerr << "Header checksum: " << std::hex << (size_t)cartridge->header_checksum() << "/" << std::hex << (size_t)cartridge->compute_header_checksum() << " (" << cartridge->header_matches_checksum() << ")" << endl;
+    cerr << "Licensee code: " << std::hex << (size_t)cartridge->old_licensee_code() << endl;
     cartridge->size = 0x8000;
     debugger->insert_cartridge(cartridge);
 }

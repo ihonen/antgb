@@ -53,6 +53,7 @@ SOURCES += \
     frontend/qt/breakpointview.cc \
     frontend/qt/button.cc \
     frontend/qt/buttoninputwidget.cc \
+    frontend/qt/cartridgeviewer.cc \
     frontend/qt/colors.cc \
     frontend/qt/datadelegate.cc \
     frontend/qt/datamodel.cc \
@@ -112,6 +113,7 @@ HEADERS += \
     frontend/qt/breakpointview.hh \
     frontend/qt/button.hh \
     frontend/qt/buttoninputwidget.hh \
+    frontend/qt/cartridgeviewer.hh \
     frontend/qt/colors.hh \
     frontend/qt/datadelegate.hh \
     frontend/qt/datamodel.hh \

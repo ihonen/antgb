@@ -1,5 +1,6 @@
 #pragma once
 
+#include "cartridgeviewer.hh"
 #include "displayscene.hh"
 #include "dataviewer.hh"
 #include "instructionviewer.hh"
@@ -35,6 +36,7 @@ public:
         QGraphicsView* view;
     } display;
 
+    CartridgeViewer* cartridge_viewer = nullptr;
     ButtonInputWidget* button_input_widget = nullptr;
     DataViewer* data_viewer = nullptr;
     InstructionViewer* instruction_viewer = nullptr;

@@ -57,7 +57,7 @@ enum class NewLicensee : uint8_t
     Accolade = 0x79,
     Misawa = 0x80,
     Lozc = 0x83,
-    TokumaShotenIntermedia = 0x86,
+    TokumaShoten = 0x86,
     Tsukuda = 0x87,
     Chunsoft = 0x91,
     VideoSystem = 0x92,
@@ -221,7 +221,7 @@ enum class OldLicensee
     Ljn3 = 0xFF
 };
 
-static const std::map<OldLicensee, std::string> OLD_LICENSEE =
+static const std::map<OldLicensee, const char* const> OLD_LICENSEE =
 {
     {OldLicensee::None , "-"},
     {OldLicensee::Nintendo1 , "Nintendo"},
@@ -373,7 +373,7 @@ static const std::map<OldLicensee, std::string> OLD_LICENSEE =
     {OldLicensee::Ljn3, "LJN"}
 };
 
-static const std::map<NewLicensee, std::string> NEW_LICENSEE =
+static const std::map<NewLicensee, const char* const> NEW_LICENSEE =
 {
     {NewLicensee::None , "-"},
     {NewLicensee::Nintendo1 , "Nintendo"},
@@ -426,7 +426,7 @@ static const std::map<NewLicensee, std::string> NEW_LICENSEE =
     {NewLicensee::Accolade , "Accolade"},
     {NewLicensee::Misawa , "Misawa"},
     {NewLicensee::Lozc , "LOZC"},
-    {NewLicensee::TokumaShotenIntermedia , "Tokuma Shoten"},
+    {NewLicensee::TokumaShoten , "Tokuma Shoten"},
     {NewLicensee::Tsukuda , "Tsukuda"},
     {NewLicensee::Chunsoft , "Chunsoft"},
     {NewLicensee::VideoSystem , "Video System"},
@@ -438,62 +438,88 @@ static const std::map<NewLicensee, std::string> NEW_LICENSEE =
     {NewLicensee::Konami3, "Konami"}
 };
 
-static const std::map<Cartridge::CartridgeType, std::string> CART_TYPE_NAME =
+static const std::map<Cartridge::CartridgeType, const char* const> CART_TYPE_STR =
 {
     {Cartridge::RomOnly,
-     "ROM ONLY"},
+     "ROM only"},
     {Cartridge::Mbc1,
      "MBC1"},
     {Cartridge::Mbc1_Ram,
      "MBC1+RAM"},
     {Cartridge::Mbc1_Ram_Battery,
-     "MBC1+RAM+BATTERY"},
+     "MBC1+RAM+Battery"},
     {Cartridge::Mbc2,
      "MBC2"},
     {Cartridge::Mbc2_Battery,
-     "MBC2+BATTERY"},
+     "MBC2+Battery"},
     {Cartridge::Rom_Ram,
      "ROM+RAM"},
     {Cartridge::Rom_Ram_Battery,
-     "ROM+RAM+BATTERY"},
+     "ROM+RAM+Battery"},
     {Cartridge::Mmm01,
      "MMM01"},
     {Cartridge::Mmm01_Ram,
      "MMM01+RAM"},
     {Cartridge::Mmm01_Ram_Battery,
-     "MMM01+RAM+BATTERY"},
+     "MMM01+RAM+Battery"},
     {Cartridge::Mbc3_Timer_Battery,
-     "MBC3+TIMER+BATTERY"},
+     "MBC3+Timer+Battery"},
     {Cartridge::Mbc3_Timer_Ram_Battery,
-     "MBC3+TIMER+RAM+BATTERY"},
+     "MBC3+Timer+RAM+Battery"},
     {Cartridge::Mbc3,
      "MBC3"},
     {Cartridge::Mbc3_Ram,
      "MBC3+RAM"},
     {Cartridge::Mbc3_Ram_Battery,
-     "MBC3+RAM+BATTERY"},
+     "MBC3+RAM+Battery"},
     {Cartridge::Mbc5,
      "MBC5"},
     {Cartridge::Mbc5_Ram,
      "MBC5+RAM"},
     {Cartridge::Mbc5_Ram_battery,
-     "MBC5+RAM+BATTERY"},
+     "MBC5+RAM+Battery"},
     {Cartridge::Mbc5_Rumble,
-     "MBC5+RUMBLE"},
+     "MBC5+Rumble"},
     {Cartridge::Mbc5_Rumble_Ram,
-     "MBC5+RUMBLE+RAM"},
+     "MBC5+Rumble+RAM"},
     {Cartridge::Mbc5_Rumble_Ram_Battery,
-     "MBC5+RUMBLE+RAM+BATTERY"},
+     "MBC5+Rumble+RAM+Battery"},
     {Cartridge::Mbc6,
      "MBC6"},
     {Cartridge::Mbc7_Sensor_Rumble_Ram_Battery,
-     "MBC7+SENSOR+RUMBLE+RAM+BATTERY"},
+     "MBC7+Sensor+Rumble+RAM+Battery"},
     {Cartridge::PocketCamera,
-     "POCKET CAMERA"},
+     "Pocket Camera"},
     {Cartridge::BandaiTama5,
-     "BANDAI TAMA5"},
+     "Bandai Tama 5"},
     {Cartridge::Huc3,
      "HuC3"},
     {Cartridge::HuC1_Ram_Battery,
-     "HuC1+RAM+BATTERY"},
+     "HuC1+RAM+Battery"},
+};
+
+static const std::map<Cartridge::RomSize, const char* const> ROM_SIZE_STR =
+{
+    {Cartridge::RomSize::KB32, "32 KB"},
+    {Cartridge::RomSize::KB64, "64 KB"},
+    {Cartridge::RomSize::KB128, "128 KB"},
+    {Cartridge::RomSize::KB256, "256 KB"},
+    {Cartridge::RomSize::KB512, "512 KB"},
+    {Cartridge::RomSize::MB1, "1024 KB"},
+    {Cartridge::RomSize::MB2, "2048 KB"},
+    {Cartridge::RomSize::MB4, "4096 KB"},
+    {Cartridge::RomSize::MB8, "8192 KB"},
+    {Cartridge::RomSize::MB1_1, "1152 KB"},
+    {Cartridge::RomSize::MB1_2, "1280 KB"},
+    {Cartridge::RomSize::MB1_5, "1536 KB"}
+};
+
+static const std::map<Cartridge::RamSize, const char* const> RAM_SIZE_STR =
+{
+    {Cartridge::RamSize::None, "0 KB"},
+    {Cartridge::RamSize::KB32, "32 KB"},
+    {Cartridge::RamSize::KB8, "8 KB"},
+    {Cartridge::RamSize::KB32, "32 KB"},
+    {Cartridge::RamSize::KB128, "128 KB"},
+    {Cartridge::RamSize::KB64, "64 KB"}
 };

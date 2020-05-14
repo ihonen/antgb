@@ -29,7 +29,9 @@ bool Cartridge::is_nintendo_logo_valid()
 
 std::string Cartridge::title()
 {
-    return reinterpret_cast<char*>(&data[TITLE_LOW]);
+    char titledata[16];
+    memcpy(titledata, &data[TITLE_LOW], 16);
+    return titledata;
 }
 
 bool Cartridge::has_manufacturer_code()
@@ -89,7 +91,7 @@ uint8_t Cartridge::destination_code()
 
 bool Cartridge::has_old_licensee()
 {
-    return old_licensee_code() == 0x33;
+    return old_licensee_code() != 0x33;
 }
 
 uint8_t Cartridge::old_licensee_code()
@@ -124,7 +126,24 @@ uint8_t Cartridge::header_checksum()
     return data[HEADER_CHECKSUM_ADDRESS];
 }
 
+uint16_t Cartridge::compute_global_checksum()
+{
+    uint16_t checksum = 0;
+
+    for (memaddr_t i = MIN_ADDRESS; i < MAX_ADDRESS; ++i)
+    {
+        if (i == GLOBAL_CHECKSUM_LOW || i == GLOBAL_CHECSUM_HIGH) continue;
+        checksum += data[i];
+    }
+
+    return checksum;
+}
+
 uint16_t Cartridge::global_checksum()
 {
-    return *reinterpret_cast<uint16_t*>(GLOBAL_CHECKSUM_LOW);
+    // The upper byte is first.
+    uint16_t lower_byte = data[GLOBAL_CHECSUM_HIGH];
+    uint16_t higher_byte = data[GLOBAL_CHECKSUM_LOW] << 8;
+
+    return higher_byte | lower_byte;
 }

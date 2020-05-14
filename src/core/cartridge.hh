@@ -6,9 +6,6 @@
 class Cartridge
 {
 public:
-    uint8_t data[0x8000];
-    size_t size;
-
     static constexpr memaddr_t NINTENDO_LOGO_LOW = 0x0103;
     static constexpr memaddr_t NINTENDO_LOGO_HIGH = 0x0133;
     static constexpr size_t NINTENDO_LOGO_SIZE =
@@ -43,6 +40,14 @@ public:
 
     static constexpr memaddr_t GLOBAL_CHECKSUM_LOW = 0x014E;
     static constexpr memaddr_t GLOBAL_CHECSUM_HIGH = 0x014F;
+
+    // Note: only without bank switching.
+    static constexpr memaddr_t MIN_ADDRESS = 0x0000;
+    static constexpr memaddr_t MAX_ADDRESS = 0x7FFF;
+    static constexpr memaddr_t SIZE = 0x8000;
+
+    uint8_t data[SIZE];
+    size_t size = SIZE;
 
     enum CgbSupport : uint8_t
     {
@@ -107,7 +112,7 @@ public:
         MB8 = 0x08,
         MB1_1 = 0x52,
         MB1_2 = 0x53,
-        MV1_5 = 0x54
+        MB1_5 = 0x54
     };
 
     enum class RamSize : uint8_t
@@ -140,5 +145,6 @@ public:
     bool header_matches_checksum();
     uint8_t compute_header_checksum();
     uint8_t header_checksum();
+    uint16_t compute_global_checksum();
     uint16_t global_checksum();
 };
