@@ -63,8 +63,8 @@ ButtonInputWidget::ButtonInputWidget(DebugCore* debugger, QWidget* parent) :
     layout->addWidget(center_button, 2, 2);
     layout->addWidget(select_button, 3, 4);
     layout->addWidget(start_button, 3, 5);
-    layout->addWidget(a_button, 2, 4);
-    layout->addWidget(b_button, 2, 5);
+    layout->addWidget(b_button, 2, 4);
+    layout->addWidget(a_button, 2, 5);
     layout->setSpacing(0);
     layout->setMargin(0);
 }
