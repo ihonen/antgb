@@ -46,8 +46,8 @@ static std::map<memaddr_t, Mask> MASK
 
 Memory::Memory()
 {
-    hard_reset();
     cartridge = nullptr;
+    hard_reset();
     clear_dma_status();
 }
 
@@ -59,7 +59,7 @@ void Memory::hard_reset()
     memset(hfe00_oam, 0xFF, OAM.size);
     memset(hff00_io, 0xFF, IO.size);
     memset(hff80_hram, 0xFF, HRAM.size);
-    memset(hffff_ie, 0xFF, IE.size);
+    memset(&hffff_ie, 0xFF, 1);
 
     // Load memory contents after boot ROM execution.
     // TODO: Get rid of Qt dependency.
@@ -122,7 +122,7 @@ uint8_t* Memory::get(memaddr_t address)
     }
     else
     {
-        return hffff_ie;
+        return &hffff_ie;
     }
 }
 

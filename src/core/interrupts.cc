@@ -82,7 +82,7 @@ bool Irc::interrupt_requested(int source)
 
 bool Irc::interrupt_enabled(int source)
 {
-    return (*mem->hffff_ie & (0x01 << source)) != 0;
+    return (mem->hffff_ie & (0x01 << source)) != 0;
 }
 
 void Irc::clear_interrupt(int source)
@@ -92,10 +92,10 @@ void Irc::clear_interrupt(int source)
 
 void Irc::disable_interrupt(int source)
 {
-    *mem->hffff_ie &= ~(0x01 << source);
+    mem->hffff_ie &= ~(0x01 << source);
 }
 
 void Irc::enable_interrupt(int source)
 {
-    *mem->hffff_ie |= 0x01 << source;
+    mem->hffff_ie |= 0x01 << source;
 }

@@ -17,27 +17,27 @@ RegisterModel::RegisterModel(DebugCore* debugger, QObject* parent) :
     apu_item->name = "APU";
     apu_item->children =
     {
-        new RegisterItem{apu_item, {}, "NR10", 8, &debugger->emu->mem->hff10_nr10, {}},
-        new RegisterItem{apu_item, {}, "NR11", 8, &debugger->emu->mem->hff11_nr11, {}},
-        new RegisterItem{apu_item, {}, "NR12", 8, &debugger->emu->mem->hff12_nr12, {}},
-        new RegisterItem{apu_item, {}, "NR13", 8, &debugger->emu->mem->hff13_nr13, {}},
-        new RegisterItem{apu_item, {}, "NR14", 8, &debugger->emu->mem->hff14_nr14, {}},
-        new RegisterItem{apu_item, {}, "NR21", 8, &debugger->emu->mem->hff16_nr21, {}},
-        new RegisterItem{apu_item, {}, "NR22", 8, &debugger->emu->mem->hff17_nr22, {}},
-        new RegisterItem{apu_item, {}, "NR23", 8, &debugger->emu->mem->hff18_nr23, {}},
-        new RegisterItem{apu_item, {}, "NR24", 8, &debugger->emu->mem->hff19_nr24, {}},
-        new RegisterItem{apu_item, {}, "NR30", 8, &debugger->emu->mem->hff1a_nr30, {}},
-        new RegisterItem{apu_item, {}, "NR31", 8, &debugger->emu->mem->hff1b_nr31, {}},
-        new RegisterItem{apu_item, {}, "NR32", 8, &debugger->emu->mem->hff1c_nr32, {}},
-        new RegisterItem{apu_item, {}, "NR33", 8, &debugger->emu->mem->hff1d_nr33, {}},
-        new RegisterItem{apu_item, {}, "NR34", 8, &debugger->emu->mem->hff1e_nr34, {}},
-        new RegisterItem{apu_item, {}, "NR41", 8, &debugger->emu->mem->hff20_nr_41, {}},
-        new RegisterItem{apu_item, {}, "NR42", 8, &debugger->emu->mem->hff21_nr_42, {}},
-        new RegisterItem{apu_item, {}, "NR43", 8, &debugger->emu->mem->hff22_nr_43, {}},
-        new RegisterItem{apu_item, {}, "NR44", 8, &debugger->emu->mem->hff23_nr_44, {}},
-        new RegisterItem{apu_item, {}, "NR50", 8, &debugger->emu->mem->hff24_nr_50, {}},
-        new RegisterItem{apu_item, {}, "NR51", 8, &debugger->emu->mem->hff25_nr_51, {}},
-        new RegisterItem{apu_item, {}, "NR52", 8, &debugger->emu->mem->hff26_nr_52, {}}
+        new RegisterItem{apu_item, {}, "NR10", 8, &debugger->emu->mem->apureg.nr10, {}},
+        new RegisterItem{apu_item, {}, "NR11", 8, &debugger->emu->mem->apureg.nr11, {}},
+        new RegisterItem{apu_item, {}, "NR12", 8, &debugger->emu->mem->apureg.nr12, {}},
+        new RegisterItem{apu_item, {}, "NR13", 8, &debugger->emu->mem->apureg.nr13, {}},
+        new RegisterItem{apu_item, {}, "NR14", 8, &debugger->emu->mem->apureg.nr14, {}},
+        new RegisterItem{apu_item, {}, "NR21", 8, &debugger->emu->mem->apureg.nr21, {}},
+        new RegisterItem{apu_item, {}, "NR22", 8, &debugger->emu->mem->apureg.nr22, {}},
+        new RegisterItem{apu_item, {}, "NR23", 8, &debugger->emu->mem->apureg.nr23, {}},
+        new RegisterItem{apu_item, {}, "NR24", 8, &debugger->emu->mem->apureg.nr24, {}},
+        new RegisterItem{apu_item, {}, "NR30", 8, &debugger->emu->mem->apureg.nr30, {}},
+        new RegisterItem{apu_item, {}, "NR31", 8, &debugger->emu->mem->apureg.nr31, {}},
+        new RegisterItem{apu_item, {}, "NR32", 8, &debugger->emu->mem->apureg.nr32, {}},
+        new RegisterItem{apu_item, {}, "NR33", 8, &debugger->emu->mem->apureg.nr33, {}},
+        new RegisterItem{apu_item, {}, "NR34", 8, &debugger->emu->mem->apureg.nr34, {}},
+        new RegisterItem{apu_item, {}, "NR41", 8, &debugger->emu->mem->apureg.nr_41, {}},
+        new RegisterItem{apu_item, {}, "NR42", 8, &debugger->emu->mem->apureg.nr_42, {}},
+        new RegisterItem{apu_item, {}, "NR43", 8, &debugger->emu->mem->apureg.nr_43, {}},
+        new RegisterItem{apu_item, {}, "NR44", 8, &debugger->emu->mem->apureg.nr_44, {}},
+        new RegisterItem{apu_item, {}, "NR50", 8, &debugger->emu->mem->apureg.nr_50, {}},
+        new RegisterItem{apu_item, {}, "NR51", 8, &debugger->emu->mem->apureg.nr_51, {}},
+        new RegisterItem{apu_item, {}, "NR52", 8, &debugger->emu->mem->apureg.nr_52, {}}
     };
 
     auto cpu_item = new RegisterItem;
@@ -68,7 +68,7 @@ RegisterModel::RegisterModel(DebugCore* debugger, QObject* parent) :
     joypad_item->name = "Joypad";
     joypad_item->children =
     {
-        new RegisterItem{joypad_item, {}, "JOYP", 8, &debugger->emu->mem->hff00_joyp, {}}
+        new RegisterItem{joypad_item, {}, "JOYP", 8, &debugger->emu->mem->joypadreg.joyp, {}}
     };
 
     auto lcd_item = new RegisterItem;
@@ -76,18 +76,18 @@ RegisterModel::RegisterModel(DebugCore* debugger, QObject* parent) :
     lcd_item->name = "LCD";
     lcd_item->children =
     {
-        new RegisterItem{lcd_item, {}, "LCDC", 8, &debugger->emu->mem->hff40_lcdc, {}},
-        new RegisterItem{lcd_item, {}, "STAT", 8, &debugger->emu->mem->hff41_stat, {}},
-        new RegisterItem{lcd_item, {}, "SCY", 8, &debugger->emu->mem->hff42_scy, {}},
-        new RegisterItem{lcd_item, {}, "SCX", 8, &debugger->emu->mem->hff43_scx, {}},
-        new RegisterItem{lcd_item, {}, "LY", 8, &debugger->emu->mem->hff44_ly, {}},
-        new RegisterItem{lcd_item, {}, "LYC", 8, &debugger->emu->mem->hff45_lyc, {}},
-        new RegisterItem{lcd_item, {}, "DMA", 8, &debugger->emu->mem->hff46_dma, {}},
-        new RegisterItem{lcd_item, {}, "BGP", 8, &debugger->emu->mem->hff47_bgp, {}},
-        new RegisterItem{lcd_item, {}, "OBP0", 8, &debugger->emu->mem->hff48_obp0, {}},
-        new RegisterItem{lcd_item, {}, "OBP1", 8, &debugger->emu->mem->hff49_obp1, {}},
-        new RegisterItem{lcd_item, {}, "WY", 8, &debugger->emu->mem->hff4a_wy, {}},
-        new RegisterItem{lcd_item, {}, "WX", 8, &debugger->emu->mem->hff4b_wx, {}}
+        new RegisterItem{lcd_item, {}, "LCDC", 8, &debugger->emu->mem->ppureg.lcdc, {}},
+        new RegisterItem{lcd_item, {}, "STAT", 8, &debugger->emu->mem->ppureg.stat, {}},
+        new RegisterItem{lcd_item, {}, "SCY", 8, &debugger->emu->mem->ppureg.scy, {}},
+        new RegisterItem{lcd_item, {}, "SCX", 8, &debugger->emu->mem->ppureg.scx, {}},
+        new RegisterItem{lcd_item, {}, "LY", 8, &debugger->emu->mem->ppureg.ly, {}},
+        new RegisterItem{lcd_item, {}, "LYC", 8, &debugger->emu->mem->ppureg.lyc, {}},
+        new RegisterItem{lcd_item, {}, "DMA", 8, &debugger->emu->mem->ppureg.dma, {}},
+        new RegisterItem{lcd_item, {}, "BGP", 8, &debugger->emu->mem->ppureg.bgp, {}},
+        new RegisterItem{lcd_item, {}, "OBP0", 8, &debugger->emu->mem->ppureg.obp0, {}},
+        new RegisterItem{lcd_item, {}, "OBP1", 8, &debugger->emu->mem->ppureg.obp1, {}},
+        new RegisterItem{lcd_item, {}, "WY", 8, &debugger->emu->mem->ppureg.wy, {}},
+        new RegisterItem{lcd_item, {}, "WX", 8, &debugger->emu->mem->ppureg.wx, {}}
     };
 
     auto serial_item = new RegisterItem;
@@ -95,8 +95,8 @@ RegisterModel::RegisterModel(DebugCore* debugger, QObject* parent) :
     serial_item->name = "Serial";
     serial_item->children =
     {
-        new RegisterItem{serial_item, {}, "SB", 8, &debugger->emu->mem->hff01_sb, {}},
-        new RegisterItem{serial_item, {}, "SC", 8, &debugger->emu->mem->hff02_sc, {}},
+        new RegisterItem{serial_item, {}, "SB", 8, &debugger->emu->mem->serialreg.sb, {}},
+        new RegisterItem{serial_item, {}, "SC", 8, &debugger->emu->mem->serialreg.sc, {}},
     };
 
     auto timer_item = new RegisterItem;
@@ -104,10 +104,10 @@ RegisterModel::RegisterModel(DebugCore* debugger, QObject* parent) :
     timer_item->name = "Timer";
     timer_item->children =
     {
-        new RegisterItem{timer_item, {}, "DIV", 8, &debugger->emu->mem->hff04_div, {}},
-        new RegisterItem{timer_item, {}, "TIMA", 8, &debugger->emu->mem->hff05_tima, {}},
-        new RegisterItem{timer_item, {}, "TMA", 8, &debugger->emu->mem->hff06_tma, {}},
-        new RegisterItem{timer_item, {}, "TAC", 8, &debugger->emu->mem->hff07_tac, {}}
+        new RegisterItem{timer_item, {}, "DIV", 8, &debugger->emu->mem->timerreg.div, {}},
+        new RegisterItem{timer_item, {}, "TIMA", 8, &debugger->emu->mem->timerreg.tima, {}},
+        new RegisterItem{timer_item, {}, "TMA", 8, &debugger->emu->mem->timerreg.tma, {}},
+        new RegisterItem{timer_item, {}, "TAC", 8, &debugger->emu->mem->timerreg.tac, {}}
     };
 
     root->children =

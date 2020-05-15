@@ -60,19 +60,19 @@ void Ppu::step(uint64_t cpu_cycles)
     while (!stop)
     {
         // Update registers.
-        mem->hff41_stat &= ~MODE_FLAG_MASK;
-        mem->hff41_stat |= current_mode & MODE_FLAG_MASK;
-        mem->hff44_ly = (total_cycles / 456) % 154;
+        mem->ppureg.stat &= ~MODE_FLAG_MASK;
+        mem->ppureg.stat |= current_mode & MODE_FLAG_MASK;
+        mem->ppureg.ly = (total_cycles / 456) % 154;
 
         // Check or clear LYC interrupt condition.
-        if (mem->hff44_ly == mem->hff45_lyc
-            && get_bit(&mem->hff41_stat, Ppu::LycInt))
+        if (mem->ppureg.ly == mem->ppureg.lyc
+            && get_bit(&mem->ppureg.stat, Ppu::LycInt))
         {
-            set_bit(&mem->hff41_stat, Ppu::LycCoincidence);
+            set_bit(&mem->ppureg.stat, Ppu::LycCoincidence);
             cerr << "sent LCD STAT IRQ" << endl;
             irc->request_interrupt(Irc::LcdStatInt);
         }
-        else clear_bit(&mem->hff41_stat, Ppu::LycCoincidence);
+        else clear_bit(&mem->ppureg.stat, Ppu::LycCoincidence);
 
         switch (current_mode)
         {
@@ -91,7 +91,7 @@ void Ppu::step(uint64_t cpu_cycles)
                     clocksum -= 291;
                     current_mode = Hblank;
                     // Hblank interrupt
-                    if (get_bit(&mem->hff41_stat, HBlankInterrupt))
+                    if (get_bit(&mem->ppureg.stat, HBlankInterrupt))
                         irc->request_interrupt(Irc::LcdStatInt);
                 }
                 else stop = true;
@@ -102,11 +102,11 @@ void Ppu::step(uint64_t cpu_cycles)
                 if (clocksum >= 85)
                 {
                     clocksum -= 85;
-                    if (mem->hff44_ly < 144)
+                    if (mem->ppureg.ly < 144)
                     {
                         current_mode = OamScan;
                         // OAM interrupt
-                        if (get_bit(&mem->hff41_stat, OamInt))
+                        if (get_bit(&mem->ppureg.stat, OamInt))
                             irc->request_interrupt(Irc::LcdStatInt);
                     }
                     else
@@ -114,7 +114,7 @@ void Ppu::step(uint64_t cpu_cycles)
                         current_mode = Vblank;
                         renderer->render_frame();
                         irc->request_interrupt(Irc::VBlankInterrupt);
-                        if (get_bit(&mem->hff41_stat, VBlankInterrupt))
+                        if (get_bit(&mem->ppureg.stat, VBlankInterrupt))
                             irc->request_interrupt(Irc::LcdStatInt);
                     }
                 }
@@ -130,7 +130,7 @@ void Ppu::step(uint64_t cpu_cycles)
                     clocksum -= 4560;
                     current_mode = OamScan;
                     // OAM interrupt
-                    if (get_bit(&mem->hff41_stat, OamInt))
+                    if (get_bit(&mem->ppureg.stat, OamInt))
                         irc->request_interrupt(Irc::LcdStatInt);
 
                     //cerr << "vblank end @ " << total_cycles - clocksum << endl;
@@ -165,17 +165,17 @@ void Ppu::emulate_mode3(uint64_t cpu_cycles)
 
 bool Ppu::has_dma_request()
 {
-    return mem->hff46_dma;
+    return mem->ppureg.dma;
 }
 
 memaddr_t Ppu::dma_src_address()
 {
-    return mem->hff46_dma * 0x100;
+    return mem->ppureg.dma * 0x100;
 }
 
 void Ppu::launch_dma(memaddr_t src_address)
 {
-    mem->hff46_dma = 0x00;
+    mem->ppureg.dma = 0x00;
     mem->launch_oam_dma(0xFE00, src_address, 160);
 }
 
@@ -193,7 +193,7 @@ Ppu::Mode Ppu::get_next_mode()
         case Mode::LineScan:
             return Mode::Hblank;
         case Mode::Hblank:
-            return mem->hff44_ly < 143 ? Mode::OamScan : Mode::Vblank;
+            return mem->ppureg.ly < 143 ? Mode::OamScan : Mode::Vblank;
         case Mode::Vblank:
             return Mode::OamScan;
     }
@@ -217,29 +217,29 @@ void Ppu::transition_to_mode(Ppu::Mode mode)
     switch (mode)
     {
         case Mode::OamScan:
-            if (get_bit(&mem->hff41_stat, OamInt))
+            if (get_bit(&mem->ppureg.stat, OamInt))
             {
                 irc->request_interrupt(Irc::LcdStatInt);
             }
 
-            if (mem->hff44_ly >= 144)
+            if (mem->ppureg.ly >= 144)
             {
-                mem->hff44_ly = 0;
+                mem->ppureg.ly = 0;
             }
             else
             {
-                ++mem->hff44_ly;
+                ++mem->ppureg.ly;
             }
 
-            if (get_bit(&mem->hff41_stat, LycInt)
-                && mem->hff44_ly == mem->hff45_lyc)
+            if (get_bit(&mem->ppureg.stat, LycInt)
+                && mem->ppureg.ly == mem->ppureg.lyc)
             {
-                set_bit(&mem->hff41_stat, LycCoincidence);
+                set_bit(&mem->ppureg.stat, LycCoincidence);
                 irc->request_interrupt(Irc::LcdStatInt);
             }
             else
             {
-                clear_bit(&mem->hff41_stat, LycCoincidence);
+                clear_bit(&mem->ppureg.stat, LycCoincidence);
             }
 
             frame_ready = false;
@@ -249,7 +249,7 @@ void Ppu::transition_to_mode(Ppu::Mode mode)
             break;
 
         case Mode::Hblank:
-            if (get_bit(&mem->hff41_stat, HBlankInterrupt))
+            if (get_bit(&mem->ppureg.stat, HBlankInterrupt))
             {
                 irc->request_interrupt(Irc::LcdStatInt);
             }
@@ -257,16 +257,16 @@ void Ppu::transition_to_mode(Ppu::Mode mode)
 
         case Mode::Vblank:
             renderer->render_frame();
-            ++mem->hff44_ly;
-            if (get_bit(&mem->hff41_stat, VBlankInterrupt))
+            ++mem->ppureg.ly;
+            if (get_bit(&mem->ppureg.stat, VBlankInterrupt))
             {
                 irc->request_interrupt(Irc::VBlankInterrupt);
             }
             break;
     }
 
-    mem->hff41_stat &= ~(current_mode & MODE_FLAG_MASK);
-    mem->hff41_stat |= current_mode & MODE_FLAG_MASK;
+    mem->ppureg.stat &= ~(current_mode & MODE_FLAG_MASK);
+    mem->ppureg.stat |= current_mode & MODE_FLAG_MASK;
     mode_task_complete = false;
     current_mode = mode;
 }

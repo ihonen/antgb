@@ -22,12 +22,8 @@ public:
         memaddr_t size;
     };
 
-    Apu::Registers apureg;
+    // Unused at the moment
     Irc::Registers ircreg;
-    Joypad::Registers joypadreg;
-    Ppu::Registers ppureg;
-    Serial::Registers serialreg;
-    Timer::Registers timerreg;
 
     Memory();
 
@@ -98,70 +94,17 @@ public:
         uint8_t hff00_io[IO.size];
         struct __attribute__((packed))
         {
-            // Joypad
-            uint8_t hff00_joyp;
-
-            // Serial link
-            uint8_t hff01_sb;
-            uint8_t hff02_sc;
-
+            Joypad::Registers joypadreg;
+            Serial::Registers serialreg;
             uint8_t hff03_io_unused_in_dmg_1__;
-
-            // Timer/divider
-            uint8_t hff04_div;
-            uint8_t hff05_tima;
-            uint8_t hff06_tma;
-            uint8_t hff07_tac;
-
+            Timer::Registers timerreg;
             uint8_t hff08_io_unused_in_dmg_2__[7];
-
             // Interrupt flags
             uint8_t hff0f_if;
-
-            // Sound controller
-            uint8_t hff10_nr10;
-            uint8_t hff11_nr11;
-            uint8_t hff12_nr12;
-            uint8_t hff13_nr13;
-            uint8_t hff14_nr14;
-            uint8_t hff15_io_unused_in_dmg_3__;
-            uint8_t hff16_nr21;
-            uint8_t hff17_nr22;
-            uint8_t hff18_nr23;
-            uint8_t hff19_nr24;
-            uint8_t hff1a_nr30;
-            uint8_t hff1b_nr31;
-            uint8_t hff1c_nr32;
-            uint8_t hff1d_nr33;
-            uint8_t hff1e_nr34;
-
-            uint8_t hff1f_unused_in_dmg_4__;
-
-            uint8_t hff20_nr_41;
-            uint8_t hff21_nr_42;
-            uint8_t hff22_nr_43;
-            uint8_t hff23_nr_44;
-            uint8_t hff24_nr_50;
-            uint8_t hff25_nr_51;
-            uint8_t hff26_nr_52;
-            uint8_t hff27_io_unused_in_dmg_5__[9];
-            uint8_t hff30_wave_pattern_ram[16];
-
-            // LCD controller
-            uint8_t hff40_lcdc;
-            uint8_t hff41_stat;
-            uint8_t hff42_scy;
-            uint8_t hff43_scx;
-            uint8_t hff44_ly;
-            uint8_t hff45_lyc;
-            uint8_t hff46_dma;
-            uint8_t hff47_bgp;
-            uint8_t hff48_obp0;
-            uint8_t hff49_obp1;
-            uint8_t hff4a_wy;
-            uint8_t hff4b_wx;
+            Apu::Registers apureg;
+            Ppu::Registers ppureg;
         };
     };
     uint8_t hff80_hram[HRAM.size];
-    uint8_t hffff_ie[IE.size];
+    uint8_t hffff_ie;
 };

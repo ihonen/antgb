@@ -62,10 +62,10 @@ memaddr_t Background::tile_map_address()
 {
     if (type == Type::Background)
     {
-        return TILE_MAP_BASE[get_bit(&mem->hff40_lcdc, Ppu::BgTileMapDisplaySelect)];
+        return TILE_MAP_BASE[get_bit(&mem->ppureg.lcdc, Ppu::BgTileMapDisplaySelect)];
     }
 
-    return TILE_MAP_BASE[get_bit(&mem->hff40_lcdc, Ppu::WindowTileMapDisplaySelect)];
+    return TILE_MAP_BASE[get_bit(&mem->ppureg.lcdc, Ppu::WindowTileMapDisplaySelect)];
 }
 
 uint8_t* Background::tile_map_base()
@@ -75,7 +75,7 @@ uint8_t* Background::tile_map_base()
 
 memaddr_t Background::tile_data_address()
 {
-    return TILE_DATA_BASE[get_bit(&mem->hff40_lcdc, Ppu::BgAndWindowTileDataSelect)];
+    return TILE_DATA_BASE[get_bit(&mem->ppureg.lcdc, Ppu::BgAndWindowTileDataSelect)];
 }
 
 Tile* Background::tile_data_base()
@@ -93,17 +93,17 @@ size_t Background::top()
 {
     if (type == Type::Background)
     {
-        return mem->hff42_scy;
+        return mem->ppureg.scy;
     }
 
-    return mem->hff4a_wy;
+    return mem->ppureg.wy;
 }
 
 size_t Background::bottom()
 {
     if (type == Type::Background)
     {
-        return (mem->hff42_scy + 144 - 1) % BG_HEIGHT_PIXELS;
+        return (mem->ppureg.scy + 144 - 1) % BG_HEIGHT_PIXELS;
     }
 
     return 144;
@@ -113,17 +113,17 @@ size_t Background::left()
 {
     if (type == Type::Background)
     {
-        return mem->hff43_scx;
+        return mem->ppureg.scx;
     }
 
-    return mem->hff4b_wx;
+    return mem->ppureg.wx;
 }
 
 size_t Background::right()
 {
     if (type == Type::Background)
     {
-        return (mem->hff43_scx + 160 - 1) % BG_WIDTH_PIXELS;
+        return (mem->ppureg.scx + 160 - 1) % BG_WIDTH_PIXELS;
     }
 
     return 160;
@@ -133,9 +133,9 @@ bool Background::is_enabled()
 {
     if (type == Type::Background)
     {
-        return get_bit(&mem->hff40_lcdc, Ppu::BgAndWindowDisplayEnable);
+        return get_bit(&mem->ppureg.lcdc, Ppu::BgAndWindowDisplayEnable);
     }
 
-    return get_bit(&mem->hff40_lcdc, Ppu::BgAndWindowDisplayEnable)
-            && get_bit(&mem->hff40_lcdc, Ppu::WindowDisplayEnable);
+    return get_bit(&mem->ppureg.lcdc, Ppu::BgAndWindowDisplayEnable)
+            && get_bit(&mem->ppureg.lcdc, Ppu::WindowDisplayEnable);
 }

@@ -16,11 +16,11 @@ Renderer::Renderer(Memory* memory, QObject* parent) :
 
 void Renderer::render_frame()
 {    
-    auto ly_backup = mem->hff44_ly;
+    auto ly_backup = mem->ppureg.ly;
 
     for (size_t y = 0; y < 144; ++y)
     {
-        mem->hff44_ly = y;
+        mem->ppureg.ly = y;
         sprites.refresh();
         for (size_t x = 0; x < 160; ++x)
         {
@@ -38,7 +38,7 @@ void Renderer::render_frame()
         }
     }
 
-    mem->hff44_ly = ly_backup;
+    mem->ppureg.ly = ly_backup;
 
     emit(frame_ready());
 }
