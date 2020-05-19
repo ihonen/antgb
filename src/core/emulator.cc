@@ -31,9 +31,11 @@ Emulator::~Emulator()
     delete cartridge;
 }
 
-void Emulator::insert_cartridge(Cartridge* cartridge_)
+void Emulator::load_rom(const void* rom, size_t size)
 {
-    cartridge = cartridge_;
+    if (cartridge) delete cartridge;
+    cartridge = new Cartridge;
+    memcpy(cartridge->data, rom, size);
     mem->set_cartridge(cartridge);
     hard_reset();
 }

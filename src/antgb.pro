@@ -86,9 +86,12 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     antdbg/src/core/cartridge.hh \
+    antdbg/src/core/constants.hh \
     antdbg/src/core/debugcore.hh \
     antdbg/src/core/debugobserver.hh \
     antdbg/src/core/disassembler.hh \
+    antdbg/src/core/iemulator.hh \
+    antdbg/src/core/types.hh \
     antdbg/src/frontend/cartridge.hh \
     antdbg/src/frontend/qt/breakpointdelegate.hh \
     antdbg/src/frontend/qt/breakpointmodel.hh \

@@ -16,6 +16,7 @@ class Emulator
 public:
     Emulator();
     ~Emulator();
+    void load_rom(const void* rom, size_t size);
     void insert_cartridge(Cartridge* cartridge);
     void tick();
     uint64_t cpu_tick();
