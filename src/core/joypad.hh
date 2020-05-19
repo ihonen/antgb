@@ -2,6 +2,7 @@
 
 #include "interrupts.hh"
 #include "types.hh"
+#include "../antdbg/src/core/types.hh"
 #include <map>
 
 using namespace std;
@@ -17,19 +18,6 @@ public:
     static constexpr memaddr_t JOYP_ADDRESS = 0xFF00;
     static constexpr memaddr_t LOW_ADDRESS = JOYP_ADDRESS;
     static constexpr memaddr_t HIGH_ADDRESS = JOYP_ADDRESS;
-
-    enum class Button
-    {
-        None,
-        Right,
-        Left,
-        Up,
-        Down,
-        A,
-        B,
-        Select,
-        Start
-    };
 
     enum BitPos
     {
@@ -52,8 +40,8 @@ public:
     };
 
     Joypad(Memory* mem, Irc* irc);
-    void button_pressed(Button button);
-    void button_released(Button button);
+    void button_pressed(JoypadButton button);
+    void button_released(JoypadButton button);
 
     const size_t BUTTON_COUNT = 8;
     const memaddr_t IO_REG_ADDRESS = 0xFF00;
@@ -61,7 +49,7 @@ public:
     Memory* mem;
     Irc* irc;
 
-    map<Button, ButtonState> button_status;
+    map<JoypadButton, ButtonState> button_status;
 };
 
 typedef struct __attribute__((packed))

@@ -12,29 +12,29 @@ Joypad::Joypad(Memory* memory, Irc* irc_) :
 
     button_status =
     {
-        {Button::Up,        {Up,        false}},
-        {Button::Down,      {Down,      false}},
-        {Button::Left,      {Left,      false}},
-        {Button::Right,     {Right,     false}},
-        {Button::Select,    {Select,    false}},
-        {Button::Start,     {Start,     false}},
-        {Button::A,         {ButtonA,   false}},
-        {Button::B,         {ButtonB,   false}},
+        {JoypadUp,          {Up,        false}},
+        {JoypadDown,        {Down,      false}},
+        {JoypadLeft,        {Left,      false}},
+        {JoypadRight,       {Right,     false}},
+        {JoypadSelect,      {Select,    false}},
+        {JoypadStart,       {Start,     false}},
+        {JoypadA,           {ButtonA,   false}},
+        {JoypadB,           {ButtonB,   false}},
     };
 }
 
-void Joypad::button_pressed(Button button)
+void Joypad::button_pressed(JoypadButton button)
 {
-    if (button == Button::None) return;
+    if (button == JoypadNone) return;
 
     if (get_bit(io_register, DirectionKeysSelect))
     {
         switch (button)
         {
-            case Button::Right:
-            case Button::Left:
-            case Button::Up:
-            case Button::Down:
+            case JoypadRight:
+            case JoypadLeft:
+            case JoypadUp:
+            case JoypadDown:
                 clear_bit(io_register, button_status[button].bit_pos);
                 break;
             default:
@@ -45,10 +45,10 @@ void Joypad::button_pressed(Button button)
     {
         switch (button)
         {
-            case Button::A:
-            case Button::B:
-            case Button::Select:
-            case Button::Start:
+            case JoypadA:
+            case JoypadB:
+            case JoypadSelect:
+            case JoypadStart:
                 clear_bit(io_register, button_status[button].bit_pos);
                 break;
             default:
@@ -63,18 +63,18 @@ void Joypad::button_pressed(Button button)
     }
 }
 
-void Joypad::button_released(Joypad::Button button)
+void Joypad::button_released(JoypadButton button)
 {
-    if (button == Button::None) return;
+    if (button == JoypadNone) return;
 
     if (get_bit(io_register, DirectionKeysSelect))
     {
         switch (button)
         {
-            case Button::Right:
-            case Button::Left:
-            case Button::Up:
-            case Button::Down:
+            case JoypadRight:
+            case JoypadLeft:
+            case JoypadUp:
+            case JoypadDown:
                 set_bit(io_register, button_status[button].bit_pos);
                 break;
             default:
@@ -85,10 +85,10 @@ void Joypad::button_released(Joypad::Button button)
     {
         switch (button)
         {
-            case Button::A:
-            case Button::B:
-            case Button::Select:
-            case Button::Start:
+            case JoypadA:
+            case JoypadB:
+            case JoypadSelect:
+            case JoypadStart:
                 set_bit(io_register, button_status[button].bit_pos);
                 break;
             default:

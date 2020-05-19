@@ -62,12 +62,12 @@ uint64_t Emulator::cpu_tick()
     return cpu_cycle_count_after - cpu_cycle_count_before;
 }
 
-void Emulator::button_pressed(Joypad::Button button)
+void Emulator::button_pressed(JoypadButton button)
 {
     joypad->button_pressed(button);
 }
 
-void Emulator::button_released(Joypad::Button button)
+void Emulator::button_released(JoypadButton button)
 {
     joypad->button_released(button);
 }
