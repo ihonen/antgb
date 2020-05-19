@@ -25,6 +25,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++14
 
 SOURCES += \
+    antdbg/src/core/cartridge.cc \
     antdbg/src/core/debugcore.cc \
     antdbg/src/core/disassembler.cc \
     antdbg/src/frontend/qt/breakpointdelegate.cc \
@@ -60,7 +61,6 @@ SOURCES += \
     core/apu.cc \
     core/background.cc \
     core/bitmanip.cc \
-    core/cartridge.cc \
     core/cpu.cc \
     core/cpu_flags.cc \
     core/cpu_opcodes.cc \
@@ -85,6 +85,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    antdbg/src/core/cartridge.hh \
     antdbg/src/core/debugcore.hh \
     antdbg/src/core/debugobserver.hh \
     antdbg/src/core/disassembler.hh \
@@ -122,7 +123,6 @@ HEADERS += \
     core/apu.hh \
     core/background.hh \
     core/bitmanip.hh \
-    core/cartridge.hh \
     core/cpu.hh \
     core/emulator.hh \
     core/exceptions.hh \

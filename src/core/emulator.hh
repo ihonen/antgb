@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cartridge.hh"
+#include "../antdbg/src/core/cartridge.hh"
 #include "cpu.hh"
 #include "interrupts.hh"
 #include "joypad.hh"

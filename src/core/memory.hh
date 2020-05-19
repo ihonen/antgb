@@ -1,7 +1,7 @@
 #pragma once
 
 #include "apu.hh"
-#include "cartridge.hh"
+#include "../antdbg/src/core/cartridge.hh"
 #include "interrupts.hh"
 #include "joypad.hh"
 #include "ppu.hh"
