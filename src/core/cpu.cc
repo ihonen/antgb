@@ -1,6 +1,6 @@
 #include "cpu.hh"
 
-#include "../debugger/disassembler.hh"
+#include "../antdbg/src/core/disassembler.hh"
 #include "memory.hh"
 #include <iomanip>
 #include <iostream>

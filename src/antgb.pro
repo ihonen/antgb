@@ -25,6 +25,38 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++14
 
 SOURCES += \
+    antdbg/src/core/debugcore.cc \
+    antdbg/src/core/disassembler.cc \
+    antdbg/src/frontend/qt/breakpointdelegate.cc \
+    antdbg/src/frontend/qt/breakpointmodel.cc \
+    antdbg/src/frontend/qt/breakpointview.cc \
+    antdbg/src/frontend/qt/button.cc \
+    antdbg/src/frontend/qt/buttoninputwidget.cc \
+    antdbg/src/frontend/qt/cartridgeviewer.cc \
+    antdbg/src/frontend/qt/colors.cc \
+    antdbg/src/frontend/qt/datadelegate.cc \
+    antdbg/src/frontend/qt/datamodel.cc \
+    antdbg/src/frontend/qt/dataview.cc \
+    antdbg/src/frontend/qt/dataviewer.cc \
+    antdbg/src/frontend/qt/displayscene.cc \
+    antdbg/src/frontend/qt/emulatorwidget.cc \
+    antdbg/src/frontend/qt/fonts.cc \
+    antdbg/src/frontend/qt/helper.cc \
+    antdbg/src/frontend/qt/instructiondelegate.cc \
+    antdbg/src/frontend/qt/instructionmodel.cc \
+    antdbg/src/frontend/qt/instructionview.cc \
+    antdbg/src/frontend/qt/instructionviewer.cc \
+    antdbg/src/frontend/qt/main.cc \
+    antdbg/src/frontend/qt/mainwindow.cc \
+    antdbg/src/frontend/qt/memorymodel.cc \
+    antdbg/src/frontend/qt/memoryviewer.cc \
+    antdbg/src/frontend/qt/pixmaps.cc \
+    antdbg/src/frontend/qt/registermodel.cc \
+    antdbg/src/frontend/qt/registerviewer.cc \
+    antdbg/src/frontend/qt/serialviewer.cc \
+    antdbg/src/frontend/qt/stackmodel.cc \
+    antdbg/src/frontend/qt/stackviewer.cc \
+    antdbg/src/frontend/qt/vramviewer.cc \
     core/apu.cc \
     core/background.cc \
     core/bitmanip.cc \
@@ -45,39 +77,7 @@ SOURCES += \
     core/sprite.cc \
     core/sprites.cc \
     core/tile.cc \
-    core/timer.cc \
-    debugger/debugcore.cc \
-    debugger/disassembler.cc \
-    frontend/qt/breakpointdelegate.cc \
-    frontend/qt/breakpointmodel.cc \
-    frontend/qt/breakpointview.cc \
-    frontend/qt/button.cc \
-    frontend/qt/buttoninputwidget.cc \
-    frontend/qt/cartridgeviewer.cc \
-    frontend/qt/colors.cc \
-    frontend/qt/datadelegate.cc \
-    frontend/qt/datamodel.cc \
-    frontend/qt/dataview.cc \
-    frontend/qt/dataviewer.cc \
-    frontend/qt/displayscene.cc \
-    frontend/qt/emulatorwidget.cc \
-    frontend/qt/fonts.cc \
-    frontend/qt/helper.cc \
-    frontend/qt/instructiondelegate.cc \
-    frontend/qt/instructionmodel.cc \
-    frontend/qt/instructionview.cc \
-    frontend/qt/instructionviewer.cc \
-    frontend/qt/main.cc \
-    frontend/qt/mainwindow.cc \
-    frontend/qt/memorymodel.cc \
-    frontend/qt/memoryviewer.cc \
-    frontend/qt/pixmaps.cc \
-    frontend/qt/registermodel.cc \
-    frontend/qt/registerviewer.cc \
-    frontend/qt/serialviewer.cc \
-    frontend/qt/stackmodel.cc \
-    frontend/qt/stackviewer.cc \
-    frontend/qt/vramviewer.cc
+    core/timer.cc
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -85,6 +85,40 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    antdbg/src/core/debugcore.hh \
+    antdbg/src/core/debugobserver.hh \
+    antdbg/src/core/disassembler.hh \
+    antdbg/src/frontend/cartridge.hh \
+    antdbg/src/frontend/qt/breakpointdelegate.hh \
+    antdbg/src/frontend/qt/breakpointmodel.hh \
+    antdbg/src/frontend/qt/breakpointview.hh \
+    antdbg/src/frontend/qt/button.hh \
+    antdbg/src/frontend/qt/buttoninputwidget.hh \
+    antdbg/src/frontend/qt/cartridgeviewer.hh \
+    antdbg/src/frontend/qt/colors.hh \
+    antdbg/src/frontend/qt/datadelegate.hh \
+    antdbg/src/frontend/qt/datamodel.hh \
+    antdbg/src/frontend/qt/dataview.hh \
+    antdbg/src/frontend/qt/dataviewer.hh \
+    antdbg/src/frontend/qt/displayscene.hh \
+    antdbg/src/frontend/qt/emulatorwidget.hh \
+    antdbg/src/frontend/qt/fonts.hh \
+    antdbg/src/frontend/qt/helper.hh \
+    antdbg/src/frontend/qt/instructiondelegate.hh \
+    antdbg/src/frontend/qt/instructionmodel.hh \
+    antdbg/src/frontend/qt/instructionview.hh \
+    antdbg/src/frontend/qt/instructionviewer.hh \
+    antdbg/src/frontend/qt/keybindings.hh \
+    antdbg/src/frontend/qt/mainwindow.hh \
+    antdbg/src/frontend/qt/memorymodel.hh \
+    antdbg/src/frontend/qt/memoryviewer.hh \
+    antdbg/src/frontend/qt/pixmaps.hh \
+    antdbg/src/frontend/qt/registermodel.hh \
+    antdbg/src/frontend/qt/registerviewer.hh \
+    antdbg/src/frontend/qt/serialviewer.hh \
+    antdbg/src/frontend/qt/stackmodel.hh \
+    antdbg/src/frontend/qt/stackviewer.hh \
+    antdbg/src/frontend/qt/vramviewer.hh \
     core/apu.hh \
     core/background.hh \
     core/bitmanip.hh \
@@ -104,45 +138,11 @@ HEADERS += \
     core/tile.hh \
     core/timer.hh \
     core/types.hh \
-    debugger/debugcore.hh \
-    debugger/debugobserver.hh \
-    debugger/disassembler.hh \
-    frontend/cartridge.hh \
-    frontend/qt/breakpointdelegate.hh \
-    frontend/qt/breakpointmodel.hh \
-    frontend/qt/breakpointview.hh \
-    frontend/qt/button.hh \
-    frontend/qt/buttoninputwidget.hh \
-    frontend/qt/cartridgeviewer.hh \
-    frontend/qt/colors.hh \
-    frontend/qt/datadelegate.hh \
-    frontend/qt/datamodel.hh \
-    frontend/qt/dataview.hh \
-    frontend/qt/dataviewer.hh \
-    frontend/qt/displayscene.hh \
-    frontend/qt/emulatorwidget.hh \
-    frontend/qt/fonts.hh \
-    frontend/qt/helper.hh \
-    frontend/qt/instructiondelegate.hh \
-    frontend/qt/instructionmodel.hh \
-    frontend/qt/instructionview.hh \
-    frontend/qt/instructionviewer.hh \
-    frontend/qt/keybindings.hh \
-    frontend/qt/mainwindow.hh \
-    frontend/qt/memorymodel.hh \
-    frontend/qt/memoryviewer.hh \
-    frontend/qt/pixmaps.hh \
-    frontend/qt/registermodel.hh \
-    frontend/qt/registerviewer.hh \
-    frontend/qt/serialviewer.hh \
-    frontend/qt/stackmodel.hh \
-    frontend/qt/stackviewer.hh \
-    frontend/qt/vramviewer.hh \
     util/macros.hh
 
 RESOURCES += \
-    frontend/qt/dark.qrc \
-    frontend/qt/img.qrc \
+    antdbg/src/frontend/qt/dark.qrc \
+    antdbg/src/frontend/qt/img.qrc \
     memdump.qrc
 
 FORMS +=

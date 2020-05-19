@@ -1,7 +1,7 @@
 #include "cartridge.hh"
 
 #include <cstring>
-#include "../frontend/qt/helper.hh"
+#include "../antdbg/src/frontend/qt/helper.hh"
 
 static constexpr uint8_t NINTENDO_LOGO_HEX[0x30] =
 {
