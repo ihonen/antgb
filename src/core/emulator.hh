@@ -23,6 +23,9 @@ public:
     void button_released(JoypadButton button);
     void hard_reset();
 
+    uint16_t read(regid_t register_id);
+    void write(regid_t register_id, uint16_t value);
+
     Cpu* cpu;
     Irc* irc;
     Memory* mem;
