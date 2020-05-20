@@ -37,29 +37,25 @@ void Emulator::load_rom(const void* rom, size_t size)
     cartridge = new Cartridge;
     memcpy(cartridge->data, rom, size);
     mem->set_cartridge(cartridge);
-    hard_reset();
+    reset_emulation();
 }
 
-void Emulator::tick()
-{
-    uint64_t cpu_cycles = cpu_tick();
-    timer_divider->emulate(cpu_cycles);
-    mem->emulate(cpu_cycles);
-    ppu->step(cpu_cycles);
-    serial->emulate(cpu_cycles);
-    static uint64_t cpu_cycles_total = 0;
-    cpu_cycles_total += cpu_cycles;
-
-    //cout << std::dec << cpu_cycles_total << endl;
-}
-
-uint64_t Emulator::cpu_tick()
+int Emulator::execute_next()
 {
     uint64_t cpu_cycle_count_before = cpu->get_cycles();
     cpu->execute();
     uint64_t cpu_cycle_count_after = cpu->get_cycles();
     cpu->reset_cycles();
-    return cpu_cycle_count_after - cpu_cycle_count_before;
+    int clock_cycles = cpu_cycle_count_after - cpu_cycle_count_before;
+
+    timer_divider->emulate(clock_cycles);
+    mem->emulate(clock_cycles);
+    ppu->step(clock_cycles);
+    serial->emulate(clock_cycles);
+    static uint64_t cpu_cycles_total = 0;
+    cpu_cycles_total += clock_cycles;
+
+    return clock_cycles;
 }
 
 void Emulator::button_pressed(JoypadButton button)
@@ -72,11 +68,16 @@ void Emulator::button_released(JoypadButton button)
     joypad->button_released(button);
 }
 
-void Emulator::hard_reset()
+void Emulator::reset_emulation()
 {
     mem->hard_reset();
     cpu->hard_reset();
     irc->hard_reset();
+}
+
+void Emulator::set_render_callback(void (*callback)(const framebuf_t*, int))
+{
+
 }
 
 uint16_t Emulator::read(regid_t register_id)
