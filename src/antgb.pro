@@ -25,6 +25,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++14
 
 SOURCES += \
+    antdbg/src/core/breakpoint.cc \
     antdbg/src/core/cartridge.cc \
     antdbg/src/core/debugcore.cc \
     antdbg/src/core/disassembler.cc \
