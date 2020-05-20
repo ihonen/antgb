@@ -85,12 +85,15 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    antdbg/src/core/breakpoint.hh \
     antdbg/src/core/cartridge.hh \
     antdbg/src/core/constants.hh \
     antdbg/src/core/debugcore.hh \
-    antdbg/src/core/debugobserver.hh \
+    antdbg/src/core/debugevent.hh \
     antdbg/src/core/disassembler.hh \
+    antdbg/src/core/idebugobserver.hh \
     antdbg/src/core/iemulator.hh \
+    antdbg/src/core/macros.hh \
     antdbg/src/core/types.hh \
     antdbg/src/frontend/cartridge.hh \
     antdbg/src/frontend/qt/breakpointdelegate.hh \
