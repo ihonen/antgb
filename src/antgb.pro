@@ -22,7 +22,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-CONFIG += c++14
+CONFIG += c++17
 
 SOURCES += \
     antdbg/src/core/breakpoint.cc \
@@ -157,7 +157,3 @@ RESOURCES += \
     memdump.qrc
 
 FORMS +=
-
-#CONFIG += debug
-#QMAKE_CXXFLAGS_DEBUG += -pg
-#QMAKE_LFLAGS_DEBUG += -pg
