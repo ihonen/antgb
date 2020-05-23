@@ -1,5 +1,6 @@
 #pragma once
 
+#include "bitmanip.hh"
 #include "renderer.hh"
 #include "cpu.hh"
 #include "interrupts.hh"
@@ -81,6 +82,8 @@ public:
     static constexpr uint64_t CPU_CYCLES_PER_DRAWING_MODE = 291; // Maximum
     static constexpr uint64_t CPU_CYCLES_PER_OAM_SCAN_MODE = 80;
 
+    Registers* reg = nullptr;
+
     std::map<Mode, uint64_t> MODE_DURATION
     {
         {Hblank, 85},
@@ -103,25 +106,137 @@ public:
 
     const uint8_t MODE_FLAG_MASK = 0x03; // Bits 0-1
 
-    Ppu(Memory* mem, Irc* irc);
+    Ppu(Memory* mem, Registers* reg, Irc* irc);
     ~Ppu();
     void hard_reset();
-    void step(uint64_t cpu_cycles);
-    void emulate_current_mode(uint64_t cpu_cycles);
-    void emulate_mode0(uint64_t cpu_cycles);
-    void emulate_mode1(uint64_t cpu_cycles);
-    void emulate_mode2(uint64_t cpu_cycles);
-    void emulate_mode3(uint64_t cpu_cycles);
-    bool has_dma_request();
-    memaddr_t dma_src_address();
+    inline void step(uint64_t cpu_cycles);
+    inline bool has_dma_request();
+    inline memaddr_t dma_src_address();
     void launch_dma(memaddr_t src_address);
-    bool mode_ending();
-    Mode get_next_mode();
-    void transition_to_mode(Mode mode);
-    void scan_oam();
-    vector<vector<uint8_t>> read_tile(void* address);
 
     Irc* irc;
     Memory* mem;
     Renderer* renderer;
 };
+
+ANTDB_ALWAYS_INLINE void Ppu::step(uint64_t cpu_cycles)
+{
+    clocksum += cpu_cycles;
+
+    static uint64_t total_cycles = 0;
+    total_cycles += cpu_cycles;
+
+    bool stop = false;
+
+    // Launch DMA if a request has been made.
+    if (has_dma_request()) launch_dma(dma_src_address());
+
+    /*
+
+    mem->hff41_stat &= ~(current_mode & MODE_FLAG_MASK);
+    mem->hff41_stat |= current_mode & MODE_FLAG_MASK;
+    mode_task_complete = false;
+
+    */
+
+    while (!stop)
+    {
+        // Update registers.
+        reg->stat &= ~MODE_FLAG_MASK;
+        reg->stat |= current_mode & MODE_FLAG_MASK;
+        reg->ly = (total_cycles / 456) % 154;
+
+        // Check or clear LYC interrupt condition.
+        if (reg->ly == reg->lyc
+            && get_bit(&reg->stat, Ppu::LycInt))
+        {
+            set_bit(&reg->stat, Ppu::LycCoincidence);
+            cerr << "sent LCD STAT IRQ" << endl;
+            irc->request_interrupt(Irc::LcdStatInt);
+        }
+        else clear_bit(&reg->stat, Ppu::LycCoincidence);
+
+        switch (current_mode)
+        {
+            case OamScan:
+                if (clocksum >= 80)
+                {
+                    clocksum -= 80;
+                    current_mode = LineScan;
+                }
+                else stop = true;
+                break;
+
+            case LineScan:
+                if (clocksum >= 291)
+                {
+                    clocksum -= 291;
+                    current_mode = Hblank;
+                    // Hblank interrupt
+                    if (get_bit(&reg->stat, HBlankInterrupt))
+                        irc->request_interrupt(Irc::LcdStatInt);
+                }
+                else stop = true;
+                break;
+
+            case Hblank:
+            {
+                if (clocksum >= 85)
+                {
+                    clocksum -= 85;
+                    if (reg->ly < 144)
+                    {
+                        current_mode = OamScan;
+                        // OAM interrupt
+                        if (get_bit(&reg->stat, OamInt))
+                            irc->request_interrupt(Irc::LcdStatInt);
+                    }
+                    else
+                    {
+                        current_mode = Vblank;
+                        renderer->render_frame();
+                        irc->request_interrupt(Irc::VBlankInterrupt);
+                        if (get_bit(&reg->stat, VBlankInterrupt))
+                            irc->request_interrupt(Irc::LcdStatInt);
+                    }
+                }
+                else stop = true;
+                break;
+            }
+
+            case Vblank:
+                if (clocksum >= 4560)
+                {
+                    //cerr << "vblank begin @ " << total_cycles - clocksum << endl;
+
+                    clocksum -= 4560;
+                    current_mode = OamScan;
+                    // OAM interrupt
+                    if (get_bit(&reg->stat, OamInt))
+                        irc->request_interrupt(Irc::LcdStatInt);
+
+                    //cerr << "vblank end @ " << total_cycles - clocksum << endl;
+
+                    total_cycles = clocksum;
+
+                    auto start = chrono::high_resolution_clock::now();
+                    while ((chrono::high_resolution_clock::now() - start) / chrono::milliseconds(1) < 10);
+
+                }
+                else stop = true;
+                break;
+        }
+    }
+
+    return;
+}
+
+ANTDB_ALWAYS_INLINE bool Ppu::has_dma_request()
+{
+    return reg->dma;
+}
+
+ANTDB_ALWAYS_INLINE memaddr_t Ppu::dma_src_address()
+{
+    return reg->dma * 0x100;
+}

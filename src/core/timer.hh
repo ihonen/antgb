@@ -29,12 +29,12 @@ public:
     static constexpr memaddr_t LOW_ADDRESS = DIV_ADDRESS;
     static constexpr memaddr_t HIGH_ADDRESS = TAC_ADDRESS;
 
-    Timer(Memory* mem, Irc* irc);
-    void emulate(uint64_t cpu_cycles);
-    void emulate_divider(uint64_t cpu_cycles);
-    void emulate_timer(uint64_t cpu_cycles);
+    Timer(Registers* reg, Irc* irc);
+    inline void emulate(uint64_t cpu_cycles);
+    inline void emulate_divider(uint64_t cpu_cycles);
+    inline void emulate_timer(uint64_t cpu_cycles);
 
-    Memory* mem;
+    Registers* reg;
     Irc* irc;
 
     struct
@@ -56,3 +56,48 @@ public:
         };
     } timer;
 };
+
+ANTDB_ALWAYS_INLINE void Timer::emulate(uint64_t cpu_cycles)
+{
+    emulate_divider(cpu_cycles);
+    emulate_timer(cpu_cycles);
+}
+
+ANTDB_ALWAYS_INLINE void Timer::emulate_divider(uint64_t cpu_cycles)
+{
+    divider.unemulated_cpu_cycles += cpu_cycles;
+    while (divider.unemulated_cpu_cycles <= divider.CPU_CYCLES_PER_TICK)
+    {
+        ++(reg->div);
+        divider.unemulated_cpu_cycles -= divider.CPU_CYCLES_PER_TICK;
+    }
+}
+
+ANTDB_ALWAYS_INLINE void Timer::emulate_timer(uint64_t cpu_cycles)
+{
+    timer.unemulated_cpu_cycles += cpu_cycles;
+
+    if ((reg->tac & (0x01 << TimerEnable)) == 0x00)
+    {
+        timer.unemulated_cpu_cycles = 0;
+        return;
+    }
+
+    uint64_t clk_select = reg->tac & (timer.CLK_SELECT_MASK);
+    uint64_t cpu_cycles_per_tick = timer.FREQ_DIVIDER[clk_select];
+
+    while (timer.unemulated_cpu_cycles >= cpu_cycles_per_tick)
+    {
+        timer.unemulated_cpu_cycles -= cpu_cycles_per_tick;
+        if (reg->tima == 0xFF)
+        {
+            reg->tima = reg->tma;
+            irc->request_interrupt(Irc::TimerInterrupt);
+            return;
+        }
+        else
+        {
+            ++(reg->tima);
+        }
+    }
+}

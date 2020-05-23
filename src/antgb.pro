@@ -29,6 +29,7 @@ SOURCES += \
     antdbg/src/core/cartridge.cc \
     antdbg/src/core/debugcore.cc \
     antdbg/src/core/disassembler.cc \
+    antdbg/src/core/instructions.cc \
     antdbg/src/frontend/qt/breakpointdelegate.cc \
     antdbg/src/frontend/qt/breakpointmodel.cc \
     antdbg/src/frontend/qt/breakpointview.cc \
@@ -50,12 +51,14 @@ SOURCES += \
     antdbg/src/frontend/qt/instructionviewer.cc \
     antdbg/src/frontend/qt/main.cc \
     antdbg/src/frontend/qt/mainwindow.cc \
+    antdbg/src/frontend/qt/memorydelegate.cc \
     antdbg/src/frontend/qt/memorymodel.cc \
     antdbg/src/frontend/qt/memoryviewer.cc \
     antdbg/src/frontend/qt/pixmaps.cc \
     antdbg/src/frontend/qt/registermodel.cc \
     antdbg/src/frontend/qt/registerviewer.cc \
     antdbg/src/frontend/qt/serialviewer.cc \
+    antdbg/src/frontend/qt/stackdelegate.cc \
     antdbg/src/frontend/qt/stackmodel.cc \
     antdbg/src/frontend/qt/stackviewer.cc \
     antdbg/src/frontend/qt/vramviewer.cc \
@@ -63,10 +66,8 @@ SOURCES += \
     core/background.cc \
     core/bitmanip.cc \
     core/cpu.cc \
-    core/cpu_flags.cc \
     core/cpu_opcodes.cc \
     core/cpu_operations.cc \
-    core/cpu_opmap.cc \
     core/emulator.cc \
     core/fileio.cc \
     core/interrupts.cc \
@@ -94,6 +95,7 @@ HEADERS += \
     antdbg/src/core/disassembler.hh \
     antdbg/src/core/idebugobserver.hh \
     antdbg/src/core/iemulator.hh \
+    antdbg/src/core/instructions.hh \
     antdbg/src/core/macros.hh \
     antdbg/src/core/types.hh \
     antdbg/src/frontend/cartridge.hh \
@@ -118,12 +120,14 @@ HEADERS += \
     antdbg/src/frontend/qt/instructionviewer.hh \
     antdbg/src/frontend/qt/keybindings.hh \
     antdbg/src/frontend/qt/mainwindow.hh \
+    antdbg/src/frontend/qt/memorydelegate.hh \
     antdbg/src/frontend/qt/memorymodel.hh \
     antdbg/src/frontend/qt/memoryviewer.hh \
     antdbg/src/frontend/qt/pixmaps.hh \
     antdbg/src/frontend/qt/registermodel.hh \
     antdbg/src/frontend/qt/registerviewer.hh \
     antdbg/src/frontend/qt/serialviewer.hh \
+    antdbg/src/frontend/qt/stackdelegate.hh \
     antdbg/src/frontend/qt/stackmodel.hh \
     antdbg/src/frontend/qt/stackviewer.hh \
     antdbg/src/frontend/qt/vramviewer.hh \
@@ -153,3 +157,7 @@ RESOURCES += \
     memdump.qrc
 
 FORMS +=
+
+#CONFIG += debug
+#QMAKE_CXXFLAGS_DEBUG += -pg
+#QMAKE_LFLAGS_DEBUG += -pg

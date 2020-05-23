@@ -1,6 +1,7 @@
 #pragma once
 
 #include "types.hh"
+#include "../antdbg/src/core/macros.hh"
 
 class Irc
 {
@@ -39,22 +40,107 @@ public:
         memaddr_t vector_address;
     } InterruptInfo;
 
-    Irc(Memory* mem);
+    Irc(uint8_t* IF, uint8_t* IE);
 
     void hard_reset();
-    bool has_pending_requests();
-    InterruptInfo next_request();
-    uint8_t ime_flag_get();
-    void ime_flag_set();
-    void ime_flag_clear();
-    void request_interrupt(int source);
-    bool interrupt_requested(int source);
-    bool interrupt_enabled(int source);
-    void clear_interrupt(int source);
-    void disable_interrupt(int source);
-    void enable_interrupt(int source);
+    inline bool has_pending_requests();
+    inline InterruptInfo next_request();
+    inline uint8_t ime_flag_get();
+    inline void ime_flag_set();
+    inline void ime_flag_clear();
+    inline void request_interrupt(int source);
+    inline bool interrupt_requested(int source);
+    inline bool interrupt_enabled(int source);
+    inline void clear_interrupt(int source);
+    inline void disable_interrupt(int source);
+    inline void enable_interrupt(int source);
 
     // TODO: Move into CPU.
     uint8_t IME;
-    Memory* mem;
+    uint8_t* IF = nullptr;
+    uint8_t* IE = nullptr;
 };
+
+ANTDB_ALWAYS_INLINE bool Irc::has_pending_requests()
+{
+    return (*IF & 0x1F) != 0;
+}
+
+ANTDB_ALWAYS_INLINE Irc::InterruptInfo Irc::next_request()
+{
+    for (InterruptId i = VBlankInterrupt; i < JoypadInterrupt; i = (InterruptId)((int)i + 1))
+    {
+        if (interrupt_enabled(i) && interrupt_requested(i))
+        {
+            return {(InterruptId)i, INTERRUPT_VECTOR[i]};
+        }
+    }
+
+    return {NoInterrupt, 0x0000};
+}
+
+ANTDB_ALWAYS_INLINE uint8_t Irc::ime_flag_get()
+{
+    return IME;
+}
+
+ANTDB_ALWAYS_INLINE void Irc::ime_flag_set()
+{
+    IME = 0x01;
+}
+
+ANTDB_ALWAYS_INLINE void Irc::ime_flag_clear()
+{
+    IME = 0x00;
+}
+
+ANTDB_ALWAYS_INLINE void Irc::request_interrupt(int source)
+{
+    /*
+    switch (source)
+    {
+        case VBlankInterrupt:
+            cerr << "Vblank IRQ" << endl;
+            break;
+        case LcdStatInt:
+            cerr << "LCD STAT IRQ" << endl;
+            break;
+        case JoypadInterrupt:
+            cerr << "Joypad IRQ" << endl;
+            break;
+        case TimerInterrupt:
+            cerr << "Timer IRQ" << endl;
+            break;
+        case SerialInterrupt:
+            cerr << "Serial IRQ" << endl;
+            break;
+    }
+    */
+
+    *IF |= 0x01 << source;
+}
+
+ANTDB_ALWAYS_INLINE bool Irc::interrupt_requested(int source)
+{
+    return (*IF & (0x01 << source)) != 0;
+}
+
+ANTDB_ALWAYS_INLINE bool Irc::interrupt_enabled(int source)
+{
+    return (*IE & (0x01 << source)) != 0;
+}
+
+ANTDB_ALWAYS_INLINE void Irc::clear_interrupt(int source)
+{
+    *IF &= ~(0x01 << source);
+}
+
+ANTDB_ALWAYS_INLINE void Irc::disable_interrupt(int source)
+{
+    *IE &= ~(0x01 << source);
+}
+
+ANTDB_ALWAYS_INLINE void Irc::enable_interrupt(int source)
+{
+    *IE |= 0x01 << source;
+}

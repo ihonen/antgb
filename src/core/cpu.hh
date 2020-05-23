@@ -2,6 +2,7 @@
 
 #include "interrupts.hh"
 #include "exceptions.hh"
+#include "../antdbg/src/core/macros.hh"
 #include "types.hh"
 #include <array>
 #include <fstream>
@@ -15,9 +16,8 @@ public:
     void     set_PC(uint16_t value);
     void     restart();
     void     execute(const uint8_t* const instruction = nullptr);
-    void     reset_cycles();
-    uint64_t get_cycles();
-    bool     request_joypad_interrupt();
+    inline void     reset_cycles();
+    inline uint64_t get_cycles();
     void     jump_to_isr(memaddr_t vector_address);
 
     static const uint64_t CLK_FREQ_Hz = 4194304;
@@ -168,27 +168,27 @@ public:
     uint64_t clock_cycles = 0;
 
     void     hard_reset();
-    uint8_t  get_ALU_flag(enum ALUFlagPos pos);
-    void     assign_ALU_flag(enum ALUFlagPos pos, uint8_t val);
-    uint8_t  C_flag_get();
-    uint8_t  H_flag_get();
-    uint8_t  N_flag_get();
-    uint8_t  Z_flag_get();
-    void     C_flag_reset();
-    void     H_flag_reset();
-    void     N_flag_reset();
-    void     Z_flag_reset();
-    void     C_flag_set();
-    void     H_flag_set();
-    void     N_flag_set();
-    void     Z_flag_set();
-    void     C_flag_update(bool cond);
-    void     H_flag_update(bool cond);
-    void     N_flag_update(bool cond);
-    void     Z_flag_update(bool cond);
+    inline uint8_t  get_ALU_flag(enum ALUFlagPos pos);
+    inline void     assign_ALU_flag(enum ALUFlagPos pos, uint8_t val);
+    inline uint8_t  C_flag_get();
+    inline uint8_t  H_flag_get();
+    inline uint8_t  N_flag_get();
+    inline uint8_t  Z_flag_get();
+    inline void     C_flag_reset();
+    inline void     H_flag_reset();
+    inline void     N_flag_reset();
+    inline void     Z_flag_reset();
+    inline void     C_flag_set();
+    inline void     H_flag_set();
+    inline void     N_flag_set();
+    inline void     Z_flag_set();
+    inline void     C_flag_update(bool cond);
+    inline void     H_flag_update(bool cond);
+    inline void     N_flag_update(bool cond);
+    inline void     Z_flag_update(bool cond);
     void     invalid_opcode();
-    uint8_t  extract_immediate8(const uint8_t* instruction = nullptr);
-    uint16_t extract_immediate16(const uint8_t* instruction = nullptr);
+    inline uint8_t  extract_immediate8(const uint8_t* instruction = nullptr);
+    inline uint16_t extract_immediate16(const uint8_t* instruction = nullptr);
 
     void ADC_A_HL();
     void ADC_A_n8(uint8_t u8);
@@ -293,134 +293,2816 @@ public:
     void XOR_r8(uint8_t& r8);
 
     // Single-byte opcodes:
-    void op_00(); void op_01(); void op_02(); void op_03();
-    void op_04(); void op_05(); void op_06(); void op_07();
-    void op_08(); void op_09(); void op_0A(); void op_0B();
-    void op_0C(); void op_0D(); void op_0E(); void op_0F();
-    void op_10(); void op_11(); void op_12(); void op_13();
-    void op_14(); void op_15(); void op_16(); void op_17();
-    void op_18(); void op_19(); void op_1A(); void op_1B();
-    void op_1C(); void op_1D(); void op_1E(); void op_1F();
-    void op_20(); void op_21(); void op_22(); void op_23();
-    void op_24(); void op_25(); void op_26(); void op_27();
-    void op_28(); void op_29(); void op_2A(); void op_2B();
-    void op_2C(); void op_2D(); void op_2E(); void op_2F();
-    void op_30(); void op_31(); void op_32(); void op_33();
-    void op_34(); void op_35(); void op_36(); void op_37();
-    void op_38(); void op_39(); void op_3A(); void op_3B();
-    void op_3C(); void op_3D(); void op_3E(); void op_3F();
-    void op_40(); void op_41(); void op_42(); void op_43();
-    void op_44(); void op_45(); void op_46(); void op_47();
-    void op_48(); void op_49(); void op_4A(); void op_4B();
-    void op_4C(); void op_4D(); void op_4E(); void op_4F();
-    void op_50(); void op_51(); void op_52(); void op_53();
-    void op_54(); void op_55(); void op_56(); void op_57();
-    void op_58(); void op_59(); void op_5A(); void op_5B();
-    void op_5C(); void op_5D(); void op_5E(); void op_5F();
-    void op_60(); void op_61(); void op_62(); void op_63();
-    void op_64(); void op_65(); void op_66(); void op_67();
-    void op_68(); void op_69(); void op_6A(); void op_6B();
-    void op_6C(); void op_6D(); void op_6E(); void op_6F();
-    void op_70(); void op_71(); void op_72(); void op_73();
-    void op_74(); void op_75(); void op_76(); void op_77();
-    void op_78(); void op_79(); void op_7A(); void op_7B();
-    void op_7C(); void op_7D(); void op_7E(); void op_7F();
-    void op_80(); void op_81(); void op_82(); void op_83();
-    void op_84(); void op_85(); void op_86(); void op_87();
-    void op_88(); void op_89(); void op_8A(); void op_8B();
-    void op_8C(); void op_8D(); void op_8E(); void op_8F();
-    void op_90(); void op_91(); void op_92(); void op_93();
-    void op_94(); void op_95(); void op_96(); void op_97();
-    void op_98(); void op_99(); void op_9A(); void op_9B();
-    void op_9C(); void op_9D(); void op_9E(); void op_9F();
-    void op_A0(); void op_A1(); void op_A2(); void op_A3();
-    void op_A4(); void op_A5(); void op_A6(); void op_A7();
-    void op_A8(); void op_A9(); void op_AA(); void op_AB();
-    void op_AC(); void op_AD(); void op_AE(); void op_AF();
-    void op_B0(); void op_B1(); void op_B2(); void op_B3();
-    void op_B4(); void op_B5(); void op_B6(); void op_B7();
-    void op_B8(); void op_B9(); void op_BA(); void op_BB();
-    void op_BC(); void op_BD(); void op_BE(); void op_BF();
-    void op_C0(); void op_C1(); void op_C2(); void op_C3();
-    void op_C4(); void op_C5(); void op_C6(); void op_C7();
-    void op_C8(); void op_C9(); void op_CA(); void op_CB();
-    void op_CC(); void op_CD(); void op_CE(); void op_CF();
-    void op_D0(); void op_D1(); void op_D2(); void op_D3();
-    void op_D4(); void op_D5(); void op_D6(); void op_D7();
-    void op_D8(); void op_D9(); void op_DA(); void op_DB();
-    void op_DC(); void op_DD(); void op_DE(); void op_DF();
-    void op_E0(); void op_E1(); void op_E2(); void op_E3();
-    void op_E4(); void op_E5(); void op_E6(); void op_E7();
-    void op_E8(); void op_E9(); void op_EA(); void op_EB();
-    void op_EC(); void op_ED(); void op_EE(); void op_EF();
-    void op_F0(); void op_F1(); void op_F2(); void op_F3();
-    void op_F4(); void op_F5(); void op_F6(); void op_F7();
-    void op_F8(); void op_F9(); void op_FA(); void op_FB();
-    void op_FC(); void op_FD(); void op_FE(); void op_FF();
+    inline void op_00(); inline void op_01(); inline void op_02(); inline void op_03();
+    inline void op_04(); inline void op_05(); inline void op_06(); inline void op_07();
+    inline void op_08(); inline void op_09(); inline void op_0A(); inline void op_0B();
+    inline void op_0C(); inline void op_0D(); inline void op_0E(); inline void op_0F();
+    inline void op_10(); inline void op_11(); inline void op_12(); inline void op_13();
+    inline void op_14(); inline void op_15(); inline void op_16(); inline void op_17();
+    inline void op_18(); inline void op_19(); inline void op_1A(); inline void op_1B();
+    inline void op_1C(); inline void op_1D(); inline void op_1E(); inline void op_1F();
+    inline void op_20(); inline void op_21(); inline void op_22(); inline void op_23();
+    inline void op_24(); inline void op_25(); inline void op_26(); inline void op_27();
+    inline void op_28(); inline void op_29(); inline void op_2A(); inline void op_2B();
+    inline void op_2C(); inline void op_2D(); inline void op_2E(); inline void op_2F();
+    inline void op_30(); inline void op_31(); inline void op_32(); inline void op_33();
+    inline void op_34(); inline void op_35(); inline void op_36(); inline void op_37();
+    inline void op_38(); inline void op_39(); inline void op_3A(); inline void op_3B();
+    inline void op_3C(); inline void op_3D(); inline void op_3E(); inline void op_3F();
+    inline void op_40(); inline void op_41(); inline void op_42(); inline void op_43();
+    inline void op_44(); inline void op_45(); inline void op_46(); inline void op_47();
+    inline void op_48(); inline void op_49(); inline void op_4A(); inline void op_4B();
+    inline void op_4C(); inline void op_4D(); inline void op_4E(); inline void op_4F();
+    inline void op_50(); inline void op_51(); inline void op_52(); inline void op_53();
+    inline void op_54(); inline void op_55(); inline void op_56(); inline void op_57();
+    inline void op_58(); inline void op_59(); inline void op_5A(); inline void op_5B();
+    inline void op_5C(); inline void op_5D(); inline void op_5E(); inline void op_5F();
+    inline void op_60(); inline void op_61(); inline void op_62(); inline void op_63();
+    inline void op_64(); inline void op_65(); inline void op_66(); inline void op_67();
+    inline void op_68(); inline void op_69(); inline void op_6A(); inline void op_6B();
+    inline void op_6C(); inline void op_6D(); inline void op_6E(); inline void op_6F();
+    inline void op_70(); inline void op_71(); inline void op_72(); inline void op_73();
+    inline void op_74(); inline void op_75(); inline void op_76(); inline void op_77();
+    inline void op_78(); inline void op_79(); inline void op_7A(); inline void op_7B();
+    inline void op_7C(); inline void op_7D(); inline void op_7E(); inline void op_7F();
+    inline void op_80(); inline void op_81(); inline void op_82(); inline void op_83();
+    inline void op_84(); inline void op_85(); inline void op_86(); inline void op_87();
+    inline void op_88(); inline void op_89(); inline void op_8A(); inline void op_8B();
+    inline void op_8C(); inline void op_8D(); inline void op_8E(); inline void op_8F();
+    inline void op_90(); inline void op_91(); inline void op_92(); inline void op_93();
+    inline void op_94(); inline void op_95(); inline void op_96(); inline void op_97();
+    inline void op_98(); inline void op_99(); inline void op_9A(); inline void op_9B();
+    inline void op_9C(); inline void op_9D(); inline void op_9E(); inline void op_9F();
+    inline void op_A0(); inline void op_A1(); inline void op_A2(); inline void op_A3();
+    inline void op_A4(); inline void op_A5(); inline void op_A6(); inline void op_A7();
+    inline void op_A8(); inline void op_A9(); inline void op_AA(); inline void op_AB();
+    inline void op_AC(); inline void op_AD(); inline void op_AE(); inline void op_AF();
+    inline void op_B0(); inline void op_B1(); inline void op_B2(); inline void op_B3();
+    inline void op_B4(); inline void op_B5(); inline void op_B6(); inline void op_B7();
+    inline void op_B8(); inline void op_B9(); inline void op_BA(); inline void op_BB();
+    inline void op_BC(); inline void op_BD(); inline void op_BE(); inline void op_BF();
+    inline void op_C0(); inline void op_C1(); inline void op_C2(); inline void op_C3();
+    inline void op_C4(); inline void op_C5(); inline void op_C6(); inline void op_C7();
+    inline void op_C8(); inline void op_C9(); inline void op_CA(); inline void op_CB();
+    inline void op_CC(); inline void op_CD(); inline void op_CE(); inline void op_CF();
+    inline void op_D0(); inline void op_D1(); inline void op_D2(); inline void op_D3();
+    inline void op_D4(); inline void op_D5(); inline void op_D6(); inline void op_D7();
+    inline void op_D8(); inline void op_D9(); inline void op_DA(); inline void op_DB();
+    inline void op_DC(); inline void op_DD(); inline void op_DE(); inline void op_DF();
+    inline void op_E0(); inline void op_E1(); inline void op_E2(); inline void op_E3();
+    inline void op_E4(); inline void op_E5(); inline void op_E6(); inline void op_E7();
+    inline void op_E8(); inline void op_E9(); inline void op_EA(); inline void op_EB();
+    inline void op_EC(); inline void op_ED(); inline void op_EE(); inline void op_EF();
+    inline void op_F0(); inline void op_F1(); inline void op_F2(); inline void op_F3();
+    inline void op_F4(); inline void op_F5(); inline void op_F6(); inline void op_F7();
+    inline void op_F8(); inline void op_F9(); inline void op_FA(); inline void op_FB();
+    inline void op_FC(); inline void op_FD(); inline void op_FE(); inline void op_FF();
 
     // Two-byte opcodes:
-    void op_CB_00(); void op_CB_01(); void op_CB_02(); void op_CB_03();
-    void op_CB_04(); void op_CB_05(); void op_CB_06(); void op_CB_07();
-    void op_CB_08(); void op_CB_09(); void op_CB_0A(); void op_CB_0B();
-    void op_CB_0C(); void op_CB_0D(); void op_CB_0E(); void op_CB_0F();
-    void op_CB_10(); void op_CB_11(); void op_CB_12(); void op_CB_13();
-    void op_CB_14(); void op_CB_15(); void op_CB_16(); void op_CB_17();
-    void op_CB_18(); void op_CB_19(); void op_CB_1A(); void op_CB_1B();
-    void op_CB_1C(); void op_CB_1D(); void op_CB_1E(); void op_CB_1F();
-    void op_CB_20(); void op_CB_21(); void op_CB_22(); void op_CB_23();
-    void op_CB_24(); void op_CB_25(); void op_CB_26(); void op_CB_27();
-    void op_CB_28(); void op_CB_29(); void op_CB_2A(); void op_CB_2B();
-    void op_CB_2C(); void op_CB_2D(); void op_CB_2E(); void op_CB_2F();
-    void op_CB_30(); void op_CB_31(); void op_CB_32(); void op_CB_33();
-    void op_CB_34(); void op_CB_35(); void op_CB_36(); void op_CB_37();
-    void op_CB_38(); void op_CB_39(); void op_CB_3A(); void op_CB_3B();
-    void op_CB_3C(); void op_CB_3D(); void op_CB_3E(); void op_CB_3F();
-    void op_CB_40(); void op_CB_41(); void op_CB_42(); void op_CB_43();
-    void op_CB_44(); void op_CB_45(); void op_CB_46(); void op_CB_47();
-    void op_CB_48(); void op_CB_49(); void op_CB_4A(); void op_CB_4B();
-    void op_CB_4C(); void op_CB_4D(); void op_CB_4E(); void op_CB_4F();
-    void op_CB_50(); void op_CB_51(); void op_CB_52(); void op_CB_53();
-    void op_CB_54(); void op_CB_55(); void op_CB_56(); void op_CB_57();
-    void op_CB_58(); void op_CB_59(); void op_CB_5A(); void op_CB_5B();
-    void op_CB_5C(); void op_CB_5D(); void op_CB_5E(); void op_CB_5F();
-    void op_CB_60(); void op_CB_61(); void op_CB_62(); void op_CB_63();
-    void op_CB_64(); void op_CB_65(); void op_CB_66(); void op_CB_67();
-    void op_CB_68(); void op_CB_69(); void op_CB_6A(); void op_CB_6B();
-    void op_CB_6C(); void op_CB_6D(); void op_CB_6E(); void op_CB_6F();
-    void op_CB_70(); void op_CB_71(); void op_CB_72(); void op_CB_73();
-    void op_CB_74(); void op_CB_75(); void op_CB_76(); void op_CB_77();
-    void op_CB_78(); void op_CB_79(); void op_CB_7A(); void op_CB_7B();
-    void op_CB_7C(); void op_CB_7D(); void op_CB_7E(); void op_CB_7F();
-    void op_CB_80(); void op_CB_81(); void op_CB_82(); void op_CB_83();
-    void op_CB_84(); void op_CB_85(); void op_CB_86(); void op_CB_87();
-    void op_CB_88(); void op_CB_89(); void op_CB_8A(); void op_CB_8B();
-    void op_CB_8C(); void op_CB_8D(); void op_CB_8E(); void op_CB_8F();
-    void op_CB_90(); void op_CB_91(); void op_CB_92(); void op_CB_93();
-    void op_CB_94(); void op_CB_95(); void op_CB_96(); void op_CB_97();
-    void op_CB_98(); void op_CB_99(); void op_CB_9A(); void op_CB_9B();
-    void op_CB_9C(); void op_CB_9D(); void op_CB_9E(); void op_CB_9F();
-    void op_CB_A0(); void op_CB_A1(); void op_CB_A2(); void op_CB_A3();
-    void op_CB_A4(); void op_CB_A5(); void op_CB_A6(); void op_CB_A7();
-    void op_CB_A8(); void op_CB_A9(); void op_CB_AA(); void op_CB_AB();
-    void op_CB_AC(); void op_CB_AD(); void op_CB_AE(); void op_CB_AF();
-    void op_CB_B0(); void op_CB_B1(); void op_CB_B2(); void op_CB_B3();
-    void op_CB_B4(); void op_CB_B5(); void op_CB_B6(); void op_CB_B7();
-    void op_CB_B8(); void op_CB_B9(); void op_CB_BA(); void op_CB_BB();
-    void op_CB_BC(); void op_CB_BD(); void op_CB_BE(); void op_CB_BF();
-    void op_CB_C0(); void op_CB_C1(); void op_CB_C2(); void op_CB_C3();
-    void op_CB_C4(); void op_CB_C5(); void op_CB_C6(); void op_CB_C7();
-    void op_CB_C8(); void op_CB_C9(); void op_CB_CA(); void op_CB_CB();
-    void op_CB_CC(); void op_CB_CD(); void op_CB_CE(); void op_CB_CF();
-    void op_CB_D0(); void op_CB_D1(); void op_CB_D2(); void op_CB_D3();
-    void op_CB_D4(); void op_CB_D5(); void op_CB_D6(); void op_CB_D7();
-    void op_CB_D8(); void op_CB_D9(); void op_CB_DA(); void op_CB_DB();
-    void op_CB_DC(); void op_CB_DD(); void op_CB_DE(); void op_CB_DF();
-    void op_CB_E0(); void op_CB_E1(); void op_CB_E2(); void op_CB_E3();
-    void op_CB_E4(); void op_CB_E5(); void op_CB_E6(); void op_CB_E7();
-    void op_CB_E8(); void op_CB_E9(); void op_CB_EA(); void op_CB_EB();
-    void op_CB_EC(); void op_CB_ED(); void op_CB_EE(); void op_CB_EF();
-    void op_CB_F0(); void op_CB_F1(); void op_CB_F2(); void op_CB_F3();
-    void op_CB_F4(); void op_CB_F5(); void op_CB_F6(); void op_CB_F7();
-    void op_CB_F8(); void op_CB_F9(); void op_CB_FA(); void op_CB_FB();
-    void op_CB_FC(); void op_CB_FD(); void op_CB_FE(); void op_CB_FF();
+    inline void op_CB_00(); inline void op_CB_01(); inline void op_CB_02(); inline void op_CB_03();
+    inline void op_CB_04(); inline void op_CB_05(); inline void op_CB_06(); inline void op_CB_07();
+    inline void op_CB_08(); inline void op_CB_09(); inline void op_CB_0A(); inline void op_CB_0B();
+    inline void op_CB_0C(); inline void op_CB_0D(); inline void op_CB_0E(); inline void op_CB_0F();
+    inline void op_CB_10(); inline void op_CB_11(); inline void op_CB_12(); inline void op_CB_13();
+    inline void op_CB_14(); inline void op_CB_15(); inline void op_CB_16(); inline void op_CB_17();
+    inline void op_CB_18(); inline void op_CB_19(); inline void op_CB_1A(); inline void op_CB_1B();
+    inline void op_CB_1C(); inline void op_CB_1D(); inline void op_CB_1E(); inline void op_CB_1F();
+    inline void op_CB_20(); inline void op_CB_21(); inline void op_CB_22(); inline void op_CB_23();
+    inline void op_CB_24(); inline void op_CB_25(); inline void op_CB_26(); inline void op_CB_27();
+    inline void op_CB_28(); inline void op_CB_29(); inline void op_CB_2A(); inline void op_CB_2B();
+    inline void op_CB_2C(); inline void op_CB_2D(); inline void op_CB_2E(); inline void op_CB_2F();
+    inline void op_CB_30(); inline void op_CB_31(); inline void op_CB_32(); inline void op_CB_33();
+    inline void op_CB_34(); inline void op_CB_35(); inline void op_CB_36(); inline void op_CB_37();
+    inline void op_CB_38(); inline void op_CB_39(); inline void op_CB_3A(); inline void op_CB_3B();
+    inline void op_CB_3C(); inline void op_CB_3D(); inline void op_CB_3E(); inline void op_CB_3F();
+    inline void op_CB_40(); inline void op_CB_41(); inline void op_CB_42(); inline void op_CB_43();
+    inline void op_CB_44(); inline void op_CB_45(); inline void op_CB_46(); inline void op_CB_47();
+    inline void op_CB_48(); inline void op_CB_49(); inline void op_CB_4A(); inline void op_CB_4B();
+    inline void op_CB_4C(); inline void op_CB_4D(); inline void op_CB_4E(); inline void op_CB_4F();
+    inline void op_CB_50(); inline void op_CB_51(); inline void op_CB_52(); inline void op_CB_53();
+    inline void op_CB_54(); inline void op_CB_55(); inline void op_CB_56(); inline void op_CB_57();
+    inline void op_CB_58(); inline void op_CB_59(); inline void op_CB_5A(); inline void op_CB_5B();
+    inline void op_CB_5C(); inline void op_CB_5D(); inline void op_CB_5E(); inline void op_CB_5F();
+    inline void op_CB_60(); inline void op_CB_61(); inline void op_CB_62(); inline void op_CB_63();
+    inline void op_CB_64(); inline void op_CB_65(); inline void op_CB_66(); inline void op_CB_67();
+    inline void op_CB_68(); inline void op_CB_69(); inline void op_CB_6A(); inline void op_CB_6B();
+    inline void op_CB_6C(); inline void op_CB_6D(); inline void op_CB_6E(); inline void op_CB_6F();
+    inline void op_CB_70(); inline void op_CB_71(); inline void op_CB_72(); inline void op_CB_73();
+    inline void op_CB_74(); inline void op_CB_75(); inline void op_CB_76(); inline void op_CB_77();
+    inline void op_CB_78(); inline void op_CB_79(); inline void op_CB_7A(); inline void op_CB_7B();
+    inline void op_CB_7C(); inline void op_CB_7D(); inline void op_CB_7E(); inline void op_CB_7F();
+    inline void op_CB_80(); inline void op_CB_81(); inline void op_CB_82(); inline void op_CB_83();
+    inline void op_CB_84(); inline void op_CB_85(); inline void op_CB_86(); inline void op_CB_87();
+    inline void op_CB_88(); inline void op_CB_89(); inline void op_CB_8A(); inline void op_CB_8B();
+    inline void op_CB_8C(); inline void op_CB_8D(); inline void op_CB_8E(); inline void op_CB_8F();
+    inline void op_CB_90(); inline void op_CB_91(); inline void op_CB_92(); inline void op_CB_93();
+    inline void op_CB_94(); inline void op_CB_95(); inline void op_CB_96(); inline void op_CB_97();
+    inline void op_CB_98(); inline void op_CB_99(); inline void op_CB_9A(); inline void op_CB_9B();
+    inline void op_CB_9C(); inline void op_CB_9D(); inline void op_CB_9E(); inline void op_CB_9F();
+    inline void op_CB_A0(); inline void op_CB_A1(); inline void op_CB_A2(); inline void op_CB_A3();
+    inline void op_CB_A4(); inline void op_CB_A5(); inline void op_CB_A6(); inline void op_CB_A7();
+    inline void op_CB_A8(); inline void op_CB_A9(); inline void op_CB_AA(); inline void op_CB_AB();
+    inline void op_CB_AC(); inline void op_CB_AD(); inline void op_CB_AE(); inline void op_CB_AF();
+    inline void op_CB_B0(); inline void op_CB_B1(); inline void op_CB_B2(); inline void op_CB_B3();
+    inline void op_CB_B4(); inline void op_CB_B5(); inline void op_CB_B6(); inline void op_CB_B7();
+    inline void op_CB_B8(); inline void op_CB_B9(); inline void op_CB_BA(); inline void op_CB_BB();
+    inline void op_CB_BC(); inline void op_CB_BD(); inline void op_CB_BE(); inline void op_CB_BF();
+    inline void op_CB_C0(); inline void op_CB_C1(); inline void op_CB_C2(); inline void op_CB_C3();
+    inline void op_CB_C4(); inline void op_CB_C5(); inline void op_CB_C6(); inline void op_CB_C7();
+    inline void op_CB_C8(); inline void op_CB_C9(); inline void op_CB_CA(); inline void op_CB_CB();
+    inline void op_CB_CC(); inline void op_CB_CD(); inline void op_CB_CE(); inline void op_CB_CF();
+    inline void op_CB_D0(); inline void op_CB_D1(); inline void op_CB_D2(); inline void op_CB_D3();
+    inline void op_CB_D4(); inline void op_CB_D5(); inline void op_CB_D6(); inline void op_CB_D7();
+    inline void op_CB_D8(); inline void op_CB_D9(); inline void op_CB_DA(); inline void op_CB_DB();
+    inline void op_CB_DC(); inline void op_CB_DD(); inline void op_CB_DE(); inline void op_CB_DF();
+    inline void op_CB_E0(); inline void op_CB_E1(); inline void op_CB_E2(); inline void op_CB_E3();
+    inline void op_CB_E4(); inline void op_CB_E5(); inline void op_CB_E6(); inline void op_CB_E7();
+    inline void op_CB_E8(); inline void op_CB_E9(); inline void op_CB_EA(); inline void op_CB_EB();
+    inline void op_CB_EC(); inline void op_CB_ED(); inline void op_CB_EE(); inline void op_CB_EF();
+    inline void op_CB_F0(); inline void op_CB_F1(); inline void op_CB_F2(); inline void op_CB_F3();
+    inline void op_CB_F4(); inline void op_CB_F5(); inline void op_CB_F6(); inline void op_CB_F7();
+    inline void op_CB_F8(); inline void op_CB_F9(); inline void op_CB_FA(); inline void op_CB_FB();
+    inline void op_CB_FC(); inline void op_CB_FD(); inline void op_CB_FE(); inline void op_CB_FF();
 };
+
+ANTDB_ALWAYS_INLINE uint64_t Cpu::get_cycles()
+{
+    return clock_cycles;
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::reset_cycles()
+{
+    clock_cycles = 0;
+}
+
+ANTDB_ALWAYS_INLINE uint8_t Cpu::extract_immediate8(const uint8_t* instruction)
+{
+    if (!instruction) instruction = curr_instr;
+    return curr_instr[1];
+}
+
+ANTDB_ALWAYS_INLINE uint16_t Cpu::extract_immediate16(const uint8_t* instruction)
+{
+    if (!instruction) instruction = curr_instr;
+    return (static_cast<uint16_t>(instruction[1])) |
+           (static_cast<uint16_t>(instruction[2]) << 8);
+}
+
+ANTDB_ALWAYS_INLINE uint8_t Cpu::get_ALU_flag(enum ALUFlagPos pos)
+{
+    return (F >> static_cast<uint8_t>(pos)) & 0x01;
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::assign_ALU_flag(enum ALUFlagPos pos, uint8_t val)
+{
+    if (val == 0) F &= ~(0x01 << static_cast<uint8_t>(pos));
+    else F |= 0x01 << static_cast<uint8_t>(pos);
+}
+
+ANTDB_ALWAYS_INLINE uint8_t Cpu::C_flag_get()
+{
+    return get_ALU_flag(ALUFlagPos::C_FLAG);
+}
+
+ANTDB_ALWAYS_INLINE uint8_t Cpu::H_flag_get()
+{
+    return get_ALU_flag(ALUFlagPos::H_FLAG);
+}
+
+ANTDB_ALWAYS_INLINE uint8_t Cpu::N_flag_get()
+{
+    return get_ALU_flag(ALUFlagPos::N_FLAG);
+}
+
+ANTDB_ALWAYS_INLINE uint8_t Cpu::Z_flag_get()
+{
+    return get_ALU_flag(ALUFlagPos::Z_FLAG);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::C_flag_set()
+{
+    assign_ALU_flag(ALUFlagPos::C_FLAG, 1);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::H_flag_set()
+{
+    assign_ALU_flag(ALUFlagPos::H_FLAG, 1);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::N_flag_set()
+{
+    assign_ALU_flag(ALUFlagPos::N_FLAG, 1);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::Z_flag_set()
+{
+    assign_ALU_flag(ALUFlagPos::Z_FLAG, 1);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::C_flag_reset()
+{
+    assign_ALU_flag(ALUFlagPos::C_FLAG, 0);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::H_flag_reset()
+{
+    assign_ALU_flag(ALUFlagPos::H_FLAG, 0);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::N_flag_reset()
+{
+    assign_ALU_flag(ALUFlagPos::N_FLAG, 0);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::Z_flag_reset()
+{
+    assign_ALU_flag(ALUFlagPos::Z_FLAG, 0);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::C_flag_update(bool cond)
+{
+    if (cond) C_flag_set();
+    else C_flag_reset();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::H_flag_update(bool cond)
+{
+    if (cond) H_flag_set();
+    else H_flag_reset();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::N_flag_update(bool cond)
+{
+    if (cond) N_flag_set();
+    else C_flag_reset();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::Z_flag_update(bool cond)
+{
+    if (cond) Z_flag_set();
+    else Z_flag_reset();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_00()
+{
+    NOP();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_01()
+{
+    LD_r16_n16(BC, extract_immediate16());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_02()
+{
+    LD_r16_A(BC);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_03()
+{
+    INC_r16(BC);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_04()
+{
+    INC_r8(B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_05()
+{
+    DEC_r8(B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_06()
+{
+    LD_r8_n8(B, extract_immediate8());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_07()
+{
+    RLCA();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_08()
+{
+    LD_n16_SP(extract_immediate16());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_09()
+{
+    ADD_HL_r16(BC);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_0A()
+{
+    LD_A_r16(BC);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_0B()
+{
+    DEC_r16(BC);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_0C()
+{
+    INC_r8(C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_0D()
+{
+    DEC_r8(C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_0E()
+{
+    LD_r8_n8(C, extract_immediate8());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_0F()
+{
+    RRCA();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_10()
+{
+    STOP();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_11()
+{
+    LD_r16_n16(DE, extract_immediate16());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_12()
+{
+    LD_r16_A(DE);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_13()
+{
+    INC_r16(DE);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_14()
+{
+    INC_r8(D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_15()
+{
+    DEC_r8(D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_16()
+{
+    LD_r8_n8(D, extract_immediate8());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_17()
+{
+    RLA();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_18()
+{
+    JR_n8(static_cast<int8_t>(extract_immediate8()));
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_19()
+{
+    ADD_HL_r16(DE);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_1A()
+{
+    LD_A_r16(DE);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_1B()
+{
+    DEC_r16(DE);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_1C()
+{
+    INC_r8(E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_1D()
+{
+    DEC_r8(E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_1E()
+{
+    LD_r8_n8(E, extract_immediate8());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_1F()
+{
+    RRA();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_20()
+{
+    JR_cc_n8(!Z_flag_get(), static_cast<int8_t>(extract_immediate8()));
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_21()
+{
+    LD_r16_n16(HL, extract_immediate16());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_22()
+{
+    LDI_HL_A();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_23()
+{
+    INC_r16(HL);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_24()
+{
+    INC_r8(H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_25()
+{
+    DEC_r8(H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_26()
+{
+    LD_r8_n8(H, extract_immediate8());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_27()
+{
+    DAA();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_28()
+{
+    JR_cc_n8(Z_flag_get(), static_cast<int8_t>(extract_immediate8()));
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_29()
+{
+    ADD_HL_r16(HL);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_2A()
+{
+    LDI_A_HL();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_2B()
+{
+    DEC_r16(HL);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_2C()
+{
+    INC_r8(L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_2D()
+{
+    DEC_r8(L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_2E()
+{
+    LD_r8_n8(L, extract_immediate8());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_2F()
+{
+    CPL();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_30()
+{
+    JR_cc_n8(!C_flag_get(), static_cast<int8_t>(extract_immediate8()));
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_31()
+{
+    LD_r16_n16(SP, extract_immediate16());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_32()
+{
+    LDD_HL_A();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_33()
+{
+    INC_r16(SP);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_34()
+{
+    INC_HL();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_35()
+{
+    DEC_HL();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_36()
+{
+    LD_HL_n8(extract_immediate8());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_37()
+{
+    SCF();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_38()
+{
+    JR_cc_n8(C_flag_get(), static_cast<int8_t>(extract_immediate8()));
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_39()
+{
+    ADD_HL_r16(SP);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_3A()
+{
+    LDD_A_HL();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_3B()
+{
+    DEC_r16(SP);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_3C()
+{
+    INC_r8(A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_3D()
+{
+    DEC_r8(A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_3E()
+{
+    LD_r8_n8(A, extract_immediate8());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_3F()
+{
+    CCF();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_40()
+{
+    LD_r8_r8(B, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_41()
+{
+    LD_r8_r8(B, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_42()
+{
+    LD_r8_r8(B, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_43()
+{
+    LD_r8_r8(B, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_44()
+{
+    LD_r8_r8(B, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_45()
+{
+    LD_r8_r8(B, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_46()
+{
+    LD_r8_HL(B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_47()
+{
+    LD_r8_r8(B, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_48()
+{
+    LD_r8_r8(C, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_49()
+{
+    LD_r8_r8(C, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_4A()
+{
+    LD_r8_r8(C, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_4B()
+{
+    LD_r8_r8(C, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_4C()
+{
+    LD_r8_r8(C, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_4D()
+{
+    LD_r8_r8(C, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_4E()
+{
+    LD_r8_HL(C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_4F()
+{
+    LD_r8_r8(C, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_50()
+{
+    LD_r8_r8(D, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_51()
+{
+    LD_r8_r8(D, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_52()
+{
+    LD_r8_r8(D, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_53()
+{
+    LD_r8_r8(D, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_54()
+{
+    LD_r8_r8(D, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_55()
+{
+    LD_r8_r8(D, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_56()
+{
+    LD_r8_HL(D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_57()
+{
+    LD_r8_r8(D, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_58()
+{
+    LD_r8_r8(E, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_59()
+{
+    LD_r8_r8(E, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_5A()
+{
+    LD_r8_r8(E, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_5B()
+{
+    LD_r8_r8(E, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_5C()
+{
+    LD_r8_r8(E, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_5D()
+{
+    LD_r8_r8(E, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_5E()
+{
+    LD_r8_HL(E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_5F()
+{
+    LD_r8_r8(E, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_60()
+{
+    LD_r8_r8(H, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_61()
+{
+    LD_r8_r8(H, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_62()
+{
+    LD_r8_r8(H, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_63()
+{
+    LD_r8_r8(H, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_64()
+{
+    LD_r8_r8(H, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_65()
+{
+    LD_r8_r8(H, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_66()
+{
+    LD_r8_HL(H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_67()
+{
+    LD_r8_r8(H, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_68()
+{
+    LD_r8_r8(L, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_69()
+{
+    LD_r8_r8(L, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_6A()
+{
+    LD_r8_r8(L, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_6B()
+{
+    LD_r8_r8(L, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_6C()
+{
+    LD_r8_r8(L, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_6D()
+{
+    LD_r8_r8(L, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_6E()
+{
+    LD_r8_HL(L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_6F()
+{
+    LD_r8_r8(L, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_70()
+{
+    LD_HL_r8(B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_71()
+{
+    LD_HL_r8(C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_72()
+{
+    LD_HL_r8(D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_73()
+{
+    LD_HL_r8(E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_74()
+{
+    LD_HL_r8(H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_75()
+{
+    LD_HL_r8(L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_76()
+{
+    HALT();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_77()
+{
+    LD_HL_r8(A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_78()
+{
+    LD_r8_r8(A, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_79()
+{
+    LD_r8_r8(A, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_7A()
+{
+    LD_r8_r8(A, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_7B()
+{
+    LD_r8_r8(A, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_7C()
+{
+    LD_r8_r8(A, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_7D()
+{
+    LD_r8_r8(A, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_7E()
+{
+    LD_A_r16(HL);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_7F()
+{
+    LD_r8_r8(A, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_80()
+{
+    ADD_A_r8(B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_81()
+{
+    ADD_A_r8(C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_82()
+{
+    ADD_A_r8(D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_83()
+{
+    ADD_A_r8(E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_84()
+{
+    ADD_A_r8(H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_85()
+{
+    ADD_A_r8(L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_86()
+{
+    ADD_A_HL();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_87()
+{
+    ADD_A_r8(A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_88()
+{
+    ADC_A_r8(B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_89()
+{
+    ADC_A_r8(C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_8A()
+{
+    ADC_A_r8(D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_8B()
+{
+    ADC_A_r8(E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_8C()
+{
+    ADC_A_r8(H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_8D()
+{
+    ADC_A_r8(L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_8E()
+{
+    ADC_A_HL();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_8F()
+{
+    ADC_A_r8(A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_90()
+{
+    SUB_A_r8(B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_91()
+{
+    SUB_A_r8(C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_92()
+{
+    SUB_A_r8(D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_93()
+{
+    SUB_A_r8(E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_94()
+{
+    SUB_A_r8(H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_95()
+{
+    SUB_A_r8(L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_96()
+{
+    //
+    SUB_A_HL();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_97()
+{
+    SUB_A_r8(A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_98()
+{
+    SBC_A_r8(B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_99()
+{
+    SBC_A_r8(C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_9A()
+{
+    SBC_A_r8(D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_9B()
+{
+    SBC_A_r8(E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_9C()
+{
+    SBC_A_r8(H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_9D()
+{
+    SBC_A_r8(L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_9E()
+{
+    SBC_A_HL();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_9F()
+{
+    SBC_A_r8(A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_A0()
+{
+    AND_r8(B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_A1()
+{
+    AND_r8(C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_A2()
+{
+    AND_r8(D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_A3()
+{
+    AND_r8(E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_A4()
+{
+    AND_r8(H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_A5()
+{
+    AND_r8(L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_A6()
+{
+    AND_HL();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_A7()
+{
+    AND_r8(A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_A8()
+{
+    XOR_r8(B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_A9()
+{
+    XOR_r8(C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_AA()
+{
+    XOR_r8(D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_AB()
+{
+    XOR_r8(E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_AC()
+{
+    XOR_r8(H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_AD()
+{
+    XOR_r8(L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_AE()
+{
+    XOR_HL();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_AF()
+{
+    XOR_r8(A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_B0()
+{
+    OR_r8(B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_B1()
+{
+    OR_r8(C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_B2()
+{
+    OR_r8(D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_B3()
+{
+    OR_r8(E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_B4()
+{
+    OR_r8(H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_B5()
+{
+    OR_r8(L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_B6()
+{
+    OR_HL();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_B7()
+{
+    OR_r8(A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_B8()
+{
+    CP_r8(B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_B9()
+{
+    CP_r8(C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_BA()
+{
+    CP_r8(D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_BB()
+{
+    CP_r8(E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_BC()
+{
+    CP_r8(H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_BD()
+{
+    CP_r8(L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_BE()
+{
+    CP_HL();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_BF()
+{
+    CP_r8(A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_C0()
+{
+    RET_cc(!Z_flag_get());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_C1()
+{
+    POP_r16(BC);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_C2()
+{
+    JP_cc_n16(!Z_flag_get(), extract_immediate16());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_C3()
+{
+    JP_n16(extract_immediate16());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_C4()
+{
+    CALL_cc_n16(!Z_flag_get(), extract_immediate16());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_C5()
+{
+    PUSH_r16(BC);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_C6()
+{
+    ADD_A_n8(extract_immediate8());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_C7()
+{
+    RST_f(0x00);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_C8()
+{
+    RET_cc(Z_flag_get());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_C9()
+{
+    RET();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CA()
+{
+    JP_cc_n16(Z_flag_get(), extract_immediate16());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB()
+{
+    /* SHOULD NOT END UP HERE */
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CC()
+{
+    CALL_cc_n16(Z_flag_get(), extract_immediate16());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CD()
+{
+    CALL_n16(extract_immediate16());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CE()
+{
+    ADC_A_n8(extract_immediate8());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CF()
+{
+    RST_f(0x08);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_D0()
+{
+    RET_cc(!C_flag_get());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_D1()
+{
+    POP_r16(DE);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_D2()
+{
+    JP_cc_n16(!C_flag_get(), extract_immediate16());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_D3()
+{
+    invalid_opcode();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_D4()
+{
+    CALL_cc_n16(!C_flag_get(), extract_immediate16());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_D5()
+{
+    PUSH_r16(DE);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_D6()
+{
+    SUB_A_n8(extract_immediate8());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_D7()
+{
+    RST_f(0x10);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_D8()
+{
+    RET_cc(C_flag_get());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_D9()
+{
+    RETI();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_DA()
+{
+    JP_cc_n16(C_flag_get(), extract_immediate16());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_DB()
+{
+    invalid_opcode();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_DC()
+{
+    CALL_cc_n16(C_flag_get(), extract_immediate16());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_DD()
+{
+    invalid_opcode();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_DE()
+{
+    SBC_A_n8(extract_immediate8());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_DF()
+{
+    RST_f(0x18);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_E0()
+{
+    LDH_n8_A(extract_immediate8());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_E1()
+{
+    POP_r16(HL);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_E2()
+{
+    LD_C_A();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_E3()
+{
+    invalid_opcode();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_E4()
+{
+    invalid_opcode();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_E5()
+{
+    PUSH_r16(HL);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_E6()
+{
+    AND_n8(extract_immediate8());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_E7()
+{
+    RST_f(0x20);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_E8()
+{
+    ADD_SP_e8(static_cast<int8_t>(extract_immediate8()));
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_E9()
+{
+    JP_n16(HL);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_EA()
+{
+    LD_n16_A(extract_immediate16());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_EB()
+{
+    invalid_opcode();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_EC()
+{
+    invalid_opcode();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_ED()
+{
+    invalid_opcode();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_EE()
+{
+    XOR_n8(extract_immediate8());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_EF()
+{
+    RST_f(0x28);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_F0()
+{
+    LDH_A_n8(extract_immediate8());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_F1()
+{
+    POP_r16(AF);
+    // Only the upper nibble of F can be written into, so make sure the lower
+    // nibble is zero.
+    F &= 0xF0;
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_F2()
+{
+    LD_A_C();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_F3()
+{
+    DI();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_F4()
+{
+    invalid_opcode();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_F5()
+{
+    PUSH_r16(AF);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_F6()
+{
+    OR_n8(extract_immediate8());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_F7()
+{
+    RST_f(0x30);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_F8()
+{
+    LD_HL_SP_e8(static_cast<int8_t>(extract_immediate8()));
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_F9()
+{
+    LD_SP_HL();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_FA()
+{
+    LD_A_n16(extract_immediate16());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_FB()
+{
+    EI();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_FC()
+{
+    invalid_opcode();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_FD()
+{
+    invalid_opcode();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_FE()
+{
+    CP_n8(extract_immediate8());
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_FF()
+{
+    RST_f(0x38);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_00()
+{
+    RLC_r8(B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_01()
+{
+    RLC_r8(C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_02()
+{
+    RLC_r8(D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_03()
+{
+    RLC_r8(E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_04()
+{
+    RLC_r8(H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_05()
+{
+    RLC_r8(L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_06()
+{
+    RLC_HL();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_07()
+{
+    RLC_r8(A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_08()
+{
+    RRC_r8(B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_09()
+{
+    RRC_r8(C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_0A()
+{
+    RRC_r8(D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_0B()
+{
+    RRC_r8(E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_0C()
+{
+    RRC_r8(H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_0D()
+{
+    RRC_r8(L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_0E()
+{
+    RRC_HL();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_0F()
+{
+    RRC_r8(A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_10()
+{
+    RL_r8(B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_11()
+{
+    RL_r8(C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_12()
+{
+    RL_r8(D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_13()
+{
+    RL_r8(E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_14()
+{
+    RL_r8(H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_15()
+{
+    RL_r8(L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_16()
+{
+    RL_HL();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_17()
+{
+    RL_r8(A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_18()
+{
+    RR_r8(B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_19()
+{
+    RR_r8(C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_1A()
+{
+    RR_r8(D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_1B()
+{
+    RR_r8(E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_1C()
+{
+    RR_r8(H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_1D()
+{
+    RR_r8(L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_1E()
+{
+    RR_HL();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_1F()
+{
+    RR_r8(A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_20()
+{
+    SLA_r8(B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_21()
+{
+    SLA_r8(C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_22()
+{
+    SLA_r8(D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_23()
+{
+    SLA_r8(E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_24()
+{
+    SLA_r8(H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_25()
+{
+    SLA_r8(L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_26()
+{
+    SLA_HL();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_27()
+{
+    SLA_r8(A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_28()
+{
+    SRA_r8(B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_29()
+{
+    SRA_r8(C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_2A()
+{
+    SRA_r8(D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_2B()
+{
+    SRA_r8(E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_2C()
+{
+    SRA_r8(H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_2D()
+{
+    SRA_r8(L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_2E()
+{
+    SRA_HL();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_2F()
+{
+    SRA_r8(A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_30()
+{
+    SWAP_r8(B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_31()
+{
+    SWAP_r8(C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_32()
+{
+    SWAP_r8(D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_33()
+{
+    SWAP_r8(E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_34()
+{
+    SWAP_r8(H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_35()
+{
+    SWAP_r8(L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_36()
+{
+    SWAP_HL();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_37()
+{
+    SWAP_r8(A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_38()
+{
+    SRL_r8(B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_39()
+{
+    SRL_r8(C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_3A()
+{
+    SRL_r8(D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_3B()
+{
+    SRL_r8(E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_3C()
+{
+    SRL_r8(H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_3D()
+{
+    SRL_r8(L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_3E()
+{
+    SRL_HL();
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_3F()
+{
+    SRL_r8(A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_40()
+{
+    BIT_n3_r8(0, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_41()
+{
+    BIT_n3_r8(0, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_42()
+{
+    BIT_n3_r8(0, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_43()
+{
+    BIT_n3_r8(0, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_44()
+{
+    BIT_n3_r8(0, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_45()
+{
+    BIT_n3_r8(0, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_46()
+{
+    BIT_n3_HL(0);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_47()
+{
+    BIT_n3_r8(0, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_48()
+{
+    BIT_n3_r8(1, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_49()
+{
+    BIT_n3_r8(1, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_4A()
+{
+    BIT_n3_r8(1, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_4B()
+{
+    BIT_n3_r8(1, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_4C()
+{
+    BIT_n3_r8(1, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_4D()
+{
+    BIT_n3_r8(1, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_4E()
+{
+    BIT_n3_HL(1);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_4F()
+{
+    BIT_n3_r8(1, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_50()
+{
+    BIT_n3_r8(2, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_51()
+{
+    BIT_n3_r8(2, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_52()
+{
+    BIT_n3_r8(2, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_53()
+{
+    BIT_n3_r8(2, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_54()
+{
+    BIT_n3_r8(2, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_55()
+{
+    BIT_n3_r8(2, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_56()
+{
+    BIT_n3_HL(2);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_57()
+{
+    BIT_n3_r8(2, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_58()
+{
+    BIT_n3_r8(3, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_59()
+{
+    BIT_n3_r8(3, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_5A()
+{
+    BIT_n3_r8(3, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_5B()
+{
+    BIT_n3_r8(3, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_5C()
+{
+    BIT_n3_r8(3, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_5D()
+{
+    BIT_n3_r8(3, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_5E()
+{
+    BIT_n3_HL(3);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_5F()
+{
+    BIT_n3_r8(3, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_60()
+{
+    BIT_n3_r8(4, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_61()
+{
+    BIT_n3_r8(4, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_62()
+{
+    BIT_n3_r8(4, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_63()
+{
+    BIT_n3_r8(4, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_64()
+{
+    BIT_n3_r8(4, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_65()
+{
+    BIT_n3_r8(4, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_66()
+{
+    BIT_n3_HL(4);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_67()
+{
+    BIT_n3_r8(4, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_68()
+{
+    BIT_n3_r8(5, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_69()
+{
+    BIT_n3_r8(5, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_6A()
+{
+    BIT_n3_r8(5, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_6B()
+{
+    BIT_n3_r8(5, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_6C()
+{
+    BIT_n3_r8(5, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_6D()
+{
+    BIT_n3_r8(5, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_6E()
+{
+    BIT_n3_HL(5);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_6F()
+{
+    BIT_n3_r8(5, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_70()
+{
+    BIT_n3_r8(6, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_71()
+{
+    BIT_n3_r8(6, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_72()
+{
+    BIT_n3_r8(6, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_73()
+{
+    BIT_n3_r8(6, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_74()
+{
+    BIT_n3_r8(6, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_75()
+{
+    BIT_n3_r8(6, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_76()
+{
+    BIT_n3_HL(6);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_77()
+{
+    BIT_n3_r8(6, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_78()
+{
+    BIT_n3_r8(7, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_79()
+{
+    BIT_n3_r8(7, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_7A()
+{
+    BIT_n3_r8(7, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_7B()
+{
+    BIT_n3_r8(7, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_7C()
+{
+    BIT_n3_r8(7, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_7D()
+{
+    BIT_n3_r8(7, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_7E()
+{
+    BIT_n3_HL(7);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_7F()
+{
+    BIT_n3_r8(7, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_80()
+{
+    RES_n3_r8(0, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_81()
+{
+    RES_n3_r8(0, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_82()
+{
+    RES_n3_r8(0, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_83()
+{
+    RES_n3_r8(0, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_84()
+{
+    RES_n3_r8(0, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_85()
+{
+    RES_n3_r8(0, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_86()
+{
+    RES_n3_HL(0);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_87()
+{
+    RES_n3_r8(0, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_88()
+{
+    RES_n3_r8(1, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_89()
+{
+    RES_n3_r8(1, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_8A()
+{
+    RES_n3_r8(1, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_8B()
+{
+    RES_n3_r8(1, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_8C()
+{
+    RES_n3_r8(1, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_8D()
+{
+    RES_n3_r8(1, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_8E()
+{
+    RES_n3_HL(1);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_8F()
+{
+    RES_n3_r8(1, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_90()
+{
+    RES_n3_r8(2, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_91()
+{
+    RES_n3_r8(2, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_92()
+{
+    RES_n3_r8(2, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_93()
+{
+    RES_n3_r8(2, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_94()
+{
+    RES_n3_r8(2, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_95()
+{
+    RES_n3_r8(2, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_96()
+{
+    RES_n3_HL(2);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_97()
+{
+    RES_n3_r8(2, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_98()
+{
+    RES_n3_r8(3, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_99()
+{
+    RES_n3_r8(3, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_9A()
+{
+    RES_n3_r8(3, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_9B()
+{
+    RES_n3_r8(3, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_9C()
+{
+    RES_n3_r8(3, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_9D()
+{
+    RES_n3_r8(3, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_9E()
+{
+    RES_n3_HL(3);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_9F()
+{
+    RES_n3_r8(3, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_A0()
+{
+    RES_n3_r8(4, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_A1()
+{
+    RES_n3_r8(4, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_A2()
+{
+    RES_n3_r8(4, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_A3()
+{
+    RES_n3_r8(4, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_A4()
+{
+    RES_n3_r8(4, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_A5()
+{
+    RES_n3_r8(4, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_A6()
+{
+    RES_n3_HL(4);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_A7()
+{
+    RES_n3_r8(4, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_A8()
+{
+    RES_n3_r8(5, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_A9()
+{
+    RES_n3_r8(5, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_AA()
+{
+    RES_n3_r8(5, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_AB()
+{
+    RES_n3_r8(5, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_AC()
+{
+    RES_n3_r8(5, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_AD()
+{
+    RES_n3_r8(5, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_AE()
+{
+    RES_n3_HL(5);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_AF()
+{
+    RES_n3_r8(5, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_B0()
+{
+    RES_n3_r8(6, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_B1()
+{
+    RES_n3_r8(6, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_B2()
+{
+    RES_n3_r8(6, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_B3()
+{
+    RES_n3_r8(6, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_B4()
+{
+    RES_n3_r8(6, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_B5()
+{
+    RES_n3_r8(6, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_B6()
+{
+    RES_n3_HL(6);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_B7()
+{
+    RES_n3_r8(6, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_B8()
+{
+    RES_n3_r8(7, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_B9()
+{
+    RES_n3_r8(7, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_BA()
+{
+    RES_n3_r8(7, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_BB()
+{
+    RES_n3_r8(7, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_BC()
+{
+    RES_n3_r8(7, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_BD()
+{
+    RES_n3_r8(7, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_BE()
+{
+    RES_n3_HL(7);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_BF()
+{
+    RES_n3_r8(7, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_C0()
+{
+    SET_n3_r8(0, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_C1()
+{
+    SET_n3_r8(0, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_C2()
+{
+    SET_n3_r8(0, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_C3()
+{
+    SET_n3_r8(0, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_C4()
+{
+    SET_n3_r8(0, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_C5()
+{
+    SET_n3_r8(0, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_C6()
+{
+    SET_n3_HL(0);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_C7()
+{
+    SET_n3_r8(0, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_C8()
+{
+    SET_n3_r8(1, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_C9()
+{
+    SET_n3_r8(1, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_CA()
+{
+    SET_n3_r8(1, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_CB()
+{
+    SET_n3_r8(1, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_CC()
+{
+    SET_n3_r8(1, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_CD()
+{
+    SET_n3_r8(1, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_CE()
+{
+    SET_n3_HL(1);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_CF()
+{
+    SET_n3_r8(1, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_D0()
+{
+    SET_n3_r8(2, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_D1()
+{
+    SET_n3_r8(2, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_D2()
+{
+    SET_n3_r8(2, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_D3()
+{
+    SET_n3_r8(2, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_D4()
+{
+    SET_n3_r8(2, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_D5()
+{
+    SET_n3_r8(2, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_D6()
+{
+    SET_n3_HL(2);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_D7()
+{
+    SET_n3_r8(2, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_D8()
+{
+    SET_n3_r8(3, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_D9()
+{
+    SET_n3_r8(3, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_DA()
+{
+    SET_n3_r8(3, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_DB()
+{
+    SET_n3_r8(3, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_DC()
+{
+    SET_n3_r8(3, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_DD()
+{
+    SET_n3_r8(3, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_DE()
+{
+    SET_n3_HL(3);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_DF()
+{
+    SET_n3_r8(3, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_E0()
+{
+    SET_n3_r8(4, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_E1()
+{
+    SET_n3_r8(4, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_E2()
+{
+    SET_n3_r8(4, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_E3()
+{
+    SET_n3_r8(4, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_E4()
+{
+    SET_n3_r8(4, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_E5()
+{
+    SET_n3_r8(4, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_E6()
+{
+    SET_n3_HL(4);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_E7()
+{
+    SET_n3_r8(4, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_E8()
+{
+    SET_n3_r8(5, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_E9()
+{
+    SET_n3_r8(5, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_EA()
+{
+    SET_n3_r8(5, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_EB()
+{
+    SET_n3_r8(5, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_EC()
+{
+    SET_n3_r8(5, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_ED()
+{
+    SET_n3_r8(5, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_EE()
+{
+    SET_n3_HL(5);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_EF()
+{
+    SET_n3_r8(5, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_F0()
+{
+    SET_n3_r8(6, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_F1()
+{
+    SET_n3_r8(6, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_F2()
+{
+    SET_n3_r8(6, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_F3()
+{
+    SET_n3_r8(6, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_F4()
+{
+    SET_n3_r8(6, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_F5()
+{
+    SET_n3_r8(6, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_F6()
+{
+    SET_n3_HL(6);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_F7()
+{
+    SET_n3_r8(6, A);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_F8()
+{
+    SET_n3_r8(7, B);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_F9()
+{
+    SET_n3_r8(7, C);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_FA()
+{
+    SET_n3_r8(7, D);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_FB()
+{
+    SET_n3_r8(7, E);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_FC()
+{
+    SET_n3_r8(7, H);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_FD()
+{
+    SET_n3_r8(7, L);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_FE()
+{
+    SET_n3_HL(7);
+}
+
+ANTDB_ALWAYS_INLINE void Cpu::op_CB_FF()
+{
+    SET_n3_r8(7, A);
+}

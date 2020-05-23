@@ -85,44 +85,6 @@ void Cpu::execute(const uint8_t* instruction)
                                     &CB_INSTR_TABLE[curr_instr[1]] :
                                     &INSTR_TABLE[*curr_instr];
 
-        static bool do_print = false;
-
-        do_print = true;
-
-        if (do_print)
-        {
-            trace_log << "\n";
-            trace_log << "AF: " << std::hex << AF << "\n";
-            trace_log << "BC: " << std::hex << BC << "\n";
-            trace_log << "DE: " << std::hex << DE << "\n";
-            trace_log << "HL: " << std::hex << HL << "\n";
-            trace_log << "SP: " << std::hex << SP << "\n";
-            trace_log << "PC: " << std::hex << PC << "\n";
-
-            trace_log << "@"
-                      << std::setw(5) << std::left << std::hex
-                      << PC
-                      << disassembler.disassemble(const_cast<uint8_t*>(instruction))
-                      << "\n";
-            trace_log << std::flush;
-        /*
-            */
-
-            /*
-            cout      << "@"
-                      << std::setw(5) << std::left << std::hex
-                      << PC
-                      << disassembler.disassemble(const_cast<uint8_t*>(instruction))
-                      << std::endl;
-            */
-
-
-            /*
-            */
-        }
-
-        do_print = false;
-
         PC += op_info->len_bytes;
 
         if (op_info->handler) (this->*(op_info->handler))();
@@ -152,29 +114,6 @@ void Cpu::execute(const uint8_t* instruction)
         irc->ime_flag_set();
         DI_action = IMEStatus::DO_NOTHING;
     }
-}
-
-uint8_t Cpu::extract_immediate8(const uint8_t* instruction)
-{
-    if (!instruction) instruction = curr_instr;
-    return curr_instr[1];
-}
-
-uint16_t Cpu::extract_immediate16(const uint8_t* instruction)
-{
-    if (!instruction) instruction = curr_instr;
-    return (static_cast<uint16_t>(instruction[1])) |
-           (static_cast<uint16_t>(instruction[2]) << 8);
-}
-
-uint64_t Cpu::get_cycles()
-{
-    return clock_cycles;
-}
-
-void Cpu::reset_cycles()
-{
-    clock_cycles = 0;
 }
 
 void Cpu::invalid_opcode()

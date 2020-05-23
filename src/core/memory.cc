@@ -6,14 +6,6 @@
 
 #include <QFile>
 
-// TODO: Write-only (such as NR11)
-struct Mask
-{
-    uint8_t valid = 0xFF;
-    uint8_t invalid = 0x00;
-    uint8_t readonly = 0xFF;
-};
-
 /*
 FF07 - TAC - Timer Control (R/W)
 
@@ -27,22 +19,6 @@ FF07 - TAC - Timer Control (R/W)
  Note: The "Timer Enable" bit only affects the timer, the divider is ALWAYS counting.
 
 */
-
-static std::map<memaddr_t, Mask> MASK
-{
-    // JOYP
-    {0xFF00, {0b00111111, 0b11000000, 0b00001111}},
-    // TAC
-    {0xFF07, {0b00000111, 0b11111000, 0b11111000}},
-    // NR52
-    {0xFF26, {0b11111111, 0b00000000, 0b00001111}},
-    //STAT
-    {0xFF41, {0b01111111, 0b10000000, 0b10000111}},
-    // IF
-    {0xFF00, {0b00011111, 0b11100000, 0b11100000}},
-    // IE
-    {0xFFFF, {0b00011111, 0b11100000, 0b11100000}}
-};
 
 Memory::Memory()
 {
@@ -75,93 +51,6 @@ void Memory::hard_reset()
         }
     }
     delete[] afterboot_dump;
-}
-
-uint8_t* Memory::get(memaddr_t address)
-{
-    if (address <= ROM1.high)
-    {
-        if (cartridge) return &cartridge->data[address];
-        else return nullptr;
-    }
-    else if (address <= VRAM.high)
-    {
-        return &h8000_vram[address - VRAM.low];
-    }
-    else if (address <= ERAM.high)
-    {
-        return nullptr;
-    }
-    else if (address <= WRAM0.high)
-    {
-        return &hc000_wram0[address - WRAM0.low];
-    }
-    else if (address <= WRAM1.high)
-    {
-        return &hd000_wram1[address -WRAM1.low];
-    }
-    else if (address <= ECHO.high)
-    {
-        return get(WRAM0.low + (address - ECHO.low));
-    }
-    else if (address <= OAM.high)
-    {
-        return &hfe00_oam[address - OAM.low];
-    }
-    else if (address <= UNUSABLE.high)
-    {
-        return nullptr;
-    }
-    else if (address <= IO.high)
-    {
-        return &hff00_io[address - IO.low];
-    }
-    else if (address <= HRAM.high)
-    {
-        return &hff80_hram[address - HRAM.low];
-    }
-    else
-    {
-        return &hffff_ie;
-    }
-}
-
-uint8_t Memory::read(memaddr_t address)
-{
-    uint8_t* source = get(address);
-    if (!source) return 0xFF;
-
-    // Some addresses have bits that can't be read, so make sure to return 1
-    // in the places of those bits.
-    uint8_t invalid_mask = 0x00;
-    if (MASK.count(address))
-        invalid_mask = MASK[address].invalid;
-
-    return *source | (invalid_mask & 0xFF);
-}
-
-bool Memory::write(memaddr_t address, uint8_t value)
-{
-    uint8_t* dest = get(address);
-    if (!dest) return false;
-
-    // Some addresses have read-only bits, so make sure not to change them.
-    uint8_t readonly_mask = 0x00;
-    if (MASK.count(address))
-        readonly_mask = MASK[address].readonly;
-
-    // DIV
-    if (address == 0xFF04) value = 0x00;
-
-    *dest = (*dest & readonly_mask) | (value & ~readonly_mask);
-    return true;
-}
-
-bool Memory::force_write(memaddr_t address, uint8_t value)
-{
-    auto dest = get(address);
-    if (dest) *dest = value;
-    return 0;
 }
 
 void Memory::launch_oam_dma(memaddr_t destination, memaddr_t source, memaddr_t size)
