@@ -81,7 +81,7 @@ public:
         union
         {
             uint16_t HL;
-            struct { uint8_t H; uint8_t L; } __attribute__((packed));
+            struct { uint8_t L; uint8_t H; } __attribute__((packed));
         };
         union
         {
