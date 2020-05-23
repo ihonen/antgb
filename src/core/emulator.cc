@@ -10,12 +10,12 @@ using namespace std;
 Emulator::Emulator()
 {
     mem = new Memory();
-    irc = new Irc(&mem->hff0f_if, &mem->hffff_ie);
-    ppu = new Ppu(mem, &mem->ppureg, irc);
+    irc = new Irc(mem->get(Irc::IF_ADDRESS), mem->get(Irc::IE_ADDRESS));
+    ppu = new Ppu(mem, (Ppu::Registers*)mem->get(Ppu::LOW_ADDRESS), irc);
     cpu = new Cpu(mem, irc);
     joypad = new Joypad(mem, irc);
-    timer_divider = new Timer(&mem->timerreg, irc);
-    serial = new Serial(&mem->serialreg, irc);
+    timer_divider = new Timer((Timer::Registers*)mem->get(Timer::LOW_ADDRESS), irc);
+    serial = new Serial((Serial::Registers*)mem->get(Serial::LOW_ADDRESS), irc);
     cartridge = nullptr;
 }
 

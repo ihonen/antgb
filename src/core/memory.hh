@@ -77,37 +77,7 @@ public:
     static constexpr MemoryRegion TILEDATA1 = {0x8800, 0x8FFF, 0x0800};
     static constexpr MemoryRegion TILEDATA2 = {0x9000, 0x97FF, 0x0800};
 
-    union __attribute__((packed))
-    {
-        uint8_t h8000_vram[VRAM.size];
-        struct __attribute__((packed))
-        {
-            uint8_t h8000_tilemap0[TILEDATA0.size];
-            uint8_t h8800_tilemap1[TILEDATA1.size];
-            uint8_t h8800_tilemap2[TILEDATA2.size];
-        };
-    };
-    uint8_t hc000_wram0[WRAM0.size];
-    uint8_t hd000_wram1[WRAM1.size];
-    uint8_t hfe00_oam[OAM.size];
-    union __attribute__((packed))
-    {
-        uint8_t hff00_io[IO.size];
-        struct __attribute__((packed))
-        {
-            Joypad::Registers joypadreg;
-            Serial::Registers serialreg;
-            uint8_t hff03_io_unused_in_dmg_1__;
-            Timer::Registers timerreg;
-            uint8_t hff08_io_unused_in_dmg_2__[7];
-            // Interrupt flags
-            uint8_t hff0f_if;
-            Apu::Registers apureg;
-            Ppu::Registers ppureg;
-        };
-    };
-    uint8_t hff80_hram[HRAM.size];
-    uint8_t hffff_ie;
+    uint8_t bytes[0x10000];
 };
 
 // TODO: Write-only (such as NR11)
@@ -141,47 +111,19 @@ ANTDB_ALWAYS_INLINE uint8_t* Memory::get(memaddr_t address)
         if (cartridge) return &cartridge->data[address];
         else return nullptr;
     }
-    else if (address <= VRAM.high)
-    {
-        return &h8000_vram[address - VRAM.low];
-    }
-    else if (address <= ERAM.high)
+    else if (address >= ERAM.low && address <= ERAM.high)
     {
         return nullptr;
     }
-    else if (address <= WRAM0.high)
-    {
-        return &hc000_wram0[address - WRAM0.low];
-    }
-    else if (address <= WRAM1.high)
-    {
-        return &hd000_wram1[address -WRAM1.low];
-    }
-    else if (address <= ECHO.high)
-    {
-        // TODO: Check that this is correct.
-        return &hc000_wram0[address - ECHO.low];
-    }
-    else if (address <= OAM.high)
-    {
-        return &hfe00_oam[address - OAM.low];
-    }
-    else if (address <= UNUSABLE.high)
+    else if (address >= UNUSABLE.low && address <= UNUSABLE.high)
     {
         return nullptr;
     }
-    else if (address <= IO.high)
+    else if (address >= ECHO.low && address <= ECHO.high)
     {
-        return &hff00_io[address - IO.low];
+        return &bytes[WRAM0.low] + (address - ECHO.low);
     }
-    else if (address <= HRAM.high)
-    {
-        return &hff80_hram[address - HRAM.low];
-    }
-    else
-    {
-        return &hffff_ie;
-    }
+    else return &bytes[address];
 }
 
 ANTDB_ALWAYS_INLINE uint8_t Memory::read(memaddr_t address)

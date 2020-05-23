@@ -62,10 +62,10 @@ memaddr_t Background::tile_map_address()
 {
     if (type == Type::Background)
     {
-        return TILE_MAP_BASE[get_bit(&mem->ppureg.lcdc, Ppu::BgTileMapDisplaySelect)];
+        return TILE_MAP_BASE[get_bit(mem->get(Ppu::LCDC_ADDRESS), Ppu::BgTileMapDisplaySelect)];
     }
 
-    return TILE_MAP_BASE[get_bit(&mem->ppureg.lcdc, Ppu::WindowTileMapDisplaySelect)];
+    return TILE_MAP_BASE[get_bit(mem->get(Ppu::LCDC_ADDRESS), Ppu::WindowTileMapDisplaySelect)];
 }
 
 uint8_t* Background::tile_map_base()
@@ -75,7 +75,7 @@ uint8_t* Background::tile_map_base()
 
 memaddr_t Background::tile_data_address()
 {
-    return TILE_DATA_BASE[get_bit(&mem->ppureg.lcdc, Ppu::BgAndWindowTileDataSelect)];
+    return TILE_DATA_BASE[get_bit(mem->get(Ppu::LCDC_ADDRESS), Ppu::BgAndWindowTileDataSelect)];
 }
 
 Tile* Background::tile_data_base()
@@ -93,17 +93,17 @@ size_t Background::top()
 {
     if (type == Type::Background)
     {
-        return mem->ppureg.scy;
+        return *mem->get(Ppu::SCY_ADDRESS);
     }
 
-    return mem->ppureg.wy;
+    return *mem->get(Ppu::WY_ADDRESS);
 }
 
 size_t Background::bottom()
 {
     if (type == Type::Background)
     {
-        return (mem->ppureg.scy + 144 - 1) % BG_HEIGHT_PIXELS;
+        return (*mem->get(Ppu::SCY_ADDRESS) + 144 - 1) % BG_HEIGHT_PIXELS;
     }
 
     return 144;
@@ -113,17 +113,17 @@ size_t Background::left()
 {
     if (type == Type::Background)
     {
-        return mem->ppureg.scx;
+        return *mem->get(Ppu::SCX_ADDRESS);
     }
 
-    return mem->ppureg.wx;
+    return *mem->get(Ppu::WX_ADDRESS);
 }
 
 size_t Background::right()
 {
     if (type == Type::Background)
     {
-        return (mem->ppureg.scx + 160 - 1) % BG_WIDTH_PIXELS;
+        return (*mem->get(Ppu::SCX_ADDRESS) + 160 - 1) % BG_WIDTH_PIXELS;
     }
 
     return 160;
@@ -133,9 +133,9 @@ bool Background::is_enabled()
 {
     if (type == Type::Background)
     {
-        return get_bit(&mem->ppureg.lcdc, Ppu::BgAndWindowDisplayEnable);
+        return get_bit(mem->get(Ppu::LCDC_ADDRESS), Ppu::BgAndWindowDisplayEnable);
     }
 
-    return get_bit(&mem->ppureg.lcdc, Ppu::BgAndWindowDisplayEnable)
-            && get_bit(&mem->ppureg.lcdc, Ppu::WindowDisplayEnable);
+    return get_bit(mem->get(Ppu::LCDC_ADDRESS), Ppu::BgAndWindowDisplayEnable)
+            && get_bit(mem->get(Ppu::LCDC_ADDRESS), Ppu::WindowDisplayEnable);
 }

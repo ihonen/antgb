@@ -6,20 +6,6 @@
 
 #include <QFile>
 
-/*
-FF07 - TAC - Timer Control (R/W)
-
- Bit  2   - Timer Enable
- Bits 1-0 - Input Clock Select
-            00: CPU Clock / 1024 (DMG, CGB:   4096 Hz, SGB:   ~4194 Hz)
-            01: CPU Clock / 16   (DMG, CGB: 262144 Hz, SGB: ~268400 Hz)
-            10: CPU Clock / 64   (DMG, CGB:  65536 Hz, SGB:  ~67110 Hz)
-            11: CPU Clock / 256  (DMG, CGB:  16384 Hz, SGB:  ~16780 Hz)
-
- Note: The "Timer Enable" bit only affects the timer, the divider is ALWAYS counting.
-
-*/
-
 Memory::Memory()
 {
     cartridge = nullptr;
@@ -29,13 +15,7 @@ Memory::Memory()
 
 void Memory::hard_reset()
 {
-    memset(h8000_vram, 0xFF, VRAM.size);
-    memset(hc000_wram0, 0xFF, WRAM0.size);
-    memset(hd000_wram1, 0xFF, WRAM1.size);
-    memset(hfe00_oam, 0xFF, OAM.size);
-    memset(hff00_io, 0xFF, IO.size);
-    memset(hff80_hram, 0xFF, HRAM.size);
-    memset(&hffff_ie, 0xFF, 1);
+    memset(bytes, 0xFF, 0x10000);
 
     // Load memory contents after boot ROM execution.
     // TODO: Get rid of Qt dependency.
