@@ -1,7 +1,7 @@
 #pragma once
 
-#if defined(__GNUG__) || defined(__GNUC__)
-#define FORCE_INLINE __attribute__((always_inline))
-#else
-#define FORCE_INLINE
-#endif
+#include "../antdbg/src/core/macros.hh"
+
+// Import AntDBG macros to the AntGB "namespace"
+
+#define ANTGB_ALWAYS_INLINE ANTDBG_ALWAYS_INLINE

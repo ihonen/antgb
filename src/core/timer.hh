@@ -4,6 +4,9 @@
 #include "interrupts.hh"
 #include "types.hh"
 
+namespace antgb
+{
+
 class Timer
 {
 public:
@@ -101,3 +104,5 @@ ANTDBG_ALWAYS_INLINE void Timer::emulate_timer(uint64_t cpu_cycles)
         }
     }
 }
+
+} // namespace antgb

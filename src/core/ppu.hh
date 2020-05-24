@@ -9,6 +9,9 @@
 #include <map>
 #include <vector>
 
+namespace antgb
+{
+
 using std::vector;
 
 class Ppu
@@ -240,3 +243,5 @@ ANTDBG_ALWAYS_INLINE memaddr_t Ppu::dma_src_address()
 {
     return reg->dma * 0x100;
 }
+
+} // namespace antgb

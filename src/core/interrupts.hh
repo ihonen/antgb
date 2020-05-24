@@ -3,6 +3,9 @@
 #include "types.hh"
 #include "../antdbg/src/core/macros.hh"
 
+namespace antgb
+{
+
 class Irc
 {
 public:
@@ -144,3 +147,5 @@ ANTDBG_ALWAYS_INLINE void Irc::enable_interrupt(int source)
 {
     *IE |= 0x01 << source;
 }
+
+} // namespace antgb

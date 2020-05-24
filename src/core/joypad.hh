@@ -5,7 +5,8 @@
 #include "../antdbg/src/core/types.hh"
 #include <map>
 
-using namespace std;
+namespace antgb
+{
 
 class Joypad
 {
@@ -49,7 +50,7 @@ public:
     Memory* mem;
     Irc* irc;
 
-    map<JoypadButton, ButtonState> button_status;
+    std::map<JoypadButton, ButtonState> button_status;
 };
 
 typedef struct __attribute__((packed))
@@ -62,3 +63,5 @@ typedef struct __attribute__((packed))
     uint8_t button_keys_select : 1;
     uint8_t __unused : 2;
 } JoypadRegister;
+
+} // namespace antgb

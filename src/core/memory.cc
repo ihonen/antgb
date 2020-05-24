@@ -6,6 +6,9 @@
 
 #include <QFile>
 
+namespace antgb
+{
+
 Memory::Memory()
 {
     cartridge = nullptr;
@@ -87,3 +90,5 @@ void Memory::set_cartridge(Cartridge* cartridge_)
 {
     cartridge = cartridge_;
 }
+
+} // namespace antgb

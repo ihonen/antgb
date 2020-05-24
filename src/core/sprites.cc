@@ -4,6 +4,9 @@
 #include "memory.hh"
 #include <algorithm>
 
+namespace antgb
+{
+
 static bool sprite_priority_comp(const Sprite& a, const Sprite& b)
 {
     if (a.attribute->x_pos != b.attribute->x_pos)
@@ -115,3 +118,4 @@ Sprite* Sprites::get_sprite_at_x(size_t display_x)
     return nullptr;
 }
 
+} // namespace antgb

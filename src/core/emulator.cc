@@ -5,7 +5,8 @@
 #include <cstring>
 #include <thread>
 
-using namespace std;
+namespace antgb
+{
 
 Emulator::Emulator()
 {
@@ -61,3 +62,5 @@ void Emulator::set_render_callback(void (*callback)(const framebuf_t*, int))
 {
 
 }
+
+} // namespace antgb

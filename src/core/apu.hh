@@ -2,6 +2,9 @@
 
 #include "types.hh"
 
+namespace antgb
+{
+
 class Apu
 {
 public:
@@ -60,3 +63,5 @@ public:
         uint8_t wave_pattern_ram[16];
     } __attribute__((packed));
 };
+
+} // namespace antgb

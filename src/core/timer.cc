@@ -3,7 +3,9 @@
 #include "memory.hh"
 
 #include <iostream>
-using namespace std;
+
+namespace antgb
+{
 
 Timer::Timer(Registers* reg, Irc* irc_) :
     reg(reg),
@@ -12,3 +14,5 @@ Timer::Timer(Registers* reg, Irc* irc_) :
     timer.unemulated_cpu_cycles = 0;
     divider.unemulated_cpu_cycles = 0;
 }
+
+} // namespace antgb

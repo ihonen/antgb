@@ -1,5 +1,8 @@
 #include "cpu.hh"
 
+namespace antgb
+{
+
 const array<const Cpu::InstrInfo, 256> Cpu::INSTR_TABLE =
 {{
     {1, 4,  4,  &Cpu::op_00},
@@ -519,3 +522,5 @@ const array<const Cpu::InstrInfo, 256> Cpu::CB_INSTR_TABLE =
     {2, 16, 16, &Cpu::op_CB_FE},
     {2, 8,  8,  &Cpu::op_CB_FF}
 }};
+
+} // namespace antgb

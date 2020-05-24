@@ -1,6 +1,9 @@
 #include "cpu.hh"
 #include "memory.hh"
 
+namespace antgb
+{
+
 /* ADC */
 
 void Cpu::ADC_A_HL()
@@ -818,3 +821,5 @@ void Cpu::XOR_r8(uint8_t& r8)
 {
     XOR_n8(r8);
 }
+
+} // namespace antgb

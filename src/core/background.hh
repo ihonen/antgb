@@ -6,6 +6,9 @@
 #include <iostream>
 #include <vector>
 
+namespace antgb
+{
+
 using namespace std;
 
 class Background
@@ -45,3 +48,5 @@ public:
     Memory* mem;
     Type type;
 };
+
+} // namespace antgb

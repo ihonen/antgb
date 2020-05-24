@@ -5,6 +5,9 @@
 #include <iomanip>
 #include <iostream>
 
+namespace antgb
+{
+
 static Disassembler disassembler;
 
 Cpu::Cpu(Memory* memory, Irc* irc_) :
@@ -136,3 +139,5 @@ void Cpu::jump_to_isr(memaddr_t vector_address)
     EI_action = IMEStatus::DO_NOTHING;
     clock_cycles += 20;
 }
+
+} // namespace antgb

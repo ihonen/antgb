@@ -8,6 +8,9 @@
 #include <iostream>
 #include <QObject>
 
+namespace antgb
+{
+
 class Renderer : public QObject
 {
     Q_OBJECT
@@ -31,3 +34,5 @@ private:
     Background window;
     Sprites sprites;
 };
+
+} // namespace antgb

@@ -10,7 +10,8 @@
 #include "timer.hh"
 #include "types.hh"
 
-using namespace std;
+namespace antgb
+{
 
 class Memory
 {
@@ -163,3 +164,5 @@ ANTDBG_ALWAYS_INLINE bool Memory::force_write(memaddr_t address, uint8_t value)
     if (dest) *dest = value;
     return 0;
 }
+
+} // namespace antgb

@@ -4,6 +4,9 @@
 #include "types.hh"
 #include <array>
 
+namespace antgb
+{
+
 class Sprites
 {
 public:
@@ -26,3 +29,5 @@ public:
 
     Memory* mem;
 };
+
+} // namespace antgb

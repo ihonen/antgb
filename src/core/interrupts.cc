@@ -3,7 +3,8 @@
 #include "memory.hh"
 #include <iostream>
 
-using namespace std;
+namespace antgb
+{
 
 Irc::Irc(uint8_t* IF, uint8_t* IE) :
     IF(IF),
@@ -16,3 +17,5 @@ void Irc::hard_reset()
 {
     IME = 0x00;
 }
+
+} // namespace antgb

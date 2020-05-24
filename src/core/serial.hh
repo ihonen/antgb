@@ -3,6 +3,9 @@
 #include "interrupts.hh"
 #include "types.hh"
 
+namespace antgb
+{
+
 class Serial
 {
 public:
@@ -47,3 +50,5 @@ ANTDBG_ALWAYS_INLINE void Serial::emulate(uint64_t cpu_cycles)
     }
 
 }
+
+} // namespace antgb

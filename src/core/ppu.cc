@@ -6,7 +6,8 @@
 #include <iostream>
 #include <thread>
 
-using namespace std;
+namespace antgb
+{
 
 Ppu::Ppu(Memory* mmu_, Registers* reg, Irc* irc_) :
     reg(reg),
@@ -233,3 +234,5 @@ void Ppu::transition_to_mode(Ppu::Mode mode)
 }
 
 */
+
+} // namespace antgb

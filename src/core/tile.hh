@@ -2,6 +2,9 @@
 
 #include "types.hh"
 
+namespace antgb
+{
+
 struct Tile
 {
     Tile();
@@ -12,3 +15,5 @@ struct Tile
 
     uint8_t data[16];
 };
+
+} // namespace antgb

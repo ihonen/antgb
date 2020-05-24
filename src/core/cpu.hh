@@ -7,6 +7,9 @@
 #include <array>
 #include <fstream>
 
+namespace antgb
+{
+
 using std::array;
 
 class Cpu
@@ -3106,3 +3109,5 @@ ANTDBG_ALWAYS_INLINE void Cpu::op_CB_FF()
 {
     SET_n3_r8(7, A);
 }
+
+} // namespace antgb

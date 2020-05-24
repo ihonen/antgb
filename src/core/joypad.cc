@@ -4,6 +4,9 @@
 #include "memory.hh"
 #include <iostream>
 
+namespace antgb
+{
+
 Joypad::Joypad(Memory* memory, Irc* irc_) :
     mem(memory),
     irc(irc_)
@@ -98,3 +101,5 @@ void Joypad::button_released(JoypadButton button)
 
     button_status[button].pressed = false;
 }
+
+} // namespace antgb

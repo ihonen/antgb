@@ -4,6 +4,9 @@
 #include "memory.hh"
 #include <cassert>
 
+namespace antgb
+{
+
 const memaddr_t Background::TILE_DATA_BASE[2] =
 {
     Background::TILE_DATA_BLOCK2_BASE,
@@ -139,3 +142,5 @@ bool Background::is_enabled()
     return get_bit(mem->get(Ppu::LCDC_ADDRESS), Ppu::BgAndWindowDisplayEnable)
             && get_bit(mem->get(Ppu::LCDC_ADDRESS), Ppu::WindowDisplayEnable);
 }
+
+} // namespace antgb

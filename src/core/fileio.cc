@@ -2,6 +2,9 @@
 
 #include <QFile>
 
+namespace antgb
+{
+
 void load_rom(QString& filepath, uint8_t* memory)
 {
     if (filepath.size() == 0) return;
@@ -15,3 +18,5 @@ void load_rom(QString& filepath, uint8_t* memory)
     QByteArray executable = file.readAll();
     memcpy(memory, executable.data(), (size_t)executable.size() - 1);
 }
+
+} // namespace antgb

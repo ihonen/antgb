@@ -6,6 +6,9 @@
 #include <cstring>
 #include <iostream>
 
+namespace antgb
+{
+
 using namespace antdbg;
 
 using std::cerr;
@@ -31,3 +34,5 @@ class Sprite;
 class Sprites;
 class Tile;
 class Timer;
+
+} // namespace antgb

@@ -3,6 +3,9 @@
 #include "tile.hh"
 #include "types.hh"
 
+namespace antgb
+{
+
 class Sprite
 {
 public:
@@ -42,3 +45,5 @@ public:
     Tile* data;
     Attribute* attribute;
 };
+
+} // namespace antgb

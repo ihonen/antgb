@@ -3,6 +3,9 @@
 #include <cstdint>
 #include <exception>
 
+namespace antgb
+{
+
 class OpcodeError : public std::exception
 {
 public:
@@ -13,3 +16,5 @@ private:
     uint16_t addr_;
     uint8_t val_;
 };
+
+} // namespace antgb

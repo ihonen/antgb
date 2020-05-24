@@ -13,6 +13,9 @@
 #include "renderer.hh"
 #include "types.hh"
 
+namespace antgb
+{
+
 class Emulator : public iEmulator
 {
 public:
@@ -161,3 +164,5 @@ ANTDBG_ALWAYS_INLINE void Emulator::write(regid_t register_id, uint16_t value)
             break;
     }
 }
+
+} // namespace antgb

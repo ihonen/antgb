@@ -1,5 +1,8 @@
 #include "sprite.hh"
 
+namespace antgb
+{
+
 uint8_t Sprite::top()
 {
     return attribute->y_pos - 16;
@@ -100,3 +103,5 @@ uint8_t Sprite::palette_number()
 {
     return attribute->flags.palette_number;
 }
+
+} // namespace antgb

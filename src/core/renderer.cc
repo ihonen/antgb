@@ -4,6 +4,9 @@
 #include "memory.hh"
 #include "tile.hh"
 
+namespace antgb
+{
+
 Renderer::Renderer(Memory* memory, QObject* parent) :
     QObject(parent),
     mem(memory),
@@ -47,3 +50,5 @@ uint32_t* Renderer::get_frame_buffer()
 {
     return (uint32_t*)frame_buffer;
 }
+
+} // namespace antgb
