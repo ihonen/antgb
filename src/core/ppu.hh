@@ -119,7 +119,7 @@ public:
     Renderer* renderer;
 };
 
-ANTDB_ALWAYS_INLINE void Ppu::step(uint64_t cpu_cycles)
+ANTDBG_ALWAYS_INLINE void Ppu::step(uint64_t cpu_cycles)
 {
     clocksum += cpu_cycles;
 
@@ -231,12 +231,12 @@ ANTDB_ALWAYS_INLINE void Ppu::step(uint64_t cpu_cycles)
     return;
 }
 
-ANTDB_ALWAYS_INLINE bool Ppu::has_dma_request()
+ANTDBG_ALWAYS_INLINE bool Ppu::has_dma_request()
 {
     return reg->dma;
 }
 
-ANTDB_ALWAYS_INLINE memaddr_t Ppu::dma_src_address()
+ANTDBG_ALWAYS_INLINE memaddr_t Ppu::dma_src_address()
 {
     return reg->dma * 0x100;
 }

@@ -104,7 +104,7 @@ static std::map<memaddr_t, Mask> MASK
     {0xFFFF, {0b00011111, 0b11100000, 0b11100000}}
 };
 
-ANTDB_ALWAYS_INLINE uint8_t* Memory::get(memaddr_t address)
+ANTDBG_ALWAYS_INLINE uint8_t* Memory::get(memaddr_t address)
 {
     if (address <= ROM1.high)
     {
@@ -126,7 +126,7 @@ ANTDB_ALWAYS_INLINE uint8_t* Memory::get(memaddr_t address)
     else return &bytes[address];
 }
 
-ANTDB_ALWAYS_INLINE uint8_t Memory::read(memaddr_t address)
+ANTDBG_ALWAYS_INLINE uint8_t Memory::read(memaddr_t address)
 {
     uint8_t* source = get(address);
     if (!source) return 0xFF;
@@ -140,7 +140,7 @@ ANTDB_ALWAYS_INLINE uint8_t Memory::read(memaddr_t address)
     return *source | (invalid_mask & 0xFF);
 }
 
-ANTDB_ALWAYS_INLINE bool Memory::write(memaddr_t address, uint8_t value)
+ANTDBG_ALWAYS_INLINE bool Memory::write(memaddr_t address, uint8_t value)
 {
     uint8_t* dest = get(address);
     if (!dest) return false;
@@ -157,7 +157,7 @@ ANTDB_ALWAYS_INLINE bool Memory::write(memaddr_t address, uint8_t value)
     return true;
 }
 
-ANTDB_ALWAYS_INLINE bool Memory::force_write(memaddr_t address, uint8_t value)
+ANTDBG_ALWAYS_INLINE bool Memory::force_write(memaddr_t address, uint8_t value)
 {
     auto dest = get(address);
     if (dest) *dest = value;

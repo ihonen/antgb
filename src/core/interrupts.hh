@@ -61,12 +61,12 @@ public:
     uint8_t* IE = nullptr;
 };
 
-ANTDB_ALWAYS_INLINE bool Irc::has_pending_requests()
+ANTDBG_ALWAYS_INLINE bool Irc::has_pending_requests()
 {
     return (*IF & 0x1F) != 0;
 }
 
-ANTDB_ALWAYS_INLINE Irc::InterruptInfo Irc::next_request()
+ANTDBG_ALWAYS_INLINE Irc::InterruptInfo Irc::next_request()
 {
     for (InterruptId i = VBlankInterrupt; i < JoypadInterrupt; i = (InterruptId)((int)i + 1))
     {
@@ -79,22 +79,22 @@ ANTDB_ALWAYS_INLINE Irc::InterruptInfo Irc::next_request()
     return {NoInterrupt, 0x0000};
 }
 
-ANTDB_ALWAYS_INLINE uint8_t Irc::ime_flag_get()
+ANTDBG_ALWAYS_INLINE uint8_t Irc::ime_flag_get()
 {
     return IME;
 }
 
-ANTDB_ALWAYS_INLINE void Irc::ime_flag_set()
+ANTDBG_ALWAYS_INLINE void Irc::ime_flag_set()
 {
     IME = 0x01;
 }
 
-ANTDB_ALWAYS_INLINE void Irc::ime_flag_clear()
+ANTDBG_ALWAYS_INLINE void Irc::ime_flag_clear()
 {
     IME = 0x00;
 }
 
-ANTDB_ALWAYS_INLINE void Irc::request_interrupt(int source)
+ANTDBG_ALWAYS_INLINE void Irc::request_interrupt(int source)
 {
     /*
     switch (source)
@@ -120,27 +120,27 @@ ANTDB_ALWAYS_INLINE void Irc::request_interrupt(int source)
     *IF |= 0x01 << source;
 }
 
-ANTDB_ALWAYS_INLINE bool Irc::interrupt_requested(int source)
+ANTDBG_ALWAYS_INLINE bool Irc::interrupt_requested(int source)
 {
     return (*IF & (0x01 << source)) != 0;
 }
 
-ANTDB_ALWAYS_INLINE bool Irc::interrupt_enabled(int source)
+ANTDBG_ALWAYS_INLINE bool Irc::interrupt_enabled(int source)
 {
     return (*IE & (0x01 << source)) != 0;
 }
 
-ANTDB_ALWAYS_INLINE void Irc::clear_interrupt(int source)
+ANTDBG_ALWAYS_INLINE void Irc::clear_interrupt(int source)
 {
     *IF &= ~(0x01 << source);
 }
 
-ANTDB_ALWAYS_INLINE void Irc::disable_interrupt(int source)
+ANTDBG_ALWAYS_INLINE void Irc::disable_interrupt(int source)
 {
     *IE &= ~(0x01 << source);
 }
 
-ANTDB_ALWAYS_INLINE void Irc::enable_interrupt(int source)
+ANTDBG_ALWAYS_INLINE void Irc::enable_interrupt(int source)
 {
     *IE |= 0x01 << source;
 }

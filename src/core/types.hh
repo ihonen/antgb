@@ -1,9 +1,12 @@
 #pragma once
 
+#include "../antdbg/src/core/types.hh"
 #include <cassert>
 #include <cstdint>
 #include <cstring>
 #include <iostream>
+
+using namespace antdbg;
 
 using std::cerr;
 using std::cout;
@@ -16,7 +19,6 @@ typedef uint16_t memsize_t;
 typedef uint16_t lcdsize_t;
 
 class Background;
-class Cartridge;
 class Cpu;
 class Emulator;
 class Irc;

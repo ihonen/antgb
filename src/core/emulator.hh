@@ -38,7 +38,7 @@ public:
     Cartridge* cartridge;
 };
 
-ANTDB_ALWAYS_INLINE int Emulator::execute_next()
+ANTDBG_ALWAYS_INLINE int Emulator::execute_next()
 {
     uint64_t cpu_cycle_count_before = cpu->get_cycles();
     cpu->execute();
@@ -53,7 +53,7 @@ ANTDB_ALWAYS_INLINE int Emulator::execute_next()
     return clock_cycles;
 }
 
-ANTDB_ALWAYS_INLINE uint16_t Emulator::read(regid_t register_id)
+ANTDBG_ALWAYS_INLINE uint16_t Emulator::read(regid_t register_id)
 {
     if (register_id <= 0xFFFF)
         return mem->read(static_cast<memaddr_t>(register_id));
@@ -99,7 +99,7 @@ ANTDB_ALWAYS_INLINE uint16_t Emulator::read(regid_t register_id)
     return 0xFFFF;
 }
 
-ANTDB_ALWAYS_INLINE void Emulator::write(regid_t register_id, uint16_t value)
+ANTDBG_ALWAYS_INLINE void Emulator::write(regid_t register_id, uint16_t value)
 {
     if (register_id <= 0xFFFF)
     {
