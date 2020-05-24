@@ -2,6 +2,7 @@
 
 #include "bitmanip.hh"
 #include "memory.hh"
+#include "types.hh"
 #include <cassert>
 
 namespace antgb
@@ -65,10 +66,10 @@ memaddr_t Background::tile_map_address()
 {
     if (type == Type::Background)
     {
-        return TILE_MAP_BASE[get_bit(mem->get(Ppu::LCDC_ADDRESS), Ppu::BgTileMapDisplaySelect)];
+        return TILE_MAP_BASE[get_bit(mem->get(LCDC_ADDR), Ppu::BgTileMapDisplaySelect)];
     }
 
-    return TILE_MAP_BASE[get_bit(mem->get(Ppu::LCDC_ADDRESS), Ppu::WindowTileMapDisplaySelect)];
+    return TILE_MAP_BASE[get_bit(mem->get(LCDC_ADDR), Ppu::WindowTileMapDisplaySelect)];
 }
 
 uint8_t* Background::tile_map_base()
@@ -78,7 +79,7 @@ uint8_t* Background::tile_map_base()
 
 memaddr_t Background::tile_data_address()
 {
-    return TILE_DATA_BASE[get_bit(mem->get(Ppu::LCDC_ADDRESS), Ppu::BgAndWindowTileDataSelect)];
+    return TILE_DATA_BASE[get_bit(mem->get(LCDC_ADDR), Ppu::BgAndWindowTileDataSelect)];
 }
 
 Tile* Background::tile_data_base()
@@ -96,17 +97,17 @@ size_t Background::top()
 {
     if (type == Type::Background)
     {
-        return *mem->get(Ppu::SCY_ADDRESS);
+        return *mem->get(SCY_ADDR);
     }
 
-    return *mem->get(Ppu::WY_ADDRESS);
+    return *mem->get(WY_ADDR);
 }
 
 size_t Background::bottom()
 {
     if (type == Type::Background)
     {
-        return (*mem->get(Ppu::SCY_ADDRESS) + 144 - 1) % BG_HEIGHT_PIXELS;
+        return (*mem->get(SCY_ADDR) + 144 - 1) % BG_HEIGHT_PIXELS;
     }
 
     return 144;
@@ -116,17 +117,17 @@ size_t Background::left()
 {
     if (type == Type::Background)
     {
-        return *mem->get(Ppu::SCX_ADDRESS);
+        return *mem->get(SCX_ADDR);
     }
 
-    return *mem->get(Ppu::WX_ADDRESS);
+    return *mem->get(WX_ADDR);
 }
 
 size_t Background::right()
 {
     if (type == Type::Background)
     {
-        return (*mem->get(Ppu::SCX_ADDRESS) + 160 - 1) % BG_WIDTH_PIXELS;
+        return (*mem->get(SCX_ADDR) + 160 - 1) % BG_WIDTH_PIXELS;
     }
 
     return 160;
@@ -136,11 +137,11 @@ bool Background::is_enabled()
 {
     if (type == Type::Background)
     {
-        return get_bit(mem->get(Ppu::LCDC_ADDRESS), Ppu::BgAndWindowDisplayEnable);
+        return get_bit(mem->get(LCDC_ADDR), Ppu::BgAndWindowDisplayEnable);
     }
 
-    return get_bit(mem->get(Ppu::LCDC_ADDRESS), Ppu::BgAndWindowDisplayEnable)
-            && get_bit(mem->get(Ppu::LCDC_ADDRESS), Ppu::WindowDisplayEnable);
+    return get_bit(mem->get(LCDC_ADDR), Ppu::BgAndWindowDisplayEnable)
+            && get_bit(mem->get(LCDC_ADDR), Ppu::WindowDisplayEnable);
 }
 
 } // namespace antgb

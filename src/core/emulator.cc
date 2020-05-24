@@ -11,12 +11,12 @@ namespace antgb
 Emulator::Emulator()
 {
     mem = new Memory();
-    irc = new Irc(mem->get(Irc::IF_ADDRESS), mem->get(Irc::IE_ADDRESS));
-    ppu = new Ppu(mem, (Ppu::Registers*)mem->get(Ppu::LOW_ADDRESS), irc);
+    irc = new Irc(mem->get(IF_ADDR), mem->get(IE_ADDR));
+    ppu = new Ppu(mem, (Ppu::Registers*)mem->get(PPU_LOW_ADDR), irc);
     cpu = new Cpu(mem, irc);
     joypad = new Joypad(mem, irc);
-    timer_divider = new Timer((Timer::Registers*)mem->get(Timer::LOW_ADDRESS), irc);
-    serial = new Serial((Serial::Registers*)mem->get(Serial::LOW_ADDRESS), irc);
+    timer_divider = new Timer((Timer::Registers*)mem->get(TIMER_LOW_ADDR), irc);
+    serial = new Serial((Serial::Registers*)mem->get(SERIAL_LOW_ADDR), irc);
     cartridge = nullptr;
 }
 

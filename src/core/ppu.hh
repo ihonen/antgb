@@ -33,21 +33,6 @@ public:
         uint8_t wx;
     };
 
-    static constexpr memaddr_t LCDC_ADDRESS = 0xFF40;
-    static constexpr memaddr_t STAT_ADDRESS = 0xFF41;
-    static constexpr memaddr_t SCY_ADDRESS = 0xFF42;
-    static constexpr memaddr_t SCX_ADDRESS = 0xFF43;
-    static constexpr memaddr_t LY_ADDRESS = 0xFF44;
-    static constexpr memaddr_t LYC_ADDRESS = 0xFF45;
-    static constexpr memaddr_t DMA_ADDRESS = 0xFF46;
-    static constexpr memaddr_t BGP_ADDRESS = 0xFF47;
-    static constexpr memaddr_t OBP0_ADDRESS = 0xFF48;
-    static constexpr memaddr_t OBP1_ADDRESS = 0xFF49;
-    static constexpr memaddr_t WY_ADDRESS = 0xFF4A;
-    static constexpr memaddr_t WX_ADDRESS = 0xFF4B;
-    static constexpr memaddr_t LOW_ADDRESS = LCDC_ADDRESS;
-    static constexpr memaddr_t HIGH_ADDRESS = WX_ADDRESS;
-
     enum BitPos
     {
         // LCDC

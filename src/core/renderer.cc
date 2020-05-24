@@ -19,11 +19,11 @@ Renderer::Renderer(Memory* memory, QObject* parent) :
 
 void Renderer::render_frame()
 {    
-    auto ly_backup = *mem->get(Ppu::LY_ADDRESS);
+    auto ly_backup = *mem->get(LY_ADDR);
 
     for (size_t y = 0; y < 144; ++y)
     {
-        *mem->get(Ppu::LY_ADDRESS) = y;
+        *mem->get(LY_ADDR) = y;
         sprites.refresh();
         for (size_t x = 0; x < 160; ++x)
         {
@@ -41,7 +41,7 @@ void Renderer::render_frame()
         }
     }
 
-    *mem->get(Ppu::LY_ADDRESS) = ly_backup;
+    *mem->get(LY_ADDR) = ly_backup;
 
     emit(frame_ready());
 }

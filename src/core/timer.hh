@@ -25,13 +25,6 @@ public:
         TimerEnable = 2
     };
 
-    static constexpr memaddr_t DIV_ADDRESS = 0xFF04;
-    static constexpr memaddr_t TIMA_ADDRESS = 0xFF05;
-    static constexpr memaddr_t TMA_ADDRESS = 0xFF06;
-    static constexpr memaddr_t TAC_ADDRESS = 0xFF07;
-    static constexpr memaddr_t LOW_ADDRESS = DIV_ADDRESS;
-    static constexpr memaddr_t HIGH_ADDRESS = TAC_ADDRESS;
-
     Timer(Registers* reg, Irc* irc);
     inline void emulate(uint64_t cpu_cycles);
     inline void emulate_divider(uint64_t cpu_cycles);

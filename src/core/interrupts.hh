@@ -15,9 +15,6 @@ public:
         uint8_t IF;
     };
 
-    static constexpr memaddr_t IE_ADDRESS = 0xFFFF;
-    static constexpr memaddr_t IF_ADDRESS = 0xFF0F;
-
     enum InterruptId
     {
         VBlankInterrupt = 0x00,

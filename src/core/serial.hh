@@ -15,11 +15,6 @@ public:
         uint8_t sc;
     };
 
-    static constexpr memaddr_t SB_ADDRESS = 0xFF01;
-    static constexpr memaddr_t SC_ADDRESS = 0xFF02;
-    static constexpr memaddr_t LOW_ADDRESS = SB_ADDRESS;
-    static constexpr memaddr_t HIGH_ADDRESS = SC_ADDRESS;
-
     static constexpr uint64_t CPU_CYCLES_PER_BYTE = 4096;
 
     Serial(Registers* reg, Irc* irc);

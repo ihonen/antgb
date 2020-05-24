@@ -25,12 +25,6 @@ public:
 
     static const uint64_t CLK_FREQ_Hz = 4194304;
 
-    enum HWRegisterAddr : uint16_t
-    {
-        HWREG_IF_ADDR  = 0xFF0F, // Interrupt flag register
-        HWREG_IE_ADDR = 0xFFFF   // Interrupt enable register
-    };
-
     // Interrupt enabling and disabling have a delay of one machine cycle.
     enum class IMEStatus
     {

@@ -87,6 +87,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    antdbg/src/core/addresses.hh \
     antdbg/src/core/breakpoint.hh \
     antdbg/src/core/cartridge.hh \
     antdbg/src/core/constants.hh \

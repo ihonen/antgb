@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../antdbg/src/core/addresses.hh"
 #include "../antdbg/src/core/types.hh"
 #include <cassert>
 #include <cstdint>
