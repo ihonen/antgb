@@ -29,11 +29,8 @@ public:
 
 ANTDB_ALWAYS_INLINE void Serial::emulate(uint64_t cpu_cycles)
 {
-    if (reg->sb != 0x00 && reg->sc == 0x81)
+    if (reg->sc == 0x81 && !cpu_cycles_left_in_transfer)
     {
-        cout << (char)reg->sb;
-        std::cout << std::flush;
-        reg->sb = 0x00;
         cpu_cycles_left_in_transfer = CPU_CYCLES_PER_BYTE;
     }
 
@@ -41,6 +38,7 @@ ANTDB_ALWAYS_INLINE void Serial::emulate(uint64_t cpu_cycles)
     {
         irc->request_interrupt(Irc::SerialInterrupt);
         cpu_cycles_left_in_transfer = 0;
+        reg->sb = 0x00;
         reg->sc = 0x01;
     }
     else
