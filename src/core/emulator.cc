@@ -1,35 +1,37 @@
 #include "emulator.hh"
 
-#include "renderer.hh"
 #include <iostream>
 #include <cstring>
 #include <thread>
 
 namespace antgb
 {
-
 Emulator::Emulator()
 {
-    mem = new Memory();
-    irc = new Irc(mem->get(IF_ADDR), mem->get(IE_ADDR));
-    ppu = new Ppu(mem, (Ppu::Registers*)mem->get(PPU_LOW_ADDR), irc);
-    cpu = new Cpu(mem, irc);
-    joypad = new Joypad(mem, irc);
-    timer_divider = new Timer((Timer::Registers*)mem->get(TIMER_LOW_ADDR), irc);
-    serial = new Serial((Serial::Registers*)mem->get(SERIAL_LOW_ADDR), irc);
+    renderer      = nullptr;
+    mem           = new Mmu();
+    cpu           = new Cpu(mem, mem->get(IE_ADDR), mem->get(IF_ADDR));
+    ppu = new Ppu(mem, (Ppu::Registers*)mem->get(PPU_LOW_ADDR), cpu, renderer);
+    joypad        = new Joypad(mem, cpu);
+    timer_divider = new Timer((Timer::Registers*)mem->get(TIMER_LOW_ADDR), cpu);
+    serial    = new Serial((Serial::Registers*)mem->get(SERIAL_LOW_ADDR), cpu);
     cartridge = nullptr;
 }
 
 Emulator::~Emulator()
 {
     delete mem;
-    delete irc;
     delete ppu;
     delete cpu;
     delete joypad;
     delete timer_divider;
     delete serial;
     delete cartridge;
+}
+
+void Emulator::set_renderer(iRenderer* renderer)
+{
+    ppu->set_renderer(renderer);
 }
 
 void Emulator::load_rom(const void* rom, size_t size)
@@ -55,12 +57,6 @@ void Emulator::reset_emulation()
 {
     mem->hard_reset();
     cpu->hard_reset();
-    irc->hard_reset();
-}
-
-void Emulator::set_render_callback(void (*callback)(const framebuf_t*, int))
-{
-
 }
 
 } // namespace antgb

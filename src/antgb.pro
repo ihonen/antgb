@@ -63,22 +63,14 @@ SOURCES += \
     antdbg/src/frontend/qt/stackviewer.cc \
     antdbg/src/frontend/qt/vramviewer.cc \
     core/apu.cc \
-    core/background.cc \
-    core/bitmanip.cc \
+    core/bits.cc \
     core/cpu.cc \
-    core/cpu_opcodes.cc \
-    core/cpu_operations.cc \
     core/emulator.cc \
     core/fileio.cc \
-    core/interrupts.cc \
     core/joypad.cc \
-    core/memory.cc \
+    core/mmu.cc \
     core/ppu.cc \
-    core/renderer.cc \
     core/serial.cc \
-    core/sprite.cc \
-    core/sprites.cc \
-    core/tile.cc \
     core/timer.cc
 
 # Default rules for deployment.
@@ -132,22 +124,18 @@ HEADERS += \
     antdbg/src/frontend/qt/stackmodel.hh \
     antdbg/src/frontend/qt/stackviewer.hh \
     antdbg/src/frontend/qt/vramviewer.hh \
+    core/addresses.hh \
     core/apu.hh \
-    core/background.hh \
-    core/bitmanip.hh \
+    core/bits.hh \
     core/cpu.hh \
     core/emulator.hh \
     core/exceptions.hh \
     core/fileio.hh \
-    core/interrupts.hh \
+    core/irenderer.hh \
     core/joypad.hh \
-    core/memory.hh \
+    core/mmu.hh \
     core/ppu.hh \
-    core/renderer.hh \
     core/serial.hh \
-    core/sprite.hh \
-    core/sprites.hh \
-    core/tile.hh \
     core/timer.hh \
     core/types.hh \
     util/macros.hh

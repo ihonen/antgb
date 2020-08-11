@@ -1,13 +1,11 @@
 #pragma once
 
-#include "interrupts.hh"
-#include "types.hh"
 #include "../antdbg/src/core/types.hh"
+#include "types.hh"
 #include <map>
 
 namespace antgb
 {
-
 class Joypad
 {
 public:
@@ -18,33 +16,33 @@ public:
 
     enum BitPos
     {
-        Right = 0,
-        Left = 1,
-        Up = 2,
-        Down = 3,
-        ButtonA = 0,
-        ButtonB = 1,
-        Select = 2,
-        Start = 3,
+        Right               = 0,
+        Left                = 1,
+        Up                  = 2,
+        Down                = 3,
+        ButtonA             = 0,
+        ButtonB             = 1,
+        Select              = 2,
+        Start               = 3,
         DirectionKeysSelect = 4,
-        ButtonKeysSelect = 5
+        ButtonKeysSelect    = 5
     };
 
     struct ButtonState
     {
         BitPos bit_pos;
-        bool pressed;
+        bool   pressed;
     };
 
-    Joypad(Memory* mem, Irc* irc);
+    Joypad(Mmu* mem, Cpu* cpu);
     void button_pressed(JoypadButton button);
     void button_released(JoypadButton button);
 
-    const size_t BUTTON_COUNT = 8;
-    const memaddr_t IO_REG_ADDRESS = 0xFF00;
-    uint8_t* io_register;
-    Memory* mem;
-    Irc* irc;
+    const size_t BUTTON_COUNT   = 8;
+    const addr_t IO_REG_ADDRESS = 0xFF00;
+    uint8_t*     io_register;
+    Mmu*      mem;
+    Cpu*         cpu;
 
     std::map<JoypadButton, ButtonState> button_status;
 };

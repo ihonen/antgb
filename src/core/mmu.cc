@@ -1,4 +1,4 @@
-#include "memory.hh"
+#include "mmu.hh"
 
 #include "fileio.hh"
 #include <cstring>
@@ -8,15 +8,14 @@
 
 namespace antgb
 {
-
-Memory::Memory()
+Mmu::Mmu()
 {
     cartridge = nullptr;
     hard_reset();
     clear_dma_status();
 }
 
-void Memory::hard_reset()
+void Mmu::hard_reset()
 {
     memset(bytes, 0xFF, 0x10000);
 
@@ -36,7 +35,7 @@ void Memory::hard_reset()
     delete[] afterboot_dump;
 }
 
-void Memory::launch_oam_dma(memaddr_t destination, memaddr_t source, memaddr_t size)
+void Mmu::launch_oam_dma(addr_t destination, addr_t source, addr_t size)
 {
     dma_status.unemulated_cpu_cycles = 0;
     dma_status.cpu_cycles_left = 640;
@@ -47,12 +46,12 @@ void Memory::launch_oam_dma(memaddr_t destination, memaddr_t source, memaddr_t s
     dma_status.size = size;
 }
 
-void Memory::emulate(uint64_t cpu_cycles)
+void Mmu::emulate(uint64_t cpu_cycles)
 {
     emulate_oam_dma(cpu_cycles);
 }
 
-void Memory::emulate_oam_dma(uint64_t cpu_cycles)
+void Mmu::emulate_oam_dma(uint64_t cpu_cycles)
 {
     dma_status.unemulated_cpu_cycles += cpu_cycles;
 
@@ -70,12 +69,12 @@ void Memory::emulate_oam_dma(uint64_t cpu_cycles)
     }
 }
 
-void Memory::end_oam_dma()
+void Mmu::end_oam_dma()
 {
     clear_dma_status();
 }
 
-void Memory::clear_dma_status()
+void Mmu::clear_dma_status()
 {
     dma_status.unemulated_cpu_cycles = 0;
     dma_status.cpu_cycles_left = 0;
@@ -86,7 +85,7 @@ void Memory::clear_dma_status()
     dma_status.size = 0;
 }
 
-void Memory::set_cartridge(Cartridge* cartridge_)
+void Mmu::set_cartridge(Cartridge* cartridge_)
 {
     cartridge = cartridge_;
 }

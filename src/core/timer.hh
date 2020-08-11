@@ -1,7 +1,6 @@
 #pragma once
 
 #include "cpu.hh"
-#include "interrupts.hh"
 #include "types.hh"
 
 namespace antgb
@@ -25,19 +24,19 @@ public:
         TimerEnable = 2
     };
 
-    Timer(Registers* reg, Irc* irc);
+    Timer(Registers* reg, Cpu* cpu);
     inline void emulate(uint64_t cpu_cycles);
     inline void emulate_divider(uint64_t cpu_cycles);
     inline void emulate_timer(uint64_t cpu_cycles);
 
     Registers* reg;
-    Irc* irc;
+    Cpu*       cpu;
 
     struct
     {
         const uint64_t FREQ_Hz = 16384;
         const uint64_t CPU_CYCLES_PER_TICK = Cpu::CLK_FREQ_Hz / FREQ_Hz;
-        const memaddr_t REGISTER_ADDRESS = 0xFF04;
+        const addr_t REGISTER_ADDRESS = 0xFF04;
         uint64_t unemulated_cpu_cycles;
     } divider;
 
@@ -88,7 +87,7 @@ ANTDBG_ALWAYS_INLINE void Timer::emulate_timer(uint64_t cpu_cycles)
         if (reg->tima == 0xFF)
         {
             reg->tima = reg->tma;
-            irc->request_interrupt(Irc::TimerInterrupt);
+            cpu->request_interrupt(Cpu::TimerInterrupt);
             return;
         }
         else

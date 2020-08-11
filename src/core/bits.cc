@@ -1,4 +1,4 @@
-#include "bitmanip.hh"
+#include "bits.hh"
 
 namespace antgb
 {

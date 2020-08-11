@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../antdbg/src/core/addresses.hh"
+#include "../antdbg/src/core/macros.hh"
 #include "../antdbg/src/core/types.hh"
 #include <cassert>
 #include <cstdint>
@@ -18,16 +19,17 @@ using std::endl;
 using std::pair;
 using std::string;
 
-typedef uint16_t memaddr_t;
+typedef int32_t  addr_t;
 typedef uint16_t memsize_t;
 typedef uint16_t lcdsize_t;
+
+class iRenderer;
 
 class Background;
 class Cpu;
 class Emulator;
-class Irc;
 class Joypad;
-class Memory;
+class Mmu;
 class Ppu;
 class Renderer;
 class Serial;

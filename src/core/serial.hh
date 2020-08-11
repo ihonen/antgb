@@ -1,6 +1,6 @@
 #pragma once
 
-#include "interrupts.hh"
+#include "cpu.hh"
 #include "types.hh"
 
 namespace antgb
@@ -17,11 +17,11 @@ public:
 
     static constexpr uint64_t CPU_CYCLES_PER_BYTE = 4096;
 
-    Serial(Registers* reg, Irc* irc);
+    Serial(Registers* reg, Cpu* cpu);
     inline void emulate(uint64_t cpu_cycles);
 
     uint64_t cpu_cycles_left_in_transfer;
-    Irc* irc;
+    Cpu*       cpu;
     Registers* reg;
 };
 
@@ -34,7 +34,7 @@ ANTDBG_ALWAYS_INLINE void Serial::emulate(uint64_t cpu_cycles)
 
     if (cpu_cycles_left_in_transfer <= cpu_cycles && cpu_cycles_left_in_transfer != 0)
     {
-        irc->request_interrupt(Irc::SerialInterrupt);
+        cpu->request_interrupt(Cpu::SerialInterrupt);
         cpu_cycles_left_in_transfer = 0;
         reg->sb = 0x00;
         reg->sc = 0x01;

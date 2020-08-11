@@ -8,7 +8,7 @@ namespace antgb
 class Apu
 {
 public:
-    struct Registers
+    struct
     {
         uint8_t nr10;
         uint8_t nr11;

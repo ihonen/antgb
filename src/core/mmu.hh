@@ -3,7 +3,6 @@
 #include "apu.hh"
 #include "../antdbg/src/core/cartridge.hh"
 #include "../antdbg/src/core/macros.hh"
-#include "interrupts.hh"
 #include "joypad.hh"
 #include "ppu.hh"
 #include "serial.hh"
@@ -13,32 +12,29 @@
 namespace antgb
 {
 
-class Memory
+class Mmu
 {
 public:
 
     struct MemoryRegion
     {
-        memaddr_t low;
-        memaddr_t high;
-        memaddr_t size;
+        addr_t low;
+        addr_t high;
+        addr_t size;
     };
 
-    // Unused at the moment
-    Irc::Registers ircreg;
-
-    Memory();
+    Mmu();
 
     void hard_reset();
-    inline uint8_t* get(memaddr_t address);
-    inline uint8_t read(memaddr_t address);
-    inline bool write(memaddr_t address, uint8_t value);
-    inline bool force_write(memaddr_t address, uint8_t value);
-    inline bool can_read(memaddr_t address);
-    inline bool can_write(memaddr_t address);
-    void launch_oam_dma(memaddr_t destination,
-                        memaddr_t source,
-                        memaddr_t size);
+    inline uint8_t* get(addr_t address);
+    inline uint8_t read(addr_t address);
+    inline bool write(addr_t address, uint8_t value);
+    inline bool force_write(addr_t address, uint8_t value);
+    inline bool can_read(addr_t address);
+    inline bool can_write(addr_t address);
+    void launch_oam_dma(addr_t destination,
+                        addr_t source,
+                        addr_t size);
     void emulate(uint64_t cpu_cycles);
     void emulate_oam_dma(uint64_t cpu_cycles);
     void end_oam_dma();
@@ -51,11 +47,11 @@ public:
     {
         uint64_t unemulated_cpu_cycles;
         uint64_t cpu_cycles_left;
-        memaddr_t src_pointer;
-        memaddr_t dest_pointer;
-        memaddr_t src_low;
-        memaddr_t src_high;
-        memaddr_t size;
+        addr_t src_pointer;
+        addr_t dest_pointer;
+        addr_t src_low;
+        addr_t src_high;
+        addr_t size;
     } dma_status;
 
     // Main regions
@@ -89,7 +85,7 @@ struct Mask
     uint8_t readonly = 0xFF;
 };
 
-static std::map<memaddr_t, Mask> MASK
+static std::map<addr_t, Mask> MASK
 {
     // JOYP
     {0xFF00, {0b00111111, 0b11000000, 0b00001111}},
@@ -105,7 +101,7 @@ static std::map<memaddr_t, Mask> MASK
     {0xFFFF, {0b00011111, 0b11100000, 0b11100000}}
 };
 
-ANTDBG_ALWAYS_INLINE uint8_t* Memory::get(memaddr_t address)
+ANTDBG_ALWAYS_INLINE uint8_t* Mmu::get(addr_t address)
 {
     if (address <= ROM1.high)
     {
@@ -127,7 +123,7 @@ ANTDBG_ALWAYS_INLINE uint8_t* Memory::get(memaddr_t address)
     else return &bytes[address];
 }
 
-ANTDBG_ALWAYS_INLINE uint8_t Memory::read(memaddr_t address)
+ANTDBG_ALWAYS_INLINE uint8_t Mmu::read(addr_t address)
 {
     uint8_t* source = get(address);
     if (!source) return 0xFF;
@@ -141,7 +137,7 @@ ANTDBG_ALWAYS_INLINE uint8_t Memory::read(memaddr_t address)
     return *source | (invalid_mask & 0xFF);
 }
 
-ANTDBG_ALWAYS_INLINE bool Memory::write(memaddr_t address, uint8_t value)
+ANTDBG_ALWAYS_INLINE bool Mmu::write(addr_t address, uint8_t value)
 {
     uint8_t* dest = get(address);
     if (!dest) return false;
@@ -158,7 +154,7 @@ ANTDBG_ALWAYS_INLINE bool Memory::write(memaddr_t address, uint8_t value)
     return true;
 }
 
-ANTDBG_ALWAYS_INLINE bool Memory::force_write(memaddr_t address, uint8_t value)
+ANTDBG_ALWAYS_INLINE bool Mmu::force_write(addr_t address, uint8_t value)
 {
     auto dest = get(address);
     if (dest) *dest = value;
