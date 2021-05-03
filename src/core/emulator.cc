@@ -1,21 +1,24 @@
 #include "emulator.hh"
 
+#include "addresses.hh"
+
 #include <iostream>
 #include <cstring>
 #include <thread>
 
 namespace antgb
 {
-Emulator::Emulator()
+Emulator::Emulator(iRenderer* gui_renderer)
 {
-    renderer      = nullptr;
+    cartridge     = new Cartridge("C:\\Users\\anton\\Desktop\\antgb\\testbin\\tetris_jue_v1_1.gb");
     mem           = new Mmu();
-    cpu           = new Cpu(mem, mem->get(IE_ADDR), mem->get(IF_ADDR));
-    ppu = new Ppu(mem, (Ppu::Registers*)mem->get(PPU_LOW_ADDR), cpu, renderer);
+    cpu           = new Cpu(mem, mem->get(REG_IE), mem->get(REG_IF));
+    ppu           = new Ppu(mem, (Ppu::Registers*)mem->get(PPU_LOW), cpu, gui_renderer);
     joypad        = new Joypad(mem, cpu);
-    timer_divider = new Timer((Timer::Registers*)mem->get(TIMER_LOW_ADDR), cpu);
-    serial    = new Serial((Serial::Registers*)mem->get(SERIAL_LOW_ADDR), cpu);
-    cartridge = nullptr;
+    timer_divider = new Timer((Timer::Registers*)mem->get(TIMER_LOW), cpu);
+    serial        = new Serial((Serial::Registers*)mem->get(SERIAL_LOW), cpu);
+
+    mem->set_cartridge(cartridge);
 }
 
 Emulator::~Emulator()
@@ -27,20 +30,6 @@ Emulator::~Emulator()
     delete timer_divider;
     delete serial;
     delete cartridge;
-}
-
-void Emulator::set_renderer(iRenderer* renderer)
-{
-    ppu->set_renderer(renderer);
-}
-
-void Emulator::load_rom(const void* rom, size_t size)
-{
-    if (cartridge) delete cartridge;
-    cartridge = new Cartridge;
-    memcpy(cartridge->data, rom, size);
-    mem->set_cartridge(cartridge);
-    reset_emulation();
 }
 
 void Emulator::button_pressed(JoypadButton button)

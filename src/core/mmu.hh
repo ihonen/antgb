@@ -1,9 +1,9 @@
 #pragma once
 
 #include "apu.hh"
-#include "../antdbg/src/core/cartridge.hh"
-#include "../antdbg/src/core/macros.hh"
+#include "cartridge.hh"
 #include "joypad.hh"
+#include "macros.hh"
 #include "ppu.hh"
 #include "serial.hh"
 #include "timer.hh"
@@ -101,7 +101,7 @@ static std::map<addr_t, Mask> MASK
     {0xFFFF, {0b00011111, 0b11100000, 0b11100000}}
 };
 
-ANTDBG_ALWAYS_INLINE uint8_t* Mmu::get(addr_t address)
+ANTGB_FORCEINLINE uint8_t* Mmu::get(addr_t address)
 {
     if (address <= ROM1.high)
     {
@@ -123,7 +123,7 @@ ANTDBG_ALWAYS_INLINE uint8_t* Mmu::get(addr_t address)
     else return &bytes[address];
 }
 
-ANTDBG_ALWAYS_INLINE uint8_t Mmu::read(addr_t address)
+ANTGB_FORCEINLINE uint8_t Mmu::read(addr_t address)
 {
     uint8_t* source = get(address);
     if (!source) return 0xFF;
@@ -137,7 +137,7 @@ ANTDBG_ALWAYS_INLINE uint8_t Mmu::read(addr_t address)
     return *source | (invalid_mask & 0xFF);
 }
 
-ANTDBG_ALWAYS_INLINE bool Mmu::write(addr_t address, uint8_t value)
+ANTGB_FORCEINLINE bool Mmu::write(addr_t address, uint8_t value)
 {
     uint8_t* dest = get(address);
     if (!dest) return false;
@@ -154,7 +154,7 @@ ANTDBG_ALWAYS_INLINE bool Mmu::write(addr_t address, uint8_t value)
     return true;
 }
 
-ANTDBG_ALWAYS_INLINE bool Mmu::force_write(addr_t address, uint8_t value)
+ANTGB_FORCEINLINE bool Mmu::force_write(addr_t address, uint8_t value)
 {
     auto dest = get(address);
     if (dest) *dest = value;

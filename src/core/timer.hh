@@ -52,13 +52,13 @@ public:
     } timer;
 };
 
-ANTDBG_ALWAYS_INLINE void Timer::emulate(uint64_t cpu_cycles)
+ANTGB_FORCEINLINE void Timer::emulate(uint64_t cpu_cycles)
 {
     emulate_divider(cpu_cycles);
     emulate_timer(cpu_cycles);
 }
 
-ANTDBG_ALWAYS_INLINE void Timer::emulate_divider(uint64_t cpu_cycles)
+ANTGB_FORCEINLINE void Timer::emulate_divider(uint64_t cpu_cycles)
 {
     divider.unemulated_cpu_cycles += cpu_cycles;
     while (divider.unemulated_cpu_cycles <= divider.CPU_CYCLES_PER_TICK)
@@ -68,7 +68,7 @@ ANTDBG_ALWAYS_INLINE void Timer::emulate_divider(uint64_t cpu_cycles)
     }
 }
 
-ANTDBG_ALWAYS_INLINE void Timer::emulate_timer(uint64_t cpu_cycles)
+ANTGB_FORCEINLINE void Timer::emulate_timer(uint64_t cpu_cycles)
 {
     timer.unemulated_cpu_cycles += cpu_cycles;
 

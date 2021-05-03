@@ -25,7 +25,7 @@ public:
     Registers* reg;
 };
 
-ANTDBG_ALWAYS_INLINE void Serial::emulate(uint64_t cpu_cycles)
+ANTGB_FORCEINLINE void Serial::emulate(uint64_t cpu_cycles)
 {
     if (reg->sc == 0x81 && !cpu_cycles_left_in_transfer)
     {

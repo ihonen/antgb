@@ -1,5 +1,6 @@
 #include "ppu.hh"
 
+#include "addresses.hh"
 #include "bits.hh"
 #include "irenderer.hh"
 #include "mmu.hh"
@@ -132,12 +133,10 @@ addr_t Background::tile_map_address()
 {
     if (type == Type::Background)
     {
-        return TILE_MAP_BASE[get_bit(mem->get(LCDC_ADDR),
-                                     Ppu::BgTileMapDisplaySelect)];
+        return TILE_MAP_BASE[get_bit(mem->get(REG_LCDC), Ppu::BgTileMapDisplaySelect)];
     }
 
-    return TILE_MAP_BASE[get_bit(mem->get(LCDC_ADDR),
-                                 Ppu::WindowTileMapDisplaySelect)];
+    return TILE_MAP_BASE[get_bit(mem->get(REG_LCDC), Ppu::WindowTileMapDisplaySelect)];
 }
 
 uint8_t* Background::tile_map_base()
@@ -147,8 +146,7 @@ uint8_t* Background::tile_map_base()
 
 addr_t Background::tile_data_address()
 {
-    return TILE_DATA_BASE[get_bit(mem->get(LCDC_ADDR),
-                                  Ppu::BgAndWindowTileDataSelect)];
+    return TILE_DATA_BASE[get_bit(mem->get(REG_LCDC), Ppu::BgAndWindowTileDataSelect)];
 }
 
 Tile* Background::tile_data_base()
@@ -166,17 +164,17 @@ size_t Background::top()
 {
     if (type == Type::Background)
     {
-        return *mem->get(SCY_ADDR);
+        return *mem->get(REG_SCY);
     }
 
-    return *mem->get(WY_ADDR);
+    return *mem->get(REG_WY);
 }
 
 size_t Background::bottom()
 {
     if (type == Type::Background)
     {
-        return (*mem->get(SCY_ADDR) + 144 - 1) % BG_HEIGHT_PIXELS;
+        return (*mem->get(REG_SCY) + 144 - 1) % BG_HEIGHT_PIXELS;
     }
 
     return 144;
@@ -186,17 +184,17 @@ size_t Background::left()
 {
     if (type == Type::Background)
     {
-        return *mem->get(SCX_ADDR);
+        return *mem->get(REG_SCX);
     }
 
-    return *mem->get(WX_ADDR);
+    return *mem->get(REG_WX);
 }
 
 size_t Background::right()
 {
     if (type == Type::Background)
     {
-        return (*mem->get(SCX_ADDR) + 160 - 1) % BG_WIDTH_PIXELS;
+        return (*mem->get(REG_SCX) + 160 - 1) % BG_WIDTH_PIXELS;
     }
 
     return 160;
@@ -206,11 +204,11 @@ bool Background::is_enabled()
 {
     if (type == Type::Background)
     {
-        return get_bit(mem->get(LCDC_ADDR), Ppu::BgAndWindowDisplayEnable);
+        return get_bit(mem->get(REG_LCDC), Ppu::BgAndWindowDisplayEnable);
     }
 
-    return get_bit(mem->get(LCDC_ADDR), Ppu::BgAndWindowDisplayEnable)
-           && get_bit(mem->get(LCDC_ADDR), Ppu::WindowDisplayEnable);
+    return get_bit(mem->get(REG_LCDC), Ppu::BgAndWindowDisplayEnable)
+           && get_bit(mem->get(REG_LCDC), Ppu::WindowDisplayEnable);
 }
 
 //----------------------------------------------------------------------------
@@ -421,9 +419,8 @@ void Sprites::refresh()
         }
         */
 
-        if (sprite_attributes->y_pos - 16 <= mem->read(LY_ADDR)
-            && sprite_attributes->y_pos - 9 /*- 16 + sprite_height()*/ >= mem->read(
-                   LY_ADDR))
+        if (sprite_attributes->y_pos - 16 <= mem->read(REG_LY)
+            && sprite_attributes->y_pos - 9 /*- 16 + sprite_height()*/ >= mem->read(REG_LY))
         {
             Sprite& sprite = sprite_buffer[sprite_buffer_size];
             assemble_sprite_info(sprite, sprite_attributes);
@@ -431,7 +428,7 @@ void Sprites::refresh()
         }
     }
 
-    sort();
+    //sort();
 }
 
 addr_t Sprites::sprite_attributes_address()
@@ -456,12 +453,12 @@ Tile* Sprites::sprite_data_base()
 
 uint8_t Sprites::sprite_height()
 {
-    return get_bit(mem->get(LCDC_ADDR), Ppu::ObjSize) ? 16 : 8;
+    return get_bit(mem->get(REG_LCDC), Ppu::ObjSize) ? 16 : 8;
 }
 
 bool Sprites::enabled()
 {
-    return get_bit(mem->get(LCDC_ADDR), Ppu::ObjDisplayEnable);
+    return get_bit(mem->get(REG_LCDC), Ppu::ObjDisplayEnable);
 }
 
 void Sprites::assemble_sprite_info(Sprite& sprite, Sprite::Attribute* attributes)
@@ -535,11 +532,11 @@ void Renderer::set_renderer(iRenderer* renderer)
 
 void Renderer::render_frame()
 {
-    auto ly_backup = *mem->get(LY_ADDR);
+    auto ly_backup = *mem->get(REG_LY);
 
     for (size_t y = 0; y < 144; ++y)
     {
-        *mem->get(LY_ADDR) = y;
+        *mem->get(REG_LY) = y;
         sprites.refresh();
         for (size_t x = 0; x < 160; ++x)
         {
@@ -548,18 +545,22 @@ void Renderer::render_frame()
                 frame_buffer[y][x] = background.get_pixel_at(x, y);
             }
 
+            /*
             Sprite* sprite = sprites.get_sprite_at_x(x);
             if (sprite)
             {
                 frame_buffer[y][x] = sprite->get_pixel_at(x, y);
             }
+            */
         }
     }
 
-    *mem->get(LY_ADDR) = ly_backup;
+    *mem->get(REG_LY) = ly_backup;
 
     if (gui_renderer)
+    {
         gui_renderer->do_render(frame_buffer);
+    }
 }
 
 //----------------------------------------------------------------------------

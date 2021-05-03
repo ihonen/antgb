@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../antdbg/src/core/macros.hh"
 #include "exceptions.hh"
+#include "macros.hh"
 #include "types.hh"
 #include <array>
 #include <fstream>
@@ -805,22 +805,22 @@ public:
     inline void op_CB_FF();
 };
 
-ANTDBG_ALWAYS_INLINE uint64_t Cpu::get_cycles()
+ANTGB_FORCEINLINE uint64_t Cpu::get_cycles()
 {
     return total_tcycles;
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::reset_cycles()
+ANTGB_FORCEINLINE void Cpu::reset_cycles()
 {
     total_tcycles = 0;
 }
 
-ANTDBG_ALWAYS_INLINE bool Cpu::has_pending_requests()
+ANTGB_FORCEINLINE bool Cpu::has_pending_requests()
 {
     return (*IF & 0x1F) != 0;
 }
 
-ANTDBG_ALWAYS_INLINE Cpu::InterruptInfo Cpu::next_request()
+ANTGB_FORCEINLINE Cpu::InterruptInfo Cpu::next_request()
 {
     for (InterruptId i = VBlankInterrupt; i < JoypadInterrupt;
          i             = (InterruptId)((int)i + 1))
@@ -834,22 +834,22 @@ ANTDBG_ALWAYS_INLINE Cpu::InterruptInfo Cpu::next_request()
     return {NoInterrupt, 0x0000};
 }
 
-ANTDBG_ALWAYS_INLINE uint8_t Cpu::ime_flag_get()
+ANTGB_FORCEINLINE uint8_t Cpu::ime_flag_get()
 {
     return IME;
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::ime_flag_set()
+ANTGB_FORCEINLINE void Cpu::ime_flag_set()
 {
     IME = 0x01;
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::ime_flag_clear()
+ANTGB_FORCEINLINE void Cpu::ime_flag_clear()
 {
     IME = 0x00;
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::request_interrupt(int source)
+ANTGB_FORCEINLINE void Cpu::request_interrupt(int source)
 {
     switch (source)
     {
@@ -863,39 +863,39 @@ ANTDBG_ALWAYS_INLINE void Cpu::request_interrupt(int source)
     *IF |= 0x01 << source;
 }
 
-ANTDBG_ALWAYS_INLINE bool Cpu::interrupt_requested(int source)
+ANTGB_FORCEINLINE bool Cpu::interrupt_requested(int source)
 {
     return (*IF & (0x01 << source)) != 0;
 }
 
-ANTDBG_ALWAYS_INLINE bool Cpu::interrupt_enabled(int source)
+ANTGB_FORCEINLINE bool Cpu::interrupt_enabled(int source)
 {
     return (*IE & (0x01 << source)) != 0;
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::clear_interrupt(int source)
+ANTGB_FORCEINLINE void Cpu::clear_interrupt(int source)
 {
     *IF &= ~(0x01 << source);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::disable_interrupt(int source)
+ANTGB_FORCEINLINE void Cpu::disable_interrupt(int source)
 {
     *IE &= ~(0x01 << source);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::enable_interrupt(int source)
+ANTGB_FORCEINLINE void Cpu::enable_interrupt(int source)
 {
     *IE |= 0x01 << source;
 }
 
-ANTDBG_ALWAYS_INLINE uint8_t Cpu::extract_immediate8(const uint8_t* instruction)
+ANTGB_FORCEINLINE uint8_t Cpu::extract_immediate8(const uint8_t* instruction)
 {
     if (!instruction)
         instruction = curr_instr;
     return curr_instr[1];
 }
 
-ANTDBG_ALWAYS_INLINE uint16_t
+ANTGB_FORCEINLINE uint16_t
                      Cpu::extract_immediate16(const uint8_t* instruction)
 {
     if (!instruction)
@@ -904,12 +904,12 @@ ANTDBG_ALWAYS_INLINE uint16_t
            | (static_cast<uint16_t>(instruction[2]) << 8);
 }
 
-ANTDBG_ALWAYS_INLINE uint8_t Cpu::get_ALU_flag(enum ALUFlagPos pos)
+ANTGB_FORCEINLINE uint8_t Cpu::get_ALU_flag(enum ALUFlagPos pos)
 {
     return (F >> static_cast<uint8_t>(pos)) & 0x01;
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::assign_ALU_flag(enum ALUFlagPos pos, uint8_t val)
+ANTGB_FORCEINLINE void Cpu::assign_ALU_flag(enum ALUFlagPos pos, uint8_t val)
 {
     if (val == 0)
         F &= ~(0x01 << static_cast<uint8_t>(pos));
@@ -917,67 +917,67 @@ ANTDBG_ALWAYS_INLINE void Cpu::assign_ALU_flag(enum ALUFlagPos pos, uint8_t val)
         F |= 0x01 << static_cast<uint8_t>(pos);
 }
 
-ANTDBG_ALWAYS_INLINE uint8_t Cpu::C_flag_get()
+ANTGB_FORCEINLINE uint8_t Cpu::C_flag_get()
 {
     return get_ALU_flag(ALUFlagPos::C_FLAG);
 }
 
-ANTDBG_ALWAYS_INLINE uint8_t Cpu::H_flag_get()
+ANTGB_FORCEINLINE uint8_t Cpu::H_flag_get()
 {
     return get_ALU_flag(ALUFlagPos::H_FLAG);
 }
 
-ANTDBG_ALWAYS_INLINE uint8_t Cpu::N_flag_get()
+ANTGB_FORCEINLINE uint8_t Cpu::N_flag_get()
 {
     return get_ALU_flag(ALUFlagPos::N_FLAG);
 }
 
-ANTDBG_ALWAYS_INLINE uint8_t Cpu::Z_flag_get()
+ANTGB_FORCEINLINE uint8_t Cpu::Z_flag_get()
 {
     return get_ALU_flag(ALUFlagPos::Z_FLAG);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::C_flag_set()
+ANTGB_FORCEINLINE void Cpu::C_flag_set()
 {
     assign_ALU_flag(ALUFlagPos::C_FLAG, 1);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::H_flag_set()
+ANTGB_FORCEINLINE void Cpu::H_flag_set()
 {
     assign_ALU_flag(ALUFlagPos::H_FLAG, 1);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::N_flag_set()
+ANTGB_FORCEINLINE void Cpu::N_flag_set()
 {
     assign_ALU_flag(ALUFlagPos::N_FLAG, 1);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::Z_flag_set()
+ANTGB_FORCEINLINE void Cpu::Z_flag_set()
 {
     assign_ALU_flag(ALUFlagPos::Z_FLAG, 1);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::C_flag_reset()
+ANTGB_FORCEINLINE void Cpu::C_flag_reset()
 {
     assign_ALU_flag(ALUFlagPos::C_FLAG, 0);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::H_flag_reset()
+ANTGB_FORCEINLINE void Cpu::H_flag_reset()
 {
     assign_ALU_flag(ALUFlagPos::H_FLAG, 0);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::N_flag_reset()
+ANTGB_FORCEINLINE void Cpu::N_flag_reset()
 {
     assign_ALU_flag(ALUFlagPos::N_FLAG, 0);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::Z_flag_reset()
+ANTGB_FORCEINLINE void Cpu::Z_flag_reset()
 {
     assign_ALU_flag(ALUFlagPos::Z_FLAG, 0);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::C_flag_update(bool cond)
+ANTGB_FORCEINLINE void Cpu::C_flag_update(bool cond)
 {
     if (cond)
         C_flag_set();
@@ -985,7 +985,7 @@ ANTDBG_ALWAYS_INLINE void Cpu::C_flag_update(bool cond)
         C_flag_reset();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::H_flag_update(bool cond)
+ANTGB_FORCEINLINE void Cpu::H_flag_update(bool cond)
 {
     if (cond)
         H_flag_set();
@@ -993,7 +993,7 @@ ANTDBG_ALWAYS_INLINE void Cpu::H_flag_update(bool cond)
         H_flag_reset();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::N_flag_update(bool cond)
+ANTGB_FORCEINLINE void Cpu::N_flag_update(bool cond)
 {
     if (cond)
         N_flag_set();
@@ -1001,7 +1001,7 @@ ANTDBG_ALWAYS_INLINE void Cpu::N_flag_update(bool cond)
         C_flag_reset();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::Z_flag_update(bool cond)
+ANTGB_FORCEINLINE void Cpu::Z_flag_update(bool cond)
 {
     if (cond)
         Z_flag_set();
@@ -1009,1213 +1009,1213 @@ ANTDBG_ALWAYS_INLINE void Cpu::Z_flag_update(bool cond)
         Z_flag_reset();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_00()
+ANTGB_FORCEINLINE void Cpu::op_00()
 {
     NOP();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_01()
+ANTGB_FORCEINLINE void Cpu::op_01()
 {
     LD_r16_n16(BC, extract_immediate16());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_02()
+ANTGB_FORCEINLINE void Cpu::op_02()
 {
     LD_r16_A(BC);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_03()
+ANTGB_FORCEINLINE void Cpu::op_03()
 {
     INC_r16(BC);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_04()
+ANTGB_FORCEINLINE void Cpu::op_04()
 {
     INC_r8(B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_05()
+ANTGB_FORCEINLINE void Cpu::op_05()
 {
     DEC_r8(B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_06()
+ANTGB_FORCEINLINE void Cpu::op_06()
 {
     LD_r8_n8(B, extract_immediate8());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_07()
+ANTGB_FORCEINLINE void Cpu::op_07()
 {
     RLCA();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_08()
+ANTGB_FORCEINLINE void Cpu::op_08()
 {
     LD_n16_SP(extract_immediate16());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_09()
+ANTGB_FORCEINLINE void Cpu::op_09()
 {
     ADD_HL_r16(BC);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_0A()
+ANTGB_FORCEINLINE void Cpu::op_0A()
 {
     LD_A_r16(BC);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_0B()
+ANTGB_FORCEINLINE void Cpu::op_0B()
 {
     DEC_r16(BC);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_0C()
+ANTGB_FORCEINLINE void Cpu::op_0C()
 {
     INC_r8(C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_0D()
+ANTGB_FORCEINLINE void Cpu::op_0D()
 {
     DEC_r8(C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_0E()
+ANTGB_FORCEINLINE void Cpu::op_0E()
 {
     LD_r8_n8(C, extract_immediate8());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_0F()
+ANTGB_FORCEINLINE void Cpu::op_0F()
 {
     RRCA();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_10()
+ANTGB_FORCEINLINE void Cpu::op_10()
 {
     STOP();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_11()
+ANTGB_FORCEINLINE void Cpu::op_11()
 {
     LD_r16_n16(DE, extract_immediate16());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_12()
+ANTGB_FORCEINLINE void Cpu::op_12()
 {
     LD_r16_A(DE);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_13()
+ANTGB_FORCEINLINE void Cpu::op_13()
 {
     INC_r16(DE);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_14()
+ANTGB_FORCEINLINE void Cpu::op_14()
 {
     INC_r8(D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_15()
+ANTGB_FORCEINLINE void Cpu::op_15()
 {
     DEC_r8(D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_16()
+ANTGB_FORCEINLINE void Cpu::op_16()
 {
     LD_r8_n8(D, extract_immediate8());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_17()
+ANTGB_FORCEINLINE void Cpu::op_17()
 {
     RLA();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_18()
+ANTGB_FORCEINLINE void Cpu::op_18()
 {
     JR_n8(static_cast<int8_t>(extract_immediate8()));
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_19()
+ANTGB_FORCEINLINE void Cpu::op_19()
 {
     ADD_HL_r16(DE);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_1A()
+ANTGB_FORCEINLINE void Cpu::op_1A()
 {
     LD_A_r16(DE);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_1B()
+ANTGB_FORCEINLINE void Cpu::op_1B()
 {
     DEC_r16(DE);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_1C()
+ANTGB_FORCEINLINE void Cpu::op_1C()
 {
     INC_r8(E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_1D()
+ANTGB_FORCEINLINE void Cpu::op_1D()
 {
     DEC_r8(E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_1E()
+ANTGB_FORCEINLINE void Cpu::op_1E()
 {
     LD_r8_n8(E, extract_immediate8());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_1F()
+ANTGB_FORCEINLINE void Cpu::op_1F()
 {
     RRA();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_20()
+ANTGB_FORCEINLINE void Cpu::op_20()
 {
     JR_cc_n8(!Z_flag_get(), static_cast<int8_t>(extract_immediate8()));
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_21()
+ANTGB_FORCEINLINE void Cpu::op_21()
 {
     LD_r16_n16(HL, extract_immediate16());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_22()
+ANTGB_FORCEINLINE void Cpu::op_22()
 {
     LDI_HL_A();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_23()
+ANTGB_FORCEINLINE void Cpu::op_23()
 {
     INC_r16(HL);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_24()
+ANTGB_FORCEINLINE void Cpu::op_24()
 {
     INC_r8(H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_25()
+ANTGB_FORCEINLINE void Cpu::op_25()
 {
     DEC_r8(H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_26()
+ANTGB_FORCEINLINE void Cpu::op_26()
 {
     LD_r8_n8(H, extract_immediate8());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_27()
+ANTGB_FORCEINLINE void Cpu::op_27()
 {
     DAA();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_28()
+ANTGB_FORCEINLINE void Cpu::op_28()
 {
     JR_cc_n8(Z_flag_get(), static_cast<int8_t>(extract_immediate8()));
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_29()
+ANTGB_FORCEINLINE void Cpu::op_29()
 {
     ADD_HL_r16(HL);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_2A()
+ANTGB_FORCEINLINE void Cpu::op_2A()
 {
     LDI_A_HL();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_2B()
+ANTGB_FORCEINLINE void Cpu::op_2B()
 {
     DEC_r16(HL);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_2C()
+ANTGB_FORCEINLINE void Cpu::op_2C()
 {
     INC_r8(L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_2D()
+ANTGB_FORCEINLINE void Cpu::op_2D()
 {
     DEC_r8(L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_2E()
+ANTGB_FORCEINLINE void Cpu::op_2E()
 {
     LD_r8_n8(L, extract_immediate8());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_2F()
+ANTGB_FORCEINLINE void Cpu::op_2F()
 {
     CPL();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_30()
+ANTGB_FORCEINLINE void Cpu::op_30()
 {
     JR_cc_n8(!C_flag_get(), static_cast<int8_t>(extract_immediate8()));
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_31()
+ANTGB_FORCEINLINE void Cpu::op_31()
 {
     LD_r16_n16(SP, extract_immediate16());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_32()
+ANTGB_FORCEINLINE void Cpu::op_32()
 {
     LDD_HL_A();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_33()
+ANTGB_FORCEINLINE void Cpu::op_33()
 {
     INC_r16(SP);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_34()
+ANTGB_FORCEINLINE void Cpu::op_34()
 {
     INC_HL();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_35()
+ANTGB_FORCEINLINE void Cpu::op_35()
 {
     DEC_HL();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_36()
+ANTGB_FORCEINLINE void Cpu::op_36()
 {
     LD_HL_n8(extract_immediate8());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_37()
+ANTGB_FORCEINLINE void Cpu::op_37()
 {
     SCF();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_38()
+ANTGB_FORCEINLINE void Cpu::op_38()
 {
     JR_cc_n8(C_flag_get(), static_cast<int8_t>(extract_immediate8()));
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_39()
+ANTGB_FORCEINLINE void Cpu::op_39()
 {
     ADD_HL_r16(SP);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_3A()
+ANTGB_FORCEINLINE void Cpu::op_3A()
 {
     LDD_A_HL();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_3B()
+ANTGB_FORCEINLINE void Cpu::op_3B()
 {
     DEC_r16(SP);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_3C()
+ANTGB_FORCEINLINE void Cpu::op_3C()
 {
     INC_r8(A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_3D()
+ANTGB_FORCEINLINE void Cpu::op_3D()
 {
     DEC_r8(A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_3E()
+ANTGB_FORCEINLINE void Cpu::op_3E()
 {
     LD_r8_n8(A, extract_immediate8());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_3F()
+ANTGB_FORCEINLINE void Cpu::op_3F()
 {
     CCF();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_40()
+ANTGB_FORCEINLINE void Cpu::op_40()
 {
     LD_r8_r8(B, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_41()
+ANTGB_FORCEINLINE void Cpu::op_41()
 {
     LD_r8_r8(B, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_42()
+ANTGB_FORCEINLINE void Cpu::op_42()
 {
     LD_r8_r8(B, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_43()
+ANTGB_FORCEINLINE void Cpu::op_43()
 {
     LD_r8_r8(B, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_44()
+ANTGB_FORCEINLINE void Cpu::op_44()
 {
     LD_r8_r8(B, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_45()
+ANTGB_FORCEINLINE void Cpu::op_45()
 {
     LD_r8_r8(B, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_46()
+ANTGB_FORCEINLINE void Cpu::op_46()
 {
     LD_r8_HL(B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_47()
+ANTGB_FORCEINLINE void Cpu::op_47()
 {
     LD_r8_r8(B, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_48()
+ANTGB_FORCEINLINE void Cpu::op_48()
 {
     LD_r8_r8(C, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_49()
+ANTGB_FORCEINLINE void Cpu::op_49()
 {
     LD_r8_r8(C, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_4A()
+ANTGB_FORCEINLINE void Cpu::op_4A()
 {
     LD_r8_r8(C, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_4B()
+ANTGB_FORCEINLINE void Cpu::op_4B()
 {
     LD_r8_r8(C, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_4C()
+ANTGB_FORCEINLINE void Cpu::op_4C()
 {
     LD_r8_r8(C, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_4D()
+ANTGB_FORCEINLINE void Cpu::op_4D()
 {
     LD_r8_r8(C, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_4E()
+ANTGB_FORCEINLINE void Cpu::op_4E()
 {
     LD_r8_HL(C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_4F()
+ANTGB_FORCEINLINE void Cpu::op_4F()
 {
     LD_r8_r8(C, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_50()
+ANTGB_FORCEINLINE void Cpu::op_50()
 {
     LD_r8_r8(D, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_51()
+ANTGB_FORCEINLINE void Cpu::op_51()
 {
     LD_r8_r8(D, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_52()
+ANTGB_FORCEINLINE void Cpu::op_52()
 {
     LD_r8_r8(D, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_53()
+ANTGB_FORCEINLINE void Cpu::op_53()
 {
     LD_r8_r8(D, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_54()
+ANTGB_FORCEINLINE void Cpu::op_54()
 {
     LD_r8_r8(D, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_55()
+ANTGB_FORCEINLINE void Cpu::op_55()
 {
     LD_r8_r8(D, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_56()
+ANTGB_FORCEINLINE void Cpu::op_56()
 {
     LD_r8_HL(D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_57()
+ANTGB_FORCEINLINE void Cpu::op_57()
 {
     LD_r8_r8(D, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_58()
+ANTGB_FORCEINLINE void Cpu::op_58()
 {
     LD_r8_r8(E, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_59()
+ANTGB_FORCEINLINE void Cpu::op_59()
 {
     LD_r8_r8(E, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_5A()
+ANTGB_FORCEINLINE void Cpu::op_5A()
 {
     LD_r8_r8(E, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_5B()
+ANTGB_FORCEINLINE void Cpu::op_5B()
 {
     LD_r8_r8(E, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_5C()
+ANTGB_FORCEINLINE void Cpu::op_5C()
 {
     LD_r8_r8(E, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_5D()
+ANTGB_FORCEINLINE void Cpu::op_5D()
 {
     LD_r8_r8(E, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_5E()
+ANTGB_FORCEINLINE void Cpu::op_5E()
 {
     LD_r8_HL(E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_5F()
+ANTGB_FORCEINLINE void Cpu::op_5F()
 {
     LD_r8_r8(E, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_60()
+ANTGB_FORCEINLINE void Cpu::op_60()
 {
     LD_r8_r8(H, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_61()
+ANTGB_FORCEINLINE void Cpu::op_61()
 {
     LD_r8_r8(H, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_62()
+ANTGB_FORCEINLINE void Cpu::op_62()
 {
     LD_r8_r8(H, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_63()
+ANTGB_FORCEINLINE void Cpu::op_63()
 {
     LD_r8_r8(H, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_64()
+ANTGB_FORCEINLINE void Cpu::op_64()
 {
     LD_r8_r8(H, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_65()
+ANTGB_FORCEINLINE void Cpu::op_65()
 {
     LD_r8_r8(H, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_66()
+ANTGB_FORCEINLINE void Cpu::op_66()
 {
     LD_r8_HL(H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_67()
+ANTGB_FORCEINLINE void Cpu::op_67()
 {
     LD_r8_r8(H, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_68()
+ANTGB_FORCEINLINE void Cpu::op_68()
 {
     LD_r8_r8(L, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_69()
+ANTGB_FORCEINLINE void Cpu::op_69()
 {
     LD_r8_r8(L, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_6A()
+ANTGB_FORCEINLINE void Cpu::op_6A()
 {
     LD_r8_r8(L, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_6B()
+ANTGB_FORCEINLINE void Cpu::op_6B()
 {
     LD_r8_r8(L, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_6C()
+ANTGB_FORCEINLINE void Cpu::op_6C()
 {
     LD_r8_r8(L, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_6D()
+ANTGB_FORCEINLINE void Cpu::op_6D()
 {
     LD_r8_r8(L, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_6E()
+ANTGB_FORCEINLINE void Cpu::op_6E()
 {
     LD_r8_HL(L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_6F()
+ANTGB_FORCEINLINE void Cpu::op_6F()
 {
     LD_r8_r8(L, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_70()
+ANTGB_FORCEINLINE void Cpu::op_70()
 {
     LD_HL_r8(B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_71()
+ANTGB_FORCEINLINE void Cpu::op_71()
 {
     LD_HL_r8(C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_72()
+ANTGB_FORCEINLINE void Cpu::op_72()
 {
     LD_HL_r8(D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_73()
+ANTGB_FORCEINLINE void Cpu::op_73()
 {
     LD_HL_r8(E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_74()
+ANTGB_FORCEINLINE void Cpu::op_74()
 {
     LD_HL_r8(H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_75()
+ANTGB_FORCEINLINE void Cpu::op_75()
 {
     LD_HL_r8(L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_76()
+ANTGB_FORCEINLINE void Cpu::op_76()
 {
     HALT();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_77()
+ANTGB_FORCEINLINE void Cpu::op_77()
 {
     LD_HL_r8(A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_78()
+ANTGB_FORCEINLINE void Cpu::op_78()
 {
     LD_r8_r8(A, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_79()
+ANTGB_FORCEINLINE void Cpu::op_79()
 {
     LD_r8_r8(A, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_7A()
+ANTGB_FORCEINLINE void Cpu::op_7A()
 {
     LD_r8_r8(A, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_7B()
+ANTGB_FORCEINLINE void Cpu::op_7B()
 {
     LD_r8_r8(A, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_7C()
+ANTGB_FORCEINLINE void Cpu::op_7C()
 {
     LD_r8_r8(A, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_7D()
+ANTGB_FORCEINLINE void Cpu::op_7D()
 {
     LD_r8_r8(A, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_7E()
+ANTGB_FORCEINLINE void Cpu::op_7E()
 {
     LD_A_r16(HL);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_7F()
+ANTGB_FORCEINLINE void Cpu::op_7F()
 {
     LD_r8_r8(A, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_80()
+ANTGB_FORCEINLINE void Cpu::op_80()
 {
     ADD_A_r8(B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_81()
+ANTGB_FORCEINLINE void Cpu::op_81()
 {
     ADD_A_r8(C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_82()
+ANTGB_FORCEINLINE void Cpu::op_82()
 {
     ADD_A_r8(D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_83()
+ANTGB_FORCEINLINE void Cpu::op_83()
 {
     ADD_A_r8(E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_84()
+ANTGB_FORCEINLINE void Cpu::op_84()
 {
     ADD_A_r8(H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_85()
+ANTGB_FORCEINLINE void Cpu::op_85()
 {
     ADD_A_r8(L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_86()
+ANTGB_FORCEINLINE void Cpu::op_86()
 {
     ADD_A_HL();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_87()
+ANTGB_FORCEINLINE void Cpu::op_87()
 {
     ADD_A_r8(A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_88()
+ANTGB_FORCEINLINE void Cpu::op_88()
 {
     ADC_A_r8(B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_89()
+ANTGB_FORCEINLINE void Cpu::op_89()
 {
     ADC_A_r8(C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_8A()
+ANTGB_FORCEINLINE void Cpu::op_8A()
 {
     ADC_A_r8(D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_8B()
+ANTGB_FORCEINLINE void Cpu::op_8B()
 {
     ADC_A_r8(E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_8C()
+ANTGB_FORCEINLINE void Cpu::op_8C()
 {
     ADC_A_r8(H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_8D()
+ANTGB_FORCEINLINE void Cpu::op_8D()
 {
     ADC_A_r8(L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_8E()
+ANTGB_FORCEINLINE void Cpu::op_8E()
 {
     ADC_A_HL();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_8F()
+ANTGB_FORCEINLINE void Cpu::op_8F()
 {
     ADC_A_r8(A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_90()
+ANTGB_FORCEINLINE void Cpu::op_90()
 {
     SUB_A_r8(B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_91()
+ANTGB_FORCEINLINE void Cpu::op_91()
 {
     SUB_A_r8(C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_92()
+ANTGB_FORCEINLINE void Cpu::op_92()
 {
     SUB_A_r8(D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_93()
+ANTGB_FORCEINLINE void Cpu::op_93()
 {
     SUB_A_r8(E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_94()
+ANTGB_FORCEINLINE void Cpu::op_94()
 {
     SUB_A_r8(H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_95()
+ANTGB_FORCEINLINE void Cpu::op_95()
 {
     SUB_A_r8(L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_96()
+ANTGB_FORCEINLINE void Cpu::op_96()
 {
     //
     SUB_A_HL();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_97()
+ANTGB_FORCEINLINE void Cpu::op_97()
 {
     SUB_A_r8(A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_98()
+ANTGB_FORCEINLINE void Cpu::op_98()
 {
     SBC_A_r8(B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_99()
+ANTGB_FORCEINLINE void Cpu::op_99()
 {
     SBC_A_r8(C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_9A()
+ANTGB_FORCEINLINE void Cpu::op_9A()
 {
     SBC_A_r8(D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_9B()
+ANTGB_FORCEINLINE void Cpu::op_9B()
 {
     SBC_A_r8(E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_9C()
+ANTGB_FORCEINLINE void Cpu::op_9C()
 {
     SBC_A_r8(H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_9D()
+ANTGB_FORCEINLINE void Cpu::op_9D()
 {
     SBC_A_r8(L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_9E()
+ANTGB_FORCEINLINE void Cpu::op_9E()
 {
     SBC_A_HL();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_9F()
+ANTGB_FORCEINLINE void Cpu::op_9F()
 {
     SBC_A_r8(A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_A0()
+ANTGB_FORCEINLINE void Cpu::op_A0()
 {
     AND_r8(B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_A1()
+ANTGB_FORCEINLINE void Cpu::op_A1()
 {
     AND_r8(C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_A2()
+ANTGB_FORCEINLINE void Cpu::op_A2()
 {
     AND_r8(D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_A3()
+ANTGB_FORCEINLINE void Cpu::op_A3()
 {
     AND_r8(E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_A4()
+ANTGB_FORCEINLINE void Cpu::op_A4()
 {
     AND_r8(H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_A5()
+ANTGB_FORCEINLINE void Cpu::op_A5()
 {
     AND_r8(L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_A6()
+ANTGB_FORCEINLINE void Cpu::op_A6()
 {
     AND_HL();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_A7()
+ANTGB_FORCEINLINE void Cpu::op_A7()
 {
     AND_r8(A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_A8()
+ANTGB_FORCEINLINE void Cpu::op_A8()
 {
     XOR_r8(B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_A9()
+ANTGB_FORCEINLINE void Cpu::op_A9()
 {
     XOR_r8(C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_AA()
+ANTGB_FORCEINLINE void Cpu::op_AA()
 {
     XOR_r8(D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_AB()
+ANTGB_FORCEINLINE void Cpu::op_AB()
 {
     XOR_r8(E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_AC()
+ANTGB_FORCEINLINE void Cpu::op_AC()
 {
     XOR_r8(H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_AD()
+ANTGB_FORCEINLINE void Cpu::op_AD()
 {
     XOR_r8(L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_AE()
+ANTGB_FORCEINLINE void Cpu::op_AE()
 {
     XOR_HL();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_AF()
+ANTGB_FORCEINLINE void Cpu::op_AF()
 {
     XOR_r8(A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_B0()
+ANTGB_FORCEINLINE void Cpu::op_B0()
 {
     OR_r8(B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_B1()
+ANTGB_FORCEINLINE void Cpu::op_B1()
 {
     OR_r8(C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_B2()
+ANTGB_FORCEINLINE void Cpu::op_B2()
 {
     OR_r8(D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_B3()
+ANTGB_FORCEINLINE void Cpu::op_B3()
 {
     OR_r8(E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_B4()
+ANTGB_FORCEINLINE void Cpu::op_B4()
 {
     OR_r8(H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_B5()
+ANTGB_FORCEINLINE void Cpu::op_B5()
 {
     OR_r8(L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_B6()
+ANTGB_FORCEINLINE void Cpu::op_B6()
 {
     OR_HL();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_B7()
+ANTGB_FORCEINLINE void Cpu::op_B7()
 {
     OR_r8(A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_B8()
+ANTGB_FORCEINLINE void Cpu::op_B8()
 {
     CP_r8(B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_B9()
+ANTGB_FORCEINLINE void Cpu::op_B9()
 {
     CP_r8(C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_BA()
+ANTGB_FORCEINLINE void Cpu::op_BA()
 {
     CP_r8(D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_BB()
+ANTGB_FORCEINLINE void Cpu::op_BB()
 {
     CP_r8(E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_BC()
+ANTGB_FORCEINLINE void Cpu::op_BC()
 {
     CP_r8(H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_BD()
+ANTGB_FORCEINLINE void Cpu::op_BD()
 {
     CP_r8(L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_BE()
+ANTGB_FORCEINLINE void Cpu::op_BE()
 {
     CP_HL();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_BF()
+ANTGB_FORCEINLINE void Cpu::op_BF()
 {
     CP_r8(A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_C0()
+ANTGB_FORCEINLINE void Cpu::op_C0()
 {
     RET_cc(!Z_flag_get());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_C1()
+ANTGB_FORCEINLINE void Cpu::op_C1()
 {
     POP_r16(BC);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_C2()
+ANTGB_FORCEINLINE void Cpu::op_C2()
 {
     JP_cc_n16(!Z_flag_get(), extract_immediate16());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_C3()
+ANTGB_FORCEINLINE void Cpu::op_C3()
 {
     JP_n16(extract_immediate16());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_C4()
+ANTGB_FORCEINLINE void Cpu::op_C4()
 {
     CALL_cc_n16(!Z_flag_get(), extract_immediate16());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_C5()
+ANTGB_FORCEINLINE void Cpu::op_C5()
 {
     PUSH_r16(BC);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_C6()
+ANTGB_FORCEINLINE void Cpu::op_C6()
 {
     ADD_A_n8(extract_immediate8());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_C7()
+ANTGB_FORCEINLINE void Cpu::op_C7()
 {
     RST_f(0x00);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_C8()
+ANTGB_FORCEINLINE void Cpu::op_C8()
 {
     RET_cc(Z_flag_get());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_C9()
+ANTGB_FORCEINLINE void Cpu::op_C9()
 {
     RET();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CA()
+ANTGB_FORCEINLINE void Cpu::op_CA()
 {
     JP_cc_n16(Z_flag_get(), extract_immediate16());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB()
+ANTGB_FORCEINLINE void Cpu::op_CB()
 {
     /* SHOULD NOT END UP HERE */
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CC()
+ANTGB_FORCEINLINE void Cpu::op_CC()
 {
     CALL_cc_n16(Z_flag_get(), extract_immediate16());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CD()
+ANTGB_FORCEINLINE void Cpu::op_CD()
 {
     CALL_n16(extract_immediate16());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CE()
+ANTGB_FORCEINLINE void Cpu::op_CE()
 {
     ADC_A_n8(extract_immediate8());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CF()
+ANTGB_FORCEINLINE void Cpu::op_CF()
 {
     RST_f(0x08);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_D0()
+ANTGB_FORCEINLINE void Cpu::op_D0()
 {
     RET_cc(!C_flag_get());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_D1()
+ANTGB_FORCEINLINE void Cpu::op_D1()
 {
     POP_r16(DE);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_D2()
+ANTGB_FORCEINLINE void Cpu::op_D2()
 {
     JP_cc_n16(!C_flag_get(), extract_immediate16());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_D3()
+ANTGB_FORCEINLINE void Cpu::op_D3()
 {
     invalid_opcode();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_D4()
+ANTGB_FORCEINLINE void Cpu::op_D4()
 {
     CALL_cc_n16(!C_flag_get(), extract_immediate16());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_D5()
+ANTGB_FORCEINLINE void Cpu::op_D5()
 {
     PUSH_r16(DE);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_D6()
+ANTGB_FORCEINLINE void Cpu::op_D6()
 {
     SUB_A_n8(extract_immediate8());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_D7()
+ANTGB_FORCEINLINE void Cpu::op_D7()
 {
     RST_f(0x10);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_D8()
+ANTGB_FORCEINLINE void Cpu::op_D8()
 {
     RET_cc(C_flag_get());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_D9()
+ANTGB_FORCEINLINE void Cpu::op_D9()
 {
     RETI();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_DA()
+ANTGB_FORCEINLINE void Cpu::op_DA()
 {
     JP_cc_n16(C_flag_get(), extract_immediate16());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_DB()
+ANTGB_FORCEINLINE void Cpu::op_DB()
 {
     invalid_opcode();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_DC()
+ANTGB_FORCEINLINE void Cpu::op_DC()
 {
     CALL_cc_n16(C_flag_get(), extract_immediate16());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_DD()
+ANTGB_FORCEINLINE void Cpu::op_DD()
 {
     invalid_opcode();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_DE()
+ANTGB_FORCEINLINE void Cpu::op_DE()
 {
     SBC_A_n8(extract_immediate8());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_DF()
+ANTGB_FORCEINLINE void Cpu::op_DF()
 {
     RST_f(0x18);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_E0()
+ANTGB_FORCEINLINE void Cpu::op_E0()
 {
     LDH_n8_A(extract_immediate8());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_E1()
+ANTGB_FORCEINLINE void Cpu::op_E1()
 {
     POP_r16(HL);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_E2()
+ANTGB_FORCEINLINE void Cpu::op_E2()
 {
     LD_C_A();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_E3()
+ANTGB_FORCEINLINE void Cpu::op_E3()
 {
     invalid_opcode();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_E4()
+ANTGB_FORCEINLINE void Cpu::op_E4()
 {
     invalid_opcode();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_E5()
+ANTGB_FORCEINLINE void Cpu::op_E5()
 {
     PUSH_r16(HL);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_E6()
+ANTGB_FORCEINLINE void Cpu::op_E6()
 {
     AND_n8(extract_immediate8());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_E7()
+ANTGB_FORCEINLINE void Cpu::op_E7()
 {
     RST_f(0x20);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_E8()
+ANTGB_FORCEINLINE void Cpu::op_E8()
 {
     ADD_SP_e8(static_cast<int8_t>(extract_immediate8()));
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_E9()
+ANTGB_FORCEINLINE void Cpu::op_E9()
 {
     JP_n16(HL);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_EA()
+ANTGB_FORCEINLINE void Cpu::op_EA()
 {
     LD_n16_A(extract_immediate16());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_EB()
+ANTGB_FORCEINLINE void Cpu::op_EB()
 {
     invalid_opcode();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_EC()
+ANTGB_FORCEINLINE void Cpu::op_EC()
 {
     invalid_opcode();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_ED()
+ANTGB_FORCEINLINE void Cpu::op_ED()
 {
     invalid_opcode();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_EE()
+ANTGB_FORCEINLINE void Cpu::op_EE()
 {
     XOR_n8(extract_immediate8());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_EF()
+ANTGB_FORCEINLINE void Cpu::op_EF()
 {
     RST_f(0x28);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_F0()
+ANTGB_FORCEINLINE void Cpu::op_F0()
 {
     LDH_A_n8(extract_immediate8());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_F1()
+ANTGB_FORCEINLINE void Cpu::op_F1()
 {
     POP_r16(AF);
     // Only the upper nibble of F can be written into, so make sure the lower
@@ -2223,1352 +2223,1352 @@ ANTDBG_ALWAYS_INLINE void Cpu::op_F1()
     F &= 0xF0;
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_F2()
+ANTGB_FORCEINLINE void Cpu::op_F2()
 {
     LD_A_C();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_F3()
+ANTGB_FORCEINLINE void Cpu::op_F3()
 {
     DI();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_F4()
+ANTGB_FORCEINLINE void Cpu::op_F4()
 {
     invalid_opcode();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_F5()
+ANTGB_FORCEINLINE void Cpu::op_F5()
 {
     PUSH_r16(AF);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_F6()
+ANTGB_FORCEINLINE void Cpu::op_F6()
 {
     OR_n8(extract_immediate8());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_F7()
+ANTGB_FORCEINLINE void Cpu::op_F7()
 {
     RST_f(0x30);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_F8()
+ANTGB_FORCEINLINE void Cpu::op_F8()
 {
     LD_HL_SP_e8(static_cast<int8_t>(extract_immediate8()));
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_F9()
+ANTGB_FORCEINLINE void Cpu::op_F9()
 {
     LD_SP_HL();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_FA()
+ANTGB_FORCEINLINE void Cpu::op_FA()
 {
     LD_A_n16(extract_immediate16());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_FB()
+ANTGB_FORCEINLINE void Cpu::op_FB()
 {
     EI();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_FC()
+ANTGB_FORCEINLINE void Cpu::op_FC()
 {
     invalid_opcode();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_FD()
+ANTGB_FORCEINLINE void Cpu::op_FD()
 {
     invalid_opcode();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_FE()
+ANTGB_FORCEINLINE void Cpu::op_FE()
 {
     CP_n8(extract_immediate8());
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_FF()
+ANTGB_FORCEINLINE void Cpu::op_FF()
 {
     RST_f(0x38);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_00()
+ANTGB_FORCEINLINE void Cpu::op_CB_00()
 {
     RLC_r8(B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_01()
+ANTGB_FORCEINLINE void Cpu::op_CB_01()
 {
     RLC_r8(C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_02()
+ANTGB_FORCEINLINE void Cpu::op_CB_02()
 {
     RLC_r8(D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_03()
+ANTGB_FORCEINLINE void Cpu::op_CB_03()
 {
     RLC_r8(E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_04()
+ANTGB_FORCEINLINE void Cpu::op_CB_04()
 {
     RLC_r8(H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_05()
+ANTGB_FORCEINLINE void Cpu::op_CB_05()
 {
     RLC_r8(L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_06()
+ANTGB_FORCEINLINE void Cpu::op_CB_06()
 {
     RLC_HL();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_07()
+ANTGB_FORCEINLINE void Cpu::op_CB_07()
 {
     RLC_r8(A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_08()
+ANTGB_FORCEINLINE void Cpu::op_CB_08()
 {
     RRC_r8(B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_09()
+ANTGB_FORCEINLINE void Cpu::op_CB_09()
 {
     RRC_r8(C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_0A()
+ANTGB_FORCEINLINE void Cpu::op_CB_0A()
 {
     RRC_r8(D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_0B()
+ANTGB_FORCEINLINE void Cpu::op_CB_0B()
 {
     RRC_r8(E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_0C()
+ANTGB_FORCEINLINE void Cpu::op_CB_0C()
 {
     RRC_r8(H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_0D()
+ANTGB_FORCEINLINE void Cpu::op_CB_0D()
 {
     RRC_r8(L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_0E()
+ANTGB_FORCEINLINE void Cpu::op_CB_0E()
 {
     RRC_HL();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_0F()
+ANTGB_FORCEINLINE void Cpu::op_CB_0F()
 {
     RRC_r8(A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_10()
+ANTGB_FORCEINLINE void Cpu::op_CB_10()
 {
     RL_r8(B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_11()
+ANTGB_FORCEINLINE void Cpu::op_CB_11()
 {
     RL_r8(C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_12()
+ANTGB_FORCEINLINE void Cpu::op_CB_12()
 {
     RL_r8(D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_13()
+ANTGB_FORCEINLINE void Cpu::op_CB_13()
 {
     RL_r8(E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_14()
+ANTGB_FORCEINLINE void Cpu::op_CB_14()
 {
     RL_r8(H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_15()
+ANTGB_FORCEINLINE void Cpu::op_CB_15()
 {
     RL_r8(L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_16()
+ANTGB_FORCEINLINE void Cpu::op_CB_16()
 {
     RL_HL();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_17()
+ANTGB_FORCEINLINE void Cpu::op_CB_17()
 {
     RL_r8(A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_18()
+ANTGB_FORCEINLINE void Cpu::op_CB_18()
 {
     RR_r8(B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_19()
+ANTGB_FORCEINLINE void Cpu::op_CB_19()
 {
     RR_r8(C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_1A()
+ANTGB_FORCEINLINE void Cpu::op_CB_1A()
 {
     RR_r8(D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_1B()
+ANTGB_FORCEINLINE void Cpu::op_CB_1B()
 {
     RR_r8(E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_1C()
+ANTGB_FORCEINLINE void Cpu::op_CB_1C()
 {
     RR_r8(H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_1D()
+ANTGB_FORCEINLINE void Cpu::op_CB_1D()
 {
     RR_r8(L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_1E()
+ANTGB_FORCEINLINE void Cpu::op_CB_1E()
 {
     RR_HL();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_1F()
+ANTGB_FORCEINLINE void Cpu::op_CB_1F()
 {
     RR_r8(A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_20()
+ANTGB_FORCEINLINE void Cpu::op_CB_20()
 {
     SLA_r8(B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_21()
+ANTGB_FORCEINLINE void Cpu::op_CB_21()
 {
     SLA_r8(C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_22()
+ANTGB_FORCEINLINE void Cpu::op_CB_22()
 {
     SLA_r8(D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_23()
+ANTGB_FORCEINLINE void Cpu::op_CB_23()
 {
     SLA_r8(E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_24()
+ANTGB_FORCEINLINE void Cpu::op_CB_24()
 {
     SLA_r8(H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_25()
+ANTGB_FORCEINLINE void Cpu::op_CB_25()
 {
     SLA_r8(L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_26()
+ANTGB_FORCEINLINE void Cpu::op_CB_26()
 {
     SLA_HL();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_27()
+ANTGB_FORCEINLINE void Cpu::op_CB_27()
 {
     SLA_r8(A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_28()
+ANTGB_FORCEINLINE void Cpu::op_CB_28()
 {
     SRA_r8(B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_29()
+ANTGB_FORCEINLINE void Cpu::op_CB_29()
 {
     SRA_r8(C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_2A()
+ANTGB_FORCEINLINE void Cpu::op_CB_2A()
 {
     SRA_r8(D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_2B()
+ANTGB_FORCEINLINE void Cpu::op_CB_2B()
 {
     SRA_r8(E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_2C()
+ANTGB_FORCEINLINE void Cpu::op_CB_2C()
 {
     SRA_r8(H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_2D()
+ANTGB_FORCEINLINE void Cpu::op_CB_2D()
 {
     SRA_r8(L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_2E()
+ANTGB_FORCEINLINE void Cpu::op_CB_2E()
 {
     SRA_HL();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_2F()
+ANTGB_FORCEINLINE void Cpu::op_CB_2F()
 {
     SRA_r8(A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_30()
+ANTGB_FORCEINLINE void Cpu::op_CB_30()
 {
     SWAP_r8(B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_31()
+ANTGB_FORCEINLINE void Cpu::op_CB_31()
 {
     SWAP_r8(C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_32()
+ANTGB_FORCEINLINE void Cpu::op_CB_32()
 {
     SWAP_r8(D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_33()
+ANTGB_FORCEINLINE void Cpu::op_CB_33()
 {
     SWAP_r8(E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_34()
+ANTGB_FORCEINLINE void Cpu::op_CB_34()
 {
     SWAP_r8(H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_35()
+ANTGB_FORCEINLINE void Cpu::op_CB_35()
 {
     SWAP_r8(L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_36()
+ANTGB_FORCEINLINE void Cpu::op_CB_36()
 {
     SWAP_HL();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_37()
+ANTGB_FORCEINLINE void Cpu::op_CB_37()
 {
     SWAP_r8(A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_38()
+ANTGB_FORCEINLINE void Cpu::op_CB_38()
 {
     SRL_r8(B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_39()
+ANTGB_FORCEINLINE void Cpu::op_CB_39()
 {
     SRL_r8(C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_3A()
+ANTGB_FORCEINLINE void Cpu::op_CB_3A()
 {
     SRL_r8(D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_3B()
+ANTGB_FORCEINLINE void Cpu::op_CB_3B()
 {
     SRL_r8(E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_3C()
+ANTGB_FORCEINLINE void Cpu::op_CB_3C()
 {
     SRL_r8(H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_3D()
+ANTGB_FORCEINLINE void Cpu::op_CB_3D()
 {
     SRL_r8(L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_3E()
+ANTGB_FORCEINLINE void Cpu::op_CB_3E()
 {
     SRL_HL();
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_3F()
+ANTGB_FORCEINLINE void Cpu::op_CB_3F()
 {
     SRL_r8(A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_40()
+ANTGB_FORCEINLINE void Cpu::op_CB_40()
 {
     BIT_n3_r8(0, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_41()
+ANTGB_FORCEINLINE void Cpu::op_CB_41()
 {
     BIT_n3_r8(0, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_42()
+ANTGB_FORCEINLINE void Cpu::op_CB_42()
 {
     BIT_n3_r8(0, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_43()
+ANTGB_FORCEINLINE void Cpu::op_CB_43()
 {
     BIT_n3_r8(0, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_44()
+ANTGB_FORCEINLINE void Cpu::op_CB_44()
 {
     BIT_n3_r8(0, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_45()
+ANTGB_FORCEINLINE void Cpu::op_CB_45()
 {
     BIT_n3_r8(0, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_46()
+ANTGB_FORCEINLINE void Cpu::op_CB_46()
 {
     BIT_n3_HL(0);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_47()
+ANTGB_FORCEINLINE void Cpu::op_CB_47()
 {
     BIT_n3_r8(0, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_48()
+ANTGB_FORCEINLINE void Cpu::op_CB_48()
 {
     BIT_n3_r8(1, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_49()
+ANTGB_FORCEINLINE void Cpu::op_CB_49()
 {
     BIT_n3_r8(1, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_4A()
+ANTGB_FORCEINLINE void Cpu::op_CB_4A()
 {
     BIT_n3_r8(1, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_4B()
+ANTGB_FORCEINLINE void Cpu::op_CB_4B()
 {
     BIT_n3_r8(1, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_4C()
+ANTGB_FORCEINLINE void Cpu::op_CB_4C()
 {
     BIT_n3_r8(1, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_4D()
+ANTGB_FORCEINLINE void Cpu::op_CB_4D()
 {
     BIT_n3_r8(1, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_4E()
+ANTGB_FORCEINLINE void Cpu::op_CB_4E()
 {
     BIT_n3_HL(1);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_4F()
+ANTGB_FORCEINLINE void Cpu::op_CB_4F()
 {
     BIT_n3_r8(1, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_50()
+ANTGB_FORCEINLINE void Cpu::op_CB_50()
 {
     BIT_n3_r8(2, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_51()
+ANTGB_FORCEINLINE void Cpu::op_CB_51()
 {
     BIT_n3_r8(2, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_52()
+ANTGB_FORCEINLINE void Cpu::op_CB_52()
 {
     BIT_n3_r8(2, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_53()
+ANTGB_FORCEINLINE void Cpu::op_CB_53()
 {
     BIT_n3_r8(2, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_54()
+ANTGB_FORCEINLINE void Cpu::op_CB_54()
 {
     BIT_n3_r8(2, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_55()
+ANTGB_FORCEINLINE void Cpu::op_CB_55()
 {
     BIT_n3_r8(2, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_56()
+ANTGB_FORCEINLINE void Cpu::op_CB_56()
 {
     BIT_n3_HL(2);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_57()
+ANTGB_FORCEINLINE void Cpu::op_CB_57()
 {
     BIT_n3_r8(2, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_58()
+ANTGB_FORCEINLINE void Cpu::op_CB_58()
 {
     BIT_n3_r8(3, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_59()
+ANTGB_FORCEINLINE void Cpu::op_CB_59()
 {
     BIT_n3_r8(3, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_5A()
+ANTGB_FORCEINLINE void Cpu::op_CB_5A()
 {
     BIT_n3_r8(3, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_5B()
+ANTGB_FORCEINLINE void Cpu::op_CB_5B()
 {
     BIT_n3_r8(3, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_5C()
+ANTGB_FORCEINLINE void Cpu::op_CB_5C()
 {
     BIT_n3_r8(3, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_5D()
+ANTGB_FORCEINLINE void Cpu::op_CB_5D()
 {
     BIT_n3_r8(3, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_5E()
+ANTGB_FORCEINLINE void Cpu::op_CB_5E()
 {
     BIT_n3_HL(3);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_5F()
+ANTGB_FORCEINLINE void Cpu::op_CB_5F()
 {
     BIT_n3_r8(3, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_60()
+ANTGB_FORCEINLINE void Cpu::op_CB_60()
 {
     BIT_n3_r8(4, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_61()
+ANTGB_FORCEINLINE void Cpu::op_CB_61()
 {
     BIT_n3_r8(4, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_62()
+ANTGB_FORCEINLINE void Cpu::op_CB_62()
 {
     BIT_n3_r8(4, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_63()
+ANTGB_FORCEINLINE void Cpu::op_CB_63()
 {
     BIT_n3_r8(4, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_64()
+ANTGB_FORCEINLINE void Cpu::op_CB_64()
 {
     BIT_n3_r8(4, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_65()
+ANTGB_FORCEINLINE void Cpu::op_CB_65()
 {
     BIT_n3_r8(4, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_66()
+ANTGB_FORCEINLINE void Cpu::op_CB_66()
 {
     BIT_n3_HL(4);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_67()
+ANTGB_FORCEINLINE void Cpu::op_CB_67()
 {
     BIT_n3_r8(4, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_68()
+ANTGB_FORCEINLINE void Cpu::op_CB_68()
 {
     BIT_n3_r8(5, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_69()
+ANTGB_FORCEINLINE void Cpu::op_CB_69()
 {
     BIT_n3_r8(5, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_6A()
+ANTGB_FORCEINLINE void Cpu::op_CB_6A()
 {
     BIT_n3_r8(5, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_6B()
+ANTGB_FORCEINLINE void Cpu::op_CB_6B()
 {
     BIT_n3_r8(5, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_6C()
+ANTGB_FORCEINLINE void Cpu::op_CB_6C()
 {
     BIT_n3_r8(5, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_6D()
+ANTGB_FORCEINLINE void Cpu::op_CB_6D()
 {
     BIT_n3_r8(5, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_6E()
+ANTGB_FORCEINLINE void Cpu::op_CB_6E()
 {
     BIT_n3_HL(5);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_6F()
+ANTGB_FORCEINLINE void Cpu::op_CB_6F()
 {
     BIT_n3_r8(5, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_70()
+ANTGB_FORCEINLINE void Cpu::op_CB_70()
 {
     BIT_n3_r8(6, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_71()
+ANTGB_FORCEINLINE void Cpu::op_CB_71()
 {
     BIT_n3_r8(6, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_72()
+ANTGB_FORCEINLINE void Cpu::op_CB_72()
 {
     BIT_n3_r8(6, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_73()
+ANTGB_FORCEINLINE void Cpu::op_CB_73()
 {
     BIT_n3_r8(6, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_74()
+ANTGB_FORCEINLINE void Cpu::op_CB_74()
 {
     BIT_n3_r8(6, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_75()
+ANTGB_FORCEINLINE void Cpu::op_CB_75()
 {
     BIT_n3_r8(6, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_76()
+ANTGB_FORCEINLINE void Cpu::op_CB_76()
 {
     BIT_n3_HL(6);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_77()
+ANTGB_FORCEINLINE void Cpu::op_CB_77()
 {
     BIT_n3_r8(6, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_78()
+ANTGB_FORCEINLINE void Cpu::op_CB_78()
 {
     BIT_n3_r8(7, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_79()
+ANTGB_FORCEINLINE void Cpu::op_CB_79()
 {
     BIT_n3_r8(7, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_7A()
+ANTGB_FORCEINLINE void Cpu::op_CB_7A()
 {
     BIT_n3_r8(7, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_7B()
+ANTGB_FORCEINLINE void Cpu::op_CB_7B()
 {
     BIT_n3_r8(7, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_7C()
+ANTGB_FORCEINLINE void Cpu::op_CB_7C()
 {
     BIT_n3_r8(7, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_7D()
+ANTGB_FORCEINLINE void Cpu::op_CB_7D()
 {
     BIT_n3_r8(7, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_7E()
+ANTGB_FORCEINLINE void Cpu::op_CB_7E()
 {
     BIT_n3_HL(7);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_7F()
+ANTGB_FORCEINLINE void Cpu::op_CB_7F()
 {
     BIT_n3_r8(7, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_80()
+ANTGB_FORCEINLINE void Cpu::op_CB_80()
 {
     RES_n3_r8(0, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_81()
+ANTGB_FORCEINLINE void Cpu::op_CB_81()
 {
     RES_n3_r8(0, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_82()
+ANTGB_FORCEINLINE void Cpu::op_CB_82()
 {
     RES_n3_r8(0, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_83()
+ANTGB_FORCEINLINE void Cpu::op_CB_83()
 {
     RES_n3_r8(0, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_84()
+ANTGB_FORCEINLINE void Cpu::op_CB_84()
 {
     RES_n3_r8(0, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_85()
+ANTGB_FORCEINLINE void Cpu::op_CB_85()
 {
     RES_n3_r8(0, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_86()
+ANTGB_FORCEINLINE void Cpu::op_CB_86()
 {
     RES_n3_HL(0);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_87()
+ANTGB_FORCEINLINE void Cpu::op_CB_87()
 {
     RES_n3_r8(0, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_88()
+ANTGB_FORCEINLINE void Cpu::op_CB_88()
 {
     RES_n3_r8(1, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_89()
+ANTGB_FORCEINLINE void Cpu::op_CB_89()
 {
     RES_n3_r8(1, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_8A()
+ANTGB_FORCEINLINE void Cpu::op_CB_8A()
 {
     RES_n3_r8(1, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_8B()
+ANTGB_FORCEINLINE void Cpu::op_CB_8B()
 {
     RES_n3_r8(1, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_8C()
+ANTGB_FORCEINLINE void Cpu::op_CB_8C()
 {
     RES_n3_r8(1, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_8D()
+ANTGB_FORCEINLINE void Cpu::op_CB_8D()
 {
     RES_n3_r8(1, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_8E()
+ANTGB_FORCEINLINE void Cpu::op_CB_8E()
 {
     RES_n3_HL(1);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_8F()
+ANTGB_FORCEINLINE void Cpu::op_CB_8F()
 {
     RES_n3_r8(1, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_90()
+ANTGB_FORCEINLINE void Cpu::op_CB_90()
 {
     RES_n3_r8(2, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_91()
+ANTGB_FORCEINLINE void Cpu::op_CB_91()
 {
     RES_n3_r8(2, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_92()
+ANTGB_FORCEINLINE void Cpu::op_CB_92()
 {
     RES_n3_r8(2, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_93()
+ANTGB_FORCEINLINE void Cpu::op_CB_93()
 {
     RES_n3_r8(2, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_94()
+ANTGB_FORCEINLINE void Cpu::op_CB_94()
 {
     RES_n3_r8(2, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_95()
+ANTGB_FORCEINLINE void Cpu::op_CB_95()
 {
     RES_n3_r8(2, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_96()
+ANTGB_FORCEINLINE void Cpu::op_CB_96()
 {
     RES_n3_HL(2);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_97()
+ANTGB_FORCEINLINE void Cpu::op_CB_97()
 {
     RES_n3_r8(2, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_98()
+ANTGB_FORCEINLINE void Cpu::op_CB_98()
 {
     RES_n3_r8(3, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_99()
+ANTGB_FORCEINLINE void Cpu::op_CB_99()
 {
     RES_n3_r8(3, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_9A()
+ANTGB_FORCEINLINE void Cpu::op_CB_9A()
 {
     RES_n3_r8(3, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_9B()
+ANTGB_FORCEINLINE void Cpu::op_CB_9B()
 {
     RES_n3_r8(3, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_9C()
+ANTGB_FORCEINLINE void Cpu::op_CB_9C()
 {
     RES_n3_r8(3, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_9D()
+ANTGB_FORCEINLINE void Cpu::op_CB_9D()
 {
     RES_n3_r8(3, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_9E()
+ANTGB_FORCEINLINE void Cpu::op_CB_9E()
 {
     RES_n3_HL(3);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_9F()
+ANTGB_FORCEINLINE void Cpu::op_CB_9F()
 {
     RES_n3_r8(3, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_A0()
+ANTGB_FORCEINLINE void Cpu::op_CB_A0()
 {
     RES_n3_r8(4, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_A1()
+ANTGB_FORCEINLINE void Cpu::op_CB_A1()
 {
     RES_n3_r8(4, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_A2()
+ANTGB_FORCEINLINE void Cpu::op_CB_A2()
 {
     RES_n3_r8(4, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_A3()
+ANTGB_FORCEINLINE void Cpu::op_CB_A3()
 {
     RES_n3_r8(4, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_A4()
+ANTGB_FORCEINLINE void Cpu::op_CB_A4()
 {
     RES_n3_r8(4, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_A5()
+ANTGB_FORCEINLINE void Cpu::op_CB_A5()
 {
     RES_n3_r8(4, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_A6()
+ANTGB_FORCEINLINE void Cpu::op_CB_A6()
 {
     RES_n3_HL(4);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_A7()
+ANTGB_FORCEINLINE void Cpu::op_CB_A7()
 {
     RES_n3_r8(4, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_A8()
+ANTGB_FORCEINLINE void Cpu::op_CB_A8()
 {
     RES_n3_r8(5, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_A9()
+ANTGB_FORCEINLINE void Cpu::op_CB_A9()
 {
     RES_n3_r8(5, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_AA()
+ANTGB_FORCEINLINE void Cpu::op_CB_AA()
 {
     RES_n3_r8(5, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_AB()
+ANTGB_FORCEINLINE void Cpu::op_CB_AB()
 {
     RES_n3_r8(5, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_AC()
+ANTGB_FORCEINLINE void Cpu::op_CB_AC()
 {
     RES_n3_r8(5, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_AD()
+ANTGB_FORCEINLINE void Cpu::op_CB_AD()
 {
     RES_n3_r8(5, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_AE()
+ANTGB_FORCEINLINE void Cpu::op_CB_AE()
 {
     RES_n3_HL(5);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_AF()
+ANTGB_FORCEINLINE void Cpu::op_CB_AF()
 {
     RES_n3_r8(5, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_B0()
+ANTGB_FORCEINLINE void Cpu::op_CB_B0()
 {
     RES_n3_r8(6, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_B1()
+ANTGB_FORCEINLINE void Cpu::op_CB_B1()
 {
     RES_n3_r8(6, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_B2()
+ANTGB_FORCEINLINE void Cpu::op_CB_B2()
 {
     RES_n3_r8(6, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_B3()
+ANTGB_FORCEINLINE void Cpu::op_CB_B3()
 {
     RES_n3_r8(6, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_B4()
+ANTGB_FORCEINLINE void Cpu::op_CB_B4()
 {
     RES_n3_r8(6, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_B5()
+ANTGB_FORCEINLINE void Cpu::op_CB_B5()
 {
     RES_n3_r8(6, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_B6()
+ANTGB_FORCEINLINE void Cpu::op_CB_B6()
 {
     RES_n3_HL(6);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_B7()
+ANTGB_FORCEINLINE void Cpu::op_CB_B7()
 {
     RES_n3_r8(6, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_B8()
+ANTGB_FORCEINLINE void Cpu::op_CB_B8()
 {
     RES_n3_r8(7, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_B9()
+ANTGB_FORCEINLINE void Cpu::op_CB_B9()
 {
     RES_n3_r8(7, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_BA()
+ANTGB_FORCEINLINE void Cpu::op_CB_BA()
 {
     RES_n3_r8(7, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_BB()
+ANTGB_FORCEINLINE void Cpu::op_CB_BB()
 {
     RES_n3_r8(7, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_BC()
+ANTGB_FORCEINLINE void Cpu::op_CB_BC()
 {
     RES_n3_r8(7, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_BD()
+ANTGB_FORCEINLINE void Cpu::op_CB_BD()
 {
     RES_n3_r8(7, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_BE()
+ANTGB_FORCEINLINE void Cpu::op_CB_BE()
 {
     RES_n3_HL(7);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_BF()
+ANTGB_FORCEINLINE void Cpu::op_CB_BF()
 {
     RES_n3_r8(7, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_C0()
+ANTGB_FORCEINLINE void Cpu::op_CB_C0()
 {
     SET_n3_r8(0, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_C1()
+ANTGB_FORCEINLINE void Cpu::op_CB_C1()
 {
     SET_n3_r8(0, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_C2()
+ANTGB_FORCEINLINE void Cpu::op_CB_C2()
 {
     SET_n3_r8(0, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_C3()
+ANTGB_FORCEINLINE void Cpu::op_CB_C3()
 {
     SET_n3_r8(0, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_C4()
+ANTGB_FORCEINLINE void Cpu::op_CB_C4()
 {
     SET_n3_r8(0, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_C5()
+ANTGB_FORCEINLINE void Cpu::op_CB_C5()
 {
     SET_n3_r8(0, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_C6()
+ANTGB_FORCEINLINE void Cpu::op_CB_C6()
 {
     SET_n3_HL(0);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_C7()
+ANTGB_FORCEINLINE void Cpu::op_CB_C7()
 {
     SET_n3_r8(0, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_C8()
+ANTGB_FORCEINLINE void Cpu::op_CB_C8()
 {
     SET_n3_r8(1, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_C9()
+ANTGB_FORCEINLINE void Cpu::op_CB_C9()
 {
     SET_n3_r8(1, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_CA()
+ANTGB_FORCEINLINE void Cpu::op_CB_CA()
 {
     SET_n3_r8(1, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_CB()
+ANTGB_FORCEINLINE void Cpu::op_CB_CB()
 {
     SET_n3_r8(1, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_CC()
+ANTGB_FORCEINLINE void Cpu::op_CB_CC()
 {
     SET_n3_r8(1, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_CD()
+ANTGB_FORCEINLINE void Cpu::op_CB_CD()
 {
     SET_n3_r8(1, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_CE()
+ANTGB_FORCEINLINE void Cpu::op_CB_CE()
 {
     SET_n3_HL(1);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_CF()
+ANTGB_FORCEINLINE void Cpu::op_CB_CF()
 {
     SET_n3_r8(1, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_D0()
+ANTGB_FORCEINLINE void Cpu::op_CB_D0()
 {
     SET_n3_r8(2, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_D1()
+ANTGB_FORCEINLINE void Cpu::op_CB_D1()
 {
     SET_n3_r8(2, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_D2()
+ANTGB_FORCEINLINE void Cpu::op_CB_D2()
 {
     SET_n3_r8(2, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_D3()
+ANTGB_FORCEINLINE void Cpu::op_CB_D3()
 {
     SET_n3_r8(2, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_D4()
+ANTGB_FORCEINLINE void Cpu::op_CB_D4()
 {
     SET_n3_r8(2, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_D5()
+ANTGB_FORCEINLINE void Cpu::op_CB_D5()
 {
     SET_n3_r8(2, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_D6()
+ANTGB_FORCEINLINE void Cpu::op_CB_D6()
 {
     SET_n3_HL(2);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_D7()
+ANTGB_FORCEINLINE void Cpu::op_CB_D7()
 {
     SET_n3_r8(2, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_D8()
+ANTGB_FORCEINLINE void Cpu::op_CB_D8()
 {
     SET_n3_r8(3, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_D9()
+ANTGB_FORCEINLINE void Cpu::op_CB_D9()
 {
     SET_n3_r8(3, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_DA()
+ANTGB_FORCEINLINE void Cpu::op_CB_DA()
 {
     SET_n3_r8(3, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_DB()
+ANTGB_FORCEINLINE void Cpu::op_CB_DB()
 {
     SET_n3_r8(3, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_DC()
+ANTGB_FORCEINLINE void Cpu::op_CB_DC()
 {
     SET_n3_r8(3, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_DD()
+ANTGB_FORCEINLINE void Cpu::op_CB_DD()
 {
     SET_n3_r8(3, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_DE()
+ANTGB_FORCEINLINE void Cpu::op_CB_DE()
 {
     SET_n3_HL(3);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_DF()
+ANTGB_FORCEINLINE void Cpu::op_CB_DF()
 {
     SET_n3_r8(3, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_E0()
+ANTGB_FORCEINLINE void Cpu::op_CB_E0()
 {
     SET_n3_r8(4, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_E1()
+ANTGB_FORCEINLINE void Cpu::op_CB_E1()
 {
     SET_n3_r8(4, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_E2()
+ANTGB_FORCEINLINE void Cpu::op_CB_E2()
 {
     SET_n3_r8(4, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_E3()
+ANTGB_FORCEINLINE void Cpu::op_CB_E3()
 {
     SET_n3_r8(4, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_E4()
+ANTGB_FORCEINLINE void Cpu::op_CB_E4()
 {
     SET_n3_r8(4, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_E5()
+ANTGB_FORCEINLINE void Cpu::op_CB_E5()
 {
     SET_n3_r8(4, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_E6()
+ANTGB_FORCEINLINE void Cpu::op_CB_E6()
 {
     SET_n3_HL(4);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_E7()
+ANTGB_FORCEINLINE void Cpu::op_CB_E7()
 {
     SET_n3_r8(4, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_E8()
+ANTGB_FORCEINLINE void Cpu::op_CB_E8()
 {
     SET_n3_r8(5, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_E9()
+ANTGB_FORCEINLINE void Cpu::op_CB_E9()
 {
     SET_n3_r8(5, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_EA()
+ANTGB_FORCEINLINE void Cpu::op_CB_EA()
 {
     SET_n3_r8(5, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_EB()
+ANTGB_FORCEINLINE void Cpu::op_CB_EB()
 {
     SET_n3_r8(5, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_EC()
+ANTGB_FORCEINLINE void Cpu::op_CB_EC()
 {
     SET_n3_r8(5, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_ED()
+ANTGB_FORCEINLINE void Cpu::op_CB_ED()
 {
     SET_n3_r8(5, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_EE()
+ANTGB_FORCEINLINE void Cpu::op_CB_EE()
 {
     SET_n3_HL(5);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_EF()
+ANTGB_FORCEINLINE void Cpu::op_CB_EF()
 {
     SET_n3_r8(5, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_F0()
+ANTGB_FORCEINLINE void Cpu::op_CB_F0()
 {
     SET_n3_r8(6, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_F1()
+ANTGB_FORCEINLINE void Cpu::op_CB_F1()
 {
     SET_n3_r8(6, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_F2()
+ANTGB_FORCEINLINE void Cpu::op_CB_F2()
 {
     SET_n3_r8(6, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_F3()
+ANTGB_FORCEINLINE void Cpu::op_CB_F3()
 {
     SET_n3_r8(6, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_F4()
+ANTGB_FORCEINLINE void Cpu::op_CB_F4()
 {
     SET_n3_r8(6, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_F5()
+ANTGB_FORCEINLINE void Cpu::op_CB_F5()
 {
     SET_n3_r8(6, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_F6()
+ANTGB_FORCEINLINE void Cpu::op_CB_F6()
 {
     SET_n3_HL(6);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_F7()
+ANTGB_FORCEINLINE void Cpu::op_CB_F7()
 {
     SET_n3_r8(6, A);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_F8()
+ANTGB_FORCEINLINE void Cpu::op_CB_F8()
 {
     SET_n3_r8(7, B);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_F9()
+ANTGB_FORCEINLINE void Cpu::op_CB_F9()
 {
     SET_n3_r8(7, C);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_FA()
+ANTGB_FORCEINLINE void Cpu::op_CB_FA()
 {
     SET_n3_r8(7, D);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_FB()
+ANTGB_FORCEINLINE void Cpu::op_CB_FB()
 {
     SET_n3_r8(7, E);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_FC()
+ANTGB_FORCEINLINE void Cpu::op_CB_FC()
 {
     SET_n3_r8(7, H);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_FD()
+ANTGB_FORCEINLINE void Cpu::op_CB_FD()
 {
     SET_n3_r8(7, L);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_FE()
+ANTGB_FORCEINLINE void Cpu::op_CB_FE()
 {
     SET_n3_HL(7);
 }
 
-ANTDBG_ALWAYS_INLINE void Cpu::op_CB_FF()
+ANTGB_FORCEINLINE void Cpu::op_CB_FF()
 {
     SET_n3_r8(7, A);
 }

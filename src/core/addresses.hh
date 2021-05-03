@@ -123,15 +123,24 @@ static const addr_t REG_OBP1 = 0xFF49;
 static const addr_t REG_WY   = 0xFF4A;
 static const addr_t REG_WX   = 0xFF4B;
 
+static const addr_t PPU_LOW  = 0xFF40;
+static const addr_t PPU_HIGH = 0xFF4B;
+
 // Serial
 static const addr_t REG_SB = 0xFF01;
 static const addr_t REG_SC = 0xFF02;
+
+static const addr_t SERIAL_LOW  = 0xFF01;
+static const addr_t SERIAL_HIGH = 0xFF02;
 
 // Timer
 static const addr_t REG_DIV  = 0xFF04;
 static const addr_t REG_TIMA = 0xFF05;
 static const addr_t REG_TMA  = 0xFF06;
 static const addr_t REG_TAC  = 0xFF07;
+
+static const addr_t TIMER_LOW  = 0xFF04;
+static const addr_t TIMER_HIGH = 0xFF07;
 
 //------------------------------------------------------------------------------
 // CUSTOM ADDRESSES

@@ -544,8 +544,6 @@ const std::array<const InstrInfo, 256> CB_INSTR_TABLE =
 
 // clang-format on
 
-static Disassembler disassembler;
-
 Cpu::Cpu(Mmu* memory, uint8_t* IE, uint8_t* IF) : mem(memory), IE(IE), IF(IF)
 {
     trace_log.open("trace.log", std::ofstream::out);

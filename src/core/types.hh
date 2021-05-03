@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../antdbg/src/core/addresses.hh"
-#include "../antdbg/src/core/macros.hh"
-#include "../antdbg/src/core/types.hh"
+//#include "../antdbg/src/core/addresses.hh"
+//#include "../antdbg/src/core/macros.hh"
+//#include "../antdbg/src/core/types.hh"
 #include <cassert>
 #include <cstdint>
 #include <cstring>
@@ -10,8 +10,6 @@
 
 namespace antgb
 {
-
-using namespace antdbg;
 
 using std::cerr;
 using std::cout;
@@ -37,5 +35,18 @@ class Sprite;
 class Sprites;
 class Tile;
 class Timer;
+
+enum JoypadButton
+{
+    JoypadNone,
+    JoypadUp,
+    JoypadDown,
+    JoypadLeft,
+    JoypadRight,
+    JoypadSelect,
+    JoypadStart,
+    JoypadA,
+    JoypadB
+};
 
 } // namespace antgb
