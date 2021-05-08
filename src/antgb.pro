@@ -147,7 +147,7 @@ HEADERS += \
     gui/widgets/registerviewer.hh \
     gui/widgets/serialviewer.hh \
     gui/widgets/stackviewer.hh \
-    gui/widgets/vramviewer.hh
+    gui/widgets/vramviewer.hh \
     util/macros.hh
 
 RESOURCES += \
