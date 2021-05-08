@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../debugger/debugcore.hh"
-#include "../models/memorydelegate.hh"
-#include "../models/memorymodel.hh"
+#include "debugger/debugcore.hh"
+#include "gui/models/memorydelegate.hh"
+#include "gui/models/memorymodel.hh"
 #include <QFrame>
 #include <QLabel>
 #include <QGridLayout>

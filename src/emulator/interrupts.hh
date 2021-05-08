@@ -1,7 +1,7 @@
 #pragma once
 
 #include "types.hh"
-#include "../util/macros.hh"
+#include "util/macros.hh"
 
 class Irc
 {

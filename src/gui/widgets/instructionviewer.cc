@@ -2,9 +2,9 @@
 
 #include <QHeaderView>
 
-#include "../util/fonts.hh"
-#include "../util/helper.hh"
-#include "../../debugger/disassembler.hh"
+#include "gui/util/fonts.hh"
+#include "gui/util/helper.hh"
+#include "debugger/disassembler.hh"
 
 void InstructionViewer::on_search()
 {

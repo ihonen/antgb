@@ -1,8 +1,8 @@
 #pragma once
 
 #include "breakpoint.hh"
-#include "../util/macros.hh"
-#include "../emulator/types.hh"
+#include "util/macros.hh"
+#include "emulator/types.hh"
 
 enum DebugEventType
 {

@@ -2,7 +2,7 @@
 
 #include "interrupts.hh"
 #include "exceptions.hh"
-#include "../util/macros.hh"
+#include "util/macros.hh"
 #include "types.hh"
 #include <array>
 #include <fstream>

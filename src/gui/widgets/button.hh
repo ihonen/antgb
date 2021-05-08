@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../util/keybindings.hh"
+#include "gui/util/keybindings.hh"
 #include <QLabel>
 
 class Button : public QLabel

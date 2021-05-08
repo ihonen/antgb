@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/">
+    <qresource prefix="">
         <file>img/accelerate.png</file>
         <file>img/decelerate.png</file>
         <file>img/gear.png</file>

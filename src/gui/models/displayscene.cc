@@ -1,6 +1,6 @@
 #include "displayscene.hh"
 
-#include "../../emulator/emulator.hh"
+#include "emulator/emulator.hh"
 #include <QGraphicsRectItem>
 
 /*

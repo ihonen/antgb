@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../emulator/emulator.hh"
-#include "../../debugger/debugcore.hh"
-#include "../models/displayscene.hh"
+#include "emulator/emulator.hh"
+#include "debugger/debugcore.hh"
+#include "gui/models/displayscene.hh"
 #include "emulatorwidget.hh"
 
 #include <QMainWindow>

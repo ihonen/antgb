@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../debugger/debugcore.hh"
+#include "debugger/debugcore.hh"
 #include <QAbstractItemModel>
 
 class RegisterModel : public QAbstractItemModel, iDebugObserver

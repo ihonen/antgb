@@ -1,7 +1,7 @@
 #include "dataviewer.hh"
 
-#include "../util/fonts.hh"
-#include "../util/helper.hh"
+#include "gui/util/fonts.hh"
+#include "gui/util/helper.hh"
 #include <QVBoxLayout>
 #include <QLineEdit>
 

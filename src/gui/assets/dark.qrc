@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/">
+    <qresource prefix="">
         <file>dark/branch_closed.svg</file>
         <file>dark/branch_closed-on.svg</file>
         <file>dark/branch_open.svg</file>

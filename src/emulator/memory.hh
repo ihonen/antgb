@@ -1,8 +1,8 @@
 #pragma once
 
 #include "apu.hh"
-#include "../debugger/cartridge.hh"
-#include "../util/macros.hh"
+#include "debugger/cartridge.hh"
+#include "util/macros.hh"
 #include "interrupts.hh"
 #include "joypad.hh"
 #include "ppu.hh"

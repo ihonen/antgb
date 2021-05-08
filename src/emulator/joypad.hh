@@ -2,7 +2,7 @@
 
 #include "interrupts.hh"
 #include "types.hh"
-#include "../emulator/types.hh"
+#include "emulator/types.hh"
 #include <map>
 
 class Joypad

@@ -1,9 +1,9 @@
 #include "registermodel.hh"
 
-#include "../util/helper.hh"
-#include "../util/colors.hh"
+#include "gui/util/helper.hh"
+#include "gui/util/colors.hh"
 
-#include "../../debugger/addresses.hh"
+#include "debugger/addresses.hh"
 
 RegisterModel::RegisterModel(DebugCore* debugger, QObject* parent) :
     QAbstractItemModel(parent),

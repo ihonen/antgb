@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../debugger/cartridge.hh"
-#include "../debugger/iemulator.hh"
-#include "../util/macros.hh"
-#include "../emulator/types.hh"
+#include "debugger/cartridge.hh"
+#include "debugger/iemulator.hh"
+#include "util/macros.hh"
+#include "emulator/types.hh"
 #include "cpu.hh"
 #include "interrupts.hh"
 #include "joypad.hh"

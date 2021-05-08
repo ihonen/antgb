@@ -1,7 +1,7 @@
 #include "breakpointmodel.hh"
 
-#include "../util/helper.hh"
-#include "../util/pixmaps.hh"
+#include "gui/util/helper.hh"
+#include "gui/util/pixmaps.hh"
 
 static const QVector<int> ALL_ROLES = {Qt::DecorationRole, Qt::DisplayRole};
 

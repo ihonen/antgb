@@ -1,7 +1,7 @@
 #include "cartridgeviewer.hh"
 
-#include "../util/fonts.hh"
-#include "../util/cartridge.hh"
+#include "gui/util/fonts.hh"
+#include "gui/util/cartridge.hh"
 #include <QFormLayout>
 #include <QStyle>
 

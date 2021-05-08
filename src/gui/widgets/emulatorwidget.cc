@@ -3,7 +3,7 @@
 #include <QFile>
 #include <QThread>
 
-#include "../../emulator/fileio.hh"
+#include "emulator/fileio.hh"
 
 void EmulatorWidget::toggle_debug_mode()
 {

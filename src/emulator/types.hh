@@ -53,8 +53,8 @@ enum JoypadButton
 };
 
 
-#include "../debugger/addresses.hh"
-#include "../emulator/types.hh"
+#include "debugger/addresses.hh"
+#include "emulator/types.hh"
 #include <cassert>
 #include <cstdint>
 #include <cstring>

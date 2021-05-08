@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../debugger/debugcore.hh"
-#include "../models/stackdelegate.hh"
-#include "../models/stackmodel.hh"
+#include "debugger/debugcore.hh"
+#include "gui/models/stackdelegate.hh"
+#include "gui/models/stackmodel.hh"
 #include <QFrame>
 #include <QLabel>
 #include <QGridLayout>

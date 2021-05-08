@@ -1,13 +1,13 @@
 #pragma once
 
-#include "../models/instructionmodel.hh"
-#include "../../debugger/debugcore.hh"
+#include "gui/models/instructionmodel.hh"
+#include "debugger/debugcore.hh"
 #include <QFrame>
 #include <QLabel>
 #include <QGridLayout>
 #include <QTableWidget>
 #include <QLineEdit>
-#include "../models/instructiondelegate.hh"
+#include "gui/models/instructiondelegate.hh"
 
 class InstructionView : public QTableView, iDebugObserver
 {

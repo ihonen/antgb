@@ -1,7 +1,7 @@
 #include "cartridge.hh"
 
 #include <cstring>
-#include "../gui/util/helper.hh"
+#include "gui/util/helper.hh"
 
 static constexpr uint8_t NINTENDO_LOGO_HEX[0x30] =
 {

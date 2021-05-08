@@ -2,7 +2,7 @@
 
 #include <QIcon>
 
-#include "../util/pixmaps.hh"
+#include "gui/util/pixmaps.hh"
 
 Button::Button(JoypadButton id, QWidget* parent) :
     QLabel(parent),

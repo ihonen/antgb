@@ -3,10 +3,10 @@
 #include "disassembler.hh"
 #include "idebugobserver.hh"
 #include "iemulator.hh"
-#include "../emulator/emulator.hh"
-#include "../emulator/cpu.hh"
-#include "../emulator/types.hh"
-#include "../util/macros.hh"
+#include "emulator/emulator.hh"
+#include "emulator/cpu.hh"
+#include "emulator/types.hh"
+#include "util/macros.hh"
 #include <unordered_map>
 
 #include <set>

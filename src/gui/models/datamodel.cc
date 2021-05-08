@@ -1,6 +1,6 @@
 #include "datamodel.hh"
 
-#include "../util/helper.hh"
+#include "gui/util/helper.hh"
 
 DataModel::DataModel(DebugCore* debugger, QObject* parent) :
     QAbstractTableModel(parent),

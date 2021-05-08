@@ -1,7 +1,7 @@
 #pragma once
 
 #include "dataview.hh"
-#include "../../debugger/debugcore.hh"
+#include "debugger/debugcore.hh"
 #include <QPushButton>
 #include <QFrame>
 

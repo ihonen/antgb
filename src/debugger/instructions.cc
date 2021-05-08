@@ -1,7 +1,7 @@
 #include "instructions.hh"
 
 #include "debugcore.hh"
-#include "../util/macros.hh"
+#include "util/macros.hh"
 
 const std::array<Opcode, 256> OPCODES =
 {{

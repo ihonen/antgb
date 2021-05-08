@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../debugger/idebugobserver.hh"
-#include "../../debugger/debugcore.hh"
+#include "debugger/idebugobserver.hh"
+#include "debugger/debugcore.hh"
 #include <QFrame>
 #include <QLabel>
 #include <QGridLayout>

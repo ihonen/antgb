@@ -1,18 +1,18 @@
 #pragma once
 
 #include "cartridgeviewer.hh"
-#include "../models/displayscene.hh"
+#include "gui/models/displayscene.hh"
 #include "dataviewer.hh"
 #include "instructionviewer.hh"
 #include "buttoninputwidget.hh"
 #include "memoryviewer.hh"
-#include "../models/registermodel.hh"
+#include "gui/models/registermodel.hh"
 #include "registerviewer.hh"
 #include "serialviewer.hh"
 #include "stackviewer.hh"
 #include "vramviewer.hh"
-#include "../../emulator/emulator.hh"
-#include "../../debugger/debugcore.hh"
+#include "emulator/emulator.hh"
+#include "debugger/debugcore.hh"
 
 #include <QGraphicsView>
 #include <QGridLayout>

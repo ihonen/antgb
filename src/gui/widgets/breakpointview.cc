@@ -1,7 +1,7 @@
 #include "breakpointview.hh"
 
 #include <QHeaderView>
-#include "../util/fonts.hh"
+#include "gui/util/fonts.hh"
 
 void BreakpointView::on_data_changed(const QModelIndex& top_left, const QModelIndex& bottom_right, QVector<int> roles)
 {

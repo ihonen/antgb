@@ -1,6 +1,6 @@
 #include "disassembler.hh"
 
-#include "../emulator/cpu.hh"
+#include "emulator/cpu.hh"
 
 #include <map>
 using namespace std;

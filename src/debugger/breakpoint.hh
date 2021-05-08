@@ -1,8 +1,8 @@
 #pragma once
 
 #include "constants.hh"
-#include "../util/macros.hh"
-#include "../emulator/types.hh"
+#include "util/macros.hh"
+#include "emulator/types.hh"
 
 #include <cassert>
 #include <set>

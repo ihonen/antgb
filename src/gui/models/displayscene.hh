@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../debugger/debugcore.hh"
-#include "../../emulator/renderer.hh"
+#include "debugger/debugcore.hh"
+#include "emulator/renderer.hh"
 #include <QGraphicsScene>
 
 class DisplayScene : public QGraphicsScene

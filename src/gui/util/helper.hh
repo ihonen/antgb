@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QString>
-#include "../../util/macros.hh"
+#include "util/macros.hh"
 
 FORCE_INLINE QString hexstr8(uint8_t hex_number)
 {

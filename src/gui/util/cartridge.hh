@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../debugger/cartridge.hh"
+#include "debugger/cartridge.hh"
 #include <cstdint>
 #include <map>
 

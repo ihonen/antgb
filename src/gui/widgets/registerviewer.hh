@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../models/registermodel.hh"
-#include "../../debugger/debugcore.hh"
+#include "gui/models/registermodel.hh"
+#include "debugger/debugcore.hh"
 #include <QFrame>
 #include <QLabel>
 #include <QGridLayout>

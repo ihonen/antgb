@@ -1,11 +1,11 @@
 #include "mainwindow.hh"
 
-#include "../../debugger/cartridge.hh"
-#include "../../emulator/fileio.hh"
-#include "../util/keybindings.hh"
-#include "../util/colors.hh"
-#include "../util/fonts.hh"
-#include "../util/pixmaps.hh"
+#include "debugger/cartridge.hh"
+#include "emulator/fileio.hh"
+#include "gui/util/keybindings.hh"
+#include "gui/util/colors.hh"
+#include "gui/util/fonts.hh"
+#include "gui/util/pixmaps.hh"
 #include <thread>
 #include <QFileDialog>
 #include <QToolBar>

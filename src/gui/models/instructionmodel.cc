@@ -1,9 +1,9 @@
 #include "instructionmodel.hh"
 
-#include "../../debugger/disassembler.hh"
-#include "../util/colors.hh"
-#include "../util/pixmaps.hh"
-#include "../util/helper.hh"
+#include "debugger/disassembler.hh"
+#include "gui/util/colors.hh"
+#include "gui/util/pixmaps.hh"
+#include "gui/util/helper.hh"
 
 #include <QHeaderView>
 #include <QDebug>

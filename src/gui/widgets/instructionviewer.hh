@@ -1,9 +1,9 @@
 #pragma once
 
 #include "breakpointview.hh"
-#include "../models/instructionmodel.hh"
+#include "gui/models/instructionmodel.hh"
 #include "instructionview.hh"
-#include "../../debugger/debugcore.hh"
+#include "debugger/debugcore.hh"
 #include <QFrame>
 #include <QLabel>
 #include <QGridLayout>

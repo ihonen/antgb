@@ -1,7 +1,7 @@
 #pragma once
 
 #include "types.hh"
-#include "../util/macros.hh"
+#include "util/macros.hh"
 
 FORCE_INLINE void set_bit(uint8_t* byte, uint8_t bit_index)
 {

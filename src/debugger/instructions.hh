@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../emulator/types.hh"
+#include "emulator/types.hh"
 #include <cstdint>
 #include <unordered_set>
 

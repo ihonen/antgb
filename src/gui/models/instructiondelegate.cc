@@ -1,7 +1,7 @@
 #include "instructiondelegate.hh"
 
 #include "instructionmodel.hh"
-#include "../util/colors.hh"
+#include "gui/util/colors.hh"
 #include <QPainter>
 
 void InstructionDelegate::on_hover_index_changed(const QModelIndex& index)

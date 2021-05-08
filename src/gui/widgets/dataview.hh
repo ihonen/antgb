@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../models/datadelegate.hh"
-#include "../models/datamodel.hh"
-#include "../../debugger/debugcore.hh"
+#include "gui/models/datadelegate.hh"
+#include "gui/models/datamodel.hh"
+#include "debugger/debugcore.hh"
 #include <QFrame>
 #include <QLabel>
 #include <QGridLayout>

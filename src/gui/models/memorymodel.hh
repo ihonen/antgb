@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "../../debugger/debugcore.hh"
+#include "debugger/debugcore.hh"
 #include <QAbstractTableModel>
 #include <QFrame>
 #include <QLabel>

@@ -1,6 +1,6 @@
 #include "datadelegate.hh"
 
-#include "../util/colors.hh"
+#include "gui/util/colors.hh"
 #include "datamodel.hh"
 #include <QPainter>
 

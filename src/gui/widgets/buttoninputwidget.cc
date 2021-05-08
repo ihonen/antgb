@@ -1,6 +1,6 @@
 #include "buttoninputwidget.hh"
 
-#include "../util/keybindings.hh"
+#include "gui/util/keybindings.hh"
 
 void ButtonInputWidget::button_hover_enter()
 {

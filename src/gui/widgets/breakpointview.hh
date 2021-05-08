@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../models/breakpointmodel.hh"
-#include "../models/breakpointdelegate.hh"
-#include "../../debugger/debugcore.hh"
+#include "gui/models/breakpointmodel.hh"
+#include "gui/models/breakpointdelegate.hh"
+#include "debugger/debugcore.hh"
 #include <QTableView>
 
 class BreakpointView : public QTableView
