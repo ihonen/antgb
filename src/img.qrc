@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>frontend/qt/img/settings.png</file>
-    </qresource>
-</RCC>

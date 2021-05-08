@@ -25,43 +25,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++17
 
 SOURCES += \
+    main.cc \
     debugger/breakpoint.cc \
     debugger/cartridge.cc \
     debugger/debugcore.cc \
     debugger/disassembler.cc \
     debugger/instructions.cc \
-    gui/breakpointdelegate.cc \
-    gui/breakpointmodel.cc \
-    gui/breakpointview.cc \
-    gui/button.cc \
-    gui/buttoninputwidget.cc \
-    gui/cartridgeviewer.cc \
-    gui/colors.cc \
-    gui/datadelegate.cc \
-    gui/datamodel.cc \
-    gui/dataview.cc \
-    gui/dataviewer.cc \
-    gui/displayscene.cc \
-    gui/emulatorwidget.cc \
-    gui/fonts.cc \
-    gui/helper.cc \
-    gui/instructiondelegate.cc \
-    gui/instructionmodel.cc \
-    gui/instructionview.cc \
-    gui/instructionviewer.cc \
-    gui/main.cc \
-    gui/mainwindow.cc \
-    gui/memorydelegate.cc \
-    gui/memorymodel.cc \
-    gui/memoryviewer.cc \
-    gui/pixmaps.cc \
-    gui/registermodel.cc \
-    gui/registerviewer.cc \
-    gui/serialviewer.cc \
-    gui/stackdelegate.cc \
-    gui/stackmodel.cc \
-    gui/stackviewer.cc \
-    gui/vramviewer.cc \
     emulator/apu.cc \
     emulator/background.cc \
     emulator/bitmanip.cc \
@@ -79,7 +48,38 @@ SOURCES += \
     emulator/sprite.cc \
     emulator/sprites.cc \
     emulator/tile.cc \
-    emulator/timer.cc
+    emulator/timer.cc \
+    gui/models/breakpointdelegate.cc \
+    gui/models/breakpointmodel.cc \
+    gui/models/datadelegate.cc \
+    gui/models/datamodel.cc \
+    gui/models/displayscene.cc \
+    gui/models/instructiondelegate.cc \
+    gui/models/instructionmodel.cc \
+    gui/models/memorydelegate.cc \
+    gui/models/memorymodel.cc \
+    gui/models/registermodel.cc \
+    gui/models/stackdelegate.cc \
+    gui/models/stackmodel.cc \
+    gui/util/colors.cc \
+    gui/util/fonts.cc \
+    gui/util/helper.cc \
+    gui/util/pixmaps.cc \
+    gui/widgets/breakpointview.cc \
+    gui/widgets/button.cc \
+    gui/widgets/buttoninputwidget.cc \
+    gui/widgets/cartridgeviewer.cc \
+    gui/widgets/dataview.cc \
+    gui/widgets/dataviewer.cc \
+    gui/widgets/emulatorwidget.cc \
+    gui/widgets/instructionview.cc \
+    gui/widgets/instructionviewer.cc \
+    gui/widgets/mainwindow.cc \
+    gui/widgets/memoryviewer.cc \
+    gui/widgets/registerviewer.cc \
+    gui/widgets/serialviewer.cc \
+    gui/widgets/stackviewer.cc \
+    gui/widgets/vramviewer.cc
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -97,41 +97,6 @@ HEADERS += \
     debugger/idebugobserver.hh \
     debugger/iemulator.hh \
     debugger/instructions.hh \
-    debugger/macros.hh \
-    debugger/types.hh \
-    gui/cartridge.hh \
-    gui/breakpointdelegate.hh \
-    gui/breakpointmodel.hh \
-    gui/breakpointview.hh \
-    gui/button.hh \
-    gui/buttoninputwidget.hh \
-    gui/cartridgeviewer.hh \
-    gui/colors.hh \
-    gui/datadelegate.hh \
-    gui/datamodel.hh \
-    gui/dataview.hh \
-    gui/dataviewer.hh \
-    gui/displayscene.hh \
-    gui/emulatorwidget.hh \
-    gui/fonts.hh \
-    gui/helper.hh \
-    gui/instructiondelegate.hh \
-    gui/instructionmodel.hh \
-    gui/instructionview.hh \
-    gui/instructionviewer.hh \
-    gui/keybindings.hh \
-    gui/mainwindow.hh \
-    gui/memorydelegate.hh \
-    gui/memorymodel.hh \
-    gui/memoryviewer.hh \
-    gui/pixmaps.hh \
-    gui/registermodel.hh \
-    gui/registerviewer.hh \
-    gui/serialviewer.hh \
-    gui/stackdelegate.hh \
-    gui/stackmodel.hh \
-    gui/stackviewer.hh \
-    gui/vramviewer.hh \
     emulator/apu.hh \
     emulator/background.hh \
     emulator/bitmanip.hh \
@@ -150,11 +115,44 @@ HEADERS += \
     emulator/tile.hh \
     emulator/timer.hh \
     emulator/types.hh \
+    gui/models/breakpointdelegate.hh \
+    gui/models/breakpointmodel.hh \
+    gui/models/datadelegate.hh \
+    gui/models/datamodel.hh \
+    gui/models/displayscene.hh \
+    gui/models/instructiondelegate.hh \
+    gui/models/instructionmodel.hh \
+    gui/models/memorydelegate.hh \
+    gui/models/memorymodel.hh \
+    gui/models/registermodel.hh \
+    gui/models/stackdelegate.hh \
+    gui/models/stackmodel.hh \
+    gui/util/cartridge.hh \
+    gui/util/colors.hh \
+    gui/util/fonts.hh \
+    gui/util/helper.hh \
+    gui/util/keybindings.hh \
+    gui/util/pixmaps.hh \
+    gui/widgets/breakpointview.hh \
+    gui/widgets/button.hh \
+    gui/widgets/buttoninputwidget.hh \
+    gui/widgets/cartridgeviewer.hh \
+    gui/widgets/dataview.hh \
+    gui/widgets/dataviewer.hh \
+    gui/widgets/emulatorwidget.hh \
+    gui/widgets/instructionview.hh \
+    gui/widgets/instructionviewer.hh \
+    gui/widgets/mainwindow.hh \
+    gui/widgets/memoryviewer.hh \
+    gui/widgets/registerviewer.hh \
+    gui/widgets/serialviewer.hh \
+    gui/widgets/stackviewer.hh \
+    gui/widgets/vramviewer.hh
     util/macros.hh
 
 RESOURCES += \
-    gui/dark.qrc \
-    gui/img.qrc \
+    gui/assets/dark.qrc \
+    gui/assets/img.qrc \
     memdump.qrc
 
 FORMS +=
