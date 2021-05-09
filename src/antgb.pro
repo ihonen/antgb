@@ -152,6 +152,7 @@ HEADERS += \
 
 RESOURCES += \
     gui/assets/dark.qrc \
-    gui/assets/img.qrc
+    gui/assets/img.qrc \
+    memdump.qrc
 
 FORMS +=
