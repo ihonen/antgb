@@ -25,9 +25,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++17
 
 SOURCES += \
+    debugger/cartridgeheader.cc \
+    emulator/cartridge.cc \
     main.cc \
     debugger/breakpoint.cc \
-    debugger/cartridge.cc \
     debugger/debugcore.cc \
     debugger/disassembler.cc \
     debugger/instructions.cc \
@@ -87,7 +88,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     debugger/addresses.hh \
     debugger/breakpoint.hh \
-    debugger/cartridge.hh \
+    debugger/cartridgeheader.hh \
     debugger/constants.hh \
     debugger/debugcore.hh \
     debugger/debugevent.hh \
@@ -98,6 +99,7 @@ HEADERS += \
     emulator/apu.hh \
     emulator/background.hh \
     emulator/bitmanip.hh \
+    emulator/cartridge.hh \
     emulator/cpu.hh \
     emulator/emulator.hh \
     emulator/exceptions.hh \

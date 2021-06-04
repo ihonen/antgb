@@ -1,9 +1,9 @@
 #pragma once
 
-#include "debugger/cartridge.hh"
 #include "debugger/iemulator.hh"
 #include "util/macros.hh"
 #include "emulator/types.hh"
+#include "cartridge.hh"
 #include "cpu.hh"
 #include "interrupts.hh"
 #include "joypad.hh"
@@ -19,7 +19,7 @@ class Emulator : public iEmulator
 public:
     Emulator();
     virtual ~Emulator() override;
-    virtual void load_rom(const void* rom, size_t size) override;
+    virtual void load_rom(const std::string& filepath) override;
     inline virtual int execute_next() override;
     virtual void button_pressed(JoypadButton button) override;
     virtual void button_released(JoypadButton button) override;

@@ -17,9 +17,9 @@ DebugCore::~DebugCore()
     pause();
 }
 
-void DebugCore::load_rom(const void* rom, size_t size)
+void DebugCore::load_rom(const std::string& filepath)
 {
-    emu_->load_rom(rom, size);
+    emu_->load_rom(filepath);
     DebugEvent event(DbRomLoaded);
     for (auto& observer : observers)
         observer->debug_event(&event);

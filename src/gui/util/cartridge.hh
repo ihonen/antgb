@@ -1,6 +1,6 @@
 #pragma once
 
-#include "debugger/cartridge.hh"
+#include "debugger/cartridgeheader.hh"
 #include <cstdint>
 #include <map>
 
@@ -438,88 +438,88 @@ static const std::map<NewLicensee, const char* const> NEW_LICENSEE =
     {NewLicensee::Konami3, "Konami"}
 };
 
-static const std::map<Cartridge::CartridgeType, const char* const> CART_TYPE_STR =
+static const std::map<CartridgeHeader::CartridgeType, const char* const> CART_TYPE_STR =
 {
-    {Cartridge::CartRomOnly,
+    {CartridgeHeader::CartRomOnly,
      "ROM only"},
-    {Cartridge::CartMbc1,
+    {CartridgeHeader::CartMbc1,
      "MBC1"},
-    {Cartridge::CartMbc1_Ram,
+    {CartridgeHeader::CartMbc1_Ram,
      "MBC1+RAM"},
-    {Cartridge::CartMbc1_Ram_Battery,
+    {CartridgeHeader::CartMbc1_Ram_Battery,
      "MBC1+RAM+Battery"},
-    {Cartridge::CartMbc2,
+    {CartridgeHeader::CartMbc2,
      "MBC2"},
-    {Cartridge::CartMbc2_Battery,
+    {CartridgeHeader::CartMbc2_Battery,
      "MBC2+Battery"},
-    {Cartridge::CartRom_Ram,
+    {CartridgeHeader::CartRom_Ram,
      "ROM+RAM"},
-    {Cartridge::CartRom_Ram_Battery,
+    {CartridgeHeader::CartRom_Ram_Battery,
      "ROM+RAM+Battery"},
-    {Cartridge::CartMmm01,
+    {CartridgeHeader::CartMmm01,
      "MMM01"},
-    {Cartridge::CartMmm01_Ram,
+    {CartridgeHeader::CartMmm01_Ram,
      "MMM01+RAM"},
-    {Cartridge::CartMmm01_Ram_Battery,
+    {CartridgeHeader::CartMmm01_Ram_Battery,
      "MMM01+RAM+Battery"},
-    {Cartridge::CartMbc3_Timer_Battery,
+    {CartridgeHeader::CartMbc3_Timer_Battery,
      "MBC3+Timer+Battery"},
-    {Cartridge::CartMbc3_Timer_Ram_Battery,
+    {CartridgeHeader::CartMbc3_Timer_Ram_Battery,
      "MBC3+Timer+RAM+Battery"},
-    {Cartridge::CartMbc3,
+    {CartridgeHeader::CartMbc3,
      "MBC3"},
-    {Cartridge::CartMbc3_Ram,
+    {CartridgeHeader::CartMbc3_Ram,
      "MBC3+RAM"},
-    {Cartridge::CartMbc3_Ram_Battery,
+    {CartridgeHeader::CartMbc3_Ram_Battery,
      "MBC3+RAM+Battery"},
-    {Cartridge::CartMbc5,
+    {CartridgeHeader::CartMbc5,
      "MBC5"},
-    {Cartridge::CartMbc5_Ram,
+    {CartridgeHeader::CartMbc5_Ram,
      "MBC5+RAM"},
-    {Cartridge::CartMbc5_Ram_battery,
+    {CartridgeHeader::CartMbc5_Ram_battery,
      "MBC5+RAM+Battery"},
-    {Cartridge::CartMbc5_Rumble,
+    {CartridgeHeader::CartMbc5_Rumble,
      "MBC5+Rumble"},
-    {Cartridge::CartMbc5_Rumble_Ram,
+    {CartridgeHeader::CartMbc5_Rumble_Ram,
      "MBC5+Rumble+RAM"},
-    {Cartridge::CartMbc5_Rumble_Ram_Battery,
+    {CartridgeHeader::CartMbc5_Rumble_Ram_Battery,
      "MBC5+Rumble+RAM+Battery"},
-    {Cartridge::CartMbc6,
+    {CartridgeHeader::CartMbc6,
      "MBC6"},
-    {Cartridge::CartMbc7_Sensor_Rumble_Ram_Battery,
+    {CartridgeHeader::CartMbc7_Sensor_Rumble_Ram_Battery,
      "MBC7+Sensor+Rumble+RAM+Battery"},
-    {Cartridge::CartPocketCamera,
+    {CartridgeHeader::CartPocketCamera,
      "Pocket Camera"},
-    {Cartridge::CartBandaiTama5,
+    {CartridgeHeader::CartBandaiTama5,
      "Bandai Tama 5"},
-    {Cartridge::CartHuc3,
+    {CartridgeHeader::CartHuc3,
      "HuC3"},
-    {Cartridge::CartHuC1_Ram_Battery,
+    {CartridgeHeader::CartHuC1_Ram_Battery,
      "HuC1+RAM+Battery"},
 };
 
-static const std::map<Cartridge::RomSize, const char* const> ROM_SIZE_STR =
+static const std::map<CartridgeHeader::RomSize, const char* const> ROM_SIZE_STR =
 {
-    {Cartridge::RomSize::Cart32KB, "32 KB"},
-    {Cartridge::RomSize::Cart64KB, "64 KB"},
-    {Cartridge::RomSize::Cart128KB, "128 KB"},
-    {Cartridge::RomSize::Cart256KB, "256 KB"},
-    {Cartridge::RomSize::Cart512KB, "512 KB"},
-    {Cartridge::RomSize::Cart1MB, "1024 KB"},
-    {Cartridge::RomSize::Cart2MB, "2048 KB"},
-    {Cartridge::RomSize::Cart4MB, "4096 KB"},
-    {Cartridge::RomSize::Cart8MB, "8192 KB"},
-    {Cartridge::RomSize::Cart1_1MB, "1152 KB"},
-    {Cartridge::RomSize::Cart1_2MB, "1280 KB"},
-    {Cartridge::RomSize::Cart1_5MB, "1536 KB"}
+    {CartridgeHeader::RomSize::Cart32KB, "32 KB"},
+    {CartridgeHeader::RomSize::Cart64KB, "64 KB"},
+    {CartridgeHeader::RomSize::Cart128KB, "128 KB"},
+    {CartridgeHeader::RomSize::Cart256KB, "256 KB"},
+    {CartridgeHeader::RomSize::Cart512KB, "512 KB"},
+    {CartridgeHeader::RomSize::Cart1MB, "1024 KB"},
+    {CartridgeHeader::RomSize::Cart2MB, "2048 KB"},
+    {CartridgeHeader::RomSize::Cart4MB, "4096 KB"},
+    {CartridgeHeader::RomSize::Cart8MB, "8192 KB"},
+    {CartridgeHeader::RomSize::Cart1_1MB, "1152 KB"},
+    {CartridgeHeader::RomSize::Cart1_2MB, "1280 KB"},
+    {CartridgeHeader::RomSize::Cart1_5MB, "1536 KB"}
 };
 
-static const std::map<Cartridge::RamSize, const char* const> RAM_SIZE_STR =
+static const std::map<CartridgeHeader::RamSize, const char* const> RAM_SIZE_STR =
 {
-    {Cartridge::RamSize::CartNone, "0 KB"},
-    {Cartridge::RamSize::Cart32KB, "32 KB"},
-    {Cartridge::RamSize::Cart8KB, "8 KB"},
-    {Cartridge::RamSize::Cart32KB, "32 KB"},
-    {Cartridge::RamSize::Cart128KB, "128 KB"},
-    {Cartridge::RamSize::Cart64KB, "64 KB"}
+    {CartridgeHeader::RamSize::CartNone, "0 KB"},
+    {CartridgeHeader::RamSize::Cart32KB, "32 KB"},
+    {CartridgeHeader::RamSize::Cart8KB, "8 KB"},
+    {CartridgeHeader::RamSize::Cart32KB, "32 KB"},
+    {CartridgeHeader::RamSize::Cart128KB, "128 KB"},
+    {CartridgeHeader::RamSize::Cart64KB, "64 KB"}
 };

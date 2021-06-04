@@ -1,7 +1,8 @@
 #pragma once
 
 #include "apu.hh"
-#include "debugger/cartridge.hh"
+#include "cartridge.hh"
+#include "debugger/cartridgeheader.hh"
 #include "util/macros.hh"
 #include "interrupts.hh"
 #include "joypad.hh"
@@ -106,7 +107,7 @@ FORCE_INLINE uint8_t* Memory::get(memaddr_t address)
 {
     if (address <= ROM1.high)
     {
-        if (cartridge) return &cartridge->data[address];
+        if (cartridge != nullptr) return cartridge->get(address);
         else return nullptr;
     }
     else if (address >= ERAM.low && address <= ERAM.high)

@@ -17,7 +17,7 @@ class DebugCore : public iEmulator
 public:
     DebugCore(iEmulator* emu);
     virtual ~DebugCore() override;
-    virtual void load_rom(const void* rom, size_t size) override;
+    virtual void load_rom(const std::string& filepath) override;
     virtual int execute_next() override;
     void step_over();
     void step_into();

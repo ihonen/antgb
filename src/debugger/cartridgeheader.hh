@@ -3,7 +3,7 @@
 #include "emulator/types.hh"
 #include <string>
 
-class Cartridge
+class CartridgeHeader
 {
 public:
     static constexpr memaddr_t NINTENDO_LOGO_LOW = 0x0103;
@@ -125,7 +125,7 @@ public:
         Cart64KB = 0x05
     };
 
-    Cartridge();
+    CartridgeHeader();
     bool is_nintendo_logo_valid();
     std::string title();
     bool has_manufacturer_code();

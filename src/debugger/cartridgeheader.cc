@@ -1,4 +1,4 @@
-#include "cartridge.hh"
+#include "cartridgeheader.hh"
 
 #include <cstring>
 #include "gui/util/helper.hh"
@@ -13,103 +13,103 @@ static constexpr uint8_t NINTENDO_LOGO_HEX[0x30] =
     0xDD, 0xDC, 0x99, 0x9F, 0xBB, 0xB9, 0x33, 0x3E
 };
 
-Cartridge::Cartridge()
+CartridgeHeader::CartridgeHeader()
 {
     memset(data, 0x00, 0x8000);
     size = 0;
     is_nintendo_logo_valid();
 }
 
-bool Cartridge::is_nintendo_logo_valid()
+bool CartridgeHeader::is_nintendo_logo_valid()
 {
     if (memcmp(&data[NINTENDO_LOGO_LOW], NINTENDO_LOGO_HEX, NINTENDO_LOGO_SIZE) != 0)
         return true;
     return false;
 }
 
-std::string Cartridge::title()
+std::string CartridgeHeader::title()
 {
     char titledata[16];
     memcpy(titledata, &data[TITLE_LOW], 16);
     return titledata;
 }
 
-bool Cartridge::has_manufacturer_code()
+bool CartridgeHeader::has_manufacturer_code()
 {
     return TITLE_LOW + title().size() < 11;
 }
 
-uint32_t Cartridge::manufacturer_code()
+uint32_t CartridgeHeader::manufacturer_code()
 {
     return *reinterpret_cast<uint32_t*>(&data[MANUFACTURER_CODE_LOW]);
 }
 
-bool Cartridge::has_cgb_flag()
+bool CartridgeHeader::has_cgb_flag()
 {
     return TITLE_LOW + title().size() < 11;
 }
 
-uint8_t Cartridge::cgb_flag()
+uint8_t CartridgeHeader::cgb_flag()
 {
     return data[CGB_FLAG_ADDRESS];
 }
 
-bool Cartridge::has_new_licensee()
+bool CartridgeHeader::has_new_licensee()
 {
     return !has_old_licensee();
 }
 
-uint16_t Cartridge::new_licensee_code()
+uint16_t CartridgeHeader::new_licensee_code()
 {
     return *reinterpret_cast<uint16_t*>(&data[NEW_LICENSEE_CODE_LOW]);
 }
 
-uint8_t Cartridge::sgb_flag()
+uint8_t CartridgeHeader::sgb_flag()
 {
     return data[SGB_FLAG_ADDRESS];
 }
 
-uint8_t Cartridge::cart_type()
+uint8_t CartridgeHeader::cart_type()
 {
     return data[CART_TYPE_ADDRESS];
 }
 
-uint8_t Cartridge::rom_size()
+uint8_t CartridgeHeader::rom_size()
 {
     return data[ROM_SIZE_ADDRESS];
 }
 
-uint8_t Cartridge::ram_size()
+uint8_t CartridgeHeader::ram_size()
 {
     return data[RAM_SIZE_ADDRESS];
 }
 
-uint8_t Cartridge::destination_code()
+uint8_t CartridgeHeader::destination_code()
 {
     return data[DEST_CODE_ADDRESS];
 }
 
-bool Cartridge::has_old_licensee()
+bool CartridgeHeader::has_old_licensee()
 {
     return old_licensee_code() != 0x33;
 }
 
-uint8_t Cartridge::old_licensee_code()
+uint8_t CartridgeHeader::old_licensee_code()
 {
     return data[OLD_LICENSEE_CODE_ADDRESS];
 }
 
-uint8_t Cartridge::version_number()
+uint8_t CartridgeHeader::version_number()
 {
     return data[VERSION_NUMBER_ADDRESS];
 }
 
-bool Cartridge::header_matches_checksum()
+bool CartridgeHeader::header_matches_checksum()
 {
     return compute_header_checksum() == header_checksum();
 }
 
-uint8_t Cartridge::compute_header_checksum()
+uint8_t CartridgeHeader::compute_header_checksum()
 {
     static constexpr memaddr_t START = 0x0134;
     static constexpr memaddr_t STOP = 0x014c;
@@ -121,12 +121,12 @@ uint8_t Cartridge::compute_header_checksum()
     return static_cast<uint8_t>(checksum);
 }
 
-uint8_t Cartridge::header_checksum()
+uint8_t CartridgeHeader::header_checksum()
 {
     return data[HEADER_CHECKSUM_ADDRESS];
 }
 
-uint16_t Cartridge::compute_global_checksum()
+uint16_t CartridgeHeader::compute_global_checksum()
 {
     uint16_t checksum = 0;
 
@@ -139,7 +139,7 @@ uint16_t Cartridge::compute_global_checksum()
     return checksum;
 }
 
-uint16_t Cartridge::global_checksum()
+uint16_t CartridgeHeader::global_checksum()
 {
     // The upper byte is first.
     uint16_t lower_byte = data[GLOBAL_CHECSUM_HIGH];

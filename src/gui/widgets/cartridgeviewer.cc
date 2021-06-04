@@ -127,7 +127,8 @@ CartridgeViewer::CartridgeViewer(DebugCore* debugger, QWidget* parent):
 
 void CartridgeViewer::update_fields()
 {
-    Cartridge* cart = static_cast<Emulator*>(debugger->emu())->cartridge;
+    /*
+    CartridgeHeader* cart = static_cast<Emulator*>(debugger->emu())->cartridge;
 
     QString as_hex = "";
 
@@ -170,13 +171,13 @@ void CartridgeViewer::update_fields()
     else
     {
 
-        if (cgb_flag == Cartridge::CartCgbOnly)
+        if (cgb_flag == CartridgeHeader::CartCgbOnly)
         {
             cgb_flag_value->setText("CGB only (0x" + as_hex + ")");
             cgb_flag_value->setToolTip("");
             cgb_flag_value->setStyleSheet(VALID_COLOR);
         }
-        else if (cgb_flag == Cartridge::CartCgbSupported)
+        else if (cgb_flag == CartridgeHeader::CartCgbSupported)
         {
             cgb_flag_value->setText("CGB supported (0x" + as_hex + ")");
             cgb_flag_value->setToolTip("");
@@ -219,13 +220,13 @@ void CartridgeViewer::update_fields()
 
     uint8_t sgb_flag = cart->sgb_flag();
     as_hex = QString::number(sgb_flag);
-    if (sgb_flag == Cartridge::CartNoSgbFeatures)
+    if (sgb_flag == CartridgeHeader::CartNoSgbFeatures)
     {
         sgb_flag_value->setText("No SGB features (0x" + as_hex + ")");
         sgb_flag_value->setToolTip("");
         sgb_flag_value->setStyleSheet(VALID_COLOR);
     }
-    else if (sgb_flag == Cartridge::CartHasSgbFeatures)
+    else if (sgb_flag == CartridgeHeader::CartHasSgbFeatures)
     {
         sgb_flag_value->setText("Has SGB features (0x" + as_hex + ")");
         sgb_flag_value->setToolTip("");
@@ -238,7 +239,7 @@ void CartridgeViewer::update_fields()
         sgb_flag_value->setStyleSheet(INVALID_COLOR);
     }
 
-    auto cart_type = static_cast<Cartridge::CartridgeType>(cart->cart_type());
+    auto cart_type = static_cast<CartridgeHeader::CartridgeType>(cart->cart_type());
 
     as_hex = QString::number(cart_type, 16);
     if (CART_TYPE_STR.count(cart_type))
@@ -254,7 +255,7 @@ void CartridgeViewer::update_fields()
         cart_type_value->setStyleSheet(INVALID_COLOR);
     }
 
-    auto rom_size = static_cast<Cartridge::RomSize>(cart->rom_size());
+    auto rom_size = static_cast<CartridgeHeader::RomSize>(cart->rom_size());
     as_hex = QString::number(static_cast<uint8_t>(rom_size), 16);
     if (ROM_SIZE_STR.count(rom_size))
     {
@@ -269,7 +270,7 @@ void CartridgeViewer::update_fields()
         rom_size_value->setStyleSheet(INVALID_COLOR);
     }
 
-    auto ram_size = static_cast<Cartridge::RamSize>(cart->ram_size());
+    auto ram_size = static_cast<CartridgeHeader::RamSize>(cart->ram_size());
     as_hex = QString::number(static_cast<uint8_t>(ram_size), 16);
     if (RAM_SIZE_STR.count(ram_size))
     {
@@ -284,15 +285,15 @@ void CartridgeViewer::update_fields()
         ram_size_value->setStyleSheet(INVALID_COLOR);
     }
 
-    auto dest_code = static_cast<Cartridge::DestinationCode>(cart->destination_code());
+    auto dest_code = static_cast<CartridgeHeader::DestinationCode>(cart->destination_code());
     as_hex = QString::number(static_cast<uint8_t>(dest_code), 16);
-    if (dest_code == Cartridge::DestinationCode::CartJapanese)
+    if (dest_code == CartridgeHeader::DestinationCode::CartJapanese)
     {
         dest_code_value->setText("Japanese (0x" + as_hex + ")");
         dest_code_value->setToolTip("");
         dest_code_value->setStyleSheet(VALID_COLOR);
     }
-    else if (dest_code == Cartridge::DestinationCode::CartNonJapanese)
+    else if (dest_code == CartridgeHeader::DestinationCode::CartNonJapanese)
     {
         dest_code_value->setText("Non-Japanese (0x" + as_hex + ")");
         dest_code_value->setToolTip("");
@@ -373,10 +374,12 @@ void CartridgeViewer::update_fields()
                                           + "\nA real Game Boy would not care");
         global_checksum_value->setStyleSheet(INVALID_COLOR);
     }
+    */
 }
 
 void CartridgeViewer::debug_event(const DebugEvent* event)
 {
+    /*
     switch (event->type())
     {
         case DbRomLoaded:
@@ -385,4 +388,5 @@ void CartridgeViewer::debug_event(const DebugEvent* event)
         default:
             break;
     }
+    */
 }

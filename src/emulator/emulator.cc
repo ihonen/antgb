@@ -29,11 +29,16 @@ Emulator::~Emulator()
     delete cartridge;
 }
 
-void Emulator::load_rom(const void* rom, size_t size)
+void Emulator::load_rom(const std::string& filepath)
 {
-    if (cartridge) delete cartridge;
-    cartridge = new Cartridge;
-    memcpy(cartridge->data, rom, size);
+    if (cartridge != nullptr)
+    {
+        delete cartridge;
+        cartridge = nullptr;
+    }
+
+    cartridge = new Cartridge(filepath);
+
     mem->set_cartridge(cartridge);
     reset_emulation();
 }

@@ -69,9 +69,7 @@ EmulatorWidget::~EmulatorWidget()
 
 void EmulatorWidget::load_rom(QString& filepath)
 {
-    if (filepath.size() == 0) return;
+    if (filepath == "") return;
 
-    uint8_t rom[0x32768];
-    ::load_rom(filepath, rom);
-    debugger->load_rom(rom, 0x8000);
+    debugger->load_rom(filepath.toStdString());
 }

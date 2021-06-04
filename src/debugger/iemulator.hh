@@ -13,7 +13,7 @@ public:
 
     virtual void write(regid_t register_id, uint16_t value) = 0;
 
-    virtual void load_rom(const void* rom, size_t size) = 0;
+    virtual void load_rom(const std::string& filepath) = 0;
 
     virtual void reset_emulation() = 0;
 
