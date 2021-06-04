@@ -40,13 +40,21 @@ public:
         Z_FLAG = 7
     };
 
-    typedef struct
+    struct InstructionInfo
     {
         uint8_t len_bytes;
         uint8_t cycles_on_action;
         uint8_t cycles_on_no_action;
         void   (Cpu::*handler)();
-    } InstrInfo;
+    };
+
+    // This table contains the information related to "normal" opcodes.
+    static const array<const InstructionInfo, 256> INSTRUCTION_TABLE;
+    // This table contains the information related to opcodes prefixed
+    // with 0xCB. The 0xCB prefix only means that another byte should be
+    // fetched and the combination of the two bytes then determines the
+    // operation to be done.
+    static const array<const InstructionInfo, 256> CB_INSTRUCTION_TABLE;
 
     std::ofstream trace_log;
 
@@ -137,14 +145,6 @@ public:
     uint8_t&  A  = *(reinterpret_cast<uint8_t*>(&(regs.AF)) + 1);
     uint8_t&  F  = *(reinterpret_cast<uint8_t*>(&(regs.AF)) + 0);
     */
-
-    // This table will contain the information related to "normal" opcodes.
-    static const array<const InstrInfo, 256> INSTR_TABLE;
-    // This table will contain the information related to opcodes prefixed
-    // with 0xCB. The 0xCB prefix only means that another byte should be
-    // fetched and the combination of the two bytes then determines the
-    // operation to be done.
-    static const array<const InstrInfo, 256> CB_INSTR_TABLE;
 
     // Pointer to the current instruction in execution. This is not necessarily
     // the same as PC since execute() can take a pointer to any location.

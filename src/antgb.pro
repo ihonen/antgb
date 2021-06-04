@@ -35,8 +35,6 @@ SOURCES += \
     emulator/background.cc \
     emulator/bitmanip.cc \
     emulator/cpu.cc \
-    emulator/cpu_opcodes.cc \
-    emulator/cpu_operations.cc \
     emulator/emulator.cc \
     emulator/fileio.cc \
     emulator/interrupts.cc \
