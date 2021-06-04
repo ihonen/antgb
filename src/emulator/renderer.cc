@@ -1,5 +1,7 @@
 #include "renderer.hh"
 
+#include "addresses.hh"
+
 #include <cstdlib>
 #include "memory.hh"
 #include "tile.hh"

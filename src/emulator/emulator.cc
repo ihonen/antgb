@@ -1,6 +1,8 @@
 #include "emulator.hh"
 
+#include "addresses.hh"
 #include "renderer.hh"
+
 #include <iostream>
 #include <cstring>
 #include <thread>

@@ -1,5 +1,7 @@
 #include "background.hh"
 
+#include "addresses.hh"
+
 #include "bitmanip.hh"
 #include "memory.hh"
 #include "types.hh"

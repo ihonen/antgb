@@ -96,6 +96,7 @@ HEADERS += \
     debugger/idebugobserver.hh \
     debugger/iemulator.hh \
     debugger/instructions.hh \
+    emulator/addresses.hh \
     emulator/apu.hh \
     emulator/background.hh \
     emulator/bitmanip.hh \

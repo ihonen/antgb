@@ -1,7 +1,5 @@
 #pragma once
 
-#pragma once
-
 #include <cstdint>
 
 typedef int32_t regid_t;
@@ -52,9 +50,6 @@ enum JoypadButton
     JoypadB
 };
 
-
-#include "debugger/addresses.hh"
-#include "emulator/types.hh"
 #include <cassert>
 #include <cstdint>
 #include <cstring>
