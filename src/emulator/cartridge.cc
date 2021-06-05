@@ -41,7 +41,7 @@ Cartridge::Cartridge(const std::string& filepath)
 
 uint8_t* Cartridge::get(uint16_t address)
 {
-    if (address <= 0x37FF)
+    if (address <= 0x3FFF)
     {
         return &rom0_.at(address - 0x0000);
     }
