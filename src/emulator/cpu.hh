@@ -9,28 +9,35 @@
 
 using std::array;
 
+struct CpuRegisters
+{
+    union
+    {
+        uint16_t BC;
+        struct { uint8_t C; uint8_t B; } __attribute__((packed));
+    };
+    union
+    {
+        uint16_t DE;
+        struct { uint8_t E; uint8_t D; } __attribute__((packed));
+    };
+    union
+    {
+        uint16_t HL;
+        struct { uint8_t L; uint8_t H; } __attribute__((packed));
+    };
+    union
+    {
+        uint16_t AF;
+        struct { uint8_t F; uint8_t A; } __attribute__((packed));
+    };
+    uint16_t SP;
+    uint16_t PC;
+};
+
 class Cpu
 {
 public:
-             Cpu(Memory* mem, Irc* irc);
-    void     set_PC(uint16_t value);
-    void     restart();
-    void     execute(const uint8_t* const instruction = nullptr);
-    inline void     reset_cycles();
-    inline uint64_t get_cycles();
-    void     jump_to_isr(memaddr_t vector_address);
-
-    static const uint64_t CLK_FREQ_Hz = 4194304;
-
-    // Interrupt enabling and disabling have a delay of one machine cycle.
-    enum class IMEStatus
-    {
-        DO_NOTHING,
-        SET_NEXT_CYCLE,
-        // Reset is always done at the end of the same cycle as DI was executed.
-        SET_THIS_CYCLE,   // At the end of cycle
-        RESET_THIS_CYCLE  // At the end of cycle
-    };
 
     enum class ALUFlagPos : uint8_t
     {
@@ -48,140 +55,70 @@ public:
         void   (Cpu::*handler)();
     };
 
-    // This table contains the information related to "normal" opcodes.
+    static const uint64_t CLK_FREQ_Hz = 4194304;
     static const array<const InstructionInfo, 256> INSTRUCTION_TABLE;
-    // This table contains the information related to opcodes prefixed
-    // with 0xCB. The 0xCB prefix only means that another byte should be
-    // fetched and the combination of the two bytes then determines the
-    // operation to be done.
     static const array<const InstructionInfo, 256> CB_INSTRUCTION_TABLE;
 
     std::ofstream trace_log;
 
-    // Main memory, 65 KB
     Memory* mem;
-
-    // Interrupt controller
     Irc* irc;
 
-    // NOTE: Register order is based on that which appears in the
-    // machine instructions.
-    // NOTE: Little-endian machine is assumed!
-
-    struct Registers
-    {
-        union
-        {
-            uint16_t BC;
-            struct { uint8_t C; uint8_t B; } __attribute__((packed));
-        };
-        union
-        {
-            uint16_t DE;
-            struct { uint8_t E; uint8_t D; } __attribute__((packed));
-        };
-        union
-        {
-            uint16_t HL;
-            struct { uint8_t L; uint8_t H; } __attribute__((packed));
-        };
-        union
-        {
-            uint16_t AF;
-            struct { uint8_t F; uint8_t A; } __attribute__((packed));
-        };
-        uint16_t SP;
-        uint16_t PC;
-    } reg;
-
-    // For a more pleasant syntax.
-
+    CpuRegisters reg;
     uint16_t& BC = reg.BC;
     uint16_t& DE = reg.DE;
     uint16_t& HL = reg.HL;
     uint16_t& AF = reg.AF;
     uint16_t& PC = reg.PC;
     uint16_t& SP = reg.SP;
-    uint8_t&  B  = reg.B;
-    uint8_t&  C  = reg.C;
-    uint8_t&  D  = reg.D;
-    uint8_t&  E  = reg.E;
-    uint8_t&  H  = reg.H;
-    uint8_t&  L  = reg.L;
-    uint8_t&  A  = reg.A;
-    uint8_t&  F  = reg.F;
+    uint8_t&   B = reg.B;
+    uint8_t&   C = reg.C;
+    uint8_t&   D = reg.D;
+    uint8_t&   E = reg.E;
+    uint8_t&   H = reg.H;
+    uint8_t&   L = reg.L;
+    uint8_t&   A = reg.A;
+    uint8_t&   F = reg.F;
 
-    /*
-    struct Registers {
-        array<uint16_t, 6> reg = {0};
-        uint16_t& BC = reg[0];
-        uint16_t& DE = reg[1];
-        uint16_t& HL = reg[2];
-        uint16_t& AF = reg[3];
-        uint16_t& PC = reg[4];
-        uint16_t& SP = reg[5];
-        uint8_t&  B  = *(reinterpret_cast<uint8_t*>(&BC) + 1);
-        uint8_t&  C  = *(reinterpret_cast<uint8_t*>(&BC) + 0);
-        uint8_t&  D  = *(reinterpret_cast<uint8_t*>(&DE) + 1);
-        uint8_t&  E  = *(reinterpret_cast<uint8_t*>(&DE) + 0);
-        uint8_t&  H  = *(reinterpret_cast<uint8_t*>(&HL) + 1);
-        uint8_t&  L  = *(reinterpret_cast<uint8_t*>(&HL) + 0);
-        uint8_t&  A  = *(reinterpret_cast<uint8_t*>(&AF) + 1);
-        uint8_t&  F  = *(reinterpret_cast<uint8_t*>(&AF) + 0);
-    } regs;
-
-    uint16_t& BC = regs.BC;
-    uint16_t& DE = regs.DE;
-    uint16_t& HL = regs.HL;
-    uint16_t& AF = regs.AF;
-    uint16_t& PC = regs.PC;
-    uint16_t& SP = regs.SP;
-    uint8_t&  B  = *(reinterpret_cast<uint8_t*>(&(regs.BC)) + 1);
-    uint8_t&  C  = *(reinterpret_cast<uint8_t*>(&(regs.BC)) + 0);
-    uint8_t&  D  = *(reinterpret_cast<uint8_t*>(&(regs.DE)) + 1);
-    uint8_t&  E  = *(reinterpret_cast<uint8_t*>(&(regs.DE)) + 0);
-    uint8_t&  H  = *(reinterpret_cast<uint8_t*>(&(regs.HL)) + 1);
-    uint8_t&  L  = *(reinterpret_cast<uint8_t*>(&(regs.HL)) + 0);
-    uint8_t&  A  = *(reinterpret_cast<uint8_t*>(&(regs.AF)) + 1);
-    uint8_t&  F  = *(reinterpret_cast<uint8_t*>(&(regs.AF)) + 0);
-    */
-
-    // Pointer to the current instruction in execution. This is not necessarily
-    // the same as PC since execute() can take a pointer to any location.
-    const uint8_t* curr_instr = nullptr;
-
-    // Conditional branches take a varying number of clock cycles depending
-    // on whether the condition was true (i.e. branch happened) or not.
+    const uint8_t* current_instruction = nullptr;
     bool branch_taken = false;
-
-    enum IMEStatus DI_action = IMEStatus::DO_NOTHING;
-    enum IMEStatus EI_action = IMEStatus::DO_NOTHING;
-
     bool is_halted = false;
     bool is_stopped = false;
     uint64_t clock_cycles = 0;
 
-    void     hard_reset();
-    inline uint8_t  get_ALU_flag(enum ALUFlagPos pos);
-    inline void     assign_ALU_flag(enum ALUFlagPos pos, uint8_t val);
-    inline uint8_t  C_flag_get();
-    inline uint8_t  H_flag_get();
-    inline uint8_t  N_flag_get();
-    inline uint8_t  Z_flag_get();
-    inline void     C_flag_reset();
-    inline void     H_flag_reset();
-    inline void     N_flag_reset();
-    inline void     Z_flag_reset();
-    inline void     C_flag_set();
-    inline void     H_flag_set();
-    inline void     N_flag_set();
-    inline void     Z_flag_set();
-    inline void     C_flag_update(bool cond);
-    inline void     H_flag_update(bool cond);
-    inline void     N_flag_update(bool cond);
-    inline void     Z_flag_update(bool cond);
-    void     invalid_opcode();
-    inline uint8_t  extract_immediate8(const uint8_t* instruction = nullptr);
+    static constexpr int NO_COUNTDOWN = -1;
+    int DI_countdown = NO_COUNTDOWN;
+    int EI_countdown = NO_COUNTDOWN;
+
+    Cpu(Memory* mem, Irc* irc);
+    void hard_reset();
+    void set_PC(uint16_t value);
+    void restart();
+    void execute(const uint8_t* const instruction = nullptr);
+    inline void reset_cycles();
+    inline uint64_t get_cycles();
+    void jump_to_isr(memaddr_t vector_address);
+
+    inline uint8_t get_ALU_flag(enum ALUFlagPos pos);
+    inline void assign_ALU_flag(enum ALUFlagPos pos, uint8_t val);
+    inline uint8_t C_flag_get();
+    inline uint8_t H_flag_get();
+    inline uint8_t N_flag_get();
+    inline uint8_t Z_flag_get();
+    inline void C_flag_reset();
+    inline void H_flag_reset();
+    inline void N_flag_reset();
+    inline void Z_flag_reset();
+    inline void C_flag_set();
+    inline void H_flag_set();
+    inline void N_flag_set();
+    inline void Z_flag_set();
+    inline void C_flag_update(bool cond);
+    inline void H_flag_update(bool cond);
+    inline void N_flag_update(bool cond);
+    inline void Z_flag_update(bool cond);
+    void invalid_opcode();
+    inline uint8_t extract_immediate8(const uint8_t* instruction = nullptr);
     inline uint16_t extract_immediate16(const uint8_t* instruction = nullptr);
 
     void ADC_A_HL();
@@ -431,13 +368,13 @@ FORCE_INLINE void Cpu::reset_cycles()
 
 FORCE_INLINE uint8_t Cpu::extract_immediate8(const uint8_t* instruction)
 {
-    if (!instruction) instruction = curr_instr;
-    return curr_instr[1];
+    if (!instruction) instruction = current_instruction;
+    return current_instruction[1];
 }
 
 FORCE_INLINE uint16_t Cpu::extract_immediate16(const uint8_t* instruction)
 {
-    if (!instruction) instruction = curr_instr;
+    if (!instruction) instruction = current_instruction;
     return (static_cast<uint16_t>(instruction[1])) |
            (static_cast<uint16_t>(instruction[2]) << 8);
 }

@@ -6,15 +6,6 @@
 #include <iostream>
 
 ////////////////////////////////////////////////////////////////////////////////
-// LOCAL DECLARATIONS
-////////////////////////////////////////////////////////////////////////////////
-
-namespace
-{
-    Disassembler disassembler;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // CLASS FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -45,10 +36,10 @@ void Cpu::hard_reset()
     SP = 0xFFFE;
     PC = 0x0100;
 
-    curr_instr = nullptr;
+    current_instruction = nullptr;
     branch_taken = false;
-    DI_action = IMEStatus::DO_NOTHING;
-    EI_action = IMEStatus::DO_NOTHING;
+    DI_countdown = NO_COUNTDOWN;
+    EI_countdown = NO_COUNTDOWN;
     is_halted = false;
     is_stopped = false;
     clock_cycles = 0;
@@ -58,11 +49,11 @@ void Cpu::execute(const uint8_t* instruction)
 {
     if (!instruction) instruction = mem->get(PC);
     assert(instruction);
-    curr_instr = instruction;
+    current_instruction = instruction;
     branch_taken = false;
 
-    if (EI_action == IMEStatus::SET_NEXT_CYCLE)
-        EI_action = IMEStatus::SET_THIS_CYCLE;
+    if (EI_countdown > 0)
+        --EI_countdown;
 
     if (irc->has_pending_requests())
     {
@@ -92,9 +83,9 @@ void Cpu::execute(const uint8_t* instruction)
 
     if (!is_halted && !is_stopped)
     {
-        const InstructionInfo* op_info = (*curr_instr == 0xCB) ?
-                                    &CB_INSTRUCTION_TABLE[curr_instr[1]] :
-                                    &INSTRUCTION_TABLE[*curr_instr];
+        const InstructionInfo* op_info = (*current_instruction == 0xCB) ?
+                                    &CB_INSTRUCTION_TABLE[current_instruction[1]] :
+                                    &INSTRUCTION_TABLE[*current_instruction];
 
         PC += op_info->len_bytes;
 
@@ -115,21 +106,23 @@ void Cpu::execute(const uint8_t* instruction)
         clock_cycles += 4;
     }
 
-    if (DI_action == IMEStatus::RESET_THIS_CYCLE)
+    if (DI_countdown == 0)
     {
         irc->ime_flag_clear();
-        DI_action = IMEStatus::DO_NOTHING;
+        DI_countdown = NO_COUNTDOWN;
+        EI_countdown = NO_COUNTDOWN;
     }
-    else if (EI_action == IMEStatus::SET_THIS_CYCLE)
+    else if (EI_countdown == 0)
     {
         irc->ime_flag_set();
-        DI_action = IMEStatus::DO_NOTHING;
+        DI_countdown = NO_COUNTDOWN;
+        EI_countdown = NO_COUNTDOWN;
     }
 }
 
 void Cpu::invalid_opcode()
 {
-    throw OpcodeError(0, *curr_instr);
+    throw OpcodeError(0, *current_instruction);
 }
 
 void Cpu::jump_to_isr(memaddr_t vector_address)
@@ -142,9 +135,9 @@ void Cpu::jump_to_isr(memaddr_t vector_address)
     irc->ime_flag_clear();
     PUSH_r16(PC);
     PC = vector_address;
-    curr_instr = mem->get(PC);
-    DI_action = IMEStatus::DO_NOTHING;
-    EI_action = IMEStatus::DO_NOTHING;
+    current_instruction = mem->get(PC);
+    DI_countdown = NO_COUNTDOWN;
+    EI_countdown = NO_COUNTDOWN;
     clock_cycles += 20;
 }
 
@@ -166,7 +159,7 @@ void Cpu::ADC_A_n8(uint8_t n8)
     // Can't call before H_flag_update.
     C_flag_update(result > 0xFF);
     N_flag_reset();
-    Z_flag_update((uint8_t)result == 0);
+    Z_flag_update(static_cast<uint8_t>(result) == 0);
     A = static_cast<uint8_t>(result);
 }
 
@@ -188,7 +181,7 @@ void Cpu::ADD_A_n8(uint8_t n8)
     C_flag_update(result > 0xFF);
     H_flag_update((A & 0x0F) + (n8 & 0x0F) > 0x0F);
     N_flag_reset();
-    Z_flag_update((uint8_t)result == 0);
+    Z_flag_update(static_cast<uint8_t>(result) == 0);
     A = static_cast<uint8_t>(result);
 }
 
@@ -361,13 +354,13 @@ void Cpu::DEC_r8(uint8_t& r8)
 void Cpu::DI()
 {
     // No delay in DI.
-    DI_action = IMEStatus::RESET_THIS_CYCLE;
+    DI_countdown = 0;
 }
 
 /* EI */
 void Cpu::EI()
 {
-    EI_action = IMEStatus::SET_NEXT_CYCLE;
+    EI_countdown = 1;
 }
 
 /* HALT */
@@ -402,7 +395,7 @@ void Cpu::INC_r8(uint8_t& r8)
     uint16_t result = r8 + 1;
     H_flag_update((r8 & 0x0F) + 1 > 0x0F);
     N_flag_reset();
-    Z_flag_update((uint8_t)result == 0);
+    Z_flag_update(static_cast<uint8_t>(result) == 0);
     r8 = static_cast<uint8_t>(result);
 }
 
@@ -478,8 +471,6 @@ void Cpu::LD_n16_SP(uint16_t n16)
 
 void Cpu::LD_r16_A(uint16_t& r16)
 {
-    if (r16 == 0xc000)
-        volatile int b;
     mem->write(r16, A);
 }
 
@@ -653,8 +644,8 @@ void Cpu::RETI()
 {
     RET();
     irc->ime_flag_set();
-    EI_action = IMEStatus::DO_NOTHING;
-    DI_action = IMEStatus::DO_NOTHING;
+    EI_countdown = NO_COUNTDOWN;
+    DI_countdown = NO_COUNTDOWN;
 }
 
 void Cpu::RL_HL()
@@ -796,11 +787,11 @@ void Cpu::SBC_A_HL()
 
 void Cpu::SBC_A_n8(uint8_t n8)
 {
-    uint16_t result = (uint16_t)A - n8 - C_flag_get();
+    uint16_t result = static_cast<uint16_t>(A) - n8 - C_flag_get();
     H_flag_update(((n8 & 0x0F) + C_flag_get()) > (A & 0x0F));
     C_flag_update(A < n8 + C_flag_get());
     N_flag_set();
-    Z_flag_update((uint8_t)result == 0);
+    Z_flag_update(static_cast<uint8_t>(result) == 0);
     A = static_cast<uint8_t>(result);
 }
 
@@ -920,7 +911,7 @@ void Cpu::SUB_A_n8(uint8_t n8)
 //    C_flag_update(result > 0xFF);
     H_flag_update((n8 & 0x0F) > (A & 0x0F));
     N_flag_set();
-    Z_flag_update((uint8_t)result == 0);
+    Z_flag_update(static_cast<uint8_t>(result) == 0);
     A = static_cast<uint8_t>(result);
 }
 
