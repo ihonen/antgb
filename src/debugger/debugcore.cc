@@ -2,6 +2,8 @@
 
 #include "instructions.hh"
 
+#include <QThread>
+
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -85,7 +87,7 @@ void DebugCore::keep_running()
         {
             for (auto& address : mem_reads)
             {
-                cerr << std::hex << address << endl;
+                //cerr << std::hex << address << endl;
             }
         }
 
@@ -149,23 +151,28 @@ void DebugCore::run()
     for (auto& observer : observers)
         observer->debug_event(&continue_event);
 
-    if (emulation_thread && emulation_thread->joinable())
-        emulation_thread->join();
-    delete emulation_thread;
-    emulation_thread = nullptr;
+    if (emulation_thread)
+    {
+        emulation_thread->terminate();
+        emulation_thread->wait(QDeadlineTimer(std::chrono::milliseconds(100)));
+    }
+
     m_is_running = true;
-    emulation_thread = new std::thread([&](){ keep_running(); });
+    emulation_thread = std::unique_ptr<QThread>(QThread::create([this](){ keep_running(); }));
+    emulation_thread->start();
+    emulation_thread->setPriority(QThread::TimeCriticalPriority);
 }
 
 void DebugCore::pause()
 {
     m_is_running = false;
-    if (emulation_thread)
+
+    if (emulation_thread && emulation_thread->isRunning())
     {
-        if (emulation_thread->joinable()) emulation_thread->join();
-        delete emulation_thread;
-        emulation_thread = nullptr;
+        emulation_thread->terminate();
+        emulation_thread->wait(QDeadlineTimer(std::chrono::milliseconds(100)));
     }
+    emulation_thread = std::unique_ptr<QThread>(nullptr);
 
     DebugEvent pause_event(DbPaused);
     for (auto& observer : observers)
@@ -227,11 +234,6 @@ void DebugCore::button_released(JoypadButton button)
 }
 
 void DebugCore::reset_emulation()
-{
-
-}
-
-void DebugCore::set_render_callback(void (*callback)(const framebuf_t*, int))
 {
 
 }

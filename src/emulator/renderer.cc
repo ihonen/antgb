@@ -6,29 +6,33 @@
 #include "memory.hh"
 #include "tile.hh"
 
-Renderer::Renderer(Memory* memory, QObject* parent) :
-    QObject(parent),
+Renderer::Renderer(Memory* memory) :
     mem(memory),
     background(Background(Background::Type::Background, mem)),
     window(Background(Background::Type::Window, mem)),
     sprites(Sprites(memory))
 {
-    memset(frame_buffer, 0x00, 160 * 144 * 4);
+    pixels = {{}};
+}
+
+void Renderer::set_frontend(iFrontend* frontend_)
+{
+    frontend = frontend_;
 }
 
 void Renderer::render_frame()
 {    
     auto ly_backup = *mem->get(LY_ADDR);
 
-    for (size_t y = 0; y < 144; ++y)
+    for (size_t pixel_y = 0; pixel_y < iFrontend::SCREEN_HEIGHT; ++pixel_y)
     {
-        *mem->get(LY_ADDR) = y;
+        *mem->get(LY_ADDR) = static_cast<uint8_t>(pixel_y);
         sprites.refresh();
-        for (size_t x = 0; x < 160; ++x)
+        for (size_t pixel_x = 0; pixel_x < iFrontend::SCREEN_WIDTH; ++pixel_x)
         {
-            if (background.includes(x, y))
+            if (background.includes(pixel_x, pixel_y))
             {
-                frame_buffer[y][x] = background.get_pixel_at(x, y);
+                pixels.at(pixel_x).at(pixel_y) = background.get_pixel_at(pixel_x, pixel_y);
             }
 /*
             Sprite* sprite = sprites.get_sprite_at_x(x);
@@ -42,10 +46,8 @@ void Renderer::render_frame()
 
     *mem->get(LY_ADDR) = ly_backup;
 
-    emit(frame_ready());
-}
-
-uint32_t* Renderer::get_frame_buffer()
-{
-    return (uint32_t*)frame_buffer;
+    if (frontend)
+    {
+        frontend->render(pixels);
+    }
 }

@@ -37,14 +37,14 @@ public:
     int address_to_row(regid_t address) const
     {
         auto row = (MAX_ADDRESS - 1 - address) / 2;
-        cerr << "address: " << address << ", row: " << row << endl;
+        //cerr << "address: " << address << ", row: " << row << endl;
         return row;
     }
 
     int row_to_address(int row) const
     {
         auto address = (MAX_ADDRESS - 1) - (row * 2);
-        cerr << "row: " << row << ", address: " << address << endl;
+        //cerr << "row: " << row << ", address: " << address << endl;
         return address;
     }
 };

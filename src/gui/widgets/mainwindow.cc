@@ -23,6 +23,8 @@ MainWindow::MainWindow(Emulator* emulator, DebugCore* debugger, QWidget* parent)
     emuwidget = new EmulatorWidget(emu, debugger, this);
     setCentralWidget(emuwidget);
 
+    emu->set_frontend(emuwidget->display.scene);
+
     init_actions();
     init_toolbar();
     init_menubar();
@@ -197,10 +199,6 @@ void MainWindow::init_signals()
             &QAction::triggered,
             this,
             &MainWindow::load_rom_act);
-    connect(emu->ppu->renderer,
-            &Renderer::frame_ready,
-            emuwidget->display.scene,
-            &DisplayScene::on_frame_ready);
     connect(debug_mode_action,
             &QAction::triggered,
             this,

@@ -95,6 +95,7 @@ HEADERS += \
     debugger/disassembler.hh \
     debugger/idebugobserver.hh \
     debugger/iemulator.hh \
+    debugger/ifrontend.hh \
     debugger/instructions.hh \
     emulator/addresses.hh \
     emulator/apu.hh \

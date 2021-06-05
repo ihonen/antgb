@@ -19,12 +19,14 @@ class Emulator : public iEmulator
 public:
     Emulator();
     virtual ~Emulator() override;
+
+    virtual void set_frontend(iFrontend* frontend) override;
+
     virtual void load_rom(const std::string& filepath) override;
     inline virtual int execute_next() override;
     virtual void button_pressed(JoypadButton button) override;
     virtual void button_released(JoypadButton button) override;
     virtual void reset_emulation() override;
-    virtual void set_render_callback(void (*callback)(const framebuf_t*, int)) override;
 
     inline virtual uint16_t read(regid_t register_id) override;
     inline virtual void write(regid_t register_id, uint16_t value) override;

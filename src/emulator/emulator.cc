@@ -31,6 +31,11 @@ Emulator::~Emulator()
     delete cartridge;
 }
 
+void Emulator::set_frontend(iFrontend* frontend)
+{
+    ppu->renderer->set_frontend(frontend);
+}
+
 void Emulator::load_rom(const std::string& filepath)
 {
     if (cartridge != nullptr)
@@ -60,9 +65,4 @@ void Emulator::reset_emulation()
     mem->hard_reset();
     cpu->hard_reset();
     irc->hard_reset();
-}
-
-void Emulator::set_render_callback(void (*callback)(const framebuf_t*, int))
-{
-
 }

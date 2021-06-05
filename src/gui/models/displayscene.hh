@@ -1,16 +1,24 @@
 #pragma once
 
+#include "debugger/ifrontend.hh"
 #include "debugger/debugcore.hh"
 #include "emulator/renderer.hh"
 #include <QGraphicsScene>
 
-class DisplayScene : public QGraphicsScene
+Q_DECLARE_METATYPE(iFrontend::Pixels);
+
+class DisplayScene final
+    : public QGraphicsScene
+    , public iFrontend
 {
-public slots:
-    void on_frame_ready();
+    Q_OBJECT
+
 public:    
     DisplayScene(DebugCore* debugger, QObject* parent = nullptr);
-    void set_pixel(int x, int y, uint32_t color);
+    virtual ~DisplayScene() override = default;
+    void set_pixel(QImage& image, size_t x, size_t y, uint32_t color);
+
+    virtual void render(const iFrontend::Pixels& pixels) override;
 
     static constexpr uint16_t RES_X = 160;
     static constexpr uint16_t RES_Y = 144;
@@ -21,4 +29,9 @@ public:
     DebugCore* debugger;
     QImage image;
     QGraphicsPixmapItem* item;
+signals:
+    void schedule_render_on_screen(const iFrontend::Pixels& pixels);
+
+protected slots:
+    void render_on_screen(const iFrontend::Pixels& pixels);
 };

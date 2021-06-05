@@ -11,12 +11,14 @@
 
 #include <set>
 #include <thread>
+#include <QThread>
 
 class DebugCore : public iEmulator
 {
 public:
     DebugCore(iEmulator* emu);
     virtual ~DebugCore() override;
+    virtual void set_frontend(iFrontend*) override {}
     virtual void load_rom(const std::string& filepath) override;
     virtual int execute_next() override;
     void step_over();
@@ -35,7 +37,6 @@ public:
     virtual inline uint16_t read(regid_t register_id) override;
     virtual inline void write(regid_t register_id, uint16_t value) override;
     virtual void reset_emulation() override;
-    virtual void set_render_callback(void (*callback)(const framebuf_t *, int)) override;
     bool is_running();
 protected:
     void keep_running();
@@ -45,7 +46,8 @@ protected:
     Disassembler disassembler;
     std::unordered_map<regid_t, Breakpoint*> m_breakpoints;
     std::vector<iDebugObserver*> observers;
-    std::thread* emulation_thread = nullptr;
+    //std::thread* emulation_thread = nullptr;
+    std::unique_ptr<QThread> emulation_thread = nullptr;
     bool m_is_running = false;
 };
 
