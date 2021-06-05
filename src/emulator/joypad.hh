@@ -1,10 +1,9 @@
 #pragma once
 
-#include "interrupts.hh"
 #include "types.hh"
-#include "emulator/types.hh"
 #include <map>
 
+class Cpu;
 class Memory;
 
 class Joypad
@@ -35,7 +34,7 @@ public:
         bool pressed;
     };
 
-    Joypad(Memory* mem, Irc* irc);
+    Joypad(Memory* mem, Cpu* cpu);
     void button_pressed(JoypadButton button);
     void button_released(JoypadButton button);
 
@@ -43,7 +42,7 @@ public:
     const memaddr_t IO_REG_ADDRESS = 0xFF00;
     uint8_t* io_register;
     Memory* mem;
-    Irc* irc;
+    Cpu* cpu;
 
     std::map<JoypadButton, ButtonState> button_status;
 };

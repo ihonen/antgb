@@ -27,19 +27,18 @@ CONFIG += c++17
 SOURCES += \
     debugger/cartridgeheader.cc \
     emulator/cartridge.cc \
+    emulator/memory.cc \
     main.cc \
     debugger/breakpoint.cc \
     debugger/debugcore.cc \
     debugger/disassembler.cc \
     debugger/instructions.cc \
     emulator/apu.cc \
-    emulator/bitmanip.cc \
     emulator/cpu.cc \
     emulator/emulator.cc \
     emulator/fileio.cc \
     emulator/interrupts.cc \
     emulator/joypad.cc \
-    emulator/memory.cc \
     emulator/ppu.cc \
     emulator/serial.cc \
     emulator/timer.cc \
@@ -92,6 +91,7 @@ HEADERS += \
     debugger/iemulator.hh \
     debugger/ifrontend.hh \
     debugger/instructions.hh \
+    debugger/types.hh \
     emulator/addresses.hh \
     emulator/apu.hh \
     emulator/bitmanip.hh \
@@ -102,6 +102,7 @@ HEADERS += \
     emulator/fileio.hh \
     emulator/interrupts.hh \
     emulator/joypad.hh \
+    emulator/macros.hh \
     emulator/memory.hh \
     emulator/ppu.hh \
     emulator/serial.hh \

@@ -2,10 +2,8 @@
 
 #include "apu.hh"
 #include "cartridge.hh"
-#include "debugger/cartridgeheader.hh"
-#include "util/macros.hh"
-#include "interrupts.hh"
 #include "joypad.hh"
+#include "macros.hh"
 #include "ppu.hh"
 #include "serial.hh"
 #include "timer.hh"
@@ -21,9 +19,6 @@ public:
         memaddr_t high;
         memaddr_t size;
     };
-
-    // Unused at the moment
-    Irc::Registers ircreg;
 
     Memory();
 
@@ -107,7 +102,7 @@ FORCE_INLINE uint8_t* Memory::get(memaddr_t address)
 {
     if (address <= ROM1.high)
     {
-        if (cartridge != nullptr) return cartridge->get(address);
+        if (cartridge) return cartridge->get(address);
         else return nullptr;
     }
     else if (address >= ERAM.low && address <= ERAM.high)

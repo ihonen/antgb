@@ -4,9 +4,9 @@
 
 #include <iostream>
 
-Timer::Timer(Registers* reg, Irc* irc_) :
+Timer::Timer(Registers* reg, Cpu* cpu) :
     reg(reg),
-    irc(irc_)
+    cpu(cpu)
 {
     timer.unemulated_cpu_cycles = 0;
     divider.unemulated_cpu_cycles = 0;

@@ -1,7 +1,10 @@
 #pragma once
 
 #include "debugger/iemulator.hh"
+
+#include "macros.hh"
 #include "memory.hh"
+
 #include <memory>
 
 class Cartridge;
@@ -31,7 +34,6 @@ public:
     inline virtual void write(regid_t register_id, uint16_t value) override;
 
     std::unique_ptr<Cpu> cpu;
-    std::unique_ptr<Irc> irc;
     std::unique_ptr<Memory> mem;
     std::unique_ptr<Ppu> ppu;
     std::unique_ptr<Joypad> joypad;
@@ -91,7 +93,7 @@ FORCE_INLINE uint16_t Emulator::read(regid_t register_id)
         case RegSP:
             return cpu->SP;
         case RegIME:
-            return irc->IME;
+            return cpu->IME;
         default:
             cerr << std::hex << register_id << endl;
             assert(false);
@@ -155,7 +157,7 @@ FORCE_INLINE void Emulator::write(regid_t register_id, uint16_t value)
             cpu->SP = value;
             break;
         case RegIME:
-            irc->IME = (value != 0) ? 1 : 0;
+            cpu->IME = (value != 0) ? 1 : 0;
             break;
         default:
             cerr << std::hex << register_id << endl;

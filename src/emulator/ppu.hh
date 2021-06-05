@@ -12,6 +12,7 @@ using namespace std;
 using std::vector;
 
 class iFrontend;
+class Memory;
 class Renderer;
 
 class Ppu
@@ -57,10 +58,10 @@ public:
 
     enum Mode
     {
-        Hblank = 0x00,
-        Vblank = 0x01,
+        Hblank   = 0x00,
+        Vblank   = 0x01,
         LineScan = 0x02,
-        OamScan = 0x03
+        OamScan  = 0x03
     };
 
     static constexpr uint64_t CPU_CYCLES_PER_LY_INCREMENT = 456;
@@ -91,16 +92,16 @@ public:
 
     const uint8_t MODE_FLAG_MASK = 0x03; // Bits 0-1
 
-    Ppu(Memory* mem, Registers* reg, Irc* irc, iFrontend* renderer = nullptr);
+    Ppu(Memory* mem, Registers* reg, Cpu* cpu, iFrontend* renderer = nullptr);
     ~Ppu();
-    void set_frontend(iFrontend* renderer);
+    void set_frontend(iFrontend* frontend);
     void hard_reset();
     void step(uint64_t cpu_cycles);
     bool has_dma_request();
     memaddr_t dma_src_address();
     void launch_dma(memaddr_t src_address);
 
-    Irc* irc;
+    Cpu* cpu;
     Memory* mem;
     Renderer* renderer;
 };

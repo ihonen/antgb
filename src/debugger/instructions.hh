@@ -1,8 +1,10 @@
 #pragma once
 
-#include "emulator/types.hh"
+#include "types.hh"
 #include <cstdint>
 #include <unordered_set>
+
+class DebugCore;
 
 struct Opcode
 {

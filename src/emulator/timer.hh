@@ -1,7 +1,6 @@
 #pragma once
 
 #include "cpu.hh"
-#include "interrupts.hh"
 #include "types.hh"
 
 class Timer
@@ -22,13 +21,13 @@ public:
         TimerEnable = 2
     };
 
-    Timer(Registers* reg, Irc* irc);
+    Timer(Registers* reg, Cpu* cpu);
     inline void emulate(uint64_t cpu_cycles);
     inline void emulate_divider(uint64_t cpu_cycles);
     inline void emulate_timer(uint64_t cpu_cycles);
 
     Registers* reg;
-    Irc* irc;
+    Cpu* cpu;
 
     struct
     {
@@ -85,7 +84,7 @@ FORCE_INLINE void Timer::emulate_timer(uint64_t cpu_cycles)
         if (reg->tima == 0xFF)
         {
             reg->tima = reg->tma;
-            irc->request_interrupt(Irc::TimerInterrupt);
+            cpu->request_interrupt(Cpu::TimerInterrupt);
             return;
         }
         else

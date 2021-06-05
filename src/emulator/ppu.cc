@@ -1,8 +1,9 @@
 #include "ppu.hh"
 
+#include "debugger/ifrontend.hh"
+
 #include "addresses.hh"
 #include "bitmanip.hh"
-#include "debugger/ifrontend.hh"
 #include "memory.hh"
 #include <algorithm>
 #include <cassert>
@@ -494,8 +495,8 @@ Sprite* Sprites::get_sprite_at_x(size_t display_x)
 class Renderer
 {
 public:
-    Renderer(Memory* mem, iFrontend* renderer);
-    void set_renderer(iFrontend* renderer);
+    Renderer(Memory* mem, iFrontend* frontend);
+    void set_frontend(iFrontend* frontend);
     void set_memory(uint8_t* mem);
     void render_frame();
 
@@ -504,7 +505,7 @@ public:
 private:
     uint16_t TILE_DATA_BASE = 0x8000;
 
-    iFrontend* gui_renderer;
+    iFrontend* frontend;
 
     Memory* mem;
     iFrontend::Pixels pixels;
@@ -515,7 +516,7 @@ private:
 };
 
 Renderer::Renderer(Memory* memory, iFrontend* renderer_)
-    : gui_renderer(renderer_), mem(memory),
+    : frontend(renderer_), mem(memory),
       background(Background(Background::Type::Background, mem)),
       window(Background(Background::Type::Window, mem)),
       sprites(Sprites(memory))
@@ -523,9 +524,9 @@ Renderer::Renderer(Memory* memory, iFrontend* renderer_)
     memset(pixels.data(), 0x00, 160 * 144);
 }
 
-void Renderer::set_renderer(iFrontend* renderer)
+void Renderer::set_frontend(iFrontend* renderer)
 {
-    gui_renderer = renderer;
+    frontend = renderer;
 }
 
 void Renderer::render_frame()
@@ -555,9 +556,9 @@ void Renderer::render_frame()
 
     *mem->get(LY_ADDR) = ly_backup;
 
-    if (gui_renderer)
+    if (frontend)
     {
-        gui_renderer->render(pixels);
+        frontend->render(pixels);
     }
 }
 
@@ -565,8 +566,8 @@ void Renderer::render_frame()
 // Ppu
 //----------------------------------------------------------------------------
 
-Ppu::Ppu(Memory* mmu_, Registers* reg, Irc* irc, iFrontend* renderer_)
-    : reg(reg), irc(irc), mem(mmu_)
+Ppu::Ppu(Memory* mmu_, Registers* reg, Cpu* cpu, iFrontend* renderer_)
+    : reg(reg), cpu(cpu), mem(mmu_)
 {
     renderer = new Renderer(mem, renderer_);
     hard_reset();
@@ -577,9 +578,9 @@ Ppu::~Ppu()
     delete renderer;
 }
 
-void Ppu::set_frontend(iFrontend* renderer_)
+void Ppu::set_frontend(iFrontend* frontend)
 {
-    renderer->set_renderer(renderer_);
+    renderer->set_frontend(frontend);
 }
 
 void Ppu::hard_reset()
@@ -636,7 +637,7 @@ void Ppu::step(uint64_t cpu_cycles)
         {
             set_bit(&reg->stat, Ppu::LycCoincidence);
             cerr << "sent LCD STAT IRQ" << endl;
-            irc->request_interrupt(Irc::LcdStatInt);
+            cpu->request_interrupt(Cpu::LcdStatInt);
         }
         else
             clear_bit(&reg->stat, Ppu::LycCoincidence);
@@ -660,7 +661,7 @@ void Ppu::step(uint64_t cpu_cycles)
                 current_mode = Hblank;
                 // Hblank interrupt
                 if (get_bit(&reg->stat, HBlankInterrupt))
-                    irc->request_interrupt(Irc::LcdStatInt);
+                    cpu->request_interrupt(Cpu::LcdStatInt);
             }
             else
                 stop = true;
@@ -676,15 +677,15 @@ void Ppu::step(uint64_t cpu_cycles)
                     current_mode = OamScan;
                     // OAM interrupt
                     if (get_bit(&reg->stat, OamInt))
-                        irc->request_interrupt(Irc::LcdStatInt);
+                        cpu->request_interrupt(Cpu::LcdStatInt);
                 }
                 else
                 {
                     current_mode = Vblank;
                     renderer->render_frame();
-                    irc->request_interrupt(Irc::VBlankInterrupt);
+                    cpu->request_interrupt(Cpu::VBlankInterrupt);
                     if (get_bit(&reg->stat, VBlankInterrupt))
-                        irc->request_interrupt(Irc::LcdStatInt);
+                        cpu->request_interrupt(Cpu::LcdStatInt);
                 }
             }
             else
@@ -701,7 +702,7 @@ void Ppu::step(uint64_t cpu_cycles)
                 current_mode = OamScan;
                 // OAM interrupt
                 if (get_bit(&reg->stat, OamInt))
-                    irc->request_interrupt(Irc::LcdStatInt);
+                    cpu->request_interrupt(Cpu::LcdStatInt);
 
                 //cerr << "vblank end @ " << total_cycles - clocksum << endl;
 

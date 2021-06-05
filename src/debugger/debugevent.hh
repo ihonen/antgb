@@ -1,6 +1,7 @@
 #pragma once
 
 #include "breakpoint.hh"
+#include "types.hh"
 #include "util/macros.hh"
 #include "emulator/types.hh"
 

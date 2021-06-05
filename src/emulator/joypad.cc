@@ -4,9 +4,9 @@
 #include "memory.hh"
 #include <iostream>
 
-Joypad::Joypad(Memory* memory, Irc* irc_) :
+Joypad::Joypad(Memory* memory, Cpu* cpu) :
     mem(memory),
-    irc(irc_)
+    cpu(cpu)
 {
     io_register = mem->get(IO_REG_ADDRESS);
 
@@ -59,7 +59,7 @@ void Joypad::button_pressed(JoypadButton button)
     if (button_status[button].pressed == false)
     {
         button_status[button].pressed = true;
-        irc->request_interrupt(Irc::JoypadInterrupt);
+        cpu->request_interrupt(Cpu::JoypadInterrupt);
     }
 }
 

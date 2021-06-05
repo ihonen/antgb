@@ -12,14 +12,13 @@
 Emulator::Emulator()
 {
     mem = std::make_unique<Memory>();
-    irc = std::make_unique<Irc>(mem->get(IF_ADDR), mem->get(IE_ADDR));
 
     cartridge = nullptr;
-    cpu = std::make_unique<Cpu>(mem.get(), irc.get());
-    joypad = std::make_unique<Joypad>(mem.get(), irc.get());
-    ppu = std::make_unique<Ppu>(mem.get(), reinterpret_cast<Ppu::Registers*>(mem->get(PPU_LOW_ADDR)), irc.get());
-    serial = std::make_unique<Serial>(reinterpret_cast<Serial::Registers*>(mem->get(SERIAL_LOW_ADDR)), irc.get());
-    timer_divider = std::make_unique<Timer>(reinterpret_cast<Timer::Registers*>(mem->get(TIMER_LOW_ADDR)), irc.get());
+    cpu = std::make_unique<Cpu>(mem.get(), mem->get(IE_ADDR), mem->get(IF_ADDR));
+    joypad = std::make_unique<Joypad>(mem.get(), cpu.get());
+    ppu = std::make_unique<Ppu>(mem.get(), reinterpret_cast<Ppu::Registers*>(mem->get(PPU_LOW)), cpu.get());
+    serial = std::make_unique<Serial>(reinterpret_cast<Serial::Registers*>(mem->get(SERIAL_LOW)), cpu.get());
+    timer_divider = std::make_unique<Timer>(reinterpret_cast<Timer::Registers*>(mem->get(TIMER_LOW)), cpu.get());
 }
 
 Emulator::~Emulator() = default;
@@ -51,5 +50,4 @@ void Emulator::reset_emulation()
 {
     mem->hard_reset();
     cpu->hard_reset();
-    irc->hard_reset();
 }

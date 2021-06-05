@@ -1,8 +1,7 @@
 #pragma once
 
-#include "interrupts.hh"
 #include "exceptions.hh"
-#include "util/macros.hh"
+#include "macros.hh"
 #include "types.hh"
 #include <array>
 #include <fstream>
@@ -33,12 +32,12 @@ struct CpuRegisters
     };
     uint16_t SP;
     uint16_t PC;
+    uint8_t  IME;
 };
 
 class Cpu
 {
 public:
-
     enum class ALUFlagPos : uint8_t
     {
         C_FLAG = 4,
@@ -52,19 +51,46 @@ public:
         uint8_t len_bytes;
         uint8_t cycles_on_action;
         uint8_t cycles_on_no_action;
-        void   (Cpu::*handler)();
+        void (Cpu::*handler)();
     };
+
+    enum InterruptId
+    {
+        VBlankInterrupt = 0x00,
+        LcdStatInt      = 0x01,
+        TimerInterrupt  = 0x02,
+        SerialInterrupt = 0x03,
+        JoypadInterrupt = 0x04,
+        NoInterrupt     = 0xFF
+    };
+
+    typedef struct
+    {
+        InterruptId source;
+        memaddr_t   vector_address;
+    } InterruptInfo;
 
     static const uint64_t CLK_FREQ_Hz = 4194304;
     static const std::array<const InstructionInfo, 256> INSTRUCTION_TABLE;
     static const std::array<const InstructionInfo, 256> CB_INSTRUCTION_TABLE;
 
+    uint8_t* IE = nullptr;
+    uint8_t* IF = nullptr;
+
     std::ofstream trace_log;
 
     Memory* mem;
-    Irc* irc;
+
+    const memaddr_t INTERRUPT_VECTOR[5] = {0x0040, 0x0048, 0x0050, 0x0058, 0x0060};
+
+    uint64_t vblank_irqs  = 0;
+    uint64_t lcdstat_irqs = 0;
+    uint64_t timer_irqs   = 0;
+    uint64_t serial_irqs  = 0;
+    uint64_t joypad_irqs  = 0;
 
     CpuRegisters reg;
+
     uint16_t& BC = reg.BC;
     uint16_t& DE = reg.DE;
     uint16_t& HL = reg.HL;
@@ -79,6 +105,7 @@ public:
     uint8_t&   L = reg.L;
     uint8_t&   A = reg.A;
     uint8_t&   F = reg.F;
+    uint8_t& IME = reg.IME;
 
     const uint8_t* current_instruction = nullptr;
     bool branch_taken = false;
@@ -90,15 +117,26 @@ public:
     int DI_countdown = NO_COUNTDOWN;
     int EI_countdown = NO_COUNTDOWN;
 
-    Cpu(Memory* mem, Irc* irc);
+    Cpu(Memory* mem, uint8_t* IE, uint8_t* IF);
+    ~Cpu();
     void hard_reset();
+    inline bool has_pending_requests();
+    inline InterruptInfo next_request();
+    inline uint8_t ime_flag_get();
+    inline void ime_flag_set();
+    inline void ime_flag_clear();
+    inline void request_interrupt(int source);
+    inline bool interrupt_requested(int source);
+    inline bool interrupt_enabled(int source);
+    inline void clear_interrupt(int source);
+    inline void disable_interrupt(int source);
+    inline void enable_interrupt(int source);
     void set_PC(uint16_t value);
     void restart();
     void execute(const uint8_t* const instruction = nullptr);
     inline void reset_cycles();
     inline uint64_t get_cycles();
     void jump_to_isr(memaddr_t vector_address);
-
     inline uint8_t get_ALU_flag(enum ALUFlagPos pos);
     inline void assign_ALU_flag(enum ALUFlagPos pos, uint8_t val);
     inline uint8_t C_flag_get();
@@ -364,6 +402,79 @@ FORCE_INLINE uint64_t Cpu::get_cycles()
 FORCE_INLINE void Cpu::reset_cycles()
 {
     clock_cycles = 0;
+}
+
+FORCE_INLINE bool Cpu::has_pending_requests()
+{
+    return (*IF & 0x1F) != 0;
+}
+
+FORCE_INLINE Cpu::InterruptInfo Cpu::next_request()
+{
+    for (InterruptId i = VBlankInterrupt; i < JoypadInterrupt;
+         i             = (InterruptId)((int)i + 1))
+    {
+        if (interrupt_enabled(i) && interrupt_requested(i))
+        {
+            return {(InterruptId)i, INTERRUPT_VECTOR[i]};
+        }
+    }
+
+    return {NoInterrupt, 0x0000};
+}
+
+FORCE_INLINE uint8_t Cpu::ime_flag_get()
+{
+    return IME;
+}
+
+FORCE_INLINE void Cpu::ime_flag_set()
+{
+    IME = 0x01;
+}
+
+FORCE_INLINE void Cpu::ime_flag_clear()
+{
+    IME = 0x00;
+}
+
+FORCE_INLINE void Cpu::request_interrupt(int source)
+{
+    switch (source)
+    {
+    case VBlankInterrupt: ++vblank_irqs; break;
+    case LcdStatInt: ++lcdstat_irqs; break;
+    case JoypadInterrupt: ++joypad_irqs; break;
+    case TimerInterrupt: ++timer_irqs; break;
+    case SerialInterrupt: ++serial_irqs; break;
+    }
+
+    *IF |= 0x01 << source;
+}
+
+FORCE_INLINE bool Cpu::interrupt_requested(int source)
+{
+    return (*IF & (0x01 << source)) != 0;
+}
+
+FORCE_INLINE bool Cpu::interrupt_enabled(int source)
+{
+    return (*IE & (0x01 << source)) != 0;
+}
+
+FORCE_INLINE void Cpu::clear_interrupt(int source)
+{
+    *IF &= ~(0x01 << source);
+}
+
+FORCE_INLINE void Cpu::disable_interrupt(int source)
+{
+    *IE &= ~(0x01 << source);
+}
+
+FORCE_INLINE void Cpu::enable_interrupt(int source)
+{
+    *IE |= 0x01 << source;
 }
 
 FORCE_INLINE uint8_t Cpu::extract_immediate8(const uint8_t* instruction)

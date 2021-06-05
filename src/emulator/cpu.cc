@@ -1,20 +1,23 @@
 #include "cpu.hh"
 
-#include "debugger/disassembler.hh"
 #include "memory.hh"
+#include <array>
 #include <iomanip>
 #include <iostream>
 
-////////////////////////////////////////////////////////////////////////////////
-// CLASS FUNCTIONS
-////////////////////////////////////////////////////////////////////////////////
-
-Cpu::Cpu(Memory* memory, Irc* irc_) :
-    mem(memory),
-    irc(irc_)
+Cpu::Cpu(Memory* memory, uint8_t* IE, uint8_t* IF) : mem(memory), IE(IE), IF(IF)
 {
     trace_log.open("trace.log", std::ofstream::out);
     hard_reset();
+}
+
+Cpu::~Cpu()
+{
+    std::cerr << "vblank interrupts: " << vblank_irqs << std::endl;
+    std::cerr << "lcdstat interrupts: " << lcdstat_irqs << std::endl;
+    std::cerr << "timer interrupts: " << timer_irqs << std::endl;
+    std::cerr << "serial interrupts: " << serial_irqs << std::endl;
+    std::cerr << "joypad interrupts: " << joypad_irqs << std::endl;
 }
 
 void Cpu::set_PC(uint16_t value)
@@ -36,6 +39,12 @@ void Cpu::hard_reset()
     SP = 0xFFFE;
     PC = 0x0100;
 
+    assert(IE);
+    assert(IF);
+    *IE = 0x00;
+    *IF = 0x00;
+    IME = 0x00;
+
     current_instruction = nullptr;
     branch_taken = false;
     DI_countdown = NO_COUNTDOWN;
@@ -55,26 +64,27 @@ void Cpu::execute(const uint8_t* instruction)
     if (EI_countdown > 0)
         --EI_countdown;
 
-    if (irc->has_pending_requests())
+    if (has_pending_requests())
     {
-        auto interrupt = irc->next_request();
+        auto interrupt = next_request();
 
-        if (interrupt.source != Irc::NoInterrupt)
+        if (interrupt.source != NoInterrupt)
         {
             bool was_halted = is_halted;
             is_halted = false;
-            if (interrupt.source == Irc::JoypadInterrupt)
+            if (interrupt.source == JoypadInterrupt)
             {
                 // TODO: Does this require an actual
                 // interrupt or just a button press?
                 is_stopped = false;
             }
 
-            if (irc->ime_flag_get())
+            if (ime_flag_get())
             {
-                if (was_halted) clock_cycles += 4;
-                irc->ime_flag_clear();
-                irc->clear_interrupt(interrupt.source);
+                if (was_halted)
+                    clock_cycles += 4;
+                ime_flag_clear();
+                clear_interrupt(interrupt.source);
                 jump_to_isr(interrupt.vector_address);
                 return;
             }
@@ -95,10 +105,7 @@ void Cpu::execute(const uint8_t* instruction)
         if (branch_taken)
             clock_cycles += op_info->cycles_on_action;
         else
-        {
             clock_cycles += op_info->cycles_on_no_action;
-        }
-
     }
     else
     {
@@ -108,13 +115,13 @@ void Cpu::execute(const uint8_t* instruction)
 
     if (DI_countdown == 0)
     {
-        irc->ime_flag_clear();
+        ime_flag_clear();
         DI_countdown = NO_COUNTDOWN;
         EI_countdown = NO_COUNTDOWN;
     }
     else if (EI_countdown == 0)
     {
-        irc->ime_flag_set();
+        ime_flag_set();
         DI_countdown = NO_COUNTDOWN;
         EI_countdown = NO_COUNTDOWN;
     }
@@ -132,7 +139,7 @@ void Cpu::jump_to_isr(memaddr_t vector_address)
     // cerr << "Jumping to interrupt vector @ " << std::hex << vector_address << endl;
     // trace_log << "Jumping to interrupt vector @ " << std::hex << vector_address << endl;
 
-    irc->ime_flag_clear();
+    ime_flag_clear();
     PUSH_r16(PC);
     PC = vector_address;
     current_instruction = mem->get(PC);
@@ -140,10 +147,6 @@ void Cpu::jump_to_isr(memaddr_t vector_address)
     EI_countdown = NO_COUNTDOWN;
     clock_cycles += 20;
 }
-
-////////////////////////////////////////////////////////////////////////////////
-// INSTRUCTION IMPLEMENTATIONS
-////////////////////////////////////////////////////////////////////////////////
 
 /* ADC */
 
@@ -643,9 +646,9 @@ void Cpu::RET_cc(bool cc)
 void Cpu::RETI()
 {
     RET();
-    irc->ime_flag_set();
-    EI_countdown = NO_COUNTDOWN;
+    ime_flag_set();
     DI_countdown = NO_COUNTDOWN;
+    EI_countdown = NO_COUNTDOWN;
 }
 
 void Cpu::RL_HL()
@@ -960,10 +963,6 @@ void Cpu::XOR_r8(uint8_t& r8)
 {
     XOR_n8(r8);
 }
-
-////////////////////////////////////////////////////////////////////////////////
-// INSTRUCTION TABLES
-////////////////////////////////////////////////////////////////////////////////
 
 const std::array<const Cpu::InstructionInfo, 256> Cpu::INSTRUCTION_TABLE =
 {{
