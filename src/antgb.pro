@@ -33,7 +33,6 @@ SOURCES += \
     debugger/disassembler.cc \
     debugger/instructions.cc \
     emulator/apu.cc \
-    emulator/background.cc \
     emulator/bitmanip.cc \
     emulator/cpu.cc \
     emulator/emulator.cc \
@@ -42,11 +41,7 @@ SOURCES += \
     emulator/joypad.cc \
     emulator/memory.cc \
     emulator/ppu.cc \
-    emulator/renderer.cc \
     emulator/serial.cc \
-    emulator/sprite.cc \
-    emulator/sprites.cc \
-    emulator/tile.cc \
     emulator/timer.cc \
     gui/models/breakpointdelegate.cc \
     gui/models/breakpointmodel.cc \
@@ -99,7 +94,6 @@ HEADERS += \
     debugger/instructions.hh \
     emulator/addresses.hh \
     emulator/apu.hh \
-    emulator/background.hh \
     emulator/bitmanip.hh \
     emulator/cartridge.hh \
     emulator/cpu.hh \
@@ -110,11 +104,7 @@ HEADERS += \
     emulator/joypad.hh \
     emulator/memory.hh \
     emulator/ppu.hh \
-    emulator/renderer.hh \
     emulator/serial.hh \
-    emulator/sprite.hh \
-    emulator/sprites.hh \
-    emulator/tile.hh \
     emulator/timer.hh \
     emulator/types.hh \
     gui/models/breakpointdelegate.hh \

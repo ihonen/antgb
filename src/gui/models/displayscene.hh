@@ -2,7 +2,6 @@
 
 #include "debugger/ifrontend.hh"
 #include "debugger/debugcore.hh"
-#include "emulator/renderer.hh"
 #include <QGraphicsScene>
 
 Q_DECLARE_METATYPE(iFrontend::Pixels);

@@ -7,8 +7,6 @@
 #include <iostream>
 #include <cstdio>
 
-#include "emulator/sprite.hh"
-
 using namespace std;
 
 int main(int argc, char* argv[])
