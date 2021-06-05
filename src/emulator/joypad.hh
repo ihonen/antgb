@@ -5,6 +5,8 @@
 #include "emulator/types.hh"
 #include <map>
 
+class Memory;
+
 class Joypad
 {
 public:

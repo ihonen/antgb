@@ -8,6 +8,8 @@
 
 using namespace std;
 
+class Memory;
+
 class Background
 {
 public:

@@ -1,18 +1,17 @@
 #pragma once
 
 #include "debugger/iemulator.hh"
-#include "util/macros.hh"
-#include "emulator/types.hh"
-#include "cartridge.hh"
-#include "cpu.hh"
-#include "interrupts.hh"
-#include "joypad.hh"
 #include "memory.hh"
-#include "ppu.hh"
-#include "serial.hh"
-#include "timer.hh"
-#include "renderer.hh"
-#include "types.hh"
+#include <memory>
+
+class Cartridge;
+class Cpu;
+class Irc;
+class Joypad;
+class Memory;
+class Ppu;
+class Serial;
+class Timer;
 
 class Emulator : public iEmulator
 {
@@ -31,14 +30,14 @@ public:
     inline virtual uint16_t read(regid_t register_id) override;
     inline virtual void write(regid_t register_id, uint16_t value) override;
 
-    Cpu* cpu;
-    Irc* irc;
-    Memory* mem;
-    Ppu* ppu;
-    Joypad* joypad;
-    Timer* timer_divider;
-    Serial* serial;
-    Cartridge* cartridge;
+    std::unique_ptr<Cpu> cpu;
+    std::unique_ptr<Irc> irc;
+    std::unique_ptr<Memory> mem;
+    std::unique_ptr<Ppu> ppu;
+    std::unique_ptr<Joypad> joypad;
+    std::unique_ptr<Timer> timer_divider;
+    std::unique_ptr<Serial> serial;
+    std::unique_ptr<Cartridge> cartridge;
 };
 
 FORCE_INLINE int Emulator::execute_next()
@@ -46,14 +45,14 @@ FORCE_INLINE int Emulator::execute_next()
     uint64_t cpu_cycle_count_before = cpu->get_cycles();
     cpu->execute();
     uint64_t cpu_cycle_count_after = cpu->get_cycles();
-    int clock_cycles = cpu_cycle_count_after - cpu_cycle_count_before;
+    uint64_t clock_cycles = cpu_cycle_count_after - cpu_cycle_count_before;
 
     timer_divider->emulate(clock_cycles);
     mem->emulate(clock_cycles);
     ppu->step(clock_cycles);
     serial->emulate(clock_cycles);
 
-    return clock_cycles;
+    return static_cast<int>(clock_cycles);
 }
 
 FORCE_INLINE uint16_t Emulator::read(regid_t register_id)

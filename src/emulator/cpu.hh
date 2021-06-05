@@ -7,7 +7,7 @@
 #include <array>
 #include <fstream>
 
-using std::array;
+class Memory;
 
 struct CpuRegisters
 {
@@ -56,8 +56,8 @@ public:
     };
 
     static const uint64_t CLK_FREQ_Hz = 4194304;
-    static const array<const InstructionInfo, 256> INSTRUCTION_TABLE;
-    static const array<const InstructionInfo, 256> CB_INSTRUCTION_TABLE;
+    static const std::array<const InstructionInfo, 256> INSTRUCTION_TABLE;
+    static const std::array<const InstructionInfo, 256> CB_INSTRUCTION_TABLE;
 
     std::ofstream trace_log;
 

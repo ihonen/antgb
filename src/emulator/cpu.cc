@@ -965,7 +965,7 @@ void Cpu::XOR_r8(uint8_t& r8)
 // INSTRUCTION TABLES
 ////////////////////////////////////////////////////////////////////////////////
 
-const array<const Cpu::InstructionInfo, 256> Cpu::INSTRUCTION_TABLE =
+const std::array<const Cpu::InstructionInfo, 256> Cpu::INSTRUCTION_TABLE =
 {{
     {1, 4,  4,  &Cpu::op_00},
     {3, 12, 12, &Cpu::op_01},
@@ -1225,7 +1225,7 @@ const array<const Cpu::InstructionInfo, 256> Cpu::INSTRUCTION_TABLE =
     {1, 16, 16, &Cpu::op_FF}
 }};
 
-const array<const Cpu::InstructionInfo, 256> Cpu::CB_INSTRUCTION_TABLE =
+const std::array<const Cpu::InstructionInfo, 256> Cpu::CB_INSTRUCTION_TABLE =
 {{
     {2, 8,  8,  &Cpu::op_CB_00},
     {2, 8,  8,  &Cpu::op_CB_01},

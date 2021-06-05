@@ -4,6 +4,8 @@
 #include "types.hh"
 #include <array>
 
+class Memory;
+
 class Sprites
 {
 public:

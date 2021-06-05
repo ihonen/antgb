@@ -64,17 +64,3 @@ using std::string;
 //typedef uint16_t memaddr_t;
 typedef uint16_t memsize_t;
 typedef uint16_t lcdsize_t;
-
-class Background;
-class Cpu;
-class Emulator;
-class Irc;
-class Joypad;
-class Memory;
-class Ppu;
-class Renderer;
-class Serial;
-class Sprite;
-class Sprites;
-class Tile;
-class Timer;
