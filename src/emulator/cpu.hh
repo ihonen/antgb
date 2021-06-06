@@ -1,51 +1,18 @@
 #pragma once
 
+#include "cpuregisters.hh"
 #include "exceptions.hh"
 #include "macros.hh"
 #include "types.hh"
 #include <array>
 #include <fstream>
 
-class Memory;
 
-struct CpuRegisters
-{
-    union
-    {
-        uint16_t BC;
-        struct { uint8_t C; uint8_t B; } __attribute__((packed));
-    };
-    union
-    {
-        uint16_t DE;
-        struct { uint8_t E; uint8_t D; } __attribute__((packed));
-    };
-    union
-    {
-        uint16_t HL;
-        struct { uint8_t L; uint8_t H; } __attribute__((packed));
-    };
-    union
-    {
-        uint16_t AF;
-        struct { uint8_t F; uint8_t A; } __attribute__((packed));
-    };
-    uint16_t SP;
-    uint16_t PC;
-    uint8_t  IME;
-};
+class Memory;
 
 class Cpu
 {
 public:
-    enum class ALUFlagPos : uint8_t
-    {
-        C_FLAG = 4,
-        H_FLAG = 5,
-        N_FLAG = 6,
-        Z_FLAG = 7
-    };
-
     struct InstructionInfo
     {
         uint8_t len_bytes;
@@ -74,9 +41,6 @@ public:
     static const std::array<const InstructionInfo, 256> INSTRUCTION_TABLE;
     static const std::array<const InstructionInfo, 256> CB_INSTRUCTION_TABLE;
 
-    uint8_t* IE = nullptr;
-    uint8_t* IF = nullptr;
-
     std::ofstream trace_log;
 
     Memory* mem;
@@ -89,23 +53,7 @@ public:
     uint64_t serial_irqs  = 0;
     uint64_t joypad_irqs  = 0;
 
-    CpuRegisters reg;
-
-    uint16_t& BC = reg.BC;
-    uint16_t& DE = reg.DE;
-    uint16_t& HL = reg.HL;
-    uint16_t& AF = reg.AF;
-    uint16_t& PC = reg.PC;
-    uint16_t& SP = reg.SP;
-    uint8_t&   B = reg.B;
-    uint8_t&   C = reg.C;
-    uint8_t&   D = reg.D;
-    uint8_t&   E = reg.E;
-    uint8_t&   H = reg.H;
-    uint8_t&   L = reg.L;
-    uint8_t&   A = reg.A;
-    uint8_t&   F = reg.F;
-    uint8_t& IME = reg.IME;
+    CpuRegisters& reg;
 
     const uint8_t* current_instruction = nullptr;
     bool branch_taken = false;
@@ -117,14 +65,11 @@ public:
     int DI_countdown = NO_COUNTDOWN;
     int EI_countdown = NO_COUNTDOWN;
 
-    Cpu(Memory* mem, uint8_t* IE, uint8_t* IF);
+    Cpu(Memory* mem, CpuRegisters& registers);
     ~Cpu();
     void hard_reset();
     inline bool has_pending_requests();
     inline InterruptInfo next_request();
-    inline uint8_t ime_flag_get();
-    inline void ime_flag_set();
-    inline void ime_flag_clear();
     inline void request_interrupt(int source);
     inline bool interrupt_requested(int source);
     inline bool interrupt_enabled(int source);
@@ -137,24 +82,6 @@ public:
     inline void reset_cycles();
     inline uint64_t get_cycles();
     void jump_to_isr(memaddr_t vector_address);
-    inline uint8_t get_ALU_flag(enum ALUFlagPos pos);
-    inline void assign_ALU_flag(enum ALUFlagPos pos, uint8_t val);
-    inline uint8_t C_flag_get();
-    inline uint8_t H_flag_get();
-    inline uint8_t N_flag_get();
-    inline uint8_t Z_flag_get();
-    inline void C_flag_reset();
-    inline void H_flag_reset();
-    inline void N_flag_reset();
-    inline void Z_flag_reset();
-    inline void C_flag_set();
-    inline void H_flag_set();
-    inline void N_flag_set();
-    inline void Z_flag_set();
-    inline void C_flag_update(bool cond);
-    inline void H_flag_update(bool cond);
-    inline void N_flag_update(bool cond);
-    inline void Z_flag_update(bool cond);
     void invalid_opcode();
     inline uint8_t extract_immediate8(const uint8_t* instruction = nullptr);
     inline uint16_t extract_immediate16(const uint8_t* instruction = nullptr);
@@ -406,7 +333,7 @@ FORCE_INLINE void Cpu::reset_cycles()
 
 FORCE_INLINE bool Cpu::has_pending_requests()
 {
-    return (*IF & 0x1F) != 0;
+    return (reg.read_IF() & 0x1F) != 0;
 }
 
 FORCE_INLINE Cpu::InterruptInfo Cpu::next_request()
@@ -423,21 +350,6 @@ FORCE_INLINE Cpu::InterruptInfo Cpu::next_request()
     return {NoInterrupt, 0x0000};
 }
 
-FORCE_INLINE uint8_t Cpu::ime_flag_get()
-{
-    return IME;
-}
-
-FORCE_INLINE void Cpu::ime_flag_set()
-{
-    IME = 0x01;
-}
-
-FORCE_INLINE void Cpu::ime_flag_clear()
-{
-    IME = 0x00;
-}
-
 FORCE_INLINE void Cpu::request_interrupt(int source)
 {
     switch (source)
@@ -449,32 +361,32 @@ FORCE_INLINE void Cpu::request_interrupt(int source)
     case SerialInterrupt: ++serial_irqs; break;
     }
 
-    *IF |= 0x01 << source;
+    reg.write_IF(reg.read_IF() | (0x01 << source));
 }
 
 FORCE_INLINE bool Cpu::interrupt_requested(int source)
 {
-    return (*IF & (0x01 << source)) != 0;
+    return (reg.read_IF() & (0x01 << source)) != 0;
 }
 
 FORCE_INLINE bool Cpu::interrupt_enabled(int source)
 {
-    return (*IE & (0x01 << source)) != 0;
+    return (reg.read_IE() & (0x01 << source)) != 0;
 }
 
 FORCE_INLINE void Cpu::clear_interrupt(int source)
 {
-    *IF &= ~(0x01 << source);
+    reg.write_IF(reg.read_IF() & ~(0x01 << source));
 }
 
 FORCE_INLINE void Cpu::disable_interrupt(int source)
 {
-    *IE &= ~(0x01 << source);
+    reg.write_IE(reg.read_IE() & ~(0x01 << source));
 }
 
 FORCE_INLINE void Cpu::enable_interrupt(int source)
 {
-    *IE |= 0x01 << source;
+    reg.write_IE(reg.read_IE() | (0x01 << source));
 }
 
 FORCE_INLINE uint8_t Cpu::extract_immediate8(const uint8_t* instruction)
@@ -490,101 +402,6 @@ FORCE_INLINE uint16_t Cpu::extract_immediate16(const uint8_t* instruction)
            (static_cast<uint16_t>(instruction[2]) << 8);
 }
 
-FORCE_INLINE uint8_t Cpu::get_ALU_flag(enum ALUFlagPos pos)
-{
-    return (F >> static_cast<uint8_t>(pos)) & 0x01;
-}
-
-FORCE_INLINE void Cpu::assign_ALU_flag(enum ALUFlagPos pos, uint8_t val)
-{
-    if (val == 0) F &= ~(0x01 << static_cast<uint8_t>(pos));
-    else F |= 0x01 << static_cast<uint8_t>(pos);
-}
-
-FORCE_INLINE uint8_t Cpu::C_flag_get()
-{
-    return get_ALU_flag(ALUFlagPos::C_FLAG);
-}
-
-FORCE_INLINE uint8_t Cpu::H_flag_get()
-{
-    return get_ALU_flag(ALUFlagPos::H_FLAG);
-}
-
-FORCE_INLINE uint8_t Cpu::N_flag_get()
-{
-    return get_ALU_flag(ALUFlagPos::N_FLAG);
-}
-
-FORCE_INLINE uint8_t Cpu::Z_flag_get()
-{
-    return get_ALU_flag(ALUFlagPos::Z_FLAG);
-}
-
-FORCE_INLINE void Cpu::C_flag_set()
-{
-    assign_ALU_flag(ALUFlagPos::C_FLAG, 1);
-}
-
-FORCE_INLINE void Cpu::H_flag_set()
-{
-    assign_ALU_flag(ALUFlagPos::H_FLAG, 1);
-}
-
-FORCE_INLINE void Cpu::N_flag_set()
-{
-    assign_ALU_flag(ALUFlagPos::N_FLAG, 1);
-}
-
-FORCE_INLINE void Cpu::Z_flag_set()
-{
-    assign_ALU_flag(ALUFlagPos::Z_FLAG, 1);
-}
-
-FORCE_INLINE void Cpu::C_flag_reset()
-{
-    assign_ALU_flag(ALUFlagPos::C_FLAG, 0);
-}
-
-FORCE_INLINE void Cpu::H_flag_reset()
-{
-    assign_ALU_flag(ALUFlagPos::H_FLAG, 0);
-}
-
-FORCE_INLINE void Cpu::N_flag_reset()
-{
-    assign_ALU_flag(ALUFlagPos::N_FLAG, 0);
-}
-
-FORCE_INLINE void Cpu::Z_flag_reset()
-{
-    assign_ALU_flag(ALUFlagPos::Z_FLAG, 0);
-}
-
-FORCE_INLINE void Cpu::C_flag_update(bool cond)
-{
-    if (cond) C_flag_set();
-    else C_flag_reset();
-}
-
-FORCE_INLINE void Cpu::H_flag_update(bool cond)
-{
-    if (cond) H_flag_set();
-    else H_flag_reset();
-}
-
-FORCE_INLINE void Cpu::N_flag_update(bool cond)
-{
-    if (cond) N_flag_set();
-    else C_flag_reset();
-}
-
-FORCE_INLINE void Cpu::Z_flag_update(bool cond)
-{
-    if (cond) Z_flag_set();
-    else Z_flag_reset();
-}
-
 FORCE_INLINE void Cpu::op_00()
 {
     NOP();
@@ -592,32 +409,32 @@ FORCE_INLINE void Cpu::op_00()
 
 FORCE_INLINE void Cpu::op_01()
 {
-    LD_r16_n16(BC, extract_immediate16());
+    LD_r16_n16(reg.get_BC(), extract_immediate16());
 }
 
 FORCE_INLINE void Cpu::op_02()
 {
-    LD_r16_A(BC);
+    LD_r16_A(reg.get_BC());
 }
 
 FORCE_INLINE void Cpu::op_03()
 {
-    INC_r16(BC);
+    INC_r16(reg.get_BC());
 }
 
 FORCE_INLINE void Cpu::op_04()
 {
-    INC_r8(B);
+    INC_r8(reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_05()
 {
-    DEC_r8(B);
+    DEC_r8(reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_06()
 {
-    LD_r8_n8(B, extract_immediate8());
+    LD_r8_n8(reg.get_B(), extract_immediate8());
 }
 
 FORCE_INLINE void Cpu::op_07()
@@ -632,32 +449,32 @@ FORCE_INLINE void Cpu::op_08()
 
 FORCE_INLINE void Cpu::op_09()
 {
-    ADD_HL_r16(BC);
+    ADD_HL_r16(reg.get_BC());
 }
 
 FORCE_INLINE void Cpu::op_0A()
 {
-    LD_A_r16(BC);
+    LD_A_r16(reg.get_BC());
 }
 
 FORCE_INLINE void Cpu::op_0B()
 {
-    DEC_r16(BC);
+    DEC_r16(reg.get_BC());
 }
 
 FORCE_INLINE void Cpu::op_0C()
 {
-    INC_r8(C);
+    INC_r8(reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_0D()
 {
-    DEC_r8(C);
+    DEC_r8(reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_0E()
 {
-    LD_r8_n8(C, extract_immediate8());
+    LD_r8_n8(reg.get_C(), extract_immediate8());
 }
 
 FORCE_INLINE void Cpu::op_0F()
@@ -672,32 +489,32 @@ FORCE_INLINE void Cpu::op_10()
 
 FORCE_INLINE void Cpu::op_11()
 {
-    LD_r16_n16(DE, extract_immediate16());
+    LD_r16_n16(reg.get_DE(), extract_immediate16());
 }
 
 FORCE_INLINE void Cpu::op_12()
 {
-    LD_r16_A(DE);
+    LD_r16_A(reg.get_DE());
 }
 
 FORCE_INLINE void Cpu::op_13()
 {
-    INC_r16(DE);
+    INC_r16(reg.get_DE());
 }
 
 FORCE_INLINE void Cpu::op_14()
 {
-    INC_r8(D);
+    INC_r8(reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_15()
 {
-    DEC_r8(D);
+    DEC_r8(reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_16()
 {
-    LD_r8_n8(D, extract_immediate8());
+    LD_r8_n8(reg.get_D(), extract_immediate8());
 }
 
 FORCE_INLINE void Cpu::op_17()
@@ -712,32 +529,32 @@ FORCE_INLINE void Cpu::op_18()
 
 FORCE_INLINE void Cpu::op_19()
 {
-    ADD_HL_r16(DE);
+    ADD_HL_r16(reg.get_DE());
 }
 
 FORCE_INLINE void Cpu::op_1A()
 {
-    LD_A_r16(DE);
+    LD_A_r16(reg.get_DE());
 }
 
 FORCE_INLINE void Cpu::op_1B()
 {
-    DEC_r16(DE);
+    DEC_r16(reg.get_DE());
 }
 
 FORCE_INLINE void Cpu::op_1C()
 {
-    INC_r8(E);
+    INC_r8(reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_1D()
 {
-    DEC_r8(E);
+    DEC_r8(reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_1E()
 {
-    LD_r8_n8(E, extract_immediate8());
+    LD_r8_n8(reg.get_E(), extract_immediate8());
 }
 
 FORCE_INLINE void Cpu::op_1F()
@@ -747,12 +564,12 @@ FORCE_INLINE void Cpu::op_1F()
 
 FORCE_INLINE void Cpu::op_20()
 {
-    JR_cc_n8(!Z_flag_get(), static_cast<int8_t>(extract_immediate8()));
+    JR_cc_n8(!reg.read_Z_flag(), static_cast<int8_t>(extract_immediate8()));
 }
 
 FORCE_INLINE void Cpu::op_21()
 {
-    LD_r16_n16(HL, extract_immediate16());
+    LD_r16_n16(reg.get_HL(), extract_immediate16());
 }
 
 FORCE_INLINE void Cpu::op_22()
@@ -762,22 +579,22 @@ FORCE_INLINE void Cpu::op_22()
 
 FORCE_INLINE void Cpu::op_23()
 {
-    INC_r16(HL);
+    INC_r16(reg.get_HL());
 }
 
 FORCE_INLINE void Cpu::op_24()
 {
-    INC_r8(H);
+    INC_r8(reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_25()
 {
-    DEC_r8(H);
+    DEC_r8(reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_26()
 {
-    LD_r8_n8(H, extract_immediate8());
+    LD_r8_n8(reg.get_H(), extract_immediate8());
 }
 
 FORCE_INLINE void Cpu::op_27()
@@ -787,12 +604,12 @@ FORCE_INLINE void Cpu::op_27()
 
 FORCE_INLINE void Cpu::op_28()
 {
-    JR_cc_n8(Z_flag_get(), static_cast<int8_t>(extract_immediate8()));
+    JR_cc_n8(reg.read_Z_flag(), static_cast<int8_t>(extract_immediate8()));
 }
 
 FORCE_INLINE void Cpu::op_29()
 {
-    ADD_HL_r16(HL);
+    ADD_HL_r16(reg.get_HL());
 }
 
 FORCE_INLINE void Cpu::op_2A()
@@ -802,22 +619,22 @@ FORCE_INLINE void Cpu::op_2A()
 
 FORCE_INLINE void Cpu::op_2B()
 {
-    DEC_r16(HL);
+    DEC_r16(reg.get_HL());
 }
 
 FORCE_INLINE void Cpu::op_2C()
 {
-    INC_r8(L);
+    INC_r8(reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_2D()
 {
-    DEC_r8(L);
+    DEC_r8(reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_2E()
 {
-    LD_r8_n8(L, extract_immediate8());
+    LD_r8_n8(reg.get_L(), extract_immediate8());
 }
 
 FORCE_INLINE void Cpu::op_2F()
@@ -827,12 +644,12 @@ FORCE_INLINE void Cpu::op_2F()
 
 FORCE_INLINE void Cpu::op_30()
 {
-    JR_cc_n8(!C_flag_get(), static_cast<int8_t>(extract_immediate8()));
+    JR_cc_n8(!reg.read_C_flag(), static_cast<int8_t>(extract_immediate8()));
 }
 
 FORCE_INLINE void Cpu::op_31()
 {
-    LD_r16_n16(SP, extract_immediate16());
+    LD_r16_n16(reg.get_SP(), extract_immediate16());
 }
 
 FORCE_INLINE void Cpu::op_32()
@@ -842,7 +659,7 @@ FORCE_INLINE void Cpu::op_32()
 
 FORCE_INLINE void Cpu::op_33()
 {
-    INC_r16(SP);
+    INC_r16(reg.get_SP());
 }
 
 FORCE_INLINE void Cpu::op_34()
@@ -867,12 +684,12 @@ FORCE_INLINE void Cpu::op_37()
 
 FORCE_INLINE void Cpu::op_38()
 {
-    JR_cc_n8(C_flag_get(), static_cast<int8_t>(extract_immediate8()));
+    JR_cc_n8(reg.read_C_flag(), static_cast<int8_t>(extract_immediate8()));
 }
 
 FORCE_INLINE void Cpu::op_39()
 {
-    ADD_HL_r16(SP);
+    ADD_HL_r16(reg.get_SP());
 }
 
 FORCE_INLINE void Cpu::op_3A()
@@ -882,22 +699,22 @@ FORCE_INLINE void Cpu::op_3A()
 
 FORCE_INLINE void Cpu::op_3B()
 {
-    DEC_r16(SP);
+    DEC_r16(reg.get_SP());
 }
 
 FORCE_INLINE void Cpu::op_3C()
 {
-    INC_r8(A);
+    INC_r8(reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_3D()
 {
-    DEC_r8(A);
+    DEC_r8(reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_3E()
 {
-    LD_r8_n8(A, extract_immediate8());
+    LD_r8_n8(reg.get_A(), extract_immediate8());
 }
 
 FORCE_INLINE void Cpu::op_3F()
@@ -907,272 +724,272 @@ FORCE_INLINE void Cpu::op_3F()
 
 FORCE_INLINE void Cpu::op_40()
 {
-    LD_r8_r8(B, B);
+    LD_r8_r8(reg.get_B(), reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_41()
 {
-    LD_r8_r8(B, C);
+    LD_r8_r8(reg.get_B(), reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_42()
 {
-    LD_r8_r8(B, D);
+    LD_r8_r8(reg.get_B(), reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_43()
 {
-    LD_r8_r8(B, E);
+    LD_r8_r8(reg.get_B(), reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_44()
 {
-    LD_r8_r8(B, H);
+    LD_r8_r8(reg.get_B(), reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_45()
 {
-    LD_r8_r8(B, L);
+    LD_r8_r8(reg.get_B(), reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_46()
 {
-    LD_r8_HL(B);
+    LD_r8_HL(reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_47()
 {
-    LD_r8_r8(B, A);
+    LD_r8_r8(reg.get_B(), reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_48()
 {
-    LD_r8_r8(C, B);
+    LD_r8_r8(reg.get_C(), reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_49()
 {
-    LD_r8_r8(C, C);
+    LD_r8_r8(reg.get_C(), reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_4A()
 {
-    LD_r8_r8(C, D);
+    LD_r8_r8(reg.get_C(), reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_4B()
 {
-    LD_r8_r8(C, E);
+    LD_r8_r8(reg.get_C(), reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_4C()
 {
-    LD_r8_r8(C, H);
+    LD_r8_r8(reg.get_C(), reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_4D()
 {
-    LD_r8_r8(C, L);
+    LD_r8_r8(reg.get_C(), reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_4E()
 {
-    LD_r8_HL(C);
+    LD_r8_HL(reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_4F()
 {
-    LD_r8_r8(C, A);
+    LD_r8_r8(reg.get_C(), reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_50()
 {
-    LD_r8_r8(D, B);
+    LD_r8_r8(reg.get_D(), reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_51()
 {
-    LD_r8_r8(D, C);
+    LD_r8_r8(reg.get_D(), reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_52()
 {
-    LD_r8_r8(D, D);
+    LD_r8_r8(reg.get_D(), reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_53()
 {
-    LD_r8_r8(D, E);
+    LD_r8_r8(reg.get_D(), reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_54()
 {
-    LD_r8_r8(D, H);
+    LD_r8_r8(reg.get_D(), reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_55()
 {
-    LD_r8_r8(D, L);
+    LD_r8_r8(reg.get_D(), reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_56()
 {
-    LD_r8_HL(D);
+    LD_r8_HL(reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_57()
 {
-    LD_r8_r8(D, A);
+    LD_r8_r8(reg.get_D(), reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_58()
 {
-    LD_r8_r8(E, B);
+    LD_r8_r8(reg.get_E(), reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_59()
 {
-    LD_r8_r8(E, C);
+    LD_r8_r8(reg.get_E(), reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_5A()
 {
-    LD_r8_r8(E, D);
+    LD_r8_r8(reg.get_E(), reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_5B()
 {
-    LD_r8_r8(E, E);
+    LD_r8_r8(reg.get_E(), reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_5C()
 {
-    LD_r8_r8(E, H);
+    LD_r8_r8(reg.get_E(), reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_5D()
 {
-    LD_r8_r8(E, L);
+    LD_r8_r8(reg.get_E(), reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_5E()
 {
-    LD_r8_HL(E);
+    LD_r8_HL(reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_5F()
 {
-    LD_r8_r8(E, A);
+    LD_r8_r8(reg.get_E(), reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_60()
 {
-    LD_r8_r8(H, B);
+    LD_r8_r8(reg.get_H(), reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_61()
 {
-    LD_r8_r8(H, C);
+    LD_r8_r8(reg.get_H(), reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_62()
 {
-    LD_r8_r8(H, D);
+    LD_r8_r8(reg.get_H(), reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_63()
 {
-    LD_r8_r8(H, E);
+    LD_r8_r8(reg.get_H(), reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_64()
 {
-    LD_r8_r8(H, H);
+    LD_r8_r8(reg.get_H(), reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_65()
 {
-    LD_r8_r8(H, L);
+    LD_r8_r8(reg.get_H(), reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_66()
 {
-    LD_r8_HL(H);
+    LD_r8_HL(reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_67()
 {
-    LD_r8_r8(H, A);
+    LD_r8_r8(reg.get_H(), reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_68()
 {
-    LD_r8_r8(L, B);
+    LD_r8_r8(reg.get_L(), reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_69()
 {
-    LD_r8_r8(L, C);
+    LD_r8_r8(reg.get_L(), reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_6A()
 {
-    LD_r8_r8(L, D);
+    LD_r8_r8(reg.get_L(), reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_6B()
 {
-    LD_r8_r8(L, E);
+    LD_r8_r8(reg.get_L(), reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_6C()
 {
-    LD_r8_r8(L, H);
+    LD_r8_r8(reg.get_L(), reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_6D()
 {
-    LD_r8_r8(L, L);
+    LD_r8_r8(reg.get_L(), reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_6E()
 {
-    LD_r8_HL(L);
+    LD_r8_HL(reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_6F()
 {
-    LD_r8_r8(L, A);
+    LD_r8_r8(reg.get_L(), reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_70()
 {
-    LD_HL_r8(B);
+    LD_HL_r8(reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_71()
 {
-    LD_HL_r8(C);
+    LD_HL_r8(reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_72()
 {
-    LD_HL_r8(D);
+    LD_HL_r8(reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_73()
 {
-    LD_HL_r8(E);
+    LD_HL_r8(reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_74()
 {
-    LD_HL_r8(H);
+    LD_HL_r8(reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_75()
 {
-    LD_HL_r8(L);
+    LD_HL_r8(reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_76()
@@ -1182,77 +999,77 @@ FORCE_INLINE void Cpu::op_76()
 
 FORCE_INLINE void Cpu::op_77()
 {
-    LD_HL_r8(A);
+    LD_HL_r8(reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_78()
 {
-    LD_r8_r8(A, B);
+    LD_r8_r8(reg.get_A(), reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_79()
 {
-    LD_r8_r8(A, C);
+    LD_r8_r8(reg.get_A(), reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_7A()
 {
-    LD_r8_r8(A, D);
+    LD_r8_r8(reg.get_A(), reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_7B()
 {
-    LD_r8_r8(A, E);
+    LD_r8_r8(reg.get_A(), reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_7C()
 {
-    LD_r8_r8(A, H);
+    LD_r8_r8(reg.get_A(), reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_7D()
 {
-    LD_r8_r8(A, L);
+    LD_r8_r8(reg.get_A(), reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_7E()
 {
-    LD_A_r16(HL);
+    LD_A_r16(reg.get_HL());
 }
 
 FORCE_INLINE void Cpu::op_7F()
 {
-    LD_r8_r8(A, A);
+    LD_r8_r8(reg.get_A(), reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_80()
 {
-    ADD_A_r8(B);
+    ADD_A_r8(reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_81()
 {
-    ADD_A_r8(C);
+    ADD_A_r8(reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_82()
 {
-    ADD_A_r8(D);
+    ADD_A_r8(reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_83()
 {
-    ADD_A_r8(E);
+    ADD_A_r8(reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_84()
 {
-    ADD_A_r8(H);
+    ADD_A_r8(reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_85()
 {
-    ADD_A_r8(L);
+    ADD_A_r8(reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_86()
@@ -1262,37 +1079,37 @@ FORCE_INLINE void Cpu::op_86()
 
 FORCE_INLINE void Cpu::op_87()
 {
-    ADD_A_r8(A);
+    ADD_A_r8(reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_88()
 {
-    ADC_A_r8(B);
+    ADC_A_r8(reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_89()
 {
-    ADC_A_r8(C);
+    ADC_A_r8(reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_8A()
 {
-    ADC_A_r8(D);
+    ADC_A_r8(reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_8B()
 {
-    ADC_A_r8(E);
+    ADC_A_r8(reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_8C()
 {
-    ADC_A_r8(H);
+    ADC_A_r8(reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_8D()
 {
-    ADC_A_r8(L);
+    ADC_A_r8(reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_8E()
@@ -1302,37 +1119,37 @@ FORCE_INLINE void Cpu::op_8E()
 
 FORCE_INLINE void Cpu::op_8F()
 {
-    ADC_A_r8(A);
+    ADC_A_r8(reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_90()
 {
-    SUB_A_r8(B);
+    SUB_A_r8(reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_91()
 {
-    SUB_A_r8(C);
+    SUB_A_r8(reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_92()
 {
-    SUB_A_r8(D);
+    SUB_A_r8(reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_93()
 {
-    SUB_A_r8(E);
+    SUB_A_r8(reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_94()
 {
-    SUB_A_r8(H);
+    SUB_A_r8(reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_95()
 {
-    SUB_A_r8(L);
+    SUB_A_r8(reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_96()
@@ -1343,37 +1160,37 @@ FORCE_INLINE void Cpu::op_96()
 
 FORCE_INLINE void Cpu::op_97()
 {
-    SUB_A_r8(A);
+    SUB_A_r8(reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_98()
 {
-    SBC_A_r8(B);
+    SBC_A_r8(reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_99()
 {
-    SBC_A_r8(C);
+    SBC_A_r8(reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_9A()
 {
-    SBC_A_r8(D);
+    SBC_A_r8(reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_9B()
 {
-    SBC_A_r8(E);
+    SBC_A_r8(reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_9C()
 {
-    SBC_A_r8(H);
+    SBC_A_r8(reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_9D()
 {
-    SBC_A_r8(L);
+    SBC_A_r8(reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_9E()
@@ -1383,37 +1200,37 @@ FORCE_INLINE void Cpu::op_9E()
 
 FORCE_INLINE void Cpu::op_9F()
 {
-    SBC_A_r8(A);
+    SBC_A_r8(reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_A0()
 {
-    AND_r8(B);
+    AND_r8(reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_A1()
 {
-    AND_r8(C);
+    AND_r8(reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_A2()
 {
-    AND_r8(D);
+    AND_r8(reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_A3()
 {
-    AND_r8(E);
+    AND_r8(reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_A4()
 {
-    AND_r8(H);
+    AND_r8(reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_A5()
 {
-    AND_r8(L);
+    AND_r8(reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_A6()
@@ -1423,37 +1240,37 @@ FORCE_INLINE void Cpu::op_A6()
 
 FORCE_INLINE void Cpu::op_A7()
 {
-    AND_r8(A);
+    AND_r8(reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_A8()
 {
-    XOR_r8(B);
+    XOR_r8(reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_A9()
 {
-    XOR_r8(C);
+    XOR_r8(reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_AA()
 {
-    XOR_r8(D);
+    XOR_r8(reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_AB()
 {
-    XOR_r8(E);
+    XOR_r8(reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_AC()
 {
-    XOR_r8(H);
+    XOR_r8(reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_AD()
 {
-    XOR_r8(L);
+    XOR_r8(reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_AE()
@@ -1463,37 +1280,37 @@ FORCE_INLINE void Cpu::op_AE()
 
 FORCE_INLINE void Cpu::op_AF()
 {
-    XOR_r8(A);
+    XOR_r8(reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_B0()
 {
-    OR_r8(B);
+    OR_r8(reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_B1()
 {
-    OR_r8(C);
+    OR_r8(reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_B2()
 {
-    OR_r8(D);
+    OR_r8(reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_B3()
 {
-    OR_r8(E);
+    OR_r8(reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_B4()
 {
-    OR_r8(H);
+    OR_r8(reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_B5()
 {
-    OR_r8(L);
+    OR_r8(reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_B6()
@@ -1503,37 +1320,37 @@ FORCE_INLINE void Cpu::op_B6()
 
 FORCE_INLINE void Cpu::op_B7()
 {
-    OR_r8(A);
+    OR_r8(reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_B8()
 {
-    CP_r8(B);
+    CP_r8(reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_B9()
 {
-    CP_r8(C);
+    CP_r8(reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_BA()
 {
-    CP_r8(D);
+    CP_r8(reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_BB()
 {
-    CP_r8(E);
+    CP_r8(reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_BC()
 {
-    CP_r8(H);
+    CP_r8(reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_BD()
 {
-    CP_r8(L);
+    CP_r8(reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_BE()
@@ -1543,22 +1360,22 @@ FORCE_INLINE void Cpu::op_BE()
 
 FORCE_INLINE void Cpu::op_BF()
 {
-    CP_r8(A);
+    CP_r8(reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_C0()
 {
-    RET_cc(!Z_flag_get());
+    RET_cc(!reg.read_Z_flag());
 }
 
 FORCE_INLINE void Cpu::op_C1()
 {
-    POP_r16(BC);
+    POP_r16(reg.get_BC());
 }
 
 FORCE_INLINE void Cpu::op_C2()
 {
-    JP_cc_n16(!Z_flag_get(), extract_immediate16());
+    JP_cc_n16(!reg.read_Z_flag(), extract_immediate16());
 }
 
 FORCE_INLINE void Cpu::op_C3()
@@ -1568,12 +1385,12 @@ FORCE_INLINE void Cpu::op_C3()
 
 FORCE_INLINE void Cpu::op_C4()
 {
-    CALL_cc_n16(!Z_flag_get(), extract_immediate16());
+    CALL_cc_n16(!reg.read_Z_flag(), extract_immediate16());
 }
 
 FORCE_INLINE void Cpu::op_C5()
 {
-    PUSH_r16(BC);
+    PUSH_r16(reg.get_BC());
 }
 
 FORCE_INLINE void Cpu::op_C6()
@@ -1588,7 +1405,7 @@ FORCE_INLINE void Cpu::op_C7()
 
 FORCE_INLINE void Cpu::op_C8()
 {
-    RET_cc(Z_flag_get());
+    RET_cc(reg.read_Z_flag());
 }
 
 FORCE_INLINE void Cpu::op_C9()
@@ -1598,17 +1415,17 @@ FORCE_INLINE void Cpu::op_C9()
 
 FORCE_INLINE void Cpu::op_CA()
 {
-    JP_cc_n16(Z_flag_get(), extract_immediate16());
+    JP_cc_n16(reg.read_Z_flag(), extract_immediate16());
 }
 
 FORCE_INLINE void Cpu::op_CB()
 {
-    /* SHOULD NOT END UP HERE */
+    // SHOULD NOT END UP HERE
 }
 
 FORCE_INLINE void Cpu::op_CC()
 {
-    CALL_cc_n16(Z_flag_get(), extract_immediate16());
+    CALL_cc_n16(reg.read_Z_flag(), extract_immediate16());
 }
 
 FORCE_INLINE void Cpu::op_CD()
@@ -1628,17 +1445,17 @@ FORCE_INLINE void Cpu::op_CF()
 
 FORCE_INLINE void Cpu::op_D0()
 {
-    RET_cc(!C_flag_get());
+    RET_cc(!reg.read_C_flag());
 }
 
 FORCE_INLINE void Cpu::op_D1()
 {
-    POP_r16(DE);
+    POP_r16(reg.get_DE());
 }
 
 FORCE_INLINE void Cpu::op_D2()
 {
-    JP_cc_n16(!C_flag_get(), extract_immediate16());
+    JP_cc_n16(!reg.read_C_flag(), extract_immediate16());
 }
 
 FORCE_INLINE void Cpu::op_D3()
@@ -1648,12 +1465,12 @@ FORCE_INLINE void Cpu::op_D3()
 
 FORCE_INLINE void Cpu::op_D4()
 {
-    CALL_cc_n16(!C_flag_get(), extract_immediate16());
+    CALL_cc_n16(!reg.read_C_flag(), extract_immediate16());
 }
 
 FORCE_INLINE void Cpu::op_D5()
 {
-    PUSH_r16(DE);
+    PUSH_r16(reg.get_DE());
 }
 
 FORCE_INLINE void Cpu::op_D6()
@@ -1668,7 +1485,7 @@ FORCE_INLINE void Cpu::op_D7()
 
 FORCE_INLINE void Cpu::op_D8()
 {
-    RET_cc(C_flag_get());
+    RET_cc(reg.read_C_flag());
 }
 
 FORCE_INLINE void Cpu::op_D9()
@@ -1678,7 +1495,7 @@ FORCE_INLINE void Cpu::op_D9()
 
 FORCE_INLINE void Cpu::op_DA()
 {
-    JP_cc_n16(C_flag_get(), extract_immediate16());
+    JP_cc_n16(reg.read_C_flag(), extract_immediate16());
 }
 
 FORCE_INLINE void Cpu::op_DB()
@@ -1688,7 +1505,7 @@ FORCE_INLINE void Cpu::op_DB()
 
 FORCE_INLINE void Cpu::op_DC()
 {
-    CALL_cc_n16(C_flag_get(), extract_immediate16());
+    CALL_cc_n16(reg.read_C_flag(), extract_immediate16());
 }
 
 FORCE_INLINE void Cpu::op_DD()
@@ -1713,7 +1530,7 @@ FORCE_INLINE void Cpu::op_E0()
 
 FORCE_INLINE void Cpu::op_E1()
 {
-    POP_r16(HL);
+    POP_r16(reg.get_HL());
 }
 
 FORCE_INLINE void Cpu::op_E2()
@@ -1733,7 +1550,7 @@ FORCE_INLINE void Cpu::op_E4()
 
 FORCE_INLINE void Cpu::op_E5()
 {
-    PUSH_r16(HL);
+    PUSH_r16(reg.get_HL());
 }
 
 FORCE_INLINE void Cpu::op_E6()
@@ -1753,7 +1570,7 @@ FORCE_INLINE void Cpu::op_E8()
 
 FORCE_INLINE void Cpu::op_E9()
 {
-    JP_n16(HL);
+    JP_n16(reg.get_HL());
 }
 
 FORCE_INLINE void Cpu::op_EA()
@@ -1793,10 +1610,10 @@ FORCE_INLINE void Cpu::op_F0()
 
 FORCE_INLINE void Cpu::op_F1()
 {
-    POP_r16(AF);
+    POP_r16(reg.get_AF());
     // Only the upper nibble of F can be written into, so make sure the lower
     // nibble is zero.
-    F &= 0xF0;
+    reg.write_F(reg.read_F());
 }
 
 FORCE_INLINE void Cpu::op_F2()
@@ -1816,7 +1633,7 @@ FORCE_INLINE void Cpu::op_F4()
 
 FORCE_INLINE void Cpu::op_F5()
 {
-    PUSH_r16(AF);
+    PUSH_r16(reg.get_AF());
 }
 
 FORCE_INLINE void Cpu::op_F6()
@@ -1871,32 +1688,32 @@ FORCE_INLINE void Cpu::op_FF()
 
 FORCE_INLINE void Cpu::op_CB_00()
 {
-    RLC_r8(B);
+    RLC_r8(reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_01()
 {
-    RLC_r8(C);
+    RLC_r8(reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_02()
 {
-    RLC_r8(D);
+    RLC_r8(reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_03()
 {
-    RLC_r8(E);
+    RLC_r8(reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_04()
 {
-    RLC_r8(H);
+    RLC_r8(reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_05()
 {
-    RLC_r8(L);
+    RLC_r8(reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_06()
@@ -1906,37 +1723,37 @@ FORCE_INLINE void Cpu::op_CB_06()
 
 FORCE_INLINE void Cpu::op_CB_07()
 {
-    RLC_r8(A);
+    RLC_r8(reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_08()
 {
-    RRC_r8(B);
+    RRC_r8(reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_09()
 {
-    RRC_r8(C);
+    RRC_r8(reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_0A()
 {
-    RRC_r8(D);
+    RRC_r8(reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_0B()
 {
-    RRC_r8(E);
+    RRC_r8(reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_0C()
 {
-    RRC_r8(H);
+    RRC_r8(reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_0D()
 {
-    RRC_r8(L);
+    RRC_r8(reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_0E()
@@ -1946,37 +1763,37 @@ FORCE_INLINE void Cpu::op_CB_0E()
 
 FORCE_INLINE void Cpu::op_CB_0F()
 {
-    RRC_r8(A);
+    RRC_r8(reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_10()
 {
-    RL_r8(B);
+    RL_r8(reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_11()
 {
-    RL_r8(C);
+    RL_r8(reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_12()
 {
-    RL_r8(D);
+    RL_r8(reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_13()
 {
-    RL_r8(E);
+    RL_r8(reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_14()
 {
-    RL_r8(H);
+    RL_r8(reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_15()
 {
-    RL_r8(L);
+    RL_r8(reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_16()
@@ -1986,37 +1803,37 @@ FORCE_INLINE void Cpu::op_CB_16()
 
 FORCE_INLINE void Cpu::op_CB_17()
 {
-    RL_r8(A);
+    RL_r8(reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_18()
 {
-    RR_r8(B);
+    RR_r8(reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_19()
 {
-    RR_r8(C);
+    RR_r8(reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_1A()
 {
-    RR_r8(D);
+    RR_r8(reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_1B()
 {
-    RR_r8(E);
+    RR_r8(reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_1C()
 {
-    RR_r8(H);
+    RR_r8(reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_1D()
 {
-    RR_r8(L);
+    RR_r8(reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_1E()
@@ -2026,37 +1843,37 @@ FORCE_INLINE void Cpu::op_CB_1E()
 
 FORCE_INLINE void Cpu::op_CB_1F()
 {
-    RR_r8(A);
+    RR_r8(reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_20()
 {
-    SLA_r8(B);
+    SLA_r8(reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_21()
 {
-    SLA_r8(C);
+    SLA_r8(reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_22()
 {
-    SLA_r8(D);
+    SLA_r8(reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_23()
 {
-    SLA_r8(E);
+    SLA_r8(reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_24()
 {
-    SLA_r8(H);
+    SLA_r8(reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_25()
 {
-    SLA_r8(L);
+    SLA_r8(reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_26()
@@ -2066,37 +1883,37 @@ FORCE_INLINE void Cpu::op_CB_26()
 
 FORCE_INLINE void Cpu::op_CB_27()
 {
-    SLA_r8(A);
+    SLA_r8(reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_28()
 {
-    SRA_r8(B);
+    SRA_r8(reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_29()
 {
-    SRA_r8(C);
+    SRA_r8(reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_2A()
 {
-    SRA_r8(D);
+    SRA_r8(reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_2B()
 {
-    SRA_r8(E);
+    SRA_r8(reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_2C()
 {
-    SRA_r8(H);
+    SRA_r8(reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_2D()
 {
-    SRA_r8(L);
+    SRA_r8(reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_2E()
@@ -2106,37 +1923,37 @@ FORCE_INLINE void Cpu::op_CB_2E()
 
 FORCE_INLINE void Cpu::op_CB_2F()
 {
-    SRA_r8(A);
+    SRA_r8(reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_30()
 {
-    SWAP_r8(B);
+    SWAP_r8(reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_31()
 {
-    SWAP_r8(C);
+    SWAP_r8(reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_32()
 {
-    SWAP_r8(D);
+    SWAP_r8(reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_33()
 {
-    SWAP_r8(E);
+    SWAP_r8(reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_34()
 {
-    SWAP_r8(H);
+    SWAP_r8(reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_35()
 {
-    SWAP_r8(L);
+    SWAP_r8(reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_36()
@@ -2146,37 +1963,37 @@ FORCE_INLINE void Cpu::op_CB_36()
 
 FORCE_INLINE void Cpu::op_CB_37()
 {
-    SWAP_r8(A);
+    SWAP_r8(reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_38()
 {
-    SRL_r8(B);
+    SRL_r8(reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_39()
 {
-    SRL_r8(C);
+    SRL_r8(reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_3A()
 {
-    SRL_r8(D);
+    SRL_r8(reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_3B()
 {
-    SRL_r8(E);
+    SRL_r8(reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_3C()
 {
-    SRL_r8(H);
+    SRL_r8(reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_3D()
 {
-    SRL_r8(L);
+    SRL_r8(reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_3E()
@@ -2186,37 +2003,37 @@ FORCE_INLINE void Cpu::op_CB_3E()
 
 FORCE_INLINE void Cpu::op_CB_3F()
 {
-    SRL_r8(A);
+    SRL_r8(reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_40()
 {
-    BIT_n3_r8(0, B);
+    BIT_n3_r8(0, reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_41()
 {
-    BIT_n3_r8(0, C);
+    BIT_n3_r8(0, reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_42()
 {
-    BIT_n3_r8(0, D);
+    BIT_n3_r8(0, reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_43()
 {
-    BIT_n3_r8(0, E);
+    BIT_n3_r8(0, reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_44()
 {
-    BIT_n3_r8(0, H);
+    BIT_n3_r8(0, reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_45()
 {
-    BIT_n3_r8(0, L);
+    BIT_n3_r8(0, reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_46()
@@ -2226,37 +2043,37 @@ FORCE_INLINE void Cpu::op_CB_46()
 
 FORCE_INLINE void Cpu::op_CB_47()
 {
-    BIT_n3_r8(0, A);
+    BIT_n3_r8(0, reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_48()
 {
-    BIT_n3_r8(1, B);
+    BIT_n3_r8(1, reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_49()
 {
-    BIT_n3_r8(1, C);
+    BIT_n3_r8(1, reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_4A()
 {
-    BIT_n3_r8(1, D);
+    BIT_n3_r8(1, reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_4B()
 {
-    BIT_n3_r8(1, E);
+    BIT_n3_r8(1, reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_4C()
 {
-    BIT_n3_r8(1, H);
+    BIT_n3_r8(1, reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_4D()
 {
-    BIT_n3_r8(1, L);
+    BIT_n3_r8(1, reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_4E()
@@ -2266,37 +2083,37 @@ FORCE_INLINE void Cpu::op_CB_4E()
 
 FORCE_INLINE void Cpu::op_CB_4F()
 {
-    BIT_n3_r8(1, A);
+    BIT_n3_r8(1, reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_50()
 {
-    BIT_n3_r8(2, B);
+    BIT_n3_r8(2, reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_51()
 {
-    BIT_n3_r8(2, C);
+    BIT_n3_r8(2, reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_52()
 {
-    BIT_n3_r8(2, D);
+    BIT_n3_r8(2, reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_53()
 {
-    BIT_n3_r8(2, E);
+    BIT_n3_r8(2, reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_54()
 {
-    BIT_n3_r8(2, H);
+    BIT_n3_r8(2, reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_55()
 {
-    BIT_n3_r8(2, L);
+    BIT_n3_r8(2, reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_56()
@@ -2306,37 +2123,37 @@ FORCE_INLINE void Cpu::op_CB_56()
 
 FORCE_INLINE void Cpu::op_CB_57()
 {
-    BIT_n3_r8(2, A);
+    BIT_n3_r8(2, reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_58()
 {
-    BIT_n3_r8(3, B);
+    BIT_n3_r8(3, reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_59()
 {
-    BIT_n3_r8(3, C);
+    BIT_n3_r8(3, reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_5A()
 {
-    BIT_n3_r8(3, D);
+    BIT_n3_r8(3, reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_5B()
 {
-    BIT_n3_r8(3, E);
+    BIT_n3_r8(3, reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_5C()
 {
-    BIT_n3_r8(3, H);
+    BIT_n3_r8(3, reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_5D()
 {
-    BIT_n3_r8(3, L);
+    BIT_n3_r8(3, reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_5E()
@@ -2346,37 +2163,37 @@ FORCE_INLINE void Cpu::op_CB_5E()
 
 FORCE_INLINE void Cpu::op_CB_5F()
 {
-    BIT_n3_r8(3, A);
+    BIT_n3_r8(3, reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_60()
 {
-    BIT_n3_r8(4, B);
+    BIT_n3_r8(4, reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_61()
 {
-    BIT_n3_r8(4, C);
+    BIT_n3_r8(4, reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_62()
 {
-    BIT_n3_r8(4, D);
+    BIT_n3_r8(4, reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_63()
 {
-    BIT_n3_r8(4, E);
+    BIT_n3_r8(4, reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_64()
 {
-    BIT_n3_r8(4, H);
+    BIT_n3_r8(4, reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_65()
 {
-    BIT_n3_r8(4, L);
+    BIT_n3_r8(4, reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_66()
@@ -2386,37 +2203,37 @@ FORCE_INLINE void Cpu::op_CB_66()
 
 FORCE_INLINE void Cpu::op_CB_67()
 {
-    BIT_n3_r8(4, A);
+    BIT_n3_r8(4, reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_68()
 {
-    BIT_n3_r8(5, B);
+    BIT_n3_r8(5, reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_69()
 {
-    BIT_n3_r8(5, C);
+    BIT_n3_r8(5, reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_6A()
 {
-    BIT_n3_r8(5, D);
+    BIT_n3_r8(5, reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_6B()
 {
-    BIT_n3_r8(5, E);
+    BIT_n3_r8(5, reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_6C()
 {
-    BIT_n3_r8(5, H);
+    BIT_n3_r8(5, reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_6D()
 {
-    BIT_n3_r8(5, L);
+    BIT_n3_r8(5, reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_6E()
@@ -2426,37 +2243,37 @@ FORCE_INLINE void Cpu::op_CB_6E()
 
 FORCE_INLINE void Cpu::op_CB_6F()
 {
-    BIT_n3_r8(5, A);
+    BIT_n3_r8(5, reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_70()
 {
-    BIT_n3_r8(6, B);
+    BIT_n3_r8(6, reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_71()
 {
-    BIT_n3_r8(6, C);
+    BIT_n3_r8(6, reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_72()
 {
-    BIT_n3_r8(6, D);
+    BIT_n3_r8(6, reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_73()
 {
-    BIT_n3_r8(6, E);
+    BIT_n3_r8(6, reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_74()
 {
-    BIT_n3_r8(6, H);
+    BIT_n3_r8(6, reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_75()
 {
-    BIT_n3_r8(6, L);
+    BIT_n3_r8(6, reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_76()
@@ -2466,37 +2283,37 @@ FORCE_INLINE void Cpu::op_CB_76()
 
 FORCE_INLINE void Cpu::op_CB_77()
 {
-    BIT_n3_r8(6, A);
+    BIT_n3_r8(6, reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_78()
 {
-    BIT_n3_r8(7, B);
+    BIT_n3_r8(7, reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_79()
 {
-    BIT_n3_r8(7, C);
+    BIT_n3_r8(7, reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_7A()
 {
-    BIT_n3_r8(7, D);
+    BIT_n3_r8(7, reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_7B()
 {
-    BIT_n3_r8(7, E);
+    BIT_n3_r8(7, reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_7C()
 {
-    BIT_n3_r8(7, H);
+    BIT_n3_r8(7, reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_7D()
 {
-    BIT_n3_r8(7, L);
+    BIT_n3_r8(7, reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_7E()
@@ -2506,37 +2323,37 @@ FORCE_INLINE void Cpu::op_CB_7E()
 
 FORCE_INLINE void Cpu::op_CB_7F()
 {
-    BIT_n3_r8(7, A);
+    BIT_n3_r8(7, reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_80()
 {
-    RES_n3_r8(0, B);
+    RES_n3_r8(0, reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_81()
 {
-    RES_n3_r8(0, C);
+    RES_n3_r8(0, reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_82()
 {
-    RES_n3_r8(0, D);
+    RES_n3_r8(0, reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_83()
 {
-    RES_n3_r8(0, E);
+    RES_n3_r8(0, reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_84()
 {
-    RES_n3_r8(0, H);
+    RES_n3_r8(0, reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_85()
 {
-    RES_n3_r8(0, L);
+    RES_n3_r8(0, reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_86()
@@ -2546,37 +2363,37 @@ FORCE_INLINE void Cpu::op_CB_86()
 
 FORCE_INLINE void Cpu::op_CB_87()
 {
-    RES_n3_r8(0, A);
+    RES_n3_r8(0, reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_88()
 {
-    RES_n3_r8(1, B);
+    RES_n3_r8(1, reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_89()
 {
-    RES_n3_r8(1, C);
+    RES_n3_r8(1, reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_8A()
 {
-    RES_n3_r8(1, D);
+    RES_n3_r8(1, reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_8B()
 {
-    RES_n3_r8(1, E);
+    RES_n3_r8(1, reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_8C()
 {
-    RES_n3_r8(1, H);
+    RES_n3_r8(1, reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_8D()
 {
-    RES_n3_r8(1, L);
+    RES_n3_r8(1, reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_8E()
@@ -2586,37 +2403,37 @@ FORCE_INLINE void Cpu::op_CB_8E()
 
 FORCE_INLINE void Cpu::op_CB_8F()
 {
-    RES_n3_r8(1, A);
+    RES_n3_r8(1, reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_90()
 {
-    RES_n3_r8(2, B);
+    RES_n3_r8(2, reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_91()
 {
-    RES_n3_r8(2, C);
+    RES_n3_r8(2, reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_92()
 {
-    RES_n3_r8(2, D);
+    RES_n3_r8(2, reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_93()
 {
-    RES_n3_r8(2, E);
+    RES_n3_r8(2, reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_94()
 {
-    RES_n3_r8(2, H);
+    RES_n3_r8(2, reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_95()
 {
-    RES_n3_r8(2, L);
+    RES_n3_r8(2, reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_96()
@@ -2626,37 +2443,37 @@ FORCE_INLINE void Cpu::op_CB_96()
 
 FORCE_INLINE void Cpu::op_CB_97()
 {
-    RES_n3_r8(2, A);
+    RES_n3_r8(2, reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_98()
 {
-    RES_n3_r8(3, B);
+    RES_n3_r8(3, reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_99()
 {
-    RES_n3_r8(3, C);
+    RES_n3_r8(3, reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_9A()
 {
-    RES_n3_r8(3, D);
+    RES_n3_r8(3, reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_9B()
 {
-    RES_n3_r8(3, E);
+    RES_n3_r8(3, reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_9C()
 {
-    RES_n3_r8(3, H);
+    RES_n3_r8(3, reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_9D()
 {
-    RES_n3_r8(3, L);
+    RES_n3_r8(3, reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_9E()
@@ -2666,37 +2483,37 @@ FORCE_INLINE void Cpu::op_CB_9E()
 
 FORCE_INLINE void Cpu::op_CB_9F()
 {
-    RES_n3_r8(3, A);
+    RES_n3_r8(3, reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_A0()
 {
-    RES_n3_r8(4, B);
+    RES_n3_r8(4, reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_A1()
 {
-    RES_n3_r8(4, C);
+    RES_n3_r8(4, reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_A2()
 {
-    RES_n3_r8(4, D);
+    RES_n3_r8(4, reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_A3()
 {
-    RES_n3_r8(4, E);
+    RES_n3_r8(4, reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_A4()
 {
-    RES_n3_r8(4, H);
+    RES_n3_r8(4, reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_A5()
 {
-    RES_n3_r8(4, L);
+    RES_n3_r8(4, reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_A6()
@@ -2706,37 +2523,37 @@ FORCE_INLINE void Cpu::op_CB_A6()
 
 FORCE_INLINE void Cpu::op_CB_A7()
 {
-    RES_n3_r8(4, A);
+    RES_n3_r8(4, reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_A8()
 {
-    RES_n3_r8(5, B);
+    RES_n3_r8(5, reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_A9()
 {
-    RES_n3_r8(5, C);
+    RES_n3_r8(5, reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_AA()
 {
-    RES_n3_r8(5, D);
+    RES_n3_r8(5, reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_AB()
 {
-    RES_n3_r8(5, E);
+    RES_n3_r8(5, reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_AC()
 {
-    RES_n3_r8(5, H);
+    RES_n3_r8(5, reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_AD()
 {
-    RES_n3_r8(5, L);
+    RES_n3_r8(5, reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_AE()
@@ -2746,37 +2563,37 @@ FORCE_INLINE void Cpu::op_CB_AE()
 
 FORCE_INLINE void Cpu::op_CB_AF()
 {
-    RES_n3_r8(5, A);
+    RES_n3_r8(5, reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_B0()
 {
-    RES_n3_r8(6, B);
+    RES_n3_r8(6, reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_B1()
 {
-    RES_n3_r8(6, C);
+    RES_n3_r8(6, reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_B2()
 {
-    RES_n3_r8(6, D);
+    RES_n3_r8(6, reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_B3()
 {
-    RES_n3_r8(6, E);
+    RES_n3_r8(6, reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_B4()
 {
-    RES_n3_r8(6, H);
+    RES_n3_r8(6, reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_B5()
 {
-    RES_n3_r8(6, L);
+    RES_n3_r8(6, reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_B6()
@@ -2786,37 +2603,37 @@ FORCE_INLINE void Cpu::op_CB_B6()
 
 FORCE_INLINE void Cpu::op_CB_B7()
 {
-    RES_n3_r8(6, A);
+    RES_n3_r8(6, reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_B8()
 {
-    RES_n3_r8(7, B);
+    RES_n3_r8(7, reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_B9()
 {
-    RES_n3_r8(7, C);
+    RES_n3_r8(7, reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_BA()
 {
-    RES_n3_r8(7, D);
+    RES_n3_r8(7, reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_BB()
 {
-    RES_n3_r8(7, E);
+    RES_n3_r8(7, reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_BC()
 {
-    RES_n3_r8(7, H);
+    RES_n3_r8(7, reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_BD()
 {
-    RES_n3_r8(7, L);
+    RES_n3_r8(7, reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_BE()
@@ -2826,37 +2643,37 @@ FORCE_INLINE void Cpu::op_CB_BE()
 
 FORCE_INLINE void Cpu::op_CB_BF()
 {
-    RES_n3_r8(7, A);
+    RES_n3_r8(7, reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_C0()
 {
-    SET_n3_r8(0, B);
+    SET_n3_r8(0, reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_C1()
 {
-    SET_n3_r8(0, C);
+    SET_n3_r8(0, reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_C2()
 {
-    SET_n3_r8(0, D);
+    SET_n3_r8(0, reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_C3()
 {
-    SET_n3_r8(0, E);
+    SET_n3_r8(0, reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_C4()
 {
-    SET_n3_r8(0, H);
+    SET_n3_r8(0, reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_C5()
 {
-    SET_n3_r8(0, L);
+    SET_n3_r8(0, reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_C6()
@@ -2866,37 +2683,37 @@ FORCE_INLINE void Cpu::op_CB_C6()
 
 FORCE_INLINE void Cpu::op_CB_C7()
 {
-    SET_n3_r8(0, A);
+    SET_n3_r8(0, reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_C8()
 {
-    SET_n3_r8(1, B);
+    SET_n3_r8(1, reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_C9()
 {
-    SET_n3_r8(1, C);
+    SET_n3_r8(1, reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_CA()
 {
-    SET_n3_r8(1, D);
+    SET_n3_r8(1, reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_CB()
 {
-    SET_n3_r8(1, E);
+    SET_n3_r8(1, reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_CC()
 {
-    SET_n3_r8(1, H);
+    SET_n3_r8(1, reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_CD()
 {
-    SET_n3_r8(1, L);
+    SET_n3_r8(1, reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_CE()
@@ -2906,37 +2723,37 @@ FORCE_INLINE void Cpu::op_CB_CE()
 
 FORCE_INLINE void Cpu::op_CB_CF()
 {
-    SET_n3_r8(1, A);
+    SET_n3_r8(1, reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_D0()
 {
-    SET_n3_r8(2, B);
+    SET_n3_r8(2, reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_D1()
 {
-    SET_n3_r8(2, C);
+    SET_n3_r8(2, reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_D2()
 {
-    SET_n3_r8(2, D);
+    SET_n3_r8(2, reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_D3()
 {
-    SET_n3_r8(2, E);
+    SET_n3_r8(2, reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_D4()
 {
-    SET_n3_r8(2, H);
+    SET_n3_r8(2, reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_D5()
 {
-    SET_n3_r8(2, L);
+    SET_n3_r8(2, reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_D6()
@@ -2946,37 +2763,37 @@ FORCE_INLINE void Cpu::op_CB_D6()
 
 FORCE_INLINE void Cpu::op_CB_D7()
 {
-    SET_n3_r8(2, A);
+    SET_n3_r8(2, reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_D8()
 {
-    SET_n3_r8(3, B);
+    SET_n3_r8(3, reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_D9()
 {
-    SET_n3_r8(3, C);
+    SET_n3_r8(3, reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_DA()
 {
-    SET_n3_r8(3, D);
+    SET_n3_r8(3, reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_DB()
 {
-    SET_n3_r8(3, E);
+    SET_n3_r8(3, reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_DC()
 {
-    SET_n3_r8(3, H);
+    SET_n3_r8(3, reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_DD()
 {
-    SET_n3_r8(3, L);
+    SET_n3_r8(3, reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_DE()
@@ -2986,37 +2803,37 @@ FORCE_INLINE void Cpu::op_CB_DE()
 
 FORCE_INLINE void Cpu::op_CB_DF()
 {
-    SET_n3_r8(3, A);
+    SET_n3_r8(3, reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_E0()
 {
-    SET_n3_r8(4, B);
+    SET_n3_r8(4, reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_E1()
 {
-    SET_n3_r8(4, C);
+    SET_n3_r8(4, reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_E2()
 {
-    SET_n3_r8(4, D);
+    SET_n3_r8(4, reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_E3()
 {
-    SET_n3_r8(4, E);
+    SET_n3_r8(4, reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_E4()
 {
-    SET_n3_r8(4, H);
+    SET_n3_r8(4, reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_E5()
 {
-    SET_n3_r8(4, L);
+    SET_n3_r8(4, reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_E6()
@@ -3026,37 +2843,37 @@ FORCE_INLINE void Cpu::op_CB_E6()
 
 FORCE_INLINE void Cpu::op_CB_E7()
 {
-    SET_n3_r8(4, A);
+    SET_n3_r8(4, reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_E8()
 {
-    SET_n3_r8(5, B);
+    SET_n3_r8(5, reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_E9()
 {
-    SET_n3_r8(5, C);
+    SET_n3_r8(5, reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_EA()
 {
-    SET_n3_r8(5, D);
+    SET_n3_r8(5, reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_EB()
 {
-    SET_n3_r8(5, E);
+    SET_n3_r8(5, reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_EC()
 {
-    SET_n3_r8(5, H);
+    SET_n3_r8(5, reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_ED()
 {
-    SET_n3_r8(5, L);
+    SET_n3_r8(5, reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_EE()
@@ -3066,37 +2883,37 @@ FORCE_INLINE void Cpu::op_CB_EE()
 
 FORCE_INLINE void Cpu::op_CB_EF()
 {
-    SET_n3_r8(5, A);
+    SET_n3_r8(5, reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_F0()
 {
-    SET_n3_r8(6, B);
+    SET_n3_r8(6, reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_F1()
 {
-    SET_n3_r8(6, C);
+    SET_n3_r8(6, reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_F2()
 {
-    SET_n3_r8(6, D);
+    SET_n3_r8(6, reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_F3()
 {
-    SET_n3_r8(6, E);
+    SET_n3_r8(6, reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_F4()
 {
-    SET_n3_r8(6, H);
+    SET_n3_r8(6, reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_F5()
 {
-    SET_n3_r8(6, L);
+    SET_n3_r8(6, reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_F6()
@@ -3106,37 +2923,37 @@ FORCE_INLINE void Cpu::op_CB_F6()
 
 FORCE_INLINE void Cpu::op_CB_F7()
 {
-    SET_n3_r8(6, A);
+    SET_n3_r8(6, reg.get_A());
 }
 
 FORCE_INLINE void Cpu::op_CB_F8()
 {
-    SET_n3_r8(7, B);
+    SET_n3_r8(7, reg.get_B());
 }
 
 FORCE_INLINE void Cpu::op_CB_F9()
 {
-    SET_n3_r8(7, C);
+    SET_n3_r8(7, reg.get_C());
 }
 
 FORCE_INLINE void Cpu::op_CB_FA()
 {
-    SET_n3_r8(7, D);
+    SET_n3_r8(7, reg.get_D());
 }
 
 FORCE_INLINE void Cpu::op_CB_FB()
 {
-    SET_n3_r8(7, E);
+    SET_n3_r8(7, reg.get_E());
 }
 
 FORCE_INLINE void Cpu::op_CB_FC()
 {
-    SET_n3_r8(7, H);
+    SET_n3_r8(7, reg.get_H());
 }
 
 FORCE_INLINE void Cpu::op_CB_FD()
 {
-    SET_n3_r8(7, L);
+    SET_n3_r8(7, reg.get_L());
 }
 
 FORCE_INLINE void Cpu::op_CB_FE()
@@ -3146,5 +2963,5 @@ FORCE_INLINE void Cpu::op_CB_FE()
 
 FORCE_INLINE void Cpu::op_CB_FF()
 {
-    SET_n3_r8(7, A);
+    SET_n3_r8(7, reg.get_A());
 }

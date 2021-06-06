@@ -3,6 +3,7 @@
 #include "addresses.hh"
 #include "cartridge.hh"
 #include "cpu.hh"
+#include "cpuregisters.hh"
 #include "joypad.hh"
 #include "memory.hh"
 #include "ppu.hh"
@@ -11,10 +12,12 @@
 
 Emulator::Emulator()
 {
-    mem = std::make_unique<Memory>();
+    cpu_registers = std::make_unique<CpuRegisters>();
+
+    mem = std::make_unique<Memory>(*cpu_registers);
 
     cartridge = nullptr;
-    cpu = std::make_unique<Cpu>(mem.get(), mem->get(IE_ADDR), mem->get(IF_ADDR));
+    cpu = std::make_unique<Cpu>(mem.get(), *cpu_registers);
     joypad = std::make_unique<Joypad>(mem.get(), cpu.get());
     ppu = std::make_unique<Ppu>(mem.get(), reinterpret_cast<Ppu::Registers*>(mem->get(PPU_LOW)), cpu.get());
     serial = std::make_unique<Serial>(reinterpret_cast<Serial::Registers*>(mem->get(SERIAL_LOW)), cpu.get());

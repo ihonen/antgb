@@ -27,6 +27,7 @@ CONFIG += c++17
 SOURCES += \
     debugger/cartridgeheader.cc \
     emulator/cartridge.cc \
+    emulator/cpuregisters.cc \
     emulator/memory.cc \
     main.cc \
     debugger/breakpoint.cc \
@@ -97,6 +98,7 @@ HEADERS += \
     emulator/bitmanip.hh \
     emulator/cartridge.hh \
     emulator/cpu.hh \
+    emulator/cpuregisters.hh \
     emulator/emulator.hh \
     emulator/exceptions.hh \
     emulator/fileio.hh \

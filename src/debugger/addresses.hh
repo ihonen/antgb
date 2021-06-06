@@ -1,5 +1,6 @@
 #pragma once
 
+#ifdef NOT_DEFINED_____
 #include "emulator/types.hh"
 
 /* APU */
@@ -71,3 +72,4 @@ static constexpr regid_t TMA_ADDR = 0xFF06;
 static constexpr regid_t TAC_ADDR = 0xFF07;
 static constexpr regid_t TIMER_LOW_ADDR = DIV_ADDR;
 static constexpr regid_t TIMER_HIGH_ADDR = TAC_ADDR;
+#endif

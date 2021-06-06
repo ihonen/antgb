@@ -1,13 +1,16 @@
 #pragma once
 
 #include "apu.hh"
+#include "addresses.hh"
 #include "cartridge.hh"
+#include "cpuregisters.hh"
 #include "joypad.hh"
 #include "macros.hh"
 #include "ppu.hh"
 #include "serial.hh"
 #include "timer.hh"
 #include "types.hh"
+
 
 class Memory
 {
@@ -20,7 +23,7 @@ public:
         memaddr_t size;
     };
 
-    Memory();
+    Memory(CpuRegisters& cpu_registers);
 
     void hard_reset();
     inline uint8_t* get(memaddr_t address);
@@ -39,6 +42,8 @@ public:
     void set_cartridge(Cartridge* cartridge);
 
     Cartridge* cartridge;
+
+    CpuRegisters& cpu_registers_;
 
     struct
     {
@@ -116,6 +121,10 @@ FORCE_INLINE uint8_t* Memory::get(memaddr_t address)
     else if (address >= ECHO.low && address <= ECHO.high)
     {
         return &bytes[WRAM0.low] + (address - ECHO.low);
+    }
+    else if (address == IF_ADDR || address == IE_ADDR)
+    {
+        return cpu_registers_.get(address);
     }
     else return &bytes[address];
 }

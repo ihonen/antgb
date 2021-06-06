@@ -23,7 +23,7 @@ Cartridge::Cartridge(const std::string& filepath)
 
     if (image.size() != 0x8000)
     {
-        throw std::runtime_error("ERROR: Only ROM size 0x8000 is supported.");
+        std::cerr << "WARNING: Only ROM size 0x8000 is supported." << std::endl;
     }
 
     for (size_t i = 0x0000; i <= 0x3FFF; ++i)
