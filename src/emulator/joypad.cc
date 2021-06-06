@@ -1,10 +1,11 @@
 #include "joypad.hh"
 
 #include "bitmanip.hh"
-#include "memory.hh"
+#include "emulator/cpu/cpu.hh"
+#include "emulator/memory/memorybus.hh"
 #include <iostream>
 
-Joypad::Joypad(Memory* memory, Cpu* cpu) :
+Joypad::Joypad(MemoryBus* memory, Cpu* cpu) :
     mem(memory),
     cpu(cpu)
 {
@@ -25,6 +26,8 @@ Joypad::Joypad(Memory* memory, Cpu* cpu) :
 
 void Joypad::button_pressed(JoypadButton button)
 {
+    std::cerr << button << std::endl;
+
     if (button == JoypadNone) return;
 
     if (get_bit(io_register, DirectionKeysSelect))
@@ -65,6 +68,8 @@ void Joypad::button_pressed(JoypadButton button)
 
 void Joypad::button_released(JoypadButton button)
 {
+    std::cerr << button << std::endl;
+
     if (button == JoypadNone) return;
 
     if (get_bit(io_register, DirectionKeysSelect))

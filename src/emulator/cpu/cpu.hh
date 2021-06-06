@@ -1,39 +1,15 @@
 #pragma once
 
-#include "exceptions.hh"
-#include "macros.hh"
-#include "types.hh"
+#include "emulator/exceptions.hh"
+#include "emulator/macros.hh"
+#include "emulator/types.hh"
 #include <array>
 #include <fstream>
 
-class Memory;
+#include "emulator/cpu/cpuregisters.hh"
 
-struct CpuRegisters
-{
-    union
-    {
-        uint16_t BC;
-        struct { uint8_t C; uint8_t B; } __attribute__((packed));
-    };
-    union
-    {
-        uint16_t DE;
-        struct { uint8_t E; uint8_t D; } __attribute__((packed));
-    };
-    union
-    {
-        uint16_t HL;
-        struct { uint8_t L; uint8_t H; } __attribute__((packed));
-    };
-    union
-    {
-        uint16_t AF;
-        struct { uint8_t F; uint8_t A; } __attribute__((packed));
-    };
-    uint16_t SP;
-    uint16_t PC;
-    uint8_t  IME;
-};
+class MemoryBus;
+class CpuRegisters;
 
 class Cpu
 {
@@ -74,12 +50,9 @@ public:
     static const std::array<const InstructionInfo, 256> INSTRUCTION_TABLE;
     static const std::array<const InstructionInfo, 256> CB_INSTRUCTION_TABLE;
 
-    uint8_t* IE = nullptr;
-    uint8_t* IF = nullptr;
-
     std::ofstream trace_log;
 
-    Memory* mem;
+    MemoryBus& mem;
 
     const memaddr_t INTERRUPT_VECTOR[5] = {0x0040, 0x0048, 0x0050, 0x0058, 0x0060};
 
@@ -89,23 +62,26 @@ public:
     uint64_t serial_irqs  = 0;
     uint64_t joypad_irqs  = 0;
 
-    CpuRegisters reg;
+    CpuRegisters& registers;
 
-    uint16_t& BC = reg.BC;
-    uint16_t& DE = reg.DE;
-    uint16_t& HL = reg.HL;
-    uint16_t& AF = reg.AF;
-    uint16_t& PC = reg.PC;
-    uint16_t& SP = reg.SP;
-    uint8_t&   B = reg.B;
-    uint8_t&   C = reg.C;
-    uint8_t&   D = reg.D;
-    uint8_t&   E = reg.E;
-    uint8_t&   H = reg.H;
-    uint8_t&   L = reg.L;
-    uint8_t&   A = reg.A;
-    uint8_t&   F = reg.F;
-    uint8_t& IME = reg.IME;
+    // TODO: Ugly, temporary hack.
+    uint16_t& BC  = const_cast<uint16_t&>(registers.get_BC());
+    uint16_t& DE  = const_cast<uint16_t&>(registers.get_DE());
+    uint16_t& HL  = const_cast<uint16_t&>(registers.get_HL());
+    uint16_t& AF  = const_cast<uint16_t&>(registers.get_AF());
+    uint16_t& PC  = const_cast<uint16_t&>(registers.get_PC());
+    uint16_t& SP  = const_cast<uint16_t&>(registers.get_SP());
+    uint8_t&  B   = const_cast<uint8_t&>(registers.get_B());
+    uint8_t&  C   = const_cast<uint8_t&>(registers.get_C());
+    uint8_t&  D   = const_cast<uint8_t&>(registers.get_D());
+    uint8_t&  E   = const_cast<uint8_t&>(registers.get_E());
+    uint8_t&  H   = const_cast<uint8_t&>(registers.get_H());
+    uint8_t&  L   = const_cast<uint8_t&>(registers.get_L());
+    uint8_t&  A   = const_cast<uint8_t&>(registers.get_A());
+    uint8_t&  F   = const_cast<uint8_t&>(registers.get_F());
+    uint8_t&  IME = const_cast<uint8_t&>(registers.get_IME());
+    uint8_t&  IE  = const_cast<uint8_t&>(registers.get_IE());
+    uint8_t&  IF  = const_cast<uint8_t&>(registers.get_IF());
 
     const uint8_t* current_instruction = nullptr;
     bool branch_taken = false;
@@ -117,7 +93,7 @@ public:
     int DI_countdown = NO_COUNTDOWN;
     int EI_countdown = NO_COUNTDOWN;
 
-    Cpu(Memory* mem, uint8_t* IE, uint8_t* IF);
+    Cpu(CpuRegisters& registers, MemoryBus& memory);
     ~Cpu();
     void hard_reset();
     inline bool has_pending_requests();
@@ -406,7 +382,7 @@ FORCE_INLINE void Cpu::reset_cycles()
 
 FORCE_INLINE bool Cpu::has_pending_requests()
 {
-    return (*IF & 0x1F) != 0;
+    return (IF & 0x1F) != 0;
 }
 
 FORCE_INLINE Cpu::InterruptInfo Cpu::next_request()
@@ -449,32 +425,32 @@ FORCE_INLINE void Cpu::request_interrupt(int source)
     case SerialInterrupt: ++serial_irqs; break;
     }
 
-    *IF |= 0x01 << source;
+    IF |= 0x01 << source;
 }
 
 FORCE_INLINE bool Cpu::interrupt_requested(int source)
 {
-    return (*IF & (0x01 << source)) != 0;
+    return (IF & (0x01 << source)) != 0;
 }
 
 FORCE_INLINE bool Cpu::interrupt_enabled(int source)
 {
-    return (*IE & (0x01 << source)) != 0;
+    return (IE & (0x01 << source)) != 0;
 }
 
 FORCE_INLINE void Cpu::clear_interrupt(int source)
 {
-    *IF &= ~(0x01 << source);
+    IF &= ~(0x01 << source);
 }
 
 FORCE_INLINE void Cpu::disable_interrupt(int source)
 {
-    *IE &= ~(0x01 << source);
+    IE &= ~(0x01 << source);
 }
 
 FORCE_INLINE void Cpu::enable_interrupt(int source)
 {
-    *IE |= 0x01 << source;
+    IE |= 0x01 << source;
 }
 
 FORCE_INLINE uint8_t Cpu::extract_immediate8(const uint8_t* instruction)

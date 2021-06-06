@@ -1,6 +1,6 @@
 #pragma once
 
-#include "types.hh"
+#include "emulator/types.hh"
 
 #include <cstdint>
 

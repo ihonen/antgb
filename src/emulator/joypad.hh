@@ -4,7 +4,7 @@
 #include <map>
 
 class Cpu;
-class Memory;
+class JoypadRegisters;
 
 class Joypad
 {
@@ -34,15 +34,15 @@ public:
         bool pressed;
     };
 
-    Joypad(Memory* mem, Cpu* cpu);
+    Joypad(JoypadRegisters& registers,  Cpu& cpu);
     void button_pressed(JoypadButton button);
     void button_released(JoypadButton button);
 
     const size_t BUTTON_COUNT = 8;
     const memaddr_t IO_REG_ADDRESS = 0xFF00;
-    uint8_t* io_register;
-    Memory* mem;
-    Cpu* cpu;
+
+    JoypadRegisters& registers;
+    Cpu& cpu;
 
     std::map<JoypadButton, ButtonState> button_status;
 };

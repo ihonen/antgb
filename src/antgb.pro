@@ -25,16 +25,21 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++17
 
 SOURCES += \
+    emulator/peripherals/apuregisters.cc \
+    emulator/peripherals/joypadregisters.cc \
+    emulator/ppu/ppuregisters.cc \
+    emulator/peripherals/serialregisters.cc \
+    emulator/peripherals/timerregisters.cc \
     debugger/cartridgeheader.cc \
-    emulator/cartridge.cc \
-    emulator/memory.cc \
+    emulator/cpu/cpuregisters.cc \
+    emulator/memory/cartridge.cc \
+    emulator/memory/memorybus.cc \
     main.cc \
     debugger/breakpoint.cc \
     debugger/debugcore.cc \
     debugger/disassembler.cc \
     debugger/instructions.cc \
-    emulator/apu.cc \
-    emulator/cpu.cc \
+    emulator/cpu/cpu.cc \
     emulator/emulator.cc \
     emulator/fileio.cc \
     emulator/interrupts.cc \
@@ -80,6 +85,11 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    emulator/peripherals/apuregisters.hh \
+    emulator/peripherals/joypadregisters.hh \
+    emulator/ppu/ppuregisters.hh \
+    emulator/peripherals/serialregisters.hh \
+    emulator/peripherals/timerregisters.hh \
     debugger/addresses.hh \
     debugger/breakpoint.hh \
     debugger/cartridgeheader.hh \
@@ -92,18 +102,25 @@ HEADERS += \
     debugger/ifrontend.hh \
     debugger/instructions.hh \
     debugger/types.hh \
-    emulator/addresses.hh \
-    emulator/apu.hh \
+    emulator/cpu/cpuregisters.hh \
+    emulator/memory/addresses.hh \
     emulator/bitmanip.hh \
-    emulator/cartridge.hh \
-    emulator/cpu.hh \
+    emulator/memory/bootrom.hh \
+    emulator/memory/cartridge.hh \
+    emulator/cpu/cpu.hh \
     emulator/emulator.hh \
     emulator/exceptions.hh \
     emulator/fileio.hh \
     emulator/interrupts.hh \
     emulator/joypad.hh \
     emulator/macros.hh \
-    emulator/memory.hh \
+    emulator/memory/hram.hh \
+    emulator/memory/memorybank.hh \
+    emulator/memory/memorybus.hh \
+    emulator/memory/oam.hh \
+    emulator/memory/vram.hh \
+    emulator/memory/wram0.hh \
+    emulator/memory/wram1.hh \
     emulator/ppu.hh \
     emulator/serial.hh \
     emulator/timer.hh \

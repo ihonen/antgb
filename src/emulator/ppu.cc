@@ -1,10 +1,12 @@
 #include "ppu.hh"
 
+#include "bitmanip.hh"
+
 #include "debugger/ifrontend.hh"
 
-#include "addresses.hh"
-#include "bitmanip.hh"
-#include "memory.hh"
+#include "emulator/memory/addresses.hh"
+#include "emulator/memory/memorybus.hh"
+
 #include <algorithm>
 #include <cassert>
 #include <iostream>
@@ -65,7 +67,7 @@ public:
     static const memaddr_t TILE_MAP1_BASE = 0x9C00;
     static const memaddr_t TILE_MAP_BASE[2];
 
-    Background(Type type, Memory* memory);
+    Background(Type type, MemoryBus* memory);
     void     set_memory(uint8_t* memory);
     uint8_t  get_pixel_at(size_t display_x, size_t display_y);
     uint8_t  get_pixel(size_t background_x, size_t background_y);
@@ -80,7 +82,7 @@ public:
     size_t   right();
     bool     is_enabled();
 
-    Memory* mem;
+    MemoryBus* mem;
     Type type;
 };
 
@@ -90,7 +92,7 @@ const memaddr_t Background::TILE_DATA_BASE[2] = {Background::TILE_DATA_BLOCK2_BA
 const memaddr_t Background::TILE_MAP_BASE[2] = {Background::TILE_MAP0_BASE,
                                              Background::TILE_MAP1_BASE};
 
-Background::Background(Type type_, Memory* memory)
+Background::Background(Type type_, MemoryBus* memory)
 {
     mem  = memory;
     type = type_;
@@ -361,7 +363,7 @@ uint8_t Sprite::palette_number()
 class Sprites
 {
 public:
-    Sprites(Memory* memory);
+    Sprites(MemoryBus* memory);
     virtual ~Sprites();
     void               set_memory(uint8_t* memory);
     void               refresh();
@@ -378,7 +380,7 @@ public:
     std::array<Sprite, 10> sprite_buffer;
     size_t                 sprite_buffer_size;
 
-    Memory* mem;
+    MemoryBus* mem;
 };
 
 static bool sprite_priority_comp(const Sprite& a, const Sprite& b)
@@ -391,7 +393,7 @@ static bool sprite_priority_comp(const Sprite& a, const Sprite& b)
     return a.attribute->tile_number <= b.attribute->tile_number;
 }
 
-Sprites::Sprites(Memory* memory)
+Sprites::Sprites(MemoryBus* memory)
 {
     mem                = memory;
     sprite_buffer_size = 0;
@@ -495,7 +497,7 @@ Sprite* Sprites::get_sprite_at_x(size_t display_x)
 class Renderer
 {
 public:
-    Renderer(Memory* mem, iFrontend* frontend);
+    Renderer(MemoryBus* mem, iFrontend* frontend);
     void set_frontend(iFrontend* frontend);
     void set_memory(uint8_t* mem);
     void render_frame();
@@ -507,7 +509,7 @@ private:
 
     iFrontend* frontend;
 
-    Memory* mem;
+    MemoryBus* mem;
     iFrontend::Pixels pixels;
 
     Background background;
@@ -515,7 +517,7 @@ private:
     Sprites sprites;
 };
 
-Renderer::Renderer(Memory* memory, iFrontend* renderer_)
+Renderer::Renderer(MemoryBus* memory, iFrontend* renderer_)
     : frontend(renderer_), mem(memory),
       background(Background(Background::Type::Background, mem)),
       window(Background(Background::Type::Window, mem)),
@@ -566,7 +568,7 @@ void Renderer::render_frame()
 // Ppu
 //----------------------------------------------------------------------------
 
-Ppu::Ppu(Memory* mmu_, Registers* reg, Cpu* cpu, iFrontend* renderer_)
+Ppu::Ppu(MemoryBus* mmu_, Registers* reg, Cpu* cpu, iFrontend* renderer_)
     : reg(reg), cpu(cpu), mem(mmu_)
 {
     renderer = new Renderer(mem, renderer_);

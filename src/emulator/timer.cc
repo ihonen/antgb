@@ -1,6 +1,6 @@
 #include "timer.hh"
 
-#include "memory.hh"
+#include "emulator/memory/memorybus.hh"
 
 #include <iostream>
 

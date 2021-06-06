@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cpu.hh"
+#include "emulator/cpu/cpu.hh"
 #include "types.hh"
 
 class Serial

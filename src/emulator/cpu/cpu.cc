@@ -1,11 +1,13 @@
 #include "cpu.hh"
 
-#include "memory.hh"
+#include "emulator/memory/memorybus.hh"
 #include <array>
 #include <iomanip>
 #include <iostream>
 
-Cpu::Cpu(Memory* memory, uint8_t* IE, uint8_t* IF) : mem(memory), IE(IE), IF(IF)
+Cpu::Cpu(CpuRegisters& registers, MemoryBus& memory)
+    : mem(memory)
+    , registers(registers)
 {
     trace_log.open("trace.log", std::ofstream::out);
     hard_reset();
@@ -32,18 +34,7 @@ void Cpu::restart()
 
 void Cpu::hard_reset()
 {
-    AF = 0x01B0;
-    BC = 0x0013;
-    DE = 0x00D8;
-    HL = 0x014D;
-    SP = 0xFFFE;
-    PC = 0x0100;
-
-    assert(IE);
-    assert(IF);
-    *IE = 0x00;
-    *IF = 0x00;
-    IME = 0x00;
+    registers.post_bootram_reset();
 
     current_instruction = nullptr;
     branch_taken = false;
@@ -56,7 +47,7 @@ void Cpu::hard_reset()
 
 void Cpu::execute(const uint8_t* instruction)
 {
-    if (!instruction) instruction = mem->get(PC);
+    if (!instruction) instruction = mem.get(PC);
     assert(instruction);
     current_instruction = instruction;
     branch_taken = false;
@@ -142,7 +133,7 @@ void Cpu::jump_to_isr(memaddr_t vector_address)
     ime_flag_clear();
     PUSH_r16(PC);
     PC = vector_address;
-    current_instruction = mem->get(PC);
+    current_instruction = mem.get(PC);
     DI_countdown = NO_COUNTDOWN;
     EI_countdown = NO_COUNTDOWN;
     clock_cycles += 20;
@@ -152,7 +143,7 @@ void Cpu::jump_to_isr(memaddr_t vector_address)
 
 void Cpu::ADC_A_HL()
 {
-    ADC_A_n8(mem->read(HL));
+    ADC_A_n8(mem.read(HL));
 }
 
 void Cpu::ADC_A_n8(uint8_t n8)
@@ -175,7 +166,7 @@ void Cpu::ADC_A_r8(uint8_t& r8)
 
 void Cpu::ADD_A_HL()
 {
-    ADD_A_n8(mem->read(HL));
+    ADD_A_n8(mem.read(HL));
 }
 
 void Cpu::ADD_A_n8(uint8_t n8)
@@ -225,7 +216,7 @@ void Cpu::AND_n8(uint8_t n8)
 
 void Cpu::AND_HL()
 {
-    AND_n8(mem->read(HL));
+    AND_n8(mem.read(HL));
 }
 
 void Cpu::AND_r8(uint8_t& r8)
@@ -236,9 +227,9 @@ void Cpu::AND_r8(uint8_t& r8)
 /* BIT */
 void Cpu::BIT_n3_HL(uint8_t n3)
 {
-    uint8_t temp = mem->read(HL);
+    uint8_t temp = mem.read(HL);
     BIT_n3_r8(n3, temp);
-    mem->write(HL, temp);
+    mem.write(HL, temp);
 }
 
 void Cpu::BIT_n3_r8(uint8_t n3, uint8_t& r8)
@@ -279,7 +270,7 @@ void Cpu::CCF()
 
 void Cpu::CP_HL()
 {
-    CP_n8(mem->read(HL));
+    CP_n8(mem.read(HL));
 }
 
 void Cpu::CP_n8(uint8_t n8)
@@ -334,9 +325,9 @@ void Cpu::DAA()
 
 void Cpu::DEC_HL()
 {
-    uint8_t temp = mem->read(HL);
+    uint8_t temp = mem.read(HL);
     DEC_r8(temp);
-    mem->write(HL, temp);
+    mem.write(HL, temp);
 }
 
 void Cpu::DEC_r16(uint16_t& r16)
@@ -383,9 +374,9 @@ void Cpu::HALT()
 
 void Cpu::INC_HL()
 {
-    uint8_t temp = mem->read(HL);
+    uint8_t temp = mem.read(HL);
     INC_r8(temp);
-    mem->write(HL, temp);
+    mem.write(HL, temp);
 }
 
 void Cpu::INC_r16(uint16_t& r16)
@@ -448,12 +439,12 @@ void Cpu::JR_n8(int8_t n8)
 
 void Cpu::LD_C_A()
 {
-    mem->write(0xFF00 + C, A);
+    mem.write(0xFF00 + C, A);
 }
 
 void Cpu::LD_HL_n8(uint8_t n8)
 {
-    mem->write(HL, n8);
+    mem.write(HL, n8);
 }
 
 void Cpu::LD_HL_r8(uint8_t& r8)
@@ -463,28 +454,28 @@ void Cpu::LD_HL_r8(uint8_t& r8)
 
 void Cpu::LD_n16_A(uint16_t n16)
 {
-    mem->write(n16, A);
+    mem.write(n16, A);
 }
 
 void Cpu::LD_n16_SP(uint16_t n16)
 {
-    mem->write(n16, SP & 0x00FF);
-    mem->write(n16 + 1, (SP & 0xFF00) >> 8);
+    mem.write(n16, SP & 0x00FF);
+    mem.write(n16 + 1, (SP & 0xFF00) >> 8);
 }
 
 void Cpu::LD_r16_A(uint16_t& r16)
 {
-    mem->write(r16, A);
+    mem.write(r16, A);
 }
 
 void Cpu::LD_A_C()
 {
-    A = mem->read(0xFF00 + C);
+    A = mem.read(0xFF00 + C);
 }
 
 void Cpu::LD_A_n16(uint16_t n16)
 {
-    A = mem->read(n16);
+    A = mem.read(n16);
 }
 
 void Cpu::LD_A_r16(uint16_t& r16)
@@ -510,7 +501,7 @@ void Cpu::LD_r16_n16(uint16_t& r16, uint16_t n16)
 
 void Cpu::LD_r8_HL(uint8_t& r8)
 {
-    r8 = mem->read(HL);
+    r8 = mem.read(HL);
 }
 
 void Cpu::LD_r8_n8(uint8_t& r8, uint8_t n8)
@@ -530,35 +521,35 @@ void Cpu::LD_SP_HL()
 
 void Cpu::LDD_HL_A()
 {
-    mem->write(HL, A);
+    mem.write(HL, A);
     --(HL);
 }
 
 void Cpu::LDD_A_HL()
 {
-    A = mem->read(HL);
+    A = mem.read(HL);
     --(HL);
 }
 
 void Cpu::LDH_n8_A(uint8_t n8)
 {
-    mem->write(0xFF00 + n8,  A);
+    mem.write(0xFF00 + n8,  A);
 }
 
 void Cpu::LDH_A_n8(uint8_t n8)
 {
-    A = mem->read(0xFF00 + n8);
+    A = mem.read(0xFF00 + n8);
 }
 
 void Cpu::LDI_HL_A()
 {
-    mem->write(HL, A);
+    mem.write(HL, A);
     ++(HL);
 }
 
 void Cpu::LDI_A_HL()
 {
-    A = mem->read(HL);
+    A = mem.read(HL);
     ++(HL);
 }
 
@@ -573,7 +564,7 @@ void Cpu::NOP()
 
 void Cpu::OR_HL()
 {
-    OR_n8(mem->read(HL));
+    OR_n8(mem.read(HL));
 }
 
 void Cpu::OR_n8(uint8_t n8)
@@ -594,9 +585,9 @@ void Cpu::OR_r8(uint8_t& r8)
 
 void Cpu::POP_r16(uint16_t& r16)
 {
-    r16 = static_cast<uint16_t>(mem->read(SP));
+    r16 = static_cast<uint16_t>(mem.read(SP));
     ++(SP);
-    r16 |= static_cast<uint16_t>(mem->read(SP)) << 8;
+    r16 |= static_cast<uint16_t>(mem.read(SP)) << 8;
     ++(SP);
 }
 
@@ -605,18 +596,18 @@ void Cpu::POP_r16(uint16_t& r16)
 void Cpu::PUSH_r16(uint16_t& r16)
 {
     --(SP);
-    mem->write(SP, static_cast<uint8_t>(r16 >> 8));
+    mem.write(SP, static_cast<uint8_t>(r16 >> 8));
     --(SP);
-    mem->write(SP, static_cast<uint8_t>(r16));
+    mem.write(SP, static_cast<uint8_t>(r16));
 }
 
 /* RES */
 
 void Cpu::RES_n3_HL(uint8_t n3)
 {
-    uint8_t temp = mem->read(HL);
+    uint8_t temp = mem.read(HL);
     RES_n3_r8(n3, temp);
-    mem->write(HL, temp);
+    mem.write(HL, temp);
 }
 
 void Cpu::RES_n3_r8(uint8_t n3, uint8_t& r8)
@@ -653,9 +644,9 @@ void Cpu::RETI()
 
 void Cpu::RL_HL()
 {
-    uint8_t temp = mem->read(HL);
+    uint8_t temp = mem.read(HL);
     RL_r8(temp);
-    mem->write(HL, temp);
+    mem.write(HL, temp);
 }
 
 void Cpu::RL_r8(uint8_t& r8)
@@ -684,9 +675,9 @@ void Cpu::RLA()
 
 void Cpu::RLC_HL()
 {
-    uint8_t temp = mem->read(HL);
+    uint8_t temp = mem.read(HL);
     RLC_r8(temp);
-    mem->write(HL, temp);
+    mem.write(HL, temp);
 }
 
 void Cpu::RLC_r8(uint8_t& r8)
@@ -715,9 +706,9 @@ void Cpu::RLCA()
 
 void Cpu::RR_HL()
 {
-    uint8_t temp = mem->read(HL);
+    uint8_t temp = mem.read(HL);
     RR_r8(temp);
-    mem->write(HL, temp);
+    mem.write(HL, temp);
 }
 
 void Cpu::RR_r8(uint8_t& r8)
@@ -746,9 +737,9 @@ void Cpu::RRA()
 
 void Cpu::RRC_HL()
 {
-    uint8_t temp = mem->read(HL);
+    uint8_t temp = mem.read(HL);
     RRC_r8(temp);
-    mem->write(HL, temp);
+    mem.write(HL, temp);
 }
 
 void Cpu::RRC_r8(uint8_t& r8)
@@ -783,9 +774,9 @@ void Cpu::RST_f(uint8_t f)
 
 void Cpu::SBC_A_HL()
 {
-    uint8_t temp = mem->read(HL);
+    uint8_t temp = mem.read(HL);
     SBC_A_n8(temp);
-    mem->write(HL, temp);
+    mem.write(HL, temp);
 }
 
 void Cpu::SBC_A_n8(uint8_t n8)
@@ -816,9 +807,9 @@ void Cpu::SCF()
 
 void Cpu::SET_n3_HL(uint8_t n3)
 {
-    uint8_t temp = mem->read(HL);
+    uint8_t temp = mem.read(HL);
     SET_n3_r8(n3, temp);
-    mem->write(HL, temp);
+    mem.write(HL, temp);
 }
 
 void Cpu::SET_n3_r8(uint8_t n3, uint8_t& r8)
@@ -830,9 +821,9 @@ void Cpu::SET_n3_r8(uint8_t n3, uint8_t& r8)
 
 void Cpu::SLA_HL()
 {
-    uint8_t temp = mem->read(HL);
+    uint8_t temp = mem.read(HL);
     SLA_r8(temp);
-    mem->write(HL, temp);
+    mem.write(HL, temp);
 }
 
 void Cpu::SLA_r8(uint8_t& r8)
@@ -851,9 +842,9 @@ void Cpu::SLA_r8(uint8_t& r8)
 
 void Cpu::SRA_HL()
 {
-    uint8_t temp = mem->read(HL);
+    uint8_t temp = mem.read(HL);
     SRA_r8(temp);
-    mem->write(HL, temp);
+    mem.write(HL, temp);
 }
 
 void Cpu::SRA_r8(uint8_t& r8)
@@ -873,9 +864,9 @@ void Cpu::SRA_r8(uint8_t& r8)
 
 void Cpu::SRL_HL()
 {
-    uint8_t temp = mem->read(HL);
+    uint8_t temp = mem.read(HL);
     SRL_r8(temp);
-    mem->write(HL, temp);
+    mem.write(HL, temp);
 }
 
 void Cpu::SRL_r8(uint8_t& r8)
@@ -902,9 +893,9 @@ void Cpu::STOP()
 
 void Cpu::SUB_A_HL()
 {
-    uint8_t temp = mem->read(HL);
+    uint8_t temp = mem.read(HL);
     SUB_A_n8(temp);
-    mem->write(HL, temp);
+    mem.write(HL, temp);
 }
 
 void Cpu::SUB_A_n8(uint8_t n8)
@@ -927,9 +918,9 @@ void Cpu::SUB_A_r8(uint8_t& r8)
 
 void Cpu::SWAP_HL()
 {
-    uint8_t temp = mem->read(HL);
+    uint8_t temp = mem.read(HL);
     SWAP_r8(temp);
-    mem->write(HL, temp);
+    mem.write(HL, temp);
 }
 
 void Cpu::SWAP_r8(uint8_t& r8)
@@ -945,9 +936,9 @@ void Cpu::SWAP_r8(uint8_t& r8)
 
 void Cpu::XOR_HL()
 {
-    uint8_t temp = mem->read(HL);
+    uint8_t temp = mem.read(HL);
     XOR_n8(temp);
-    mem->write(HL, temp);
+    mem.write(HL, temp);
 }
 
 void Cpu::XOR_n8(uint8_t n8)

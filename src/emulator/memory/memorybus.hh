@@ -1,18 +1,91 @@
 #pragma once
 
-#include "apu.hh"
-#include "cartridge.hh"
-#include "joypad.hh"
-#include "macros.hh"
-#include "ppu.hh"
-#include "serial.hh"
-#include "timer.hh"
-#include "types.hh"
+#include "emulator/types.hh"
 
-class Memory
+#include "bootrom.hh"
+#include "hram.hh"
+#include "oam.hh"
+#include "vram.hh"
+#include "wram0.hh"
+#include "wram1.hh"
+
+#include <cstdint>
+
+/*
+class BootRom;
+class Hram;
+class Oam;
+class Vram;
+class Wram0;
+class Wram1;
+*/
+
+class Cartridge;
+
+class ApuRegisters;
+class CpuRegisters;
+class JoypadRegisters;
+class PpuRegisters;
+class SerialRegisters;
+class TimerRegisters;
+
+class MemoryBus
 {
 public:
 
+    MemoryBus(
+        BootRom& bootrom,
+        Hram& hram,
+        Oam& oam,
+        Vram& vram,
+        Wram0& wram0,
+        Wram1& wram1,
+        Cartridge& cartridge,
+        ApuRegisters& apu_registers,
+        CpuRegisters& cpu_registers,
+        JoypadRegisters& joypad_registers,
+        PpuRegisters& ppu_registers,
+        SerialRegisters& serial_registers,
+        TimerRegisters& timer_registers
+    );
+
+    void hard_reset();
+
+    uint8_t* get(memaddr_t address);
+    uint8_t read(memaddr_t address);
+    bool write(memaddr_t address, uint8_t value);
+
+    void launch_oam_dma(memaddr_t destination,
+                        memaddr_t source,
+                        memaddr_t size);
+
+    void emulate(uint64_t cpu_cycles);
+    void emulate_oam_dma(uint64_t cpu_cycles);
+    void end_oam_dma();
+    void clear_dma_status();
+
+protected:
+    BootRom& bootrom_;
+    Hram& hram_;
+    Oam& oam_;
+    Vram& vram_;
+    Wram0& wram0_;
+    Wram1& wram1_;
+
+    Cartridge& cartridge_;
+
+    ApuRegisters& apu_registers_;
+    CpuRegisters& cpu_registers_;
+    JoypadRegisters& joypad_registers_;
+    PpuRegisters& ppu_registers_;
+    SerialRegisters& serial_registers_;
+    TimerRegisters& timer_registers_;
+};
+
+/*
+class MemoryBus
+{
+public:
     struct MemoryRegion
     {
         memaddr_t low;
@@ -20,7 +93,7 @@ public:
         memaddr_t size;
     };
 
-    Memory();
+    MemoryBus();
 
     void hard_reset();
     inline uint8_t* get(memaddr_t address);
@@ -98,7 +171,7 @@ static std::map<memaddr_t, Mask> MASK
     {0xFFFF, {0b00011111, 0b11100000, 0b11100000}}
 };
 
-FORCE_INLINE uint8_t* Memory::get(memaddr_t address)
+FORCE_INLINE uint8_t* MemoryBus::get(memaddr_t address)
 {
     if (address <= ROM1.high)
     {
@@ -120,7 +193,7 @@ FORCE_INLINE uint8_t* Memory::get(memaddr_t address)
     else return &bytes[address];
 }
 
-FORCE_INLINE uint8_t Memory::read(memaddr_t address)
+FORCE_INLINE uint8_t MemoryBus::read(memaddr_t address)
 {
     uint8_t* source = get(address);
     if (!source) return 0xFF;
@@ -134,7 +207,7 @@ FORCE_INLINE uint8_t Memory::read(memaddr_t address)
     return *source | (invalid_mask & 0xFF);
 }
 
-FORCE_INLINE bool Memory::write(memaddr_t address, uint8_t value)
+FORCE_INLINE bool MemoryBus::write(memaddr_t address, uint8_t value)
 {
     uint8_t* dest = get(address);
     if (!dest) return false;
@@ -151,9 +224,10 @@ FORCE_INLINE bool Memory::write(memaddr_t address, uint8_t value)
     return true;
 }
 
-FORCE_INLINE bool Memory::force_write(memaddr_t address, uint8_t value)
+FORCE_INLINE bool MemoryBus::force_write(memaddr_t address, uint8_t value)
 {
     auto dest = get(address);
     if (dest) *dest = value;
     return 0;
 }
+*/
