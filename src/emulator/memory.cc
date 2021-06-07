@@ -10,12 +10,14 @@ Memory::Memory(
     ApuRegisters& apu_registers,
     CpuRegisters& cpu_registers,
     JoypadRegisters& joypad_registers,
-    PpuRegisters& ppu_registers
+    PpuRegisters& ppu_registers,
+    SerialRegisters& serial_registers
 )
     : apu_registers_(apu_registers)
     , cpu_registers_(cpu_registers)
     , joypad_registers_(joypad_registers)
     , ppu_registers_(ppu_registers)
+    , serial_registers_(serial_registers)
 {
     cartridge = nullptr;
     hard_reset();

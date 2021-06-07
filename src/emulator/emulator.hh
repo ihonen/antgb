@@ -41,6 +41,7 @@ public:
     std::unique_ptr<CpuRegisters> cpu_registers;
     std::unique_ptr<JoypadRegisters> joypad_registers;
     std::unique_ptr<PpuRegisters> ppu_registers;
+    std::unique_ptr<SerialRegisters> serial_registers;
 
     std::unique_ptr<Cpu> cpu;
     std::unique_ptr<Memory> mem;

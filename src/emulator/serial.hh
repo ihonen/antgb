@@ -1,31 +1,27 @@
 #pragma once
 
 #include "cpu.hh"
-#include "types.hh"
+#include "serialregisters.hh"
 
 class Serial
 {
 public:
-    struct Registers
-    {
-        uint8_t sb;
-        uint8_t sc;
-    };
-
     static constexpr uint64_t CPU_CYCLES_PER_BYTE = 4096;
 
-    Serial(Registers* reg, Cpu* cpu);
+    Serial(SerialRegisters& reg, Cpu* cpu);
     inline void emulate(uint64_t cpu_cycles);
 
     uint64_t cpu_cycles_left_in_transfer;
     Cpu* cpu;
-    Registers* reg;
+    SerialRegisters& reg;
 };
 
 FORCE_INLINE void Serial::emulate(uint64_t cpu_cycles)
 {
-    if (reg->sc == 0x81 && !cpu_cycles_left_in_transfer)
+    if (reg.read(SB_ADDR) != 0x00 && reg.read(SC_ADDR) == 0x81)
     {
+        std::cout << (char)reg.read(SB_ADDR) << std::flush;
+        reg.write(SB_ADDR, 0x00);
         cpu_cycles_left_in_transfer = CPU_CYCLES_PER_BYTE;
     }
 
@@ -33,12 +29,11 @@ FORCE_INLINE void Serial::emulate(uint64_t cpu_cycles)
     {
         cpu->request_interrupt(Cpu::SerialInterrupt);
         cpu_cycles_left_in_transfer = 0;
-        reg->sb = 0x00;
-        reg->sc = 0x01;
+        reg.write(SB_ADDR, 0x00);
+        reg.write(SC_ADDR, 0x01);
     }
     else
     {
         cpu_cycles_left_in_transfer -= cpu_cycles;
     }
-
 }

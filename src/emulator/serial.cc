@@ -2,7 +2,7 @@
 
 #include "memory.hh"
 
-Serial::Serial(Registers* reg, Cpu* cpu) :
+Serial::Serial(SerialRegisters& reg, Cpu* cpu) :
     cpu(cpu),
     reg(reg)
 {

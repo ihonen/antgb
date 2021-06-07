@@ -30,7 +30,8 @@ public:
         ApuRegisters& apu_registers,
         CpuRegisters& cpu_registers,
         JoypadRegisters& joypad_registers,
-        PpuRegisters& ppu_registers
+        PpuRegisters& ppu_registers,
+        SerialRegisters& serial_registers
     );
 
     void hard_reset();
@@ -55,6 +56,7 @@ public:
     CpuRegisters& cpu_registers_;
     JoypadRegisters& joypad_registers_;
     PpuRegisters& ppu_registers_;
+    SerialRegisters& serial_registers_;
 
     struct
     {
@@ -145,6 +147,10 @@ FORCE_INLINE uint8_t* Memory::get(memaddr_t address)
     {
         return ppu_registers_.get(address);
     }
+    else if (address >= SERIAL_LOW && address <= SERIAL_HIGH)
+    {
+        return serial_registers_.get(address);
+    }
     else if (address == IF_ADDR || address == IE_ADDR)
     {
         return cpu_registers_.get(address);
@@ -152,8 +158,11 @@ FORCE_INLINE uint8_t* Memory::get(memaddr_t address)
     else return &bytes[address];
 }
 
+inline void foo() {}
+
 FORCE_INLINE uint8_t Memory::read(memaddr_t address)
 {
+
     uint8_t* source = get(address);
     if (!source) return 0xFF;
 
@@ -168,6 +177,11 @@ FORCE_INLINE uint8_t Memory::read(memaddr_t address)
 
 FORCE_INLINE bool Memory::write(memaddr_t address, uint8_t value)
 {
+    if (address == SB_ADDR || address == SC_ADDR)
+    {
+        foo();
+    }
+
     uint8_t* dest = get(address);
     if (!dest) return false;
 
