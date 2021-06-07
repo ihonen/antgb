@@ -5,7 +5,7 @@
 
 #include <array>
 
-template<memaddr_t low_address, memaddr_t high_address>
+template<addr_t low_address, addr_t high_address>
 class MemoryBase : public iMemoryBusNode
 {
 public:
@@ -17,12 +17,12 @@ public:
 
     virtual ~MemoryBase() = default;
 
-    static constexpr memaddr_t low()
+    static constexpr addr_t low()
     {
         return low_address;
     }
 
-    static constexpr memaddr_t high()
+    static constexpr addr_t high()
     {
         return high_address;
 
@@ -33,12 +33,12 @@ public:
         return high_address - low_address + 1;
     }
 
-    virtual bool owns(memaddr_t address) override
+    virtual bool owns(addr_t address) override
     {
         return address >= low() && address <= high();
     }
 
-    virtual uint8_t* get(memaddr_t address) override
+    virtual uint8_t* get(addr_t address) override
     {
         assert(owns(address));
         if (address >= low() && address <= high())
@@ -47,14 +47,14 @@ public:
         }
     }
 
-    virtual uint8_t read(memaddr_t address) override
+    virtual uint8_t read(addr_t address) override
     {
         assert(owns(address));
         const auto* byte = get(address);
         return *byte;
     }
 
-    virtual void write(memaddr_t address, uint8_t value) override
+    virtual void write(addr_t address, uint8_t value) override
     {
         assert(owns(address));
         auto* byte = get(address);

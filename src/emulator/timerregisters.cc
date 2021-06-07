@@ -14,7 +14,7 @@ namespace
     constexpr uint8_t TAC_WRITE_MASK  = 0b00000111;
     constexpr uint8_t TAC_READ_MASK   = 0b00000111;
 
-    uint8_t read_mask(memaddr_t address)
+    uint8_t read_mask(addr_t address)
     {
         switch (address)
         {
@@ -26,7 +26,7 @@ namespace
         return 0xFF;
     }
 
-    uint8_t write_mask(memaddr_t address)
+    uint8_t write_mask(addr_t address)
     {
         switch (address)
         {
@@ -49,12 +49,12 @@ TimerRegisters::TimerRegisters()
 
 TimerRegisters::~TimerRegisters() = default;
 
-bool TimerRegisters::owns(memaddr_t address)
+bool TimerRegisters::owns(addr_t address)
 {
     return address >= TIMER_LOW && address <= TIMER_HIGH;
 }
 
-uint8_t* TimerRegisters::get(memaddr_t address)
+uint8_t* TimerRegisters::get(addr_t address)
 {
     assert(owns(address));
     switch (address)
@@ -67,7 +67,7 @@ uint8_t* TimerRegisters::get(memaddr_t address)
     return nullptr;
 }
 
-uint8_t TimerRegisters::read(memaddr_t address)
+uint8_t TimerRegisters::read(addr_t address)
 {
     assert(owns(address));
     if (const auto* byte = get(address))
@@ -77,7 +77,7 @@ uint8_t TimerRegisters::read(memaddr_t address)
     return 0xFF;
 }
 
-void TimerRegisters::write(memaddr_t address, uint8_t value)
+void TimerRegisters::write(addr_t address, uint8_t value)
 {
     assert(owns(address));
     if (auto* byte = get(address))

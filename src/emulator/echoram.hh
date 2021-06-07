@@ -12,9 +12,9 @@ public:
     {
     }
 
-    virtual uint8_t* get(memaddr_t address) override
+    virtual uint8_t* get(addr_t address) override
     {
-        memaddr_t redirect_address = address - ECHO_LOW + WRAM0_LOW;
+        addr_t redirect_address = address - ECHO_LOW + WRAM0_LOW;
         if (redirect_address <= wram0_.high())
         {
             return wram0_.get(redirect_address);

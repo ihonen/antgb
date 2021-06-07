@@ -6,45 +6,45 @@
 class CartridgeHeader
 {
 public:
-    static constexpr memaddr_t NINTENDO_LOGO_LOW = 0x0103;
-    static constexpr memaddr_t NINTENDO_LOGO_HIGH = 0x0133;
+    static constexpr addr_t NINTENDO_LOGO_LOW = 0x0103;
+    static constexpr addr_t NINTENDO_LOGO_HIGH = 0x0133;
     static constexpr size_t NINTENDO_LOGO_SIZE =
             NINTENDO_LOGO_HIGH - NINTENDO_LOGO_LOW + 1;
 
-    static constexpr memaddr_t TITLE_LOW = 0x0134;
-    static constexpr memaddr_t TITLE_HIGH = 0x0143;
+    static constexpr addr_t TITLE_LOW = 0x0134;
+    static constexpr addr_t TITLE_HIGH = 0x0143;
 
-    static constexpr memaddr_t MANUFACTURER_CODE_LOW = 0x013F;
-    static constexpr memaddr_t MANUFACTURER_CODE_HIGH = 0x0142;
+    static constexpr addr_t MANUFACTURER_CODE_LOW = 0x013F;
+    static constexpr addr_t MANUFACTURER_CODE_HIGH = 0x0142;
 
-    static constexpr memaddr_t CGB_FLAG_ADDRESS = 0x0143;
+    static constexpr addr_t CGB_FLAG_ADDRESS = 0x0143;
 
-    static constexpr memaddr_t NEW_LICENSEE_CODE_LOW = 0x0144;
-    static constexpr memaddr_t NEW_LICENSEE_CODE_HIGH = 0x0145;
+    static constexpr addr_t NEW_LICENSEE_CODE_LOW = 0x0144;
+    static constexpr addr_t NEW_LICENSEE_CODE_HIGH = 0x0145;
 
-    static constexpr memaddr_t SGB_FLAG_ADDRESS = 0x0146;
+    static constexpr addr_t SGB_FLAG_ADDRESS = 0x0146;
 
-    static constexpr memaddr_t CART_TYPE_ADDRESS = 0x0147;
+    static constexpr addr_t CART_TYPE_ADDRESS = 0x0147;
 
-    static constexpr memaddr_t ROM_SIZE_ADDRESS = 0x0148;
+    static constexpr addr_t ROM_SIZE_ADDRESS = 0x0148;
 
-    static constexpr memaddr_t RAM_SIZE_ADDRESS = 0x0149;
+    static constexpr addr_t RAM_SIZE_ADDRESS = 0x0149;
 
-    static constexpr memaddr_t DEST_CODE_ADDRESS = 0x014A;
+    static constexpr addr_t DEST_CODE_ADDRESS = 0x014A;
 
-    static constexpr memaddr_t OLD_LICENSEE_CODE_ADDRESS = 0x014B;
+    static constexpr addr_t OLD_LICENSEE_CODE_ADDRESS = 0x014B;
 
-    static constexpr memaddr_t VERSION_NUMBER_ADDRESS = 0x014C;
+    static constexpr addr_t VERSION_NUMBER_ADDRESS = 0x014C;
 
-    static constexpr memaddr_t HEADER_CHECKSUM_ADDRESS = 0x014D;
+    static constexpr addr_t HEADER_CHECKSUM_ADDRESS = 0x014D;
 
-    static constexpr memaddr_t GLOBAL_CHECKSUM_LOW = 0x014E;
-    static constexpr memaddr_t GLOBAL_CHECSUM_HIGH = 0x014F;
+    static constexpr addr_t GLOBAL_CHECKSUM_LOW = 0x014E;
+    static constexpr addr_t GLOBAL_CHECSUM_HIGH = 0x014F;
 
     // Note: only without bank switching.
-    static constexpr memaddr_t MIN_ADDRESS = 0x0000;
-    static constexpr memaddr_t MAX_ADDRESS = 0x7FFF;
-    static constexpr memaddr_t SIZE = 0x8000;
+    static constexpr addr_t MIN_ADDRESS = 0x0000;
+    static constexpr addr_t MAX_ADDRESS = 0x7FFF;
+    static constexpr addr_t SIZE = 0x8000;
 
     uint8_t data[SIZE];
     size_t size = SIZE;

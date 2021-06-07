@@ -6,8 +6,8 @@
 #include <cstring>
 #include <iostream>
 
-typedef int32_t regid_t;
-typedef int32_t memaddr_t;
+using regid_t = int32_t;
+using addr_t = uint16_t;
 
 enum JoypadButton
 {

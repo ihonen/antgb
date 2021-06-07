@@ -22,7 +22,7 @@ public:
         NoInterrupt = 0xFF
     };
 
-    const memaddr_t INTERRUPT_VECTOR[5] =
+    const addr_t INTERRUPT_VECTOR[5] =
     {
         0x0040,
         0x0048,
@@ -34,7 +34,7 @@ public:
     typedef struct
     {
         InterruptId source;
-        memaddr_t vector_address;
+        addr_t vector_address;
     } InterruptInfo;
 
     Irc(uint8_t* IF, uint8_t* IE);

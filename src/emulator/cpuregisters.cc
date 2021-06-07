@@ -23,7 +23,7 @@ constexpr uint8_t FLAG_TIMER_POS = 0;
 constexpr uint8_t FLAG_SERIAL_POS = 0;
 constexpr uint8_t FLAG_JOYPAD_POS = 0;
 
-uint8_t mask(memaddr_t address)
+uint8_t mask(addr_t address)
 {
     switch (address)
     {
@@ -66,12 +66,12 @@ void CpuRegisters::post_bootram_reset()
 
 CpuRegisters::~CpuRegisters() = default;
 
-bool CpuRegisters::owns(memaddr_t address)
+bool CpuRegisters::owns(addr_t address)
 {
     return address == IE_ADDR || address == IF_ADDR;
 }
 
-uint8_t* CpuRegisters::get(memaddr_t address)
+uint8_t* CpuRegisters::get(addr_t address)
 {
     assert(owns(address));
     switch (address)
@@ -82,7 +82,7 @@ uint8_t* CpuRegisters::get(memaddr_t address)
     return nullptr;
 }
 
-uint8_t CpuRegisters::read(memaddr_t address)
+uint8_t CpuRegisters::read(addr_t address)
 {
     assert(owns(address));
     if (auto* byte = get(address))
@@ -92,7 +92,7 @@ uint8_t CpuRegisters::read(memaddr_t address)
     return 0xFF;
 }
 
-void CpuRegisters::write(memaddr_t address, uint8_t value)
+void CpuRegisters::write(addr_t address, uint8_t value)
 {
     assert(owns(address));
     if (auto* byte = get(address))

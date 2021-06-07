@@ -34,7 +34,7 @@ public:
     typedef struct
     {
         InterruptId source;
-        memaddr_t   vector_address;
+        addr_t   vector_address;
     } InterruptInfo;
 
     static const uint64_t CLK_FREQ_Hz = 4194304;
@@ -45,7 +45,7 @@ public:
 
     MemoryBus* mem;
 
-    const memaddr_t INTERRUPT_VECTOR[5] = {0x0040, 0x0048, 0x0050, 0x0058, 0x0060};
+    const addr_t INTERRUPT_VECTOR[5] = {0x0040, 0x0048, 0x0050, 0x0058, 0x0060};
 
     uint64_t vblank_irqs  = 0;
     uint64_t lcdstat_irqs = 0;
@@ -81,7 +81,7 @@ public:
     void execute(const uint8_t* const instruction = nullptr);
     inline void reset_cycles();
     inline uint64_t get_cycles();
-    void jump_to_isr(memaddr_t vector_address);
+    void jump_to_isr(addr_t vector_address);
     void invalid_opcode();
     inline uint8_t extract_immediate8(const uint8_t* instruction = nullptr);
     inline uint16_t extract_immediate16(const uint8_t* instruction = nullptr);

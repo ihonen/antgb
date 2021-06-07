@@ -124,7 +124,7 @@ void Cpu::invalid_opcode()
     throw OpcodeError(0, *current_instruction);
 }
 
-void Cpu::jump_to_isr(memaddr_t vector_address)
+void Cpu::jump_to_isr(addr_t vector_address)
 {
     if (vector_address == 0x00) return;
 

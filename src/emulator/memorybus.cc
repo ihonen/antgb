@@ -61,7 +61,7 @@ void MemoryBus::hard_reset()
     delete[] afterboot_dump;
 }
 
-void MemoryBus::launch_oam_dma(memaddr_t destination, memaddr_t source, memaddr_t size)
+void MemoryBus::launch_oam_dma(addr_t destination, addr_t source, addr_t size)
 {
     dma_status.unemulated_cpu_cycles = 0;
     dma_status.cpu_cycles_left = 640;

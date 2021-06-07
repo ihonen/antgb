@@ -5,7 +5,7 @@ namespace
     constexpr uint8_t JOYP_WRITE_MASK = 0b00110000;
     constexpr uint8_t JOYP_READ_MASK  = 0b00111111;
 
-    inline uint8_t read_mask(memaddr_t address)
+    inline uint8_t read_mask(addr_t address)
     {
         switch (address)
         {
@@ -14,7 +14,7 @@ namespace
         return 0xFF;
     }
 
-    inline uint8_t write_mask(memaddr_t address)
+    inline uint8_t write_mask(addr_t address)
     {
         switch (address)
         {
@@ -31,12 +31,12 @@ JoypadRegisters::JoypadRegisters()
 
 JoypadRegisters::~JoypadRegisters() = default;
 
-bool JoypadRegisters::owns(memaddr_t address)
+bool JoypadRegisters::owns(addr_t address)
 {
     return address == JOYP_ADDR;
 }
 
-uint8_t* JoypadRegisters::get(memaddr_t address)
+uint8_t* JoypadRegisters::get(addr_t address)
 {
     assert(owns(address));
     switch (address)
@@ -46,7 +46,7 @@ uint8_t* JoypadRegisters::get(memaddr_t address)
     return nullptr;
 }
 
-uint8_t JoypadRegisters::read(memaddr_t address)
+uint8_t JoypadRegisters::read(addr_t address)
 {
     assert(owns(address));
     if (const auto* byte = get(address))
@@ -56,7 +56,7 @@ uint8_t JoypadRegisters::read(memaddr_t address)
     return 0xFF;
 }
 
-void JoypadRegisters::write(memaddr_t address, uint8_t value)
+void JoypadRegisters::write(addr_t address, uint8_t value)
 {
     assert(owns(address));
     if (auto* byte = get(address))

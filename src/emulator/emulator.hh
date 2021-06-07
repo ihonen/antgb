@@ -93,7 +93,7 @@ FORCE_INLINE int Emulator::execute_next()
 FORCE_INLINE uint16_t Emulator::read(regid_t register_id)
 {
     if (register_id <= 0xFFFF)
-        return mem->read(static_cast<memaddr_t>(register_id));
+        return mem->read(static_cast<addr_t>(register_id));
 
     switch (register_id)
     {
@@ -140,7 +140,7 @@ FORCE_INLINE void Emulator::write(regid_t register_id, uint16_t value)
 {
     if (register_id <= 0xFFFF)
     {
-        mem->write(static_cast<memaddr_t>(register_id), static_cast<uint8_t>(value));
+        mem->write(static_cast<addr_t>(register_id), static_cast<uint8_t>(value));
         return;
     }
 

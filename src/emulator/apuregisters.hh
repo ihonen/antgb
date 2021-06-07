@@ -12,10 +12,10 @@ public:
     ApuRegisters();
     virtual ~ApuRegisters() override;
 
-    virtual bool owns(memaddr_t address) override;
-    virtual uint8_t* get(memaddr_t address) override;
-    virtual uint8_t read(memaddr_t address) override;
-    virtual void write(memaddr_t address, uint8_t value) override;
+    virtual bool owns(addr_t address) override;
+    virtual uint8_t* get(addr_t address) override;
+    virtual uint8_t read(addr_t address) override;
+    virtual void write(addr_t address, uint8_t value) override;
 
 protected:
     uint8_t NR10;

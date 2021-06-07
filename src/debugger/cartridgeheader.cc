@@ -111,11 +111,11 @@ bool CartridgeHeader::header_matches_checksum()
 
 uint8_t CartridgeHeader::compute_header_checksum()
 {
-    static constexpr memaddr_t START = 0x0134;
-    static constexpr memaddr_t STOP = 0x014c;
+    static constexpr addr_t START = 0x0134;
+    static constexpr addr_t STOP = 0x014c;
 
     size_t checksum = 0;
-    for (memaddr_t i = START; i <= STOP; ++i)
+    for (addr_t i = START; i <= STOP; ++i)
         checksum = checksum - data[i] - 1;
 
     return static_cast<uint8_t>(checksum);
@@ -130,7 +130,7 @@ uint16_t CartridgeHeader::compute_global_checksum()
 {
     uint16_t checksum = 0;
 
-    for (memaddr_t i = MIN_ADDRESS; i < MAX_ADDRESS; ++i)
+    for (addr_t i = MIN_ADDRESS; i < MAX_ADDRESS; ++i)
     {
         if (i == GLOBAL_CHECKSUM_LOW || i == GLOBAL_CHECSUM_HIGH) continue;
         checksum += data[i];

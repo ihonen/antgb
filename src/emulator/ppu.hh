@@ -61,8 +61,8 @@ public:
     void hard_reset();
     void step(uint64_t cpu_cycles);
     bool has_dma_request();
-    memaddr_t dma_src_address();
-    void launch_dma(memaddr_t src_address);
+    addr_t dma_src_address();
+    void launch_dma(addr_t src_address);
 
     Cpu* cpu;
     MemoryBus* mem;

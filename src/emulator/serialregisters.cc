@@ -8,7 +8,7 @@ namespace
     constexpr uint8_t SC_WRITE_MASK = 0b10000011;
     constexpr uint8_t SC_READ_MASK  = 0b10000011;
 
-    uint8_t read_mask(memaddr_t address)
+    uint8_t read_mask(addr_t address)
     {
         switch (address)
         {
@@ -18,7 +18,7 @@ namespace
         return 0xFF;
     }
 
-    uint8_t write_mask(memaddr_t address)
+    uint8_t write_mask(addr_t address)
     {
         switch (address)
         {
@@ -37,12 +37,12 @@ SerialRegisters::SerialRegisters()
 
 SerialRegisters::~SerialRegisters() = default;
 
-bool SerialRegisters::owns(memaddr_t address)
+bool SerialRegisters::owns(addr_t address)
 {
     return address >= SERIAL_LOW && address <= SERIAL_HIGH;
 }
 
-uint8_t* SerialRegisters::get(memaddr_t address)
+uint8_t* SerialRegisters::get(addr_t address)
 {
     assert(owns(address));
     switch (address)
@@ -53,7 +53,7 @@ uint8_t* SerialRegisters::get(memaddr_t address)
     return nullptr;
 }
 
-uint8_t SerialRegisters::read(memaddr_t address)
+uint8_t SerialRegisters::read(addr_t address)
 {
     assert(owns(address));
     if (const auto* byte = get(address))
@@ -63,7 +63,7 @@ uint8_t SerialRegisters::read(memaddr_t address)
     return 0xFF;
 }
 
-void SerialRegisters::write(memaddr_t address, uint8_t value)
+void SerialRegisters::write(addr_t address, uint8_t value)
 {
     assert(owns(address));
     if (auto* byte = get(address))

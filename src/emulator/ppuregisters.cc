@@ -39,7 +39,7 @@ namespace
     constexpr uint8_t WX_WRITE_MASK   = 0b11111111;
     constexpr uint8_t WX_READ_MASK    = 0b11111111;
 
-    uint8_t read_mask(memaddr_t address)
+    uint8_t read_mask(addr_t address)
     {
         switch (address)
         {
@@ -59,7 +59,7 @@ namespace
         return 0xFF;
     }
 
-    uint8_t write_mask(memaddr_t address)
+    uint8_t write_mask(addr_t address)
     {
         switch (address)
         {
@@ -112,12 +112,12 @@ void PpuRegisters::post_bootram_reset()
 
 PpuRegisters::~PpuRegisters() = default;
 
-bool PpuRegisters::owns(memaddr_t address)
+bool PpuRegisters::owns(addr_t address)
 {
     return address >= PPU_LOW && address <= PPU_HIGH;
 }
 
-uint8_t* PpuRegisters::get(memaddr_t address)
+uint8_t* PpuRegisters::get(addr_t address)
 {
     assert(owns(address));
     switch (address)
@@ -138,7 +138,7 @@ uint8_t* PpuRegisters::get(memaddr_t address)
     return nullptr;
 }
 
-uint8_t PpuRegisters::read(memaddr_t address)
+uint8_t PpuRegisters::read(addr_t address)
 {
     assert(owns(address));
     if (const auto* byte = get(address))
@@ -148,7 +148,7 @@ uint8_t PpuRegisters::read(memaddr_t address)
     return 0xFF;
 }
 
-void PpuRegisters::write(memaddr_t address, uint8_t value)
+void PpuRegisters::write(addr_t address, uint8_t value)
 {
     assert(owns(address));
     if (auto* byte = get(address))

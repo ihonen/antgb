@@ -59,21 +59,21 @@ public:
     static const size_t HEIGHT_TILES     = 32;
     static const size_t WIDTH_TILES      = 32;
 
-    static const memaddr_t TILE_DATA_BLOCK0_BASE = 0x8000;
-    static const memaddr_t TILE_DATA_BLOCK2_BASE = 0x9000;
-    static const memaddr_t TILE_DATA_BASE[2];
+    static const addr_t TILE_DATA_BLOCK0_BASE = 0x8000;
+    static const addr_t TILE_DATA_BLOCK2_BASE = 0x9000;
+    static const addr_t TILE_DATA_BASE[2];
 
-    static const memaddr_t TILE_MAP0_BASE = 0x9800;
-    static const memaddr_t TILE_MAP1_BASE = 0x9C00;
-    static const memaddr_t TILE_MAP_BASE[2];
+    static const addr_t TILE_MAP0_BASE = 0x9800;
+    static const addr_t TILE_MAP1_BASE = 0x9C00;
+    static const addr_t TILE_MAP_BASE[2];
 
     Background(Type type, MemoryBus* memory);
     void     set_memory(uint8_t* memory);
     uint8_t  get_pixel_at(size_t display_x, size_t display_y);
     uint8_t  get_pixel(size_t background_x, size_t background_y);
-    memaddr_t   tile_map_address();
+    addr_t   tile_map_address();
     uint8_t* tile_map_base();
-    memaddr_t   tile_data_address();
+    addr_t   tile_data_address();
     Tile*    tile_data_base();
     bool     includes(size_t display_x, size_t display_y);
     size_t   top();
@@ -86,10 +86,10 @@ public:
     Type type;
 };
 
-const memaddr_t Background::TILE_DATA_BASE[2] = {Background::TILE_DATA_BLOCK2_BASE,
+const addr_t Background::TILE_DATA_BASE[2] = {Background::TILE_DATA_BLOCK2_BASE,
                                               Background::TILE_DATA_BLOCK0_BASE};
 
-const memaddr_t Background::TILE_MAP_BASE[2] = {Background::TILE_MAP0_BASE,
+const addr_t Background::TILE_MAP_BASE[2] = {Background::TILE_MAP0_BASE,
                                              Background::TILE_MAP1_BASE};
 
 Background::Background(Type type_, MemoryBus* memory)
@@ -130,7 +130,7 @@ uint8_t Background::get_pixel(size_t background_x, size_t background_y)
                            background_y % Tile::HEIGHT);
 }
 
-memaddr_t Background::tile_map_address()
+addr_t Background::tile_map_address()
 {
     if (type == Type::Background)
     {
@@ -145,7 +145,7 @@ uint8_t* Background::tile_map_base()
     return mem->get(tile_map_address());
 }
 
-memaddr_t Background::tile_data_address()
+addr_t Background::tile_data_address()
 {
     return TILE_DATA_BASE[get_bit(mem->get(LCDC_ADDR), PpuRegisters::BgAndWindowTileDataSelect)];
 }
@@ -367,9 +367,9 @@ public:
     virtual ~Sprites();
     void               set_memory(uint8_t* memory);
     void               refresh();
-    memaddr_t             sprite_attributes_address();
+    addr_t             sprite_attributes_address();
     Sprite::Attribute* sprite_attributes_base();
-    memaddr_t             sprite_data_address();
+    addr_t             sprite_data_address();
     Tile*              sprite_data_base();
     uint8_t            sprite_height();
     bool               enabled();
@@ -432,7 +432,7 @@ void Sprites::refresh()
     //sort();
 }
 
-memaddr_t Sprites::sprite_attributes_address()
+addr_t Sprites::sprite_attributes_address()
 {
     return 0xFE00;
 }
@@ -442,7 +442,7 @@ Sprite::Attribute* Sprites::sprite_attributes_base()
     return (Sprite::Attribute*)(mem->get(sprite_attributes_address()));
 }
 
-memaddr_t Sprites::sprite_data_address()
+addr_t Sprites::sprite_data_address()
 {
     return 0x8000;
 }
@@ -601,7 +601,7 @@ void Ppu::hard_reset()
     scanline     = 0;
 }
 
-void Ppu::launch_dma(memaddr_t src_address)
+void Ppu::launch_dma(addr_t src_address)
 {
     reg.write(DMA_ADDR, 0x00);
     mem->launch_oam_dma(0xFE00, src_address, 160);
@@ -731,7 +731,7 @@ bool Ppu::has_dma_request()
     return reg.read(DMA_ADDR);
 }
 
-memaddr_t Ppu::dma_src_address()
+addr_t Ppu::dma_src_address()
 {
     return reg.read(DMA_ADDR) * 0x100;
 }

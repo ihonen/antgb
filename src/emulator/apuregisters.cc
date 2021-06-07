@@ -66,7 +66,7 @@ constexpr uint8_t NR51_READ_MASK  = 0b11111111;
 constexpr uint8_t NR52_WRITE_MASK = 0b10000000;
 constexpr uint8_t NR52_READ_MASK  = 0b10001111;
 
-inline uint8_t write_mask(memaddr_t address)
+inline uint8_t write_mask(addr_t address)
 {
     switch (address)
     {
@@ -95,7 +95,7 @@ inline uint8_t write_mask(memaddr_t address)
     return 0xFF;
 }
 
-inline uint8_t read_mask(memaddr_t address)
+inline uint8_t read_mask(addr_t address)
 {
     switch (address)
     {
@@ -152,14 +152,14 @@ ApuRegisters::ApuRegisters()
 {
 }
 
-bool ApuRegisters::owns(memaddr_t address)
+bool ApuRegisters::owns(addr_t address)
 {
     return address >= APU_LOW && address <= APU_HIGH;
 }
 
 ApuRegisters::~ApuRegisters() = default;
 
-uint8_t* ApuRegisters::get(memaddr_t address)
+uint8_t* ApuRegisters::get(addr_t address)
 {
     switch (address)
     {
@@ -192,7 +192,7 @@ uint8_t* ApuRegisters::get(memaddr_t address)
     return nullptr;
 }
 
-uint8_t ApuRegisters::read(memaddr_t address)
+uint8_t ApuRegisters::read(addr_t address)
 {
     if (auto* byte = get(address))
     {
@@ -201,7 +201,7 @@ uint8_t ApuRegisters::read(memaddr_t address)
     return 0xFF;
 }
 
-void ApuRegisters::write(memaddr_t address, uint8_t value)
+void ApuRegisters::write(addr_t address, uint8_t value)
 {
     if (auto* byte = get(address))
     {

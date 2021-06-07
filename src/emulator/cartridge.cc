@@ -37,12 +37,12 @@ Cartridge::Cartridge(const std::string& filepath)
     }
 }
 
-bool Cartridge::owns(memaddr_t address)
+bool Cartridge::owns(addr_t address)
 {
     return rom0_.owns(address) || rom1_.owns(address) || eram_.owns(address);
 }
 
-uint8_t* Cartridge::get(memaddr_t address)
+uint8_t* Cartridge::get(addr_t address)
 {
     assert(owns(address));
     if (rom0_.owns(address))
@@ -54,7 +54,7 @@ uint8_t* Cartridge::get(memaddr_t address)
     return nullptr;
 }
 
-uint8_t Cartridge::read(memaddr_t address)
+uint8_t Cartridge::read(addr_t address)
 {
     assert(owns(address));
     if (rom0_.owns(address))
@@ -67,7 +67,7 @@ uint8_t Cartridge::read(memaddr_t address)
     return 0xFF;
 }
 
-void Cartridge::write(memaddr_t address, uint8_t value)
+void Cartridge::write(addr_t address, uint8_t value)
 {
     assert(owns(address));
     if (rom0_.owns(address))
