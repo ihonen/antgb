@@ -6,8 +6,9 @@
 
 #include <QFile>
 
-Memory::Memory(CpuRegisters& cpu_registers)
-    : cpu_registers_(cpu_registers)
+Memory::Memory(ApuRegisters& apu_registers, CpuRegisters& cpu_registers)
+    : apu_registers_(apu_registers)
+    , cpu_registers_(cpu_registers)
 {
     cartridge = nullptr;
     hard_reset();

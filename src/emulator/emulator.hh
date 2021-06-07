@@ -7,6 +7,7 @@
 
 #include <memory>
 
+class ApuRegisters;
 class CpuRegisters;
 
 class Cartridge;
@@ -35,6 +36,7 @@ public:
     inline virtual uint16_t read(regid_t register_id) override;
     inline virtual void write(regid_t register_id, uint16_t value) override;
 
+    std::unique_ptr<ApuRegisters> apu_registers;
     std::unique_ptr<CpuRegisters> cpu_registers;
 
     std::unique_ptr<Cpu> cpu;

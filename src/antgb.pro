@@ -26,6 +26,7 @@ CONFIG += c++17
 
 SOURCES += \
     debugger/cartridgeheader.cc \
+    emulator/apuregisters.cc \
     emulator/cartridge.cc \
     emulator/cpuregisters.cc \
     emulator/memory.cc \
@@ -95,6 +96,7 @@ HEADERS += \
     debugger/types.hh \
     emulator/addresses.hh \
     emulator/apu.hh \
+    emulator/apuregisters.hh \
     emulator/bitmanip.hh \
     emulator/cartridge.hh \
     emulator/cpu.hh \

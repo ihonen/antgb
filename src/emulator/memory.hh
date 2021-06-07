@@ -1,6 +1,7 @@
 #pragma once
 
 #include "apu.hh"
+#include "apuregisters.hh"
 #include "addresses.hh"
 #include "cartridge.hh"
 #include "cpuregisters.hh"
@@ -23,7 +24,7 @@ public:
         memaddr_t size;
     };
 
-    Memory(CpuRegisters& cpu_registers);
+    Memory(ApuRegisters& apu_registers, CpuRegisters& cpu_registers);
 
     void hard_reset();
     inline uint8_t* get(memaddr_t address);
@@ -43,6 +44,7 @@ public:
 
     Cartridge* cartridge;
 
+    ApuRegisters& apu_registers_;
     CpuRegisters& cpu_registers_;
 
     struct
@@ -121,6 +123,10 @@ FORCE_INLINE uint8_t* Memory::get(memaddr_t address)
     else if (address >= ECHO.low && address <= ECHO.high)
     {
         return &bytes[WRAM0.low] + (address - ECHO.low);
+    }
+    else if (address >= APU_LOW && address <= APU_HIGH)
+    {
+        return apu_registers_.get(address);
     }
     else if (address == IF_ADDR || address == IE_ADDR)
     {

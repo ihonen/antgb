@@ -12,9 +12,10 @@
 
 Emulator::Emulator()
 {
+    apu_registers = std::make_unique<ApuRegisters>();
     cpu_registers = std::make_unique<CpuRegisters>();
 
-    mem = std::make_unique<Memory>(*cpu_registers);
+    mem = std::make_unique<Memory>(*apu_registers, *cpu_registers);
 
     cartridge = nullptr;
     cpu = std::make_unique<Cpu>(mem.get(), *cpu_registers);
