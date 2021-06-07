@@ -4,22 +4,20 @@
 #include "memory.hh"
 #include <iostream>
 
-Joypad::Joypad(Memory* memory, Cpu* cpu) :
-    mem(memory),
-    cpu(cpu)
+Joypad::Joypad(JoypadRegisters& registers, Cpu* cpu)
+    : registers(registers)
+    , cpu(cpu)
 {
-    io_register = mem->get(IO_REG_ADDRESS);
-
     button_status =
     {
-        {JoypadUp,          {Up,        false}},
-        {JoypadDown,        {Down,      false}},
-        {JoypadLeft,        {Left,      false}},
-        {JoypadRight,       {Right,     false}},
-        {JoypadSelect,      {Select,    false}},
-        {JoypadStart,       {Start,     false}},
-        {JoypadA,           {ButtonA,   false}},
-        {JoypadB,           {ButtonB,   false}},
+        {JoypadUp,     {JoypadRegisters::Up,      false}},
+        {JoypadDown,   {JoypadRegisters::Down,    false}},
+        {JoypadLeft,   {JoypadRegisters::Left,    false}},
+        {JoypadRight,  {JoypadRegisters::Right,   false}},
+        {JoypadSelect, {JoypadRegisters::Select,  false}},
+        {JoypadStart,  {JoypadRegisters::Start,   false}},
+        {JoypadA,      {JoypadRegisters::ButtonA, false}},
+        {JoypadB,      {JoypadRegisters::ButtonB, false}},
     };
 }
 
@@ -27,7 +25,7 @@ void Joypad::button_pressed(JoypadButton button)
 {
     if (button == JoypadNone) return;
 
-    if (get_bit(io_register, DirectionKeysSelect))
+    if (registers.read(JOYP_ADDR) & JoypadRegisters::DirectionKeysSelect)
     {
         switch (button)
         {
@@ -35,13 +33,14 @@ void Joypad::button_pressed(JoypadButton button)
             case JoypadLeft:
             case JoypadUp:
             case JoypadDown:
-                clear_bit(io_register, button_status[button].bit_pos);
+                // TODO: Register interface violation.
+                clear_bit(registers.get(JOYP_ADDR), button_status[button].bit_pos);
                 break;
             default:
                 break;
         }
     }
-    else if (get_bit(io_register, ButtonKeysSelect))
+    else if (registers.read(JOYP_ADDR) & JoypadRegisters::ButtonKeysSelect)
     {
         switch (button)
         {
@@ -49,7 +48,8 @@ void Joypad::button_pressed(JoypadButton button)
             case JoypadB:
             case JoypadSelect:
             case JoypadStart:
-                clear_bit(io_register, button_status[button].bit_pos);
+                // TODO: Register interface violation.
+                clear_bit(registers.get(JOYP_ADDR), button_status[button].bit_pos);
                 break;
             default:
                 break;
@@ -67,7 +67,7 @@ void Joypad::button_released(JoypadButton button)
 {
     if (button == JoypadNone) return;
 
-    if (get_bit(io_register, DirectionKeysSelect))
+    if (registers.read(JOYP_ADDR) & JoypadRegisters::DirectionKeysSelect)
     {
         switch (button)
         {
@@ -75,13 +75,14 @@ void Joypad::button_released(JoypadButton button)
             case JoypadLeft:
             case JoypadUp:
             case JoypadDown:
-                set_bit(io_register, button_status[button].bit_pos);
+                // TODO: Register interface violation.
+                set_bit(registers.get(JOYP_ADDR), button_status[button].bit_pos);
                 break;
             default:
                 break;
         }
     }
-    else if (get_bit(io_register, ButtonKeysSelect))
+    else if (registers.read(JOYP_ADDR) & JoypadRegisters::ButtonKeysSelect)
     {
         switch (button)
         {
@@ -89,7 +90,8 @@ void Joypad::button_released(JoypadButton button)
             case JoypadB:
             case JoypadSelect:
             case JoypadStart:
-                set_bit(io_register, button_status[button].bit_pos);
+                // TODO: Register interface violation.
+                set_bit(registers.get(JOYP_ADDR), button_status[button].bit_pos);
                 break;
             default:
                 break;

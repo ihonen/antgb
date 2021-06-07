@@ -29,6 +29,7 @@ SOURCES += \
     emulator/apuregisters.cc \
     emulator/cartridge.cc \
     emulator/cpuregisters.cc \
+    emulator/joypadregisters.cc \
     emulator/memory.cc \
     main.cc \
     debugger/breakpoint.cc \
@@ -106,6 +107,7 @@ HEADERS += \
     emulator/fileio.hh \
     emulator/interrupts.hh \
     emulator/joypad.hh \
+    emulator/joypadregisters.hh \
     emulator/macros.hh \
     emulator/memory.hh \
     emulator/ppu.hh \

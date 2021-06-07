@@ -6,6 +6,7 @@
 #include "cartridge.hh"
 #include "cpuregisters.hh"
 #include "joypad.hh"
+#include "joypadregisters.hh"
 #include "macros.hh"
 #include "ppu.hh"
 #include "serial.hh"
@@ -24,7 +25,11 @@ public:
         memaddr_t size;
     };
 
-    Memory(ApuRegisters& apu_registers, CpuRegisters& cpu_registers);
+    Memory(
+        ApuRegisters& apu_registers,
+        CpuRegisters& cpu_registers,
+        JoypadRegisters& joypad_registers
+    );
 
     void hard_reset();
     inline uint8_t* get(memaddr_t address);
@@ -46,6 +51,7 @@ public:
 
     ApuRegisters& apu_registers_;
     CpuRegisters& cpu_registers_;
+    JoypadRegisters& joypad_registers_;
 
     struct
     {
@@ -127,6 +133,10 @@ FORCE_INLINE uint8_t* Memory::get(memaddr_t address)
     else if (address >= APU_LOW && address <= APU_HIGH)
     {
         return apu_registers_.get(address);
+    }
+    else if (address == JOYP_ADDR)
+    {
+        return joypad_registers_.get(address);
     }
     else if (address == IF_ADDR || address == IE_ADDR)
     {
