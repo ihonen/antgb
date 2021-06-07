@@ -15,6 +15,7 @@ MemoryBus::MemoryBus(
     iMemoryBusNode& vram,
     iMemoryBusNode& wram0,
     iMemoryBusNode& wram1,
+    Cartridge& cartridge,
     iMemoryBusNode& apu_registers,
     iMemoryBusNode& cpu_registers,
     iMemoryBusNode& joypad_registers,
@@ -29,6 +30,7 @@ MemoryBus::MemoryBus(
     , vram_(vram)
     , wram0_(wram0)
     , wram1_(wram1)
+    , cartridge_(cartridge)
     , apu_registers_(apu_registers)
     , cpu_registers_(cpu_registers)
     , joypad_registers_(joypad_registers)
@@ -37,8 +39,6 @@ MemoryBus::MemoryBus(
     , timer_registers_(timer_registers)
 {
     bootrom_.set_locked(true);
-
-    cartridge = nullptr;
     hard_reset();
     clear_dma_status();
 }
@@ -109,9 +109,4 @@ void MemoryBus::clear_dma_status()
     dma_status.src_low = 0x0000;
     dma_status.src_high = 0x0000;
     dma_status.size = 0;
-}
-
-void MemoryBus::set_cartridge(Cartridge* cartridge_)
-{
-    cartridge = cartridge_;
 }

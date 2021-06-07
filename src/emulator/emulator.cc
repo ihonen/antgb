@@ -21,6 +21,8 @@ Emulator::Emulator()
     wram1 = std::make_unique<Wram1>();
     echoram = std::make_unique<EchoRam>(*wram0, *wram1);
 
+    cartridge = std::make_unique<Cartridge>();
+
     apu_registers = std::make_unique<ApuRegisters>();
     cpu_registers = std::make_unique<CpuRegisters>();
     joypad_registers = std::make_unique<JoypadRegisters>();
@@ -36,6 +38,7 @@ Emulator::Emulator()
         *vram,
         *wram0,
         *wram1,
+        *cartridge,
         *apu_registers,
         *cpu_registers,
         *joypad_registers,
@@ -44,7 +47,6 @@ Emulator::Emulator()
         *timer_registers
     );
 
-    cartridge = nullptr;
     cpu = std::make_unique<Cpu>(mem.get(), *cpu_registers);
     joypad = std::make_unique<Joypad>(*joypad_registers, cpu.get());
     ppu = std::make_unique<Ppu>(mem.get(), *ppu_registers, cpu.get());
@@ -61,9 +63,9 @@ void Emulator::set_frontend(iFrontend* frontend)
 
 void Emulator::load_rom(const std::string& filepath)
 {
-    cartridge = std::make_unique<Cartridge>(filepath);
+    *cartridge = Cartridge(filepath);
+    cartridge->set_inserted(true);
 
-    mem->set_cartridge(cartridge.get());
     reset_emulation();
 }
 

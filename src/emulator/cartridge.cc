@@ -8,6 +8,7 @@
 
 Cartridge::Cartridge()
     : iMemoryBusNode()
+    , is_inserted_(false)
 {
 }
 
@@ -35,6 +36,16 @@ Cartridge::Cartridge(const std::string& filepath)
     {
         rom1_.write(address, image.at(address));
     }
+}
+
+bool Cartridge::is_inserted()
+{
+    return is_inserted_;
+}
+
+void Cartridge::set_inserted(bool inserted)
+{
+    is_inserted_ = inserted;
 }
 
 bool Cartridge::owns(addr_t address)
