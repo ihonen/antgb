@@ -1,6 +1,6 @@
 #include "serial.hh"
 
-#include "memory.hh"
+#include "memorybus.hh"
 
 Serial::Serial(SerialRegisters& reg, Cpu* cpu) :
     cpu(cpu),

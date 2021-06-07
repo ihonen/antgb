@@ -1,6 +1,6 @@
 #include "interrupts.hh"
 
-#include "memory.hh"
+#include "memorybus.hh"
 #include <iostream>
 
 Irc::Irc(uint8_t* IF, uint8_t* IE) :

@@ -1,6 +1,6 @@
 #include "timer.hh"
 
-#include "memory.hh"
+#include "memorybus.hh"
 
 #include <iostream>
 

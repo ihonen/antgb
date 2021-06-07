@@ -30,7 +30,7 @@ SOURCES += \
     emulator/cartridge.cc \
     emulator/cpuregisters.cc \
     emulator/joypadregisters.cc \
-    emulator/memory.cc \
+    emulator/memorybus.cc \
     emulator/ppuregisters.cc \
     emulator/serialregisters.cc \
     emulator/timerregisters.cc \
@@ -102,17 +102,22 @@ HEADERS += \
     emulator/apu.hh \
     emulator/apuregisters.hh \
     emulator/bitmanip.hh \
+    emulator/bootrom.hh \
     emulator/cartridge.hh \
     emulator/cpu.hh \
     emulator/cpuregisters.hh \
+    emulator/echoram.hh \
     emulator/emulator.hh \
     emulator/exceptions.hh \
     emulator/fileio.hh \
+    emulator/hram.hh \
     emulator/interrupts.hh \
     emulator/joypad.hh \
     emulator/joypadregisters.hh \
     emulator/macros.hh \
-    emulator/memory.hh \
+    emulator/memorybase.hh \
+    emulator/memorybus.hh \
+    emulator/oam.hh \
     emulator/ppu.hh \
     emulator/ppuregisters.hh \
     emulator/serial.hh \
@@ -120,6 +125,9 @@ HEADERS += \
     emulator/timer.hh \
     emulator/timerregisters.hh \
     emulator/types.hh \
+    emulator/vram.hh \
+    emulator/wram0.hh \
+    emulator/wram1.hh \
     gui/models/breakpointdelegate.hh \
     gui/models/breakpointmodel.hh \
     gui/models/datadelegate.hh \

@@ -67,7 +67,6 @@ uint8_t TimerRegisters::read(memaddr_t address)
     {
         return *byte & read_mask(address);
     }
-    assert(false);
     return 0xFF;
 }
 
@@ -77,5 +76,4 @@ void TimerRegisters::write(memaddr_t address, uint8_t value)
     {
         *byte = value & write_mask(address);
     }
-    assert(false);
 }

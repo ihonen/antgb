@@ -70,12 +70,9 @@ uint8_t* CpuRegisters::get(memaddr_t address)
 {
     switch (address)
     {
-        case IE_ADDR:
-            return &IE;
-        case IF_ADDR:
-            return &IF;
+        case IE_ADDR: return &IE;
+        case IF_ADDR: return &IF;
     }
-    assert(false);
     return nullptr;
 }
 
@@ -85,7 +82,6 @@ uint8_t CpuRegisters::read(memaddr_t address)
     {
         return *byte & mask(address);
     }
-    assert(false);
     return 0xFF;
 }
 
@@ -95,7 +91,6 @@ void CpuRegisters::write(memaddr_t address, uint8_t value)
     {
         *byte = value & mask(address);
     }
-    assert(false);
 }
 
 uint8_t& CpuRegisters::get_B()

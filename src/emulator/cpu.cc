@@ -1,11 +1,11 @@
 #include "cpu.hh"
 
-#include "memory.hh"
+#include "memorybus.hh"
 #include <array>
 #include <iomanip>
 #include <iostream>
 
-Cpu::Cpu(Memory* mem, CpuRegisters& registers)
+Cpu::Cpu(MemoryBus* mem, CpuRegisters& registers)
     : mem(mem)
     , reg(registers)
 {

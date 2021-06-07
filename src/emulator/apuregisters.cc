@@ -193,7 +193,6 @@ uint8_t ApuRegisters::read(memaddr_t address)
     {
         return *byte & read_mask(address);
     }
-    assert(false);
     return 0xFF;
 }
 
@@ -203,7 +202,6 @@ void ApuRegisters::write(memaddr_t address, uint8_t value)
     {
         *byte = value & write_mask(address);
     }
-    assert(false);
 }
 
 // TODO: Wave RAM behavior when accessed while CH3 is disabled.

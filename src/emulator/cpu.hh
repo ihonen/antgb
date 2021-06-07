@@ -8,7 +8,7 @@
 #include <fstream>
 
 
-class Memory;
+class MemoryBus;
 
 class Cpu
 {
@@ -43,7 +43,7 @@ public:
 
     std::ofstream trace_log;
 
-    Memory* mem;
+    MemoryBus* mem;
 
     const memaddr_t INTERRUPT_VECTOR[5] = {0x0040, 0x0048, 0x0050, 0x0058, 0x0060};
 
@@ -65,7 +65,7 @@ public:
     int DI_countdown = NO_COUNTDOWN;
     int EI_countdown = NO_COUNTDOWN;
 
-    Cpu(Memory* mem, CpuRegisters& registers);
+    Cpu(MemoryBus* mem, CpuRegisters& registers);
     ~Cpu();
     void hard_reset();
     inline bool has_pending_requests();

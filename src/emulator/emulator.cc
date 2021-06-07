@@ -5,7 +5,7 @@
 #include "cpu.hh"
 #include "cpuregisters.hh"
 #include "joypad.hh"
-#include "memory.hh"
+#include "memorybus.hh"
 #include "ppu.hh"
 #include "ppuregisters.hh"
 #include "serial.hh"
@@ -13,6 +13,14 @@
 
 Emulator::Emulator()
 {
+    bootrom = std::make_unique<BootRom>();
+    hram = std::make_unique<Hram>();
+    oam = std::make_unique<Oam>();
+    vram = std::make_unique<Vram>();
+    wram0 = std::make_unique<Wram0>();
+    wram1 = std::make_unique<Wram1>();
+    echoram = std::make_unique<EchoRam>(*wram0, *wram1);
+
     apu_registers = std::make_unique<ApuRegisters>();
     cpu_registers = std::make_unique<CpuRegisters>();
     joypad_registers = std::make_unique<JoypadRegisters>();
@@ -20,7 +28,14 @@ Emulator::Emulator()
     serial_registers = std::make_unique<SerialRegisters>();
     timer_registers = std::make_unique<TimerRegisters>();
 
-    mem = std::make_unique<Memory>(
+    mem = std::make_unique<MemoryBus>(
+        *bootrom,
+        *echoram,
+        *hram,
+        *oam,
+        *vram,
+        *wram0,
+        *wram1,
         *apu_registers,
         *cpu_registers,
         *joypad_registers,

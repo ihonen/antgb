@@ -1,7 +1,7 @@
 #include "joypad.hh"
 
 #include "bitmanip.hh"
-#include "memory.hh"
+#include "memorybus.hh"
 #include <iostream>
 
 Joypad::Joypad(JoypadRegisters& registers, Cpu* cpu)

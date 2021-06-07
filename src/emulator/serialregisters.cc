@@ -53,7 +53,6 @@ uint8_t SerialRegisters::read(memaddr_t address)
     {
         return *byte & read_mask(address);
     }
-    assert(false);
     return 0xFF;
 }
 

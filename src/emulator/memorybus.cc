@@ -1,4 +1,4 @@
-#include "memory.hh"
+#include "memorybus.hh"
 
 #include "fileio.hh"
 #include <cstring>
@@ -6,7 +6,14 @@
 
 #include <QFile>
 
-Memory::Memory(
+MemoryBus::MemoryBus(
+    BootRom& bootrom,
+    EchoRam& echoram,
+    Hram& hram,
+    Oam& oam,
+    Vram& vram,
+    Wram0& wram0,
+    Wram1& wram1,
     ApuRegisters& apu_registers,
     CpuRegisters& cpu_registers,
     JoypadRegisters& joypad_registers,
@@ -14,22 +21,29 @@ Memory::Memory(
     SerialRegisters& serial_registers,
     TimerRegisters& timer_registers
 )
-    : apu_registers_(apu_registers)
+    : bootrom_(bootrom)
+    , echoram_(echoram)
+    , hram_(hram)
+    , oam_(oam)
+    , vram_(vram)
+    , wram0_(wram0)
+    , wram1_(wram1)
+    , apu_registers_(apu_registers)
     , cpu_registers_(cpu_registers)
     , joypad_registers_(joypad_registers)
     , ppu_registers_(ppu_registers)
     , serial_registers_(serial_registers)
     , timer_registers_(timer_registers)
 {
+    bootrom_.set_locked(true);
+
     cartridge = nullptr;
     hard_reset();
     clear_dma_status();
 }
 
-void Memory::hard_reset()
+void MemoryBus::hard_reset()
 {
-    memset(bytes, 0xFF, 0x10000);
-
     // Load memory contents after boot ROM execution.
     // TODO: Get rid of Qt dependency.
 
@@ -38,7 +52,7 @@ void Memory::hard_reset()
     load_rom(dump_filepath, afterboot_dump);
     for (size_t i = 0; i < 0x10000; ++i)
     {
-        if (i >= VRAM.low)
+        if (i >= VRAM_LOW)
         {
             force_write(i, afterboot_dump[i]);
         }
@@ -46,7 +60,7 @@ void Memory::hard_reset()
     delete[] afterboot_dump;
 }
 
-void Memory::launch_oam_dma(memaddr_t destination, memaddr_t source, memaddr_t size)
+void MemoryBus::launch_oam_dma(memaddr_t destination, memaddr_t source, memaddr_t size)
 {
     dma_status.unemulated_cpu_cycles = 0;
     dma_status.cpu_cycles_left = 640;
@@ -57,12 +71,12 @@ void Memory::launch_oam_dma(memaddr_t destination, memaddr_t source, memaddr_t s
     dma_status.size = size;
 }
 
-void Memory::emulate(uint64_t cpu_cycles)
+void MemoryBus::emulate(uint64_t cpu_cycles)
 {
     emulate_oam_dma(cpu_cycles);
 }
 
-void Memory::emulate_oam_dma(uint64_t cpu_cycles)
+void MemoryBus::emulate_oam_dma(uint64_t cpu_cycles)
 {
     dma_status.unemulated_cpu_cycles += cpu_cycles;
 
@@ -80,12 +94,12 @@ void Memory::emulate_oam_dma(uint64_t cpu_cycles)
     }
 }
 
-void Memory::end_oam_dma()
+void MemoryBus::end_oam_dma()
 {
     clear_dma_status();
 }
 
-void Memory::clear_dma_status()
+void MemoryBus::clear_dma_status()
 {
     dma_status.unemulated_cpu_cycles = 0;
     dma_status.cpu_cycles_left = 0;
@@ -96,7 +110,7 @@ void Memory::clear_dma_status()
     dma_status.size = 0;
 }
 
-void Memory::set_cartridge(Cartridge* cartridge_)
+void MemoryBus::set_cartridge(Cartridge* cartridge_)
 {
     cartridge = cartridge_;
 }

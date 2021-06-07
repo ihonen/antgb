@@ -46,7 +46,6 @@ uint8_t JoypadRegisters::read(memaddr_t address)
     {
         return *byte & read_mask(address);
     }
-    assert(false);
     return 0xFF;
 }
 
@@ -56,5 +55,4 @@ void JoypadRegisters::write(memaddr_t address, uint8_t value)
     {
         *byte = value & write_mask(address);
     }
-    assert(false);
 }

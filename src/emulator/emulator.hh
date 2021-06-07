@@ -3,7 +3,7 @@
 #include "debugger/iemulator.hh"
 
 #include "macros.hh"
-#include "memory.hh"
+#include "memorybus.hh"
 
 #include <memory>
 
@@ -15,7 +15,7 @@ class Cartridge;
 class Cpu;
 class Irc;
 class Joypad;
-class Memory;
+class MemoryBus;
 class Ppu;
 class Serial;
 class Timer;
@@ -37,6 +37,15 @@ public:
     inline virtual uint16_t read(regid_t register_id) override;
     inline virtual void write(regid_t register_id, uint16_t value) override;
 
+    std::unique_ptr<BootRom> bootrom;
+    std::unique_ptr<EchoRam> echoram;
+    std::unique_ptr<Hram> hram;
+    std::unique_ptr<Oam> oam;
+    std::unique_ptr<Vram> vram;
+    std::unique_ptr<Wram0> wram0;
+    std::unique_ptr<Wram1> wram1;
+
+
     std::unique_ptr<ApuRegisters> apu_registers;
     std::unique_ptr<CpuRegisters> cpu_registers;
     std::unique_ptr<JoypadRegisters> joypad_registers;
@@ -45,7 +54,7 @@ public:
     std::unique_ptr<TimerRegisters> timer_registers;
 
     std::unique_ptr<Cpu> cpu;
-    std::unique_ptr<Memory> mem;
+    std::unique_ptr<MemoryBus> mem;
     std::unique_ptr<Ppu> ppu;
     std::unique_ptr<Joypad> joypad;
     std::unique_ptr<Timer> timer_divider;

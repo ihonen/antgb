@@ -12,7 +12,7 @@ using namespace std;
 using std::vector;
 
 class iFrontend;
-class Memory;
+class MemoryBus;
 class PpuRegisters;
 class Renderer;
 
@@ -55,7 +55,7 @@ public:
 
     const uint8_t MODE_FLAG_MASK = 0x03; // Bits 0-1
 
-    Ppu(Memory* mem, PpuRegisters& reg, Cpu* cpu, iFrontend* renderer = nullptr);
+    Ppu(MemoryBus* mem, PpuRegisters& reg, Cpu* cpu, iFrontend* renderer = nullptr);
     ~Ppu();
     void set_frontend(iFrontend* frontend);
     void hard_reset();
@@ -65,6 +65,6 @@ public:
     void launch_dma(memaddr_t src_address);
 
     Cpu* cpu;
-    Memory* mem;
+    MemoryBus* mem;
     Renderer* renderer;
 };
