@@ -568,8 +568,11 @@ void Renderer::render_frame()
 // Ppu
 //----------------------------------------------------------------------------
 
-Ppu::Ppu(MemoryBus* mmu_, PpuRegisters& reg, Cpu* cpu, iFrontend* renderer_)
-    : reg(reg), cpu(cpu), mem(mmu_)
+Ppu::Ppu(PpuRegisters& reg, Cpu* cpu, MemoryBus* mem, Dma& dma, iFrontend* renderer_)
+    : reg(reg)
+    , cpu(cpu)
+    , mem(mem)
+    , dma(dma)
 {
     renderer = new Renderer(mem, renderer_);
     hard_reset();
@@ -604,7 +607,7 @@ void Ppu::hard_reset()
 void Ppu::launch_dma(addr_t src_address)
 {
     reg.write(DMA_ADDR, 0x00);
-    mem->launch_oam_dma(0xFE00, src_address, 160);
+    dma.launch_oam_dma(0xFE00, src_address, 160);
 }
 
 void Ppu::step(uint64_t cpu_cycles)

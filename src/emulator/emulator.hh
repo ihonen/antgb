@@ -5,7 +5,9 @@
 #include "cpu.hh"
 #include "macros.hh"
 #include "memorybus.hh"
+#include "ppu.hh"
 #include "serial.hh"
+#include "timer.hh"
 
 #include "apuregisters.hh"
 #include "cpuregisters.hh"
@@ -14,6 +16,7 @@
 #include "serialregisters.hh"
 #include "timerregisters.hh"
 
+#include "dma.hh"
 #include "bootrom.hh"
 #include "echoram.hh"
 #include "hram.hh"
@@ -58,7 +61,6 @@ public:
     std::unique_ptr<Wram0> wram0;
     std::unique_ptr<Wram1> wram1;
 
-
     std::unique_ptr<ApuRegisters> apu_registers;
     std::unique_ptr<CpuRegisters> cpu_registers;
     std::unique_ptr<JoypadRegisters> joypad_registers;
@@ -66,8 +68,10 @@ public:
     std::unique_ptr<SerialRegisters> serial_registers;
     std::unique_ptr<TimerRegisters> timer_registers;
 
-    std::unique_ptr<Cpu> cpu;
     std::unique_ptr<MemoryBus> mem;
+
+    std::unique_ptr<Cpu> cpu;
+    std::unique_ptr<Dma> dma;
     std::unique_ptr<Ppu> ppu;
     std::unique_ptr<Joypad> joypad;
     std::unique_ptr<Timer> timer_divider;
@@ -82,10 +86,10 @@ FORCE_INLINE int Emulator::execute_next()
     uint64_t cpu_cycle_count_after = cpu->get_cycles();
     uint64_t clock_cycles = cpu_cycle_count_after - cpu_cycle_count_before;
 
-    //timer_divider->emulate(clock_cycles);
-    //mem->emulate(clock_cycles);
-    //ppu->step(clock_cycles);
+    timer_divider->emulate(clock_cycles);
+    ppu->step(clock_cycles);
     serial->emulate(clock_cycles);
+    dma->emulate(clock_cycles);
 
     return static_cast<int>(clock_cycles);
 }

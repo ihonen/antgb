@@ -2,6 +2,7 @@
 
 #include "bitmanip.hh"
 #include "cpu.hh"
+#include "dma.hh"
 #include "types.hh"
 #include <chrono>
 #include <map>
@@ -34,7 +35,6 @@ public:
     static constexpr uint64_t CPU_CYCLES_PER_DRAWING_MODE = 291; // Maximum
     static constexpr uint64_t CPU_CYCLES_PER_OAM_SCAN_MODE = 80;
 
-    PpuRegisters& reg;
 
     std::map<Mode, uint64_t> MODE_DURATION{{Hblank, 85},
                                            {Vblank, 4560},
@@ -55,7 +55,7 @@ public:
 
     const uint8_t MODE_FLAG_MASK = 0x03; // Bits 0-1
 
-    Ppu(MemoryBus* mem, PpuRegisters& reg, Cpu* cpu, iFrontend* renderer = nullptr);
+    Ppu(PpuRegisters& reg, Cpu* cpu, MemoryBus* mem, Dma& dma, iFrontend* renderer = nullptr);
     ~Ppu();
     void set_frontend(iFrontend* frontend);
     void hard_reset();
@@ -64,7 +64,9 @@ public:
     addr_t dma_src_address();
     void launch_dma(addr_t src_address);
 
+    PpuRegisters& reg;
     Cpu* cpu;
     MemoryBus* mem;
+    Dma& dma;
     Renderer* renderer;
 };

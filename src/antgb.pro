@@ -29,6 +29,7 @@ SOURCES += \
     emulator/apuregisters.cc \
     emulator/cartridge.cc \
     emulator/cpuregisters.cc \
+    emulator/dma.cc \
     emulator/joypadregisters.cc \
     emulator/memorybus.cc \
     emulator/ppuregisters.cc \
@@ -106,6 +107,7 @@ HEADERS += \
     emulator/cartridge.hh \
     emulator/cpu.hh \
     emulator/cpuregisters.hh \
+    emulator/dma.hh \
     emulator/echoram.hh \
     emulator/emulator.hh \
     emulator/exceptions.hh \

@@ -35,13 +35,6 @@ public:
     inline uint8_t read(addr_t address);
     inline void write(addr_t address, uint8_t value);
     inline bool force_write(addr_t address, uint8_t value);
-    void launch_oam_dma(addr_t destination,
-                        addr_t source,
-                        addr_t size);
-    void emulate(uint64_t cpu_cycles);
-    void emulate_oam_dma(uint64_t cpu_cycles);
-    void end_oam_dma();
-    void clear_dma_status();
 
     BootRom& bootrom_;
 
@@ -60,17 +53,6 @@ public:
     iMemoryBusNode& ppu_registers_;
     iMemoryBusNode& serial_registers_;
     iMemoryBusNode& timer_registers_;
-
-    struct
-    {
-        uint64_t unemulated_cpu_cycles;
-        uint64_t cpu_cycles_left;
-        addr_t src_pointer;
-        addr_t dest_pointer;
-        addr_t src_low;
-        addr_t src_high;
-        addr_t size;
-    } dma_status;
 };
 
 inline iMemoryBusNode* MemoryBus::find_owner(addr_t address)
@@ -130,8 +112,9 @@ FORCE_INLINE void MemoryBus::write(addr_t address, uint8_t value)
 
 FORCE_INLINE bool MemoryBus::force_write(addr_t address, uint8_t value)
 {
-    auto dest = get(address);
-    if (dest) *dest = value;
+    auto* dest = get(address);
+    if (dest)
+        *dest = value;
     return 0;
 }
 

@@ -48,8 +48,9 @@ Emulator::Emulator()
     );
 
     cpu = std::make_unique<Cpu>(mem.get(), *cpu_registers);
+    dma = std::make_unique<Dma>(*mem);
     joypad = std::make_unique<Joypad>(*joypad_registers, cpu.get());
-    ppu = std::make_unique<Ppu>(mem.get(), *ppu_registers, cpu.get());
+    ppu = std::make_unique<Ppu>(*ppu_registers, cpu.get(), mem.get(), *dma);
     serial = std::make_unique<Serial>(*serial_registers, cpu.get());
     timer_divider = std::make_unique<Timer>(*timer_registers, cpu.get());
 }
