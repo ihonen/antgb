@@ -2,9 +2,11 @@
 
 #include "debugger/ifrontend.hh"
 
+
 #include "addresses.hh"
 #include "bitmanip.hh"
 #include "memory.hh"
+#include "ppuregisters.hh"
 #include <algorithm>
 #include <cassert>
 #include <iostream>
@@ -132,10 +134,10 @@ memaddr_t Background::tile_map_address()
 {
     if (type == Type::Background)
     {
-        return TILE_MAP_BASE[get_bit(mem->get(LCDC_ADDR), Ppu::BgTileMapDisplaySelect)];
+        return TILE_MAP_BASE[get_bit(mem->get(LCDC_ADDR), PpuRegisters::BgTileMapDisplaySelect)];
     }
 
-    return TILE_MAP_BASE[get_bit(mem->get(LCDC_ADDR), Ppu::WindowTileMapDisplaySelect)];
+    return TILE_MAP_BASE[get_bit(mem->get(LCDC_ADDR), PpuRegisters::WindowTileMapDisplaySelect)];
 }
 
 uint8_t* Background::tile_map_base()
@@ -145,7 +147,7 @@ uint8_t* Background::tile_map_base()
 
 memaddr_t Background::tile_data_address()
 {
-    return TILE_DATA_BASE[get_bit(mem->get(LCDC_ADDR), Ppu::BgAndWindowTileDataSelect)];
+    return TILE_DATA_BASE[get_bit(mem->get(LCDC_ADDR), PpuRegisters::BgAndWindowTileDataSelect)];
 }
 
 Tile* Background::tile_data_base()
@@ -203,11 +205,11 @@ bool Background::is_enabled()
 {
     if (type == Type::Background)
     {
-        return get_bit(mem->get(LCDC_ADDR), Ppu::BgAndWindowDisplayEnable);
+        return get_bit(mem->get(LCDC_ADDR), PpuRegisters::BgAndWindowDisplayEnable);
     }
 
-    return get_bit(mem->get(LCDC_ADDR), Ppu::BgAndWindowDisplayEnable)
-           && get_bit(mem->get(LCDC_ADDR), Ppu::WindowDisplayEnable);
+    return get_bit(mem->get(LCDC_ADDR), PpuRegisters::BgAndWindowDisplayEnable)
+           && get_bit(mem->get(LCDC_ADDR), PpuRegisters::WindowDisplayEnable);
 }
 
 //----------------------------------------------------------------------------
@@ -452,12 +454,12 @@ Tile* Sprites::sprite_data_base()
 
 uint8_t Sprites::sprite_height()
 {
-    return get_bit(mem->get(LCDC_ADDR), Ppu::ObjSize) ? 16 : 8;
+    return get_bit(mem->get(LCDC_ADDR), PpuRegisters::ObjSize) ? 16 : 8;
 }
 
 bool Sprites::enabled()
 {
-    return get_bit(mem->get(LCDC_ADDR), Ppu::ObjDisplayEnable);
+    return get_bit(mem->get(LCDC_ADDR), PpuRegisters::ObjDisplayEnable);
 }
 
 void Sprites::assemble_sprite_info(Sprite& sprite, Sprite::Attribute* attributes)
@@ -566,7 +568,7 @@ void Renderer::render_frame()
 // Ppu
 //----------------------------------------------------------------------------
 
-Ppu::Ppu(Memory* mmu_, Registers* reg, Cpu* cpu, iFrontend* renderer_)
+Ppu::Ppu(Memory* mmu_, PpuRegisters& reg, Cpu* cpu, iFrontend* renderer_)
     : reg(reg), cpu(cpu), mem(mmu_)
 {
     renderer = new Renderer(mem, renderer_);
@@ -601,7 +603,7 @@ void Ppu::hard_reset()
 
 void Ppu::launch_dma(memaddr_t src_address)
 {
-    reg->dma = 0x00;
+    reg.write(DMA_ADDR, 0x00);
     mem->launch_oam_dma(0xFE00, src_address, 160);
 }
 
@@ -625,22 +627,23 @@ void Ppu::step(uint64_t cpu_cycles)
 
     */
 
+
     while (!stop)
     {
         // Update registers.
-        reg->stat &= ~MODE_FLAG_MASK;
-        reg->stat |= current_mode & MODE_FLAG_MASK;
-        reg->ly = (total_cycles / 456) % 154;
+        reg.write(STAT_ADDR, reg.read(STAT_ADDR) & ~MODE_FLAG_MASK);
+        reg.write(STAT_ADDR, reg.read(STAT_ADDR) | (current_mode & MODE_FLAG_MASK));
 
         // Check or clear LYC interrupt condition.
-        if (reg->ly == reg->lyc && get_bit(&reg->stat, Ppu::LycInt))
+        if (reg.read(LY_ADDR) == reg.read(LYC_ADDR) && get_bit(reg.get(STAT_ADDR), PpuRegisters::LycInt))
         {
-            set_bit(&reg->stat, Ppu::LycCoincidence);
+            // TODO: Register interface violations.
+            set_bit(reg.get(STAT_ADDR), PpuRegisters::LycCoincidence);
             cerr << "sent LCD STAT IRQ" << endl;
             cpu->request_interrupt(Cpu::LcdStatInt);
         }
         else
-            clear_bit(&reg->stat, Ppu::LycCoincidence);
+            clear_bit(reg.get(STAT_ADDR), PpuRegisters::LycCoincidence);
 
         switch (current_mode)
         {
@@ -660,7 +663,7 @@ void Ppu::step(uint64_t cpu_cycles)
                 clocksum -= 291;
                 current_mode = Hblank;
                 // Hblank interrupt
-                if (get_bit(&reg->stat, HBlankInterrupt))
+                if (get_bit(reg.get(STAT_ADDR), PpuRegisters::HBlankInterrupt))
                     cpu->request_interrupt(Cpu::LcdStatInt);
             }
             else
@@ -672,11 +675,11 @@ void Ppu::step(uint64_t cpu_cycles)
             if (clocksum >= 85)
             {
                 clocksum -= 85;
-                if (reg->ly < 144)
+                if (reg.read(LY_ADDR) < 144)
                 {
                     current_mode = OamScan;
                     // OAM interrupt
-                    if (get_bit(&reg->stat, OamInt))
+                    if (get_bit(reg.get(STAT_ADDR), PpuRegisters::OamInt))
                         cpu->request_interrupt(Cpu::LcdStatInt);
                 }
                 else
@@ -684,7 +687,7 @@ void Ppu::step(uint64_t cpu_cycles)
                     current_mode = Vblank;
                     renderer->render_frame();
                     cpu->request_interrupt(Cpu::VBlankInterrupt);
-                    if (get_bit(&reg->stat, VBlankInterrupt))
+                    if (get_bit(reg.get(STAT_ADDR), PpuRegisters::VBlankInterrupt))
                         cpu->request_interrupt(Cpu::LcdStatInt);
                 }
             }
@@ -701,7 +704,7 @@ void Ppu::step(uint64_t cpu_cycles)
                 clocksum -= 4560;
                 current_mode = OamScan;
                 // OAM interrupt
-                if (get_bit(&reg->stat, OamInt))
+                if (get_bit(reg.get(STAT_ADDR), PpuRegisters::OamInt))
                     cpu->request_interrupt(Cpu::LcdStatInt);
 
                 //cerr << "vblank end @ " << total_cycles - clocksum << endl;
@@ -725,10 +728,10 @@ void Ppu::step(uint64_t cpu_cycles)
 
 bool Ppu::has_dma_request()
 {
-    return reg->dma;
+    return reg.read(DMA_ADDR);
 }
 
 memaddr_t Ppu::dma_src_address()
 {
-    return reg->dma * 0x100;
+    return reg.read(DMA_ADDR) * 0x100;
 }

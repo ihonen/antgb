@@ -31,6 +31,7 @@ SOURCES += \
     emulator/cpuregisters.cc \
     emulator/joypadregisters.cc \
     emulator/memory.cc \
+    emulator/ppuregisters.cc \
     main.cc \
     debugger/breakpoint.cc \
     debugger/debugcore.cc \
@@ -111,6 +112,7 @@ HEADERS += \
     emulator/macros.hh \
     emulator/memory.hh \
     emulator/ppu.hh \
+    emulator/ppuregisters.hh \
     emulator/serial.hh \
     emulator/timer.hh \
     emulator/types.hh \

@@ -13,49 +13,12 @@ using std::vector;
 
 class iFrontend;
 class Memory;
+class PpuRegisters;
 class Renderer;
 
 class Ppu
 {
 public:
-    struct Registers
-    {
-        uint8_t lcdc;
-        uint8_t stat;
-        uint8_t scy;
-        uint8_t scx;
-        uint8_t ly;
-        uint8_t lyc;
-        uint8_t dma;
-        uint8_t bgp;
-        uint8_t obp0;
-        uint8_t obp1;
-        uint8_t wy;
-        uint8_t wx;
-    };
-
-    enum BitPos
-    {
-        // LCDC
-        BgAndWindowDisplayEnable = 0,
-        ObjDisplayEnable = 1,
-        ObjSize = 2,
-        BgTileMapDisplaySelect = 3,
-        BgAndWindowTileDataSelect = 4,
-        WindowDisplayEnable = 5,
-        WindowTileMapDisplaySelect = 6,
-        DisplayEnable = 7,
-
-        // STAT
-        LycInt = 6,
-        OamInt = 5,
-        VBlankInterrupt = 4,
-        HBlankInterrupt = 3,
-        LycCoincidence = 2,
-        ModeFlag1 = 1,
-        ModeFlag0 = 0
-    };
-
     enum Mode
     {
         Hblank   = 0x00,
@@ -71,7 +34,7 @@ public:
     static constexpr uint64_t CPU_CYCLES_PER_DRAWING_MODE = 291; // Maximum
     static constexpr uint64_t CPU_CYCLES_PER_OAM_SCAN_MODE = 80;
 
-    Registers* reg = nullptr;
+    PpuRegisters& reg;
 
     std::map<Mode, uint64_t> MODE_DURATION{{Hblank, 85},
                                            {Vblank, 4560},
@@ -92,7 +55,7 @@ public:
 
     const uint8_t MODE_FLAG_MASK = 0x03; // Bits 0-1
 
-    Ppu(Memory* mem, Registers* reg, Cpu* cpu, iFrontend* renderer = nullptr);
+    Ppu(Memory* mem, PpuRegisters& reg, Cpu* cpu, iFrontend* renderer = nullptr);
     ~Ppu();
     void set_frontend(iFrontend* frontend);
     void hard_reset();

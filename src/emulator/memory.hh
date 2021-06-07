@@ -9,6 +9,7 @@
 #include "joypadregisters.hh"
 #include "macros.hh"
 #include "ppu.hh"
+#include "ppuregisters.hh"
 #include "serial.hh"
 #include "timer.hh"
 #include "types.hh"
@@ -28,7 +29,8 @@ public:
     Memory(
         ApuRegisters& apu_registers,
         CpuRegisters& cpu_registers,
-        JoypadRegisters& joypad_registers
+        JoypadRegisters& joypad_registers,
+        PpuRegisters& ppu_registers
     );
 
     void hard_reset();
@@ -52,6 +54,7 @@ public:
     ApuRegisters& apu_registers_;
     CpuRegisters& cpu_registers_;
     JoypadRegisters& joypad_registers_;
+    PpuRegisters& ppu_registers_;
 
     struct
     {
@@ -137,6 +140,10 @@ FORCE_INLINE uint8_t* Memory::get(memaddr_t address)
     else if (address == JOYP_ADDR)
     {
         return joypad_registers_.get(address);
+    }
+    else if (address >= PPU_LOW && address <= PPU_HIGH)
+    {
+        return ppu_registers_.get(address);
     }
     else if (address == IF_ADDR || address == IE_ADDR)
     {
