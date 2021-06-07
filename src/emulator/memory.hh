@@ -31,7 +31,8 @@ public:
         CpuRegisters& cpu_registers,
         JoypadRegisters& joypad_registers,
         PpuRegisters& ppu_registers,
-        SerialRegisters& serial_registers
+        SerialRegisters& serial_registers,
+        TimerRegisters& timer_registers
     );
 
     void hard_reset();
@@ -57,6 +58,7 @@ public:
     JoypadRegisters& joypad_registers_;
     PpuRegisters& ppu_registers_;
     SerialRegisters& serial_registers_;
+    TimerRegisters& timer_registers_;
 
     struct
     {
@@ -150,6 +152,10 @@ FORCE_INLINE uint8_t* Memory::get(memaddr_t address)
     else if (address >= SERIAL_LOW && address <= SERIAL_HIGH)
     {
         return serial_registers_.get(address);
+    }
+    else if (address >= TIMER_LOW && address <= TIMER_HIGH)
+    {
+        return timer_registers_.get(address);
     }
     else if (address == IF_ADDR || address == IE_ADDR)
     {

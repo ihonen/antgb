@@ -33,6 +33,7 @@ SOURCES += \
     emulator/memory.cc \
     emulator/ppuregisters.cc \
     emulator/serialregisters.cc \
+    emulator/timerregisters.cc \
     main.cc \
     debugger/breakpoint.cc \
     debugger/debugcore.cc \
@@ -117,6 +118,7 @@ HEADERS += \
     emulator/serial.hh \
     emulator/serialregisters.hh \
     emulator/timer.hh \
+    emulator/timerregisters.hh \
     emulator/types.hh \
     gui/models/breakpointdelegate.hh \
     gui/models/breakpointmodel.hh \

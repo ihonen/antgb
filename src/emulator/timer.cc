@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-Timer::Timer(Registers* reg, Cpu* cpu) :
+Timer::Timer(TimerRegisters& reg, Cpu* cpu) :
     reg(reg),
     cpu(cpu)
 {

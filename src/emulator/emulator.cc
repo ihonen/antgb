@@ -18,13 +18,15 @@ Emulator::Emulator()
     joypad_registers = std::make_unique<JoypadRegisters>();
     ppu_registers = std::make_unique<PpuRegisters>();
     serial_registers = std::make_unique<SerialRegisters>();
+    timer_registers = std::make_unique<TimerRegisters>();
 
     mem = std::make_unique<Memory>(
         *apu_registers,
         *cpu_registers,
         *joypad_registers,
         *ppu_registers,
-        *serial_registers
+        *serial_registers,
+        *timer_registers
     );
 
     cartridge = nullptr;
@@ -32,7 +34,7 @@ Emulator::Emulator()
     joypad = std::make_unique<Joypad>(*joypad_registers, cpu.get());
     ppu = std::make_unique<Ppu>(mem.get(), *ppu_registers, cpu.get());
     serial = std::make_unique<Serial>(*serial_registers, cpu.get());
-    timer_divider = std::make_unique<Timer>(reinterpret_cast<Timer::Registers*>(mem->get(TIMER_LOW)), cpu.get());
+    timer_divider = std::make_unique<Timer>(*timer_registers, cpu.get());
 }
 
 Emulator::~Emulator() = default;
