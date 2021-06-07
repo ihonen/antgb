@@ -37,8 +37,14 @@ SerialRegisters::SerialRegisters()
 
 SerialRegisters::~SerialRegisters() = default;
 
+bool SerialRegisters::owns(memaddr_t address)
+{
+    return address >= SERIAL_LOW && address <= SERIAL_HIGH;
+}
+
 uint8_t* SerialRegisters::get(memaddr_t address)
 {
+    assert(owns(address));
     switch (address)
     {
         case SB_ADDR: return &SB;
@@ -49,6 +55,7 @@ uint8_t* SerialRegisters::get(memaddr_t address)
 
 uint8_t SerialRegisters::read(memaddr_t address)
 {
+    assert(owns(address));
     if (const auto* byte = get(address))
     {
         return *byte & read_mask(address);
@@ -58,6 +65,7 @@ uint8_t SerialRegisters::read(memaddr_t address)
 
 void SerialRegisters::write(memaddr_t address, uint8_t value)
 {
+    assert(owns(address));
     if (auto* byte = get(address))
     {
         *byte = value & write_mask(address);

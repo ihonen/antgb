@@ -1,5 +1,6 @@
 #include "memorybus.hh"
 
+#include "cartridge.hh"
 #include "fileio.hh"
 #include <cstring>
 #include <iostream>
@@ -8,18 +9,18 @@
 
 MemoryBus::MemoryBus(
     BootRom& bootrom,
-    EchoRam& echoram,
-    Hram& hram,
-    Oam& oam,
-    Vram& vram,
-    Wram0& wram0,
-    Wram1& wram1,
-    ApuRegisters& apu_registers,
-    CpuRegisters& cpu_registers,
-    JoypadRegisters& joypad_registers,
-    PpuRegisters& ppu_registers,
-    SerialRegisters& serial_registers,
-    TimerRegisters& timer_registers
+    iMemoryBusNode& echoram,
+    iMemoryBusNode& hram,
+    iMemoryBusNode& oam,
+    iMemoryBusNode& vram,
+    iMemoryBusNode& wram0,
+    iMemoryBusNode& wram1,
+    iMemoryBusNode& apu_registers,
+    iMemoryBusNode& cpu_registers,
+    iMemoryBusNode& joypad_registers,
+    iMemoryBusNode& ppu_registers,
+    iMemoryBusNode& serial_registers,
+    iMemoryBusNode& timer_registers
 )
     : bootrom_(bootrom)
     , echoram_(echoram)

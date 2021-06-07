@@ -1,10 +1,11 @@
 #pragma once
 
+#include "imemorybusnode.hh"
 #include "types.hh"
 
 #include <cstdint>
 
-class CpuRegisters
+class CpuRegisters : public iMemoryBusNode
 {
 public:
     enum class Reg8
@@ -44,13 +45,14 @@ public:
     };
 
     CpuRegisters();
-    ~CpuRegisters();
+    virtual ~CpuRegisters() override;
 
     void post_bootram_reset();
 
-    uint8_t* get(memaddr_t address);
-    uint8_t read(memaddr_t address);
-    void write(memaddr_t address, uint8_t value);
+    virtual bool owns(memaddr_t address) override;
+    virtual uint8_t* get(memaddr_t address) override;
+    virtual uint8_t read(memaddr_t address) override;
+    virtual void write(memaddr_t address, uint8_t value) override;
 
     uint8_t& get_reg(Reg8 reg);
     uint8_t read_reg(Reg8 reg);

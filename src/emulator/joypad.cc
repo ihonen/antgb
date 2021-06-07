@@ -1,6 +1,7 @@
 #include "joypad.hh"
 
 #include "bitmanip.hh"
+#include "cpu.hh"
 #include "memorybus.hh"
 #include <iostream>
 

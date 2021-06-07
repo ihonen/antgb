@@ -2,17 +2,30 @@
 
 #include "debugger/iemulator.hh"
 
+#include "cpu.hh"
 #include "macros.hh"
 #include "memorybus.hh"
+#include "serial.hh"
 
+#include "apuregisters.hh"
+#include "cpuregisters.hh"
+#include "joypadregisters.hh"
+#include "ppuregisters.hh"
+#include "serialregisters.hh"
+#include "timerregisters.hh"
+
+#include "bootrom.hh"
+#include "echoram.hh"
+#include "hram.hh"
+#include "oam.hh"
+#include "vram.hh"
+#include "wram0.hh"
+#include "wram1.hh"
+
+#include <iostream>
 #include <memory>
 
-class ApuRegisters;
-class CpuRegisters;
-class JoypadRegisters;
-
 class Cartridge;
-class Cpu;
 class Irc;
 class Joypad;
 class MemoryBus;
@@ -115,7 +128,7 @@ FORCE_INLINE uint16_t Emulator::read(regid_t register_id)
         case RegIME:
             return cpu->reg.read_IME();
         default:
-            cerr << std::hex << register_id << endl;
+            std::cerr << std::hex << register_id << std::endl;
             assert(false);
             break;
     }
@@ -179,7 +192,7 @@ FORCE_INLINE void Emulator::write(regid_t register_id, uint16_t value)
             cpu->reg.write_IME((value != 0) ? 1 : 0);
             break;
         default:
-            cerr << std::hex << register_id << endl;
+            std::cerr << std::hex << register_id << std::endl;
             assert(false);
             break;
     }

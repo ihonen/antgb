@@ -66,8 +66,14 @@ void CpuRegisters::post_bootram_reset()
 
 CpuRegisters::~CpuRegisters() = default;
 
+bool CpuRegisters::owns(memaddr_t address)
+{
+    return address == IE_ADDR || address == IF_ADDR;
+}
+
 uint8_t* CpuRegisters::get(memaddr_t address)
 {
+    assert(owns(address));
     switch (address)
     {
         case IE_ADDR: return &IE;
@@ -78,6 +84,7 @@ uint8_t* CpuRegisters::get(memaddr_t address)
 
 uint8_t CpuRegisters::read(memaddr_t address)
 {
+    assert(owns(address));
     if (auto* byte = get(address))
     {
         return *byte & mask(address);
@@ -87,6 +94,7 @@ uint8_t CpuRegisters::read(memaddr_t address)
 
 void CpuRegisters::write(memaddr_t address, uint8_t value)
 {
+    assert(owns(address));
     if (auto* byte = get(address))
     {
         *byte = value & mask(address);

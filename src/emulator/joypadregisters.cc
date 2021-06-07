@@ -31,8 +31,14 @@ JoypadRegisters::JoypadRegisters()
 
 JoypadRegisters::~JoypadRegisters() = default;
 
+bool JoypadRegisters::owns(memaddr_t address)
+{
+    return address == JOYP_ADDR;
+}
+
 uint8_t* JoypadRegisters::get(memaddr_t address)
 {
+    assert(owns(address));
     switch (address)
     {
         case JOYP_ADDR: return &JOYP;
@@ -42,6 +48,7 @@ uint8_t* JoypadRegisters::get(memaddr_t address)
 
 uint8_t JoypadRegisters::read(memaddr_t address)
 {
+    assert(owns(address));
     if (const auto* byte = get(address))
     {
         return *byte & read_mask(address);
@@ -51,6 +58,7 @@ uint8_t JoypadRegisters::read(memaddr_t address)
 
 void JoypadRegisters::write(memaddr_t address, uint8_t value)
 {
+    assert(owns(address));
     if (auto* byte = get(address))
     {
         *byte = value & write_mask(address);

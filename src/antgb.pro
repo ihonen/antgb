@@ -111,6 +111,7 @@ HEADERS += \
     emulator/exceptions.hh \
     emulator/fileio.hh \
     emulator/hram.hh \
+    emulator/imemorybusnode.hh \
     emulator/interrupts.hh \
     emulator/joypad.hh \
     emulator/joypadregisters.hh \

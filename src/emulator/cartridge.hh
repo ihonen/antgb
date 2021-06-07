@@ -1,22 +1,25 @@
 #pragma once
 
+#include "imemorybusnode.hh"
+#include "memorybase.hh"
 #include "types.hh"
 
 #include <array>
 
-class Cartridge
+class Cartridge : public iMemoryBusNode
 {
 public:
     Cartridge();
     Cartridge(const std::string& filepath);
 
-    ~Cartridge() = default;
+    virtual ~Cartridge() override = default;
 
-    uint8_t* get(uint16_t address);
-    uint8_t read(uint16_t address);
-    void write(uint16_t address, uint8_t value);
+    virtual bool owns(memaddr_t address) override;
+    virtual uint8_t* get(memaddr_t address) override;
+    virtual uint8_t read(memaddr_t address) override;
+    virtual void write(memaddr_t address, uint8_t value) override;
 private:
-    std::array<uint8_t, 0x4000> rom0_;
-    std::array<uint8_t, 0x4000> rom1_;
-    std::array<uint8_t, 0x2000> eram_;
+    MemoryBase<ROM0_LOW, ROM0_HIGH> rom0_;
+    MemoryBase<ROM1_LOW, ROM1_HIGH> rom1_;
+    MemoryBase<ERAM_LOW, ERAM_HIGH> eram_;
 };

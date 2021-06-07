@@ -1,19 +1,21 @@
 #pragma once
 
 #include "addresses.hh"
+#include "imemorybusnode.hh"
 
 #include <array>
 #include <cstdint>
 
-class ApuRegisters
+class ApuRegisters : public iMemoryBusNode
 {
 public:    
     ApuRegisters();
-    ~ApuRegisters();
+    virtual ~ApuRegisters() override;
 
-    uint8_t* get(memaddr_t address);
-    uint8_t read(memaddr_t address);
-    void write(memaddr_t address, uint8_t value);
+    virtual bool owns(memaddr_t address) override;
+    virtual uint8_t* get(memaddr_t address) override;
+    virtual uint8_t read(memaddr_t address) override;
+    virtual void write(memaddr_t address, uint8_t value) override;
 
 protected:
     uint8_t NR10;

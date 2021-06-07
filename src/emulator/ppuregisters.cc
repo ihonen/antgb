@@ -112,8 +112,14 @@ void PpuRegisters::post_bootram_reset()
 
 PpuRegisters::~PpuRegisters() = default;
 
+bool PpuRegisters::owns(memaddr_t address)
+{
+    return address >= PPU_LOW && address <= PPU_HIGH;
+}
+
 uint8_t* PpuRegisters::get(memaddr_t address)
 {
+    assert(owns(address));
     switch (address)
     {
         case LCDC_ADDR: return &LCDC;
@@ -134,6 +140,7 @@ uint8_t* PpuRegisters::get(memaddr_t address)
 
 uint8_t PpuRegisters::read(memaddr_t address)
 {
+    assert(owns(address));
     if (const auto* byte = get(address))
     {
         return *byte & read_mask(address);
@@ -143,6 +150,7 @@ uint8_t PpuRegisters::read(memaddr_t address)
 
 void PpuRegisters::write(memaddr_t address, uint8_t value)
 {
+    assert(owns(address));
     if (auto* byte = get(address))
     {
         *byte = value & write_mask(address);

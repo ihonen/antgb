@@ -49,8 +49,14 @@ TimerRegisters::TimerRegisters()
 
 TimerRegisters::~TimerRegisters() = default;
 
+bool TimerRegisters::owns(memaddr_t address)
+{
+    return address >= TIMER_LOW && address <= TIMER_HIGH;
+}
+
 uint8_t* TimerRegisters::get(memaddr_t address)
 {
+    assert(owns(address));
     switch (address)
     {
         case DIV_ADDR:  return &DIV;
@@ -63,6 +69,7 @@ uint8_t* TimerRegisters::get(memaddr_t address)
 
 uint8_t TimerRegisters::read(memaddr_t address)
 {
+    assert(owns(address));
     if (const auto* byte = get(address))
     {
         return *byte & read_mask(address);
@@ -72,6 +79,7 @@ uint8_t TimerRegisters::read(memaddr_t address)
 
 void TimerRegisters::write(memaddr_t address, uint8_t value)
 {
+    assert(owns(address));
     if (auto* byte = get(address))
     {
         *byte = value & write_mask(address);

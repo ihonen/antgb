@@ -1,14 +1,14 @@
 #include "cartridge.hh"
 
+#include "addresses.hh"
+
 #include <algorithm>
 #include <fstream>
 #include <vector>
 
 Cartridge::Cartridge()
+    : iMemoryBusNode()
 {
-    rom0_ = {};
-    rom1_ = {};
-    eram_ = {};
 }
 
 Cartridge::Cartridge(const std::string& filepath)
@@ -26,51 +26,54 @@ Cartridge::Cartridge(const std::string& filepath)
         std::cerr << "WARNING: Only ROM size 0x8000 is supported." << std::endl;
     }
 
-    for (size_t i = 0x0000; i <= 0x3FFF; ++i)
+    for (size_t address = ROM0_LOW; address <= ROM0_HIGH; ++address)
     {
-        rom0_.at(i) = image.at(i);
+        rom0_.write(address, image.at(address));
     }
 
-    for (size_t i = 0x4000; i <= 0x7FFF; ++i)
+    for (size_t address = ROM1_LOW; address <= ROM1_HIGH; ++address)
     {
-        rom1_.at(i - 0x4000) = image.at(i);
+        rom1_.write(address, image.at(address));
     }
-
-    eram_ = {0x00};
 }
 
-uint8_t* Cartridge::get(uint16_t address)
+bool Cartridge::owns(memaddr_t address)
 {
-    if (address <= 0x3FFF)
-    {
-        return &rom0_.at(address - 0x0000);
-    }
-    else if (address >= 0x4000 && address <= 0x7FFF)
-    {
-        return &rom1_.at(address - 0x4000);
-    }
-    else if (address >= 0xA000 && address <= 0xBFFF)
-    {
-        return &eram_.at(address - 0xA000);
-    }
+    return rom0_.owns(address) || rom1_.owns(address) || eram_.owns(address);
+}
 
+uint8_t* Cartridge::get(memaddr_t address)
+{
+    assert(owns(address));
+    if (rom0_.owns(address))
+        return rom0_.get(address);
+    if (rom1_.owns(address))
+        return rom1_.get(address);
+    if (eram_.owns(address))
+        return eram_.get(address);
     return nullptr;
 }
 
-uint8_t Cartridge::read(uint16_t address)
+uint8_t Cartridge::read(memaddr_t address)
 {
-    if (uint8_t* byte = get(address))
-    {
-        return *byte;
-    }
+    assert(owns(address));
+    if (rom0_.owns(address))
+        return rom0_.read(address);
+    if (rom1_.owns(address))
+        return rom1_.read(address);
+    if (eram_.owns(address))
+        return eram_.read(address);
 
     return 0xFF;
 }
 
-void Cartridge::write(uint16_t address, uint8_t value)
+void Cartridge::write(memaddr_t address, uint8_t value)
 {
-    if (uint8_t* byte = get(address))
-    {
-        *byte = value;
-    }
+    assert(owns(address));
+    if (rom0_.owns(address))
+        rom0_.write(address, value);
+    if (rom1_.owns(address))
+        rom1_.write(address, value);
+    if (eram_.owns(address))
+        eram_.write(address, value);
 }

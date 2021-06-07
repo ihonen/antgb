@@ -1,44 +1,31 @@
 #pragma once
 
-#include "apu.hh"
-#include "apuregisters.hh"
 #include "addresses.hh"
 #include "cartridge.hh"
-#include "cpuregisters.hh"
-#include "joypad.hh"
-#include "joypadregisters.hh"
+#include "bootrom.hh"
 #include "macros.hh"
-#include "ppu.hh"
-#include "ppuregisters.hh"
-#include "serial.hh"
-#include "timer.hh"
+#include "imemorybusnode.hh"
 #include "types.hh"
 
-#include "bootrom.hh"
-#include "echoram.hh"
-#include "hram.hh"
-#include "oam.hh"
-#include "vram.hh"
-#include "wram0.hh"
-#include "wram1.hh"
+class Cartridge;
 
 class MemoryBus
 {
 public:
     MemoryBus(
         BootRom& bootrom,
-        EchoRam& echoram,
-        Hram& hram,
-        Oam& oam,
-        Vram& vram,
-        Wram0& wram0,
-        Wram1& wram1,
-        ApuRegisters& apu_registers,
-        CpuRegisters& cpu_registers,
-        JoypadRegisters& joypad_registers,
-        PpuRegisters& ppu_registers,
-        SerialRegisters& serial_registers,
-        TimerRegisters& timer_registers
+        iMemoryBusNode& echoram,
+        iMemoryBusNode& hram,
+        iMemoryBusNode& oam,
+        iMemoryBusNode& vram,
+        iMemoryBusNode&  wram0,
+        iMemoryBusNode&  wram1,
+        iMemoryBusNode& apu_registers,
+        iMemoryBusNode& cpu_registers,
+        iMemoryBusNode& joypad_registers,
+        iMemoryBusNode& ppu_registers,
+        iMemoryBusNode& serial_registers,
+        iMemoryBusNode& timer_registers
     );
 
     void hard_reset();
@@ -60,19 +47,19 @@ public:
     Cartridge* cartridge;
 
     BootRom& bootrom_;
-    EchoRam& echoram_;
-    Hram& hram_;
-    Oam& oam_;
-    Vram& vram_;
-    Wram0& wram0_;
-    Wram1& wram1_;
+    iMemoryBusNode& echoram_;
+    iMemoryBusNode& hram_;
+    iMemoryBusNode& oam_;
+    iMemoryBusNode& vram_;
+    iMemoryBusNode& wram0_;
+    iMemoryBusNode& wram1_;
 
-    ApuRegisters& apu_registers_;
-    CpuRegisters& cpu_registers_;
-    JoypadRegisters& joypad_registers_;
-    PpuRegisters& ppu_registers_;
-    SerialRegisters& serial_registers_;
-    TimerRegisters& timer_registers_;
+    iMemoryBusNode& apu_registers_;
+    iMemoryBusNode& cpu_registers_;
+    iMemoryBusNode& joypad_registers_;
+    iMemoryBusNode& ppu_registers_;
+    iMemoryBusNode& serial_registers_;
+    iMemoryBusNode& timer_registers_;
 
     struct
     {
@@ -88,7 +75,7 @@ public:
 
 FORCE_INLINE uint8_t* MemoryBus::get(memaddr_t address)
 {
-    if (address <= BOOTROM_HIGH && !bootrom_.is_locked())
+    if (address <= BOOTROM_HIGH && !static_cast<BootRom&>(bootrom_).is_locked())
     {
         return bootrom_.get(address);
     }
@@ -159,7 +146,7 @@ FORCE_INLINE uint8_t* MemoryBus::get(memaddr_t address)
 
 FORCE_INLINE uint8_t MemoryBus::read(memaddr_t address)
 {
-    if (address <= BOOTROM_HIGH && !bootrom_.is_locked())
+    if (address <= BOOTROM_HIGH && !static_cast<BootRom&>(bootrom_).is_locked())
     {
         return bootrom_.read(address);
     }
@@ -230,7 +217,7 @@ FORCE_INLINE uint8_t MemoryBus::read(memaddr_t address)
 
 FORCE_INLINE void MemoryBus::write(memaddr_t address, uint8_t value)
 {
-    if (address <= BOOTROM_HIGH && !bootrom_.is_locked())
+    if (address <= BOOTROM_HIGH && !static_cast<BootRom&>(bootrom_).is_locked())
     {
         bootrom_.write(address, value);
     }
@@ -304,3 +291,5 @@ FORCE_INLINE bool MemoryBus::force_write(memaddr_t address, uint8_t value)
     if (dest) *dest = value;
     return 0;
 }
+
+// TODO: Don't allow writes to ROM.

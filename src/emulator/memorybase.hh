@@ -1,11 +1,12 @@
 #pragma once
 
 #include "addresses.hh"
+#include "imemorybusnode.hh"
 
 #include <array>
 
 template<memaddr_t low_address, memaddr_t high_address>
-class MemoryBase
+class MemoryBase : public iMemoryBusNode
 {
 public:
 
@@ -32,28 +33,31 @@ public:
         return high_address - low_address + 1;
     }
 
-    virtual uint8_t* get(memaddr_t address)
+    virtual bool owns(memaddr_t address) override
     {
-        assert(address >= low() && address <= high());
+        return address >= low() && address <= high();
+    }
+
+    virtual uint8_t* get(memaddr_t address) override
+    {
+        assert(owns(address));
         if (address >= low() && address <= high())
         {
             return &memory_.at(address - low());
         }
     }
 
-    virtual uint8_t read(memaddr_t address)
+    virtual uint8_t read(memaddr_t address) override
     {
-        assert(address >= low() && address <= high());
+        assert(owns(address));
         const auto* byte = get(address);
-        assert(byte != nullptr);
         return *byte;
     }
 
-    virtual void write(memaddr_t address, uint8_t value)
+    virtual void write(memaddr_t address, uint8_t value) override
     {
-        assert(address >= low() && address <= high());
+        assert(owns(address));
         auto* byte = get(address);
-        assert(byte != nullptr);
         *byte = value;
     }
 protected:

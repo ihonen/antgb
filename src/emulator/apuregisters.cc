@@ -152,6 +152,11 @@ ApuRegisters::ApuRegisters()
 {
 }
 
+bool ApuRegisters::owns(memaddr_t address)
+{
+    return address >= APU_LOW && address <= APU_HIGH;
+}
+
 ApuRegisters::~ApuRegisters() = default;
 
 uint8_t* ApuRegisters::get(memaddr_t address)

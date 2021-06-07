@@ -10,7 +10,6 @@ protected:
 
 public:
     BootRom() = default;
-    ~BootRom() = default;
 
     bool is_locked()
     {
