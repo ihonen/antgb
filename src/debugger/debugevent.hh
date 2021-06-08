@@ -3,7 +3,7 @@
 #include "breakpoint.hh"
 #include "types.hh"
 #include "util/macros.hh"
-#include "emulator/types.hh"
+#include "emulator/common/types.hh"
 
 enum DebugEventType
 {

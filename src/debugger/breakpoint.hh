@@ -2,7 +2,7 @@
 
 #include "constants.hh"
 #include "util/macros.hh"
-#include "emulator/types.hh"
+#include "emulator/common/types.hh"
 
 #include <cassert>
 #include <set>

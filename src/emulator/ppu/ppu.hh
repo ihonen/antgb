@@ -1,9 +1,9 @@
 #pragma once
 
-#include "bitmanip.hh"
-#include "cpu.hh"
-#include "dma.hh"
-#include "types.hh"
+#include "emulator/common/bitmanip.hh"
+#include "emulator/cpu/cpu.hh"
+#include "emulator/memory/dma.hh"
+#include "emulator/common/types.hh"
 #include <chrono>
 #include <map>
 #include <vector>

@@ -1,6 +1,6 @@
 #include "serial.hh"
 
-#include "memorybus.hh"
+#include "emulator/memory/memorybus.hh"
 
 Serial::Serial(SerialRegisters& reg, Cpu* cpu) :
     cpu(cpu),

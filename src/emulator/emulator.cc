@@ -1,15 +1,15 @@
 #include "emulator.hh"
 
-#include "addresses.hh"
-#include "cartridge.hh"
-#include "cpu.hh"
-#include "cpuregisters.hh"
-#include "joypad.hh"
-#include "memorybus.hh"
-#include "ppu.hh"
-#include "ppuregisters.hh"
-#include "serial.hh"
-#include "timer.hh"
+#include "emulator/memory/addresses.hh"
+#include "emulator/memory/cartridge.hh"
+#include "emulator/cpu/cpu.hh"
+#include "emulator/cpu/cpuregisters.hh"
+#include "emulator/peripherals/joypad.hh"
+#include "emulator/memory/memorybus.hh"
+#include "emulator/ppu/ppu.hh"
+#include "emulator/ppu/ppuregisters.hh"
+#include "emulator/peripherals/serial.hh"
+#include "emulator/peripherals/timer.hh"
 
 Emulator::Emulator()
 {

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "addresses.hh"
-#include "imemorybusnode.hh"
+#include "emulator/memory/addresses.hh"
+#include "emulator/interfaces/imemorybusnode.hh"
 
 class SerialRegisters : public iMemoryBusNode
 {

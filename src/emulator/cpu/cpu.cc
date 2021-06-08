@@ -1,6 +1,6 @@
 #include "cpu.hh"
 
-#include "memorybus.hh"
+#include "emulator/memory/memorybus.hh"
 #include <array>
 #include <iomanip>
 #include <iostream>

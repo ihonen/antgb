@@ -1,6 +1,6 @@
 #pragma once
 
-#include "emulator/types.hh"
+#include "emulator/common/types.hh"
 #include <string>
 
 class CartridgeHeader

@@ -3,9 +3,9 @@
 #include "addresses.hh"
 #include "cartridge.hh"
 #include "bootrom.hh"
-#include "macros.hh"
-#include "imemorybusnode.hh"
-#include "types.hh"
+#include "emulator/common/macros.hh"
+#include "emulator/interfaces/imemorybusnode.hh"
+#include "emulator/common/types.hh"
 
 #include <vector>
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef NOT_DEFINED_____
-#include "emulator/types.hh"
+#include "emulator/common/types.hh"
 
 /* APU */
 static constexpr regid_t NR10_ADDR = 0xFF10;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "emulator/joypad.hh"
+#include "emulator/peripherals/joypad.hh"
 #include <QKeyEvent>
 
 const std::map<int, JoypadButton> JOYPAD_KEYMAP

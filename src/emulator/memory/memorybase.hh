@@ -1,7 +1,7 @@
 #pragma once
 
 #include "addresses.hh"
-#include "imemorybusnode.hh"
+#include "emulator/interfaces/imemorybusnode.hh"
 
 #include <array>
 

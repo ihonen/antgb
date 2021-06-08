@@ -1,7 +1,7 @@
 #include "cpuregisters.hh"
 
-#include "addresses.hh"
-#include "bitmanip.hh"
+#include "emulator/memory/addresses.hh"
+#include "emulator/common/bitmanip.hh"
 
 #include <cassert>
 

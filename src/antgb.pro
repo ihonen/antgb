@@ -26,29 +26,29 @@ CONFIG += c++17
 
 SOURCES += \
     debugger/cartridgeheader.cc \
-    emulator/apuregisters.cc \
-    emulator/cartridge.cc \
-    emulator/cpuregisters.cc \
-    emulator/dma.cc \
-    emulator/joypadregisters.cc \
-    emulator/memorybus.cc \
-    emulator/ppuregisters.cc \
-    emulator/serialregisters.cc \
-    emulator/timerregisters.cc \
+    emulator/peripherals/apuregisters.cc \
+    emulator/memory/cartridge.cc \
+    emulator/cpu/cpuregisters.cc \
+    emulator/memory/dma.cc \
+    emulator/peripherals/joypadregisters.cc \
+    emulator/memory/memorybus.cc \
+    emulator/ppu/ppuregisters.cc \
+    emulator/peripherals/serialregisters.cc \
+    emulator/peripherals/timerregisters.cc \
     main.cc \
     debugger/breakpoint.cc \
     debugger/debugcore.cc \
     debugger/disassembler.cc \
     debugger/instructions.cc \
-    emulator/apu.cc \
-    emulator/cpu.cc \
+    emulator/peripherals/apu.cc \
+    emulator/cpu/cpu.cc \
     emulator/emulator.cc \
-    emulator/fileio.cc \
-    emulator/interrupts.cc \
-    emulator/joypad.cc \
-    emulator/ppu.cc \
-    emulator/serial.cc \
-    emulator/timer.cc \
+    emulator/common/fileio.cc \
+    emulator/cpu/interrupts.cc \
+    emulator/peripherals/joypad.cc \
+    emulator/ppu/ppu.cc \
+    emulator/peripherals/serial.cc \
+    emulator/peripherals/timer.cc \
     gui/models/breakpointdelegate.cc \
     gui/models/breakpointmodel.cc \
     gui/models/datadelegate.cc \
@@ -99,39 +99,39 @@ HEADERS += \
     debugger/ifrontend.hh \
     debugger/instructions.hh \
     debugger/types.hh \
-    emulator/addresses.hh \
-    emulator/apu.hh \
-    emulator/apuregisters.hh \
-    emulator/bitmanip.hh \
-    emulator/bootrom.hh \
-    emulator/cartridge.hh \
-    emulator/cpu.hh \
-    emulator/cpuregisters.hh \
-    emulator/dma.hh \
-    emulator/echoram.hh \
+    emulator/memory/addresses.hh \
+    emulator/peripherals/apu.hh \
+    emulator/peripherals/apuregisters.hh \
+    emulator/common/bitmanip.hh \
+    emulator/memory/bootrom.hh \
+    emulator/memory/cartridge.hh \
+    emulator/cpu/cpu.hh \
+    emulator/cpu/cpuregisters.hh \
+    emulator/memory/dma.hh \
+    emulator/memory/echoram.hh \
     emulator/emulator.hh \
-    emulator/exceptions.hh \
-    emulator/fileio.hh \
-    emulator/hram.hh \
-    emulator/imemorybusnode.hh \
-    emulator/interrupts.hh \
-    emulator/joypad.hh \
-    emulator/joypadregisters.hh \
-    emulator/macros.hh \
-    emulator/memorybase.hh \
-    emulator/memorybus.hh \
-    emulator/oam.hh \
-    emulator/ppu.hh \
-    emulator/ppuregisters.hh \
-    emulator/registerbase.hh \
-    emulator/serial.hh \
-    emulator/serialregisters.hh \
-    emulator/timer.hh \
-    emulator/timerregisters.hh \
-    emulator/types.hh \
-    emulator/vram.hh \
-    emulator/wram0.hh \
-    emulator/wram1.hh \
+    emulator/common/exceptions.hh \
+    emulator/common/fileio.hh \
+    emulator/memory/hram.hh \
+    emulator/interfaces/imemorybusnode.hh \
+    emulator/cpu/interrupts.hh \
+    emulator/peripherals/joypad.hh \
+    emulator/peripherals/joypadregisters.hh \
+    emulator/common/macros.hh \
+    emulator/memory/memorybase.hh \
+    emulator/memory/memorybus.hh \
+    emulator/memory/oam.hh \
+    emulator/ppu/ppu.hh \
+    emulator/ppu/ppuregisters.hh \
+    emulator/common/registerbase.hh \
+    emulator/peripherals/serial.hh \
+    emulator/peripherals/serialregisters.hh \
+    emulator/peripherals/timer.hh \
+    emulator/peripherals/timerregisters.hh \
+    emulator/common/types.hh \
+    emulator/memory/vram.hh \
+    emulator/memory/wram0.hh \
+    emulator/memory/wram1.hh \
     gui/models/breakpointdelegate.hh \
     gui/models/breakpointmodel.hh \
     gui/models/datadelegate.hh \

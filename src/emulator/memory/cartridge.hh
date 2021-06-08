@@ -1,8 +1,8 @@
 #pragma once
 
-#include "imemorybusnode.hh"
+#include "emulator/interfaces/imemorybusnode.hh"
 #include "memorybase.hh"
-#include "types.hh"
+#include "emulator/common/types.hh"
 
 #include <array>
 

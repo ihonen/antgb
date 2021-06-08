@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ifrontend.hh"
-#include "emulator/types.hh"
+#include "emulator/common/types.hh"
 #include <cstdint>
 #include <string>
 

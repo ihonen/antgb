@@ -1,7 +1,7 @@
 #pragma once
 
-#include "imemorybusnode.hh"
-#include "types.hh"
+#include "emulator/interfaces/imemorybusnode.hh"
+#include "emulator/common/types.hh"
 
 #include <cstdint>
 

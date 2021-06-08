@@ -1,9 +1,9 @@
 #pragma once
 
 #include "cpuregisters.hh"
-#include "exceptions.hh"
-#include "macros.hh"
-#include "types.hh"
+#include "emulator/common/exceptions.hh"
+#include "emulator/common/macros.hh"
+#include "emulator/common/types.hh"
 #include <array>
 #include <fstream>
 

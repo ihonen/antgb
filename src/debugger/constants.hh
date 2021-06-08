@@ -1,6 +1,6 @@
 #pragma once
 
-#include "emulator/types.hh"
+#include "emulator/common/types.hh"
 
 constexpr regid_t INVALID_ADDRESS = -1;
 constexpr regid_t MAX_ADDRESS = 0xFFFF;

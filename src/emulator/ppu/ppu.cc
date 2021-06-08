@@ -3,9 +3,9 @@
 #include "debugger/ifrontend.hh"
 
 
-#include "addresses.hh"
-#include "bitmanip.hh"
-#include "memorybus.hh"
+#include "emulator/memory/addresses.hh"
+#include "emulator/common/bitmanip.hh"
+#include "emulator/memory/memorybus.hh"
 #include "ppuregisters.hh"
 #include <algorithm>
 #include <cassert>
