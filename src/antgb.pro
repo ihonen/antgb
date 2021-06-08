@@ -123,6 +123,7 @@ HEADERS += \
     emulator/oam.hh \
     emulator/ppu.hh \
     emulator/ppuregisters.hh \
+    emulator/registerbase.hh \
     emulator/serial.hh \
     emulator/serialregisters.hh \
     emulator/timer.hh \
