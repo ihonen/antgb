@@ -26,6 +26,9 @@ CONFIG += c++17
 
 SOURCES += \
     debugger/cartridgeheader.cc \
+    emulator/cpu/decode.cc \
+    emulator/cpu/instruction.cc \
+    emulator/cpu/operations.cc \
     emulator/peripherals/apuregisters.cc \
     emulator/memory/cartridge.cc \
     emulator/cpu/cpuregisters.cc \
@@ -99,6 +102,11 @@ HEADERS += \
     debugger/ifrontend.hh \
     debugger/instructions.hh \
     debugger/types.hh \
+    emulator/common/bit.hh \
+    emulator/cpu/decode.hh \
+    emulator/cpu/instruction.hh \
+    emulator/interfaces/ibit.hh \
+    emulator/interfaces/iregister.hh \
     emulator/memory/addresses.hh \
     emulator/peripherals/apu.hh \
     emulator/peripherals/apuregisters.hh \

@@ -1,37 +1,22 @@
 #pragma once
 
+#include "bit.hh"
+#include "emulator/interfaces/iregister.hh"
 #include "types.hh"
 
+#include <array>
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
 
-template<typename T, T read_mask_, T write_mask_>
-class RegisterBase
+template<typename T, T read_mask_ = std::numeric_limits<T>::max(), T write_mask_ = std::numeric_limits<T>::max()>
+class RegisterBase : public iRegister<T>
 {
-protected:
-    T default_buffer_;
-    T* external_buffer_;
-
-    T& bits_;
-
 public:
 
     using value_t = T;
     using mask_t = T;
     using width_t = std::size_t;
-
-    RegisterBase()
-        : external_buffer_(nullptr)
-        , bits_(default_buffer_)
-    {
-    }
-
-    RegisterBase(T& external_buffer)
-        : external_buffer_(&external_buffer)
-        , bits_(*external_buffer_)
-    {
-    }
 
     static constexpr width_t width()
     {
@@ -48,12 +33,30 @@ public:
         return write_mask_;
     }
 
-    value_t& get()
+    RegisterBase()
+        : external_buffer_(nullptr)
+        , bits_(default_buffer_)
+    {
+    }
+
+    RegisterBase(T& external_buffer)
+        : external_buffer_(&external_buffer)
+        , bits_(*external_buffer_)
+    {
+
+    }
+
+    virtual Bit<T>& operator [](std::size_t pos) override
+    {
+
+    }
+
+    virtual value_t& get() override
     {
         return bits_;
     }
 
-    value_t read()
+    virtual value_t read() override
     {
         return bits_ & read_mask();
     }
@@ -63,6 +66,7 @@ public:
         bits_ = value & write_mask();
     }
 
+    /*
     template<width_t n>
     void set()
     {
@@ -90,6 +94,15 @@ public:
         assert(n < width());
         return bool((bits_ & read_mask() & (1 << n)) >> n);
     }
+    */
+
+protected:
+    T default_buffer_;
+    T* external_buffer_;
+
+    T& bits_;
+
+    std::array<Bit<T>, width()> bit_objects_;
 };
 
 template<typename T, addr_t address_, T read_mask_, T write_mask_>
