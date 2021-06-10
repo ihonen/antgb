@@ -1,7 +1,7 @@
 #include "mainwindow.hh"
 
 #include "debugger/cartridgeheader.hh"
-#include "emulator/fileio.hh"
+#include "emulator/common/fileio.hh"
 #include "gui/util/keybindings.hh"
 #include "gui/util/colors.hh"
 #include "gui/util/fonts.hh"
