@@ -18,7 +18,7 @@ void load_rom(std::string& filepath, uint8_t* memory)
 
     if (image.size() != 0x8000)
     {
-        std::cerr << "WARNING: Only ROM size 0x8000 is supported." << std::endl;
+        //std::cerr << "WARNING: Only ROM size 0x8000 is supported." << std::endl;
     }
 
     memcpy(memory, image.data(), image.size());
