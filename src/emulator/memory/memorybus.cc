@@ -5,8 +5,6 @@
 #include <cstring>
 #include <iostream>
 
-#include <QFile>
-
 MemoryBus::MemoryBus(
     BootRom& bootrom,
     iMemoryBusNode& echoram,
@@ -48,7 +46,7 @@ void MemoryBus::hard_reset()
     // TODO: Get rid of Qt dependency.
     // TODO: Move elsewhere.
 
-    QString dump_filepath = ":/memdump/afterboot.dump";
+    std::string dump_filepath = ":/memdump/afterboot.dump";
     uint8_t* afterboot_dump = new uint8_t[0x10000];
     load_rom(dump_filepath, afterboot_dump);
     for (size_t i = 0; i < 0x10000; ++i)

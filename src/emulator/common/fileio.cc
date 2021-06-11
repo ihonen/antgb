@@ -1,17 +1,25 @@
 #include "fileio.hh"
 
-#include <QFile>
+#include <cstring>
+#include <fstream>
+#include <vector>
+#include <iostream>
 
-void load_rom(QString& filepath, uint8_t* memory)
+// TODO: Get rid of.
+void load_rom(std::string& filepath, uint8_t* memory)
 {
-    if (filepath.size() == 0) return;
+    std::vector<uint8_t> image;
 
-    QFile file(filepath);
-    if (!file.open(QIODevice::ReadOnly))
+    std::ifstream file_in(filepath, std::ios::binary);
+    if (file_in.is_open())
     {
-        assert(false && "Couldn't open ROM file");
+        image = std::vector<uint8_t>(std::istreambuf_iterator<char>(file_in), {});
     }
 
-    QByteArray executable = file.readAll();
-    memcpy(memory, executable.data(), (size_t)executable.size() - 1);
+    if (image.size() != 0x8000)
+    {
+        std::cerr << "WARNING: Only ROM size 0x8000 is supported." << std::endl;
+    }
+
+    memcpy(memory, image.data(), image.size());
 }

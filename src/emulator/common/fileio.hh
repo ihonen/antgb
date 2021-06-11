@@ -1,6 +1,6 @@
 #pragma once
 
 #include <cstdint>
-#include <QString>
+#include <string>
 
-void load_rom(QString& filepath, uint8_t* memory);
+void load_rom(std::string& filepath, uint8_t* memory);
