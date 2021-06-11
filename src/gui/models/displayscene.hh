@@ -17,7 +17,9 @@ public:
     virtual ~DisplayScene() override = default;
     void set_pixel(QImage& image, size_t x, size_t y, uint32_t color);
 
-    virtual void render(const iFrontend::Pixels& pixels) override;
+    virtual void render_callback(const iFrontend::Pixels& pixels) override;
+    // TODO: This really, really, REALLY doesn't belong here.
+    virtual void serial_callback(const uint8_t byte) override;
 
     static constexpr uint16_t RES_X = 160;
     static constexpr uint16_t RES_Y = 144;

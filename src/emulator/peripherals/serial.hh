@@ -1,5 +1,6 @@
 #pragma once
 
+#include "debugger/ifrontend.hh"
 #include "emulator/cpu/interrupts.hh"
 #include "serialregisters.hh"
 
@@ -8,19 +9,24 @@ class Serial
 public:
     static constexpr uint64_t CPU_CYCLES_PER_BYTE = 4096;
 
-    Serial(SerialRegisters& reg, Interrupts& interrupts);
+    Serial(SerialRegisters& reg, Interrupts& interrupts, iFrontend* frontend = nullptr);
+    void set_frontend(iFrontend* frontend);
     inline void emulate(uint64_t cpu_cycles);
 
     uint64_t cpu_cycles_left_in_transfer;
     Interrupts& interrupts;
     SerialRegisters& reg;
+    iFrontend* frontend_;
 };
 
 FORCE_INLINE void Serial::emulate(uint64_t cpu_cycles)
 {
     if (reg.read(SB_ADDR) != 0x00 && reg.read(SC_ADDR) == 0x81)
     {
-        std::cout << (char)reg.read(SB_ADDR) << std::flush;
+        if (frontend_ != nullptr)
+        {
+            frontend_->serial_callback(reg.read(SB_ADDR));
+        }
         reg.write(SB_ADDR, 0x00);
         cpu_cycles_left_in_transfer = CPU_CYCLES_PER_BYTE;
     }

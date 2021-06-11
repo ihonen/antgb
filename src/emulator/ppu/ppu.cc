@@ -560,7 +560,7 @@ void Renderer::render_frame()
 
     if (frontend)
     {
-        frontend->render(pixels);
+        frontend->render_callback(pixels);
     }
 }
 

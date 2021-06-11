@@ -60,9 +60,14 @@ void DisplayScene::set_pixel(QImage& image, size_t x, size_t y, uint32_t color)
     }
 }
 
-void DisplayScene::render(const Pixels& pixels)
+void DisplayScene::render_callback(const Pixels& pixels)
 {
     emit schedule_render_on_screen(pixels);
+}
+
+void DisplayScene::serial_callback(const uint8_t byte)
+{
+    std::cerr << byte;
 }
 
 void DisplayScene::render_on_screen(const Pixels& pixels)

@@ -3,6 +3,7 @@
 #include <array>
 #include <cstdint>
 #include <cstddef>
+#include <iostream>
 
 class iFrontend
 {
@@ -15,5 +16,6 @@ public:
     using Pixels = std::array<std::array<Pixel, SCREEN_HEIGHT>, SCREEN_WIDTH>;
 
     virtual ~iFrontend() = default;
-    virtual void render(const Pixels& pixels) = 0;
+    virtual void render_callback(const Pixels& pixels) { (void)pixels; }
+    virtual void serial_callback(uint8_t byte) { (void)byte; }
 };

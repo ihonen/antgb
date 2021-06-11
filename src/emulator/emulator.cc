@@ -62,6 +62,7 @@ Emulator::~Emulator() = default;
 void Emulator::set_frontend(iFrontend* frontend)
 {
     ppu->set_frontend(frontend);
+    serial->set_frontend(frontend);
 }
 
 void Emulator::load_rom(const std::string& filepath)
