@@ -1,0 +1,15 @@
+[submodule "src/tests/gb-test-roms"]
+	path = src/tests/gb-test-roms
+	url = git@github.com:retrio/gb-test-roms.git
+[submodule "src/tests/googletest"]
+	path = src/tests/googletest
+	url = git@github.com:google/googletest.git
+[submodule "tests/-f"]
+	path = tests/-f
+	url = git@github.com:google/googletest.git
+[submodule "tests/googletest"]
+	path = tests/googletest
+	url = https://github.com/google/googletest.git
+[submodule "tests/gb-test-roms"]
+	path = tests/gb-test-roms
+	url = https://github.com/retrio/gb-test-roms.git
