@@ -1,7 +1,7 @@
 #pragma once
 
 #include "emulator/common/bitmanip.hh"
-#include "emulator/cpu/cpu.hh"
+#include "emulator/cpu/interrupts.hh"
 #include "emulator/memory/dma.hh"
 #include "emulator/common/types.hh"
 #include <chrono>
@@ -55,7 +55,7 @@ public:
 
     const uint8_t MODE_FLAG_MASK = 0x03; // Bits 0-1
 
-    Ppu(PpuRegisters& reg, Cpu* cpu, MemoryBus* mem, Dma& dma, iFrontend* renderer = nullptr);
+    Ppu(PpuRegisters& reg, Interrupts& interrupts, MemoryBus* mem, Dma& dma, iFrontend* renderer = nullptr);
     ~Ppu();
     void set_frontend(iFrontend* frontend);
     void hard_reset();
@@ -65,7 +65,7 @@ public:
     void launch_dma(addr_t src_address);
 
     PpuRegisters& reg;
-    Cpu* cpu;
+    Interrupts& interrupts;
     MemoryBus* mem;
     Dma& dma;
     Renderer* renderer;

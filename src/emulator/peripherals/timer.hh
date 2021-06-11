@@ -6,13 +6,13 @@
 class Timer
 {
 public:
-    Timer(TimerRegisters& reg, Cpu* cpu);
+    Timer(TimerRegisters& reg, Interrupts& interrupts);
     inline void emulate(uint64_t cpu_cycles);
     inline void emulate_divider(uint64_t cpu_cycles);
     inline void emulate_timer(uint64_t cpu_cycles);
 
     TimerRegisters& reg;
-    Cpu* cpu;
+    Interrupts& interrupts;
 
     struct
     {
@@ -69,7 +69,7 @@ FORCE_INLINE void Timer::emulate_timer(uint64_t cpu_cycles)
         if (reg.read(TIMA_ADDR) == 0xFF)
         {
             reg.write(TIMA_ADDR, reg.read(TMA_ADDR));
-            cpu->request_interrupt(Cpu::TimerInterrupt);
+            interrupts.request_interrupt(Interrupts::TimerInterrupt);
             return;
         }
         else

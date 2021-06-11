@@ -70,6 +70,8 @@ public:
 
     std::unique_ptr<MemoryBus> mem;
 
+    std::unique_ptr<Interrupts> interrupts;
+
     std::unique_ptr<Cpu> cpu;
     std::unique_ptr<Dma> dma;
     std::unique_ptr<Ppu> ppu;

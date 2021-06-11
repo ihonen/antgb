@@ -1,13 +1,12 @@
 #include "joypad.hh"
 
 #include "emulator/common/bitmanip.hh"
-#include "emulator/cpu/cpu.hh"
 #include "emulator/memory/memorybus.hh"
 #include <iostream>
 
-Joypad::Joypad(JoypadRegisters& registers, Cpu* cpu)
+Joypad::Joypad(JoypadRegisters& registers, Interrupts& interrupts)
     : registers(registers)
-    , cpu(cpu)
+    , interrupts(interrupts)
 {
     button_status =
     {
@@ -60,7 +59,7 @@ void Joypad::button_pressed(JoypadButton button)
     if (button_status[button].pressed == false)
     {
         button_status[button].pressed = true;
-        cpu->request_interrupt(Cpu::JoypadInterrupt);
+        interrupts.request_interrupt(Interrupts::JoypadInterrupt);
     }
 }
 

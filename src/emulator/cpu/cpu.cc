@@ -5,22 +5,16 @@
 #include <iomanip>
 #include <iostream>
 
-Cpu::Cpu(MemoryBus* mem, CpuRegisters& registers)
-    : mem(mem)
-    , reg(registers)
+Cpu::Cpu(CpuRegisters& registers, Interrupts& interrupts, MemoryBus* mem)
+    : reg(registers)
+    , interrupts(interrupts)
+    , mem(mem)
 {
     trace_log.open("trace.log", std::ofstream::out);
     hard_reset();
 }
 
-Cpu::~Cpu()
-{
-    std::cerr << "vblank interrupts: " << vblank_irqs << std::endl;
-    std::cerr << "lcdstat interrupts: " << lcdstat_irqs << std::endl;
-    std::cerr << "timer interrupts: " << timer_irqs << std::endl;
-    std::cerr << "serial interrupts: " << serial_irqs << std::endl;
-    std::cerr << "joypad interrupts: " << joypad_irqs << std::endl;
-}
+Cpu::~Cpu() = default;
 
 void Cpu::set_PC(uint16_t value)
 {
@@ -56,15 +50,15 @@ void Cpu::execute(const uint8_t* instruction)
     if (EI_countdown > 0)
         --EI_countdown;
 
-    if (has_pending_requests())
+    if (interrupts.has_pending_requests())
     {
-        auto interrupt = next_request();
+        auto interrupt = interrupts.next_request();
 
-        if (interrupt.source != NoInterrupt)
+        if (interrupt.source != Interrupts::NoInterrupt)
         {
             bool was_halted = is_halted;
             is_halted = false;
-            if (interrupt.source == JoypadInterrupt)
+            if (interrupt.source == Interrupts::JoypadInterrupt)
             {
                 // TODO: Does this require an actual
                 // interrupt or just a button press?
@@ -76,7 +70,7 @@ void Cpu::execute(const uint8_t* instruction)
                 if (was_halted)
                     clock_cycles += 4;
                 reg.write_IME(0);
-                clear_interrupt(interrupt.source);
+                interrupts.clear_interrupt(interrupt.source);
                 jump_to_isr(interrupt.vector_address);
                 return;
             }

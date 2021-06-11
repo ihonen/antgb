@@ -1,5 +1,6 @@
 #pragma once
 
+#include "emulator/cpu/interrupts.hh"
 #include "joypadregisters.hh"
 #include <map>
 
@@ -8,7 +9,7 @@ class Cpu;
 class Joypad
 {
 public:
-    Joypad(JoypadRegisters& registers, Cpu* cpu);
+    Joypad(JoypadRegisters& registers, Interrupts& interrupts);
     void button_pressed(JoypadButton button);
     void button_released(JoypadButton button);
 protected:
@@ -19,7 +20,7 @@ protected:
     };
 
     JoypadRegisters& registers;
-    Cpu* cpu;
+    Interrupts& interrupts;
 
     std::map<JoypadButton, ButtonState> button_status;
 };

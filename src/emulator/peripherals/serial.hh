@@ -1,6 +1,6 @@
 #pragma once
 
-#include "emulator/cpu/cpu.hh"
+#include "emulator/cpu/interrupts.hh"
 #include "serialregisters.hh"
 
 class Serial
@@ -8,11 +8,11 @@ class Serial
 public:
     static constexpr uint64_t CPU_CYCLES_PER_BYTE = 4096;
 
-    Serial(SerialRegisters& reg, Cpu* cpu);
+    Serial(SerialRegisters& reg, Interrupts& interrupts);
     inline void emulate(uint64_t cpu_cycles);
 
     uint64_t cpu_cycles_left_in_transfer;
-    Cpu* cpu;
+    Interrupts& interrupts;
     SerialRegisters& reg;
 };
 
@@ -27,7 +27,7 @@ FORCE_INLINE void Serial::emulate(uint64_t cpu_cycles)
 
     if (cpu_cycles_left_in_transfer <= cpu_cycles && cpu_cycles_left_in_transfer != 0)
     {
-        cpu->request_interrupt(Cpu::SerialInterrupt);
+        interrupts.request_interrupt(Interrupts::SerialInterrupt);
         cpu_cycles_left_in_transfer = 0;
         reg.write(SB_ADDR, 0x00);
         reg.write(SC_ADDR, 0x01);

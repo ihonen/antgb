@@ -568,9 +568,9 @@ void Renderer::render_frame()
 // Ppu
 //----------------------------------------------------------------------------
 
-Ppu::Ppu(PpuRegisters& reg, Cpu* cpu, MemoryBus* mem, Dma& dma, iFrontend* renderer_)
+Ppu::Ppu(PpuRegisters& reg, Interrupts& interrupts, MemoryBus* mem, Dma& dma, iFrontend* renderer_)
     : reg(reg)
-    , cpu(cpu)
+    , interrupts(interrupts)
     , mem(mem)
     , dma(dma)
 {
@@ -643,7 +643,7 @@ void Ppu::step(uint64_t cpu_cycles)
             // TODO: Register interface violations.
             set_bit(reg.get(STAT_ADDR), PpuRegisters::LycCoincidence);
             cerr << "sent LCD STAT IRQ" << endl;
-            cpu->request_interrupt(Cpu::LcdStatInt);
+            interrupts.request_interrupt(Interrupts::LcdStatInt);
         }
         else
             clear_bit(reg.get(STAT_ADDR), PpuRegisters::LycCoincidence);
@@ -667,7 +667,7 @@ void Ppu::step(uint64_t cpu_cycles)
                 current_mode = Hblank;
                 // Hblank interrupt
                 if (get_bit(reg.get(STAT_ADDR), PpuRegisters::HBlankInterrupt))
-                    cpu->request_interrupt(Cpu::LcdStatInt);
+                    interrupts.request_interrupt(Interrupts::LcdStatInt);
             }
             else
                 stop = true;
@@ -683,15 +683,15 @@ void Ppu::step(uint64_t cpu_cycles)
                     current_mode = OamScan;
                     // OAM interrupt
                     if (get_bit(reg.get(STAT_ADDR), PpuRegisters::OamInt))
-                        cpu->request_interrupt(Cpu::LcdStatInt);
+                        interrupts.request_interrupt(Interrupts::LcdStatInt);
                 }
                 else
                 {
                     current_mode = Vblank;
                     renderer->render_frame();
-                    cpu->request_interrupt(Cpu::VBlankInterrupt);
+                    interrupts.request_interrupt(Interrupts::VBlankInterrupt);
                     if (get_bit(reg.get(STAT_ADDR), PpuRegisters::VBlankInterrupt))
-                        cpu->request_interrupt(Cpu::LcdStatInt);
+                        interrupts.request_interrupt(Interrupts::LcdStatInt);
                 }
             }
             else
@@ -708,7 +708,7 @@ void Ppu::step(uint64_t cpu_cycles)
                 current_mode = OamScan;
                 // OAM interrupt
                 if (get_bit(reg.get(STAT_ADDR), PpuRegisters::OamInt))
-                    cpu->request_interrupt(Cpu::LcdStatInt);
+                    interrupts.request_interrupt(Interrupts::LcdStatInt);
 
                 //cerr << "vblank end @ " << total_cycles - clocksum << endl;
 
