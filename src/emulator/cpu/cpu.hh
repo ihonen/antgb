@@ -22,8 +22,8 @@ public:
     };
 
     static const uint64_t CLK_FREQ_Hz = 4194304;
-    static const std::array<const InstructionInfo, 256> INSTRUCTION_TABLE;
-    static const std::array<const InstructionInfo, 256> CB_INSTRUCTION_TABLE;
+    static const std::array<const InstructionInfo, 256> OPCODE_TABLE;
+    static const std::array<const InstructionInfo, 256> CB_OPCODE_TABLE;
 
     std::ofstream trace_log;
 
