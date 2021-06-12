@@ -6,7 +6,7 @@
 namespace
 {
 
-class BlarggsCpuInstrsTest
+class BlarggsTestRomsTest
     : public ::testing::TestWithParam<std::string>
 {
 protected:
@@ -27,7 +27,7 @@ protected:
     Emulator emulator_;
 };
 
-TEST_P(BlarggsCpuInstrsTest, run)
+TEST_P(BlarggsTestRomsTest, run)
 {
     for (uint64_t i = 0; i < 100000000ULL; ++i)
     {
@@ -47,8 +47,9 @@ TEST_P(BlarggsCpuInstrsTest, run)
 
 INSTANTIATE_TEST_SUITE_P(
     ,
-    BlarggsCpuInstrsTest,
+    BlarggsTestRomsTest,
     testing::Values(
+        // cpu_instrs
         "gb-test-roms/cpu_instrs/individual/01-special.gb",
         "gb-test-roms/cpu_instrs/individual/02-interrupts.gb",
         "gb-test-roms/cpu_instrs/individual/03-op sp,hl.gb",
@@ -59,7 +60,9 @@ INSTANTIATE_TEST_SUITE_P(
         "gb-test-roms/cpu_instrs/individual/08-misc instrs.gb",
         "gb-test-roms/cpu_instrs/individual/09-op r,r.gb",
         "gb-test-roms/cpu_instrs/individual/10-bit ops.gb",
-        "gb-test-roms/cpu_instrs/individual/11-op a,(hl).gb"
+        "gb-test-roms/cpu_instrs/individual/11-op a,(hl).gb",
+        // instr_timing
+        "gb-test-roms/instr_timing/instr_timing.gb"
     )
 );
 
