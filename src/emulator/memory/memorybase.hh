@@ -45,6 +45,7 @@ public:
         {
             return &memory_.at(address - low());
         }
+        return nullptr;
     }
 
     virtual uint8_t read(addr_t address) override
