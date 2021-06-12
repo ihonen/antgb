@@ -7,30 +7,32 @@
 class Interrupts
 {
 public:
-    enum InterruptId
+    enum IrqSource
     {
-        VBlankInterrupt = 0x00,
-        LcdStatInt      = 0x01,
-        TimerInterrupt  = 0x02,
-        SerialInterrupt = 0x03,
-        JoypadInterrupt = 0x04,
-        NoInterrupt     = 0xFF
+        VBlank  = 0x00,
+        LcdStat = 0x01,
+        Timer   = 0x02,
+        Serial  = 0x03,
+        Joypad  = 0x04,
+        None    = 0xFF
     };
 
-    typedef struct
+    struct Irq
     {
-        InterruptId source;
+        IrqSource source;
         addr_t handler_address;
-    } InterruptInfo;
-
-    const addr_t INTERRUPT_VECTOR[5] = {0x0040, 0x0048, 0x0050, 0x0058, 0x0060};
+    };
 
     Interrupts(CpuRegisters& registers);
+
     inline void post_bootram_reset();
+
     inline void pre_instruction_execute();
     inline void post_instruction_execute();
+
     inline bool has_pending_requests();
-    inline InterruptInfo next_request();
+    inline const Interrupts::Irq& next_request();
+
     inline void request_interrupt(int source);
     inline bool interrupt_requested(int source);
     inline bool interrupt_enabled(int source);
@@ -44,47 +46,54 @@ public:
 
 protected:
     CpuRegisters& reg_;
-    uint64_t vblank_irqs  = 0;
-    uint64_t lcdstat_irqs = 0;
-    uint64_t timer_irqs   = 0;
-    uint64_t serial_irqs  = 0;
-    uint64_t joypad_irqs  = 0;
+    uint64_t vblank_irq_count_  = 0;
+    uint64_t lcdstat_irq_count_ = 0;
+    uint64_t timer_irq_count_   = 0;
+    uint64_t serial_irq_count_  = 0;
+    uint64_t joypad_irq_count_  = 0;
+
+    const Irq VBLANK_IRQ = {VBlank, 0x0040};
+    const Irq LCDSTAT_IRQ = {LcdStat, 0x0048};
+    const Irq TIMER_IRQ = {Timer, 0x0050};
+    const Irq SERIAL_IRQ = {Serial, 0x0058};
+    const Irq JOYPAD_IRQ = {Joypad, 0x0060};
+    const Irq NONE_IRQ = {None, 0x0000};
 
     static constexpr int NO_COUNTDOWN = -1;
-    int DI_countdown = NO_COUNTDOWN;
-    int EI_countdown = NO_COUNTDOWN;
+    int DI_countdown_ = NO_COUNTDOWN;
+    int EI_countdown_ = NO_COUNTDOWN;
 };
 
 FORCE_INLINE void Interrupts::post_bootram_reset()
 {
-    DI_countdown = NO_COUNTDOWN;
-    EI_countdown = NO_COUNTDOWN;
+    DI_countdown_ = NO_COUNTDOWN;
+    EI_countdown_ = NO_COUNTDOWN;
 }
 
 FORCE_INLINE void Interrupts::pre_instruction_execute()
 {
-    if (DI_countdown != NO_COUNTDOWN)
+    if (DI_countdown_ != NO_COUNTDOWN)
     {
-        --DI_countdown;
+        --DI_countdown_;
     }
-    if (EI_countdown != NO_COUNTDOWN)
+    if (EI_countdown_ != NO_COUNTDOWN)
     {
-        --EI_countdown;
+        --EI_countdown_;
     }
 }
 
 FORCE_INLINE void Interrupts::post_instruction_execute()
 {
-    if (EI_countdown == 0)
+    if (EI_countdown_ == 0)
     {
-        DI_countdown = NO_COUNTDOWN;
-        EI_countdown = NO_COUNTDOWN;
+        DI_countdown_ = NO_COUNTDOWN;
+        EI_countdown_ = NO_COUNTDOWN;
         reg_.write_IME(1);
     }
-    else if (DI_countdown == 0)
+    else if (DI_countdown_ == 0)
     {
-        DI_countdown = NO_COUNTDOWN;
-        EI_countdown = NO_COUNTDOWN;
+        DI_countdown_ = NO_COUNTDOWN;
+        EI_countdown_ = NO_COUNTDOWN;
         reg_.write_IME(0);
     }
 }
@@ -94,30 +103,44 @@ FORCE_INLINE bool Interrupts::has_pending_requests()
     return (reg_.read_IF() & 0x1F) != 0;
 }
 
-FORCE_INLINE Interrupts::InterruptInfo Interrupts::next_request()
+FORCE_INLINE const Interrupts::Irq& Interrupts::next_request()
 {
-    for (InterruptId i = VBlankInterrupt;
-         i <= JoypadInterrupt;
-         i = (InterruptId)((int)i + 1))
+    for (IrqSource i = VBlank;
+         i <= Joypad;
+         i = static_cast<IrqSource>(static_cast<int>(i) + 1))
     {
         if (interrupt_enabled(i) && interrupt_requested(i))
         {
-            return {(InterruptId)i, INTERRUPT_VECTOR[i]};
+            switch (i)
+            {
+                case VBlank:
+                    return VBLANK_IRQ;
+                case LcdStat:
+                    return LCDSTAT_IRQ;
+                case Timer:
+                    return TIMER_IRQ;
+                case Serial:
+                    return SERIAL_IRQ;
+                case Joypad:
+                    return JOYPAD_IRQ;
+                case None:
+                    break;
+            }
         }
     }
 
-    return {NoInterrupt, 0x0000};
+    return NONE_IRQ;
 }
 
 FORCE_INLINE void Interrupts::request_interrupt(int source)
 {
     switch (source)
     {
-    case VBlankInterrupt: ++vblank_irqs; break;
-    case LcdStatInt: ++lcdstat_irqs; break;
-    case JoypadInterrupt: ++joypad_irqs; break;
-    case TimerInterrupt: ++timer_irqs; break;
-    case SerialInterrupt: ++serial_irqs; break;
+    case VBlank: ++vblank_irq_count_; break;
+    case LcdStat: ++lcdstat_irq_count_; break;
+    case Joypad: ++joypad_irq_count_; break;
+    case Timer: ++timer_irq_count_; break;
+    case Serial: ++serial_irq_count_; break;
     }
 
     reg_.write_IF(reg_.read_IF() | (0x01 << source));
@@ -150,20 +173,20 @@ FORCE_INLINE void Interrupts::enable_interrupt(int source)
 
 FORCE_INLINE void Interrupts::enable_interrupts_after(int delay)
 {
-    DI_countdown = NO_COUNTDOWN;
-    EI_countdown = delay;
+    DI_countdown_ = NO_COUNTDOWN;
+    EI_countdown_ = delay;
 }
 
 FORCE_INLINE void Interrupts::enable_interrupts_now()
 {
-    DI_countdown = NO_COUNTDOWN;
-    EI_countdown = NO_COUNTDOWN;
+    DI_countdown_ = NO_COUNTDOWN;
+    EI_countdown_ = NO_COUNTDOWN;
     reg_.write_IME(1);
 }
 
 FORCE_INLINE void Interrupts::disable_interrupts_now()
 {
-    DI_countdown = NO_COUNTDOWN;
-    EI_countdown = NO_COUNTDOWN;
+    DI_countdown_ = NO_COUNTDOWN;
+    EI_countdown_ = NO_COUNTDOWN;
     reg_.write_IME(0);
 }

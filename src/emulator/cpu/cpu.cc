@@ -48,8 +48,8 @@ void Cpu::execute_next()
 
     if (interrupts_.has_pending_requests())
     {
-        auto interrupt = interrupts_.next_request();
-        if (interrupt.source != Interrupts::NoInterrupt)
+        auto& interrupt = interrupts_.next_request();
+        if (interrupt.source != Interrupts::None)
         {
             const bool was_halted = is_halted_;
             is_halted_ = false;
@@ -57,7 +57,7 @@ void Cpu::execute_next()
             switch (interrupt.source)
             {
                 // TODO: Is this correct?
-                case Interrupts::JoypadInterrupt:
+                case Interrupts::Joypad:
                     is_stopped_ = false;
                     break;
                 default:
@@ -110,7 +110,7 @@ void Cpu::invalid_opcode()
     throw OpcodeError(0, *current_instruction_);
 }
 
-void Cpu::jump_to_interrupt_handler(const Interrupts::InterruptInfo& interrupt)
+void Cpu::jump_to_interrupt_handler(const Interrupts::Irq& interrupt)
 {
     interrupts_.clear_interrupt(interrupt.source);
     interrupts_.disable_interrupts_now();

@@ -643,7 +643,7 @@ void Ppu::step(uint64_t cpu_cycles)
             // TODO: Register interface violations.
             set_bit(reg.get(STAT_ADDR), PpuRegisters::LycCoincidence);
             cerr << "sent LCD STAT IRQ" << endl;
-            interrupts.request_interrupt(Interrupts::LcdStatInt);
+            interrupts.request_interrupt(Interrupts::LcdStat);
         }
         else
             clear_bit(reg.get(STAT_ADDR), PpuRegisters::LycCoincidence);
@@ -667,7 +667,7 @@ void Ppu::step(uint64_t cpu_cycles)
                 current_mode = Hblank;
                 // Hblank interrupt
                 if (get_bit(reg.get(STAT_ADDR), PpuRegisters::HBlankInterrupt))
-                    interrupts.request_interrupt(Interrupts::LcdStatInt);
+                    interrupts.request_interrupt(Interrupts::LcdStat);
             }
             else
                 stop = true;
@@ -683,15 +683,15 @@ void Ppu::step(uint64_t cpu_cycles)
                     current_mode = OamScan;
                     // OAM interrupt
                     if (get_bit(reg.get(STAT_ADDR), PpuRegisters::OamInt))
-                        interrupts.request_interrupt(Interrupts::LcdStatInt);
+                        interrupts.request_interrupt(Interrupts::LcdStat);
                 }
                 else
                 {
                     current_mode = Vblank;
                     renderer->render_frame();
-                    interrupts.request_interrupt(Interrupts::VBlankInterrupt);
+                    interrupts.request_interrupt(Interrupts::VBlank);
                     if (get_bit(reg.get(STAT_ADDR), PpuRegisters::VBlankInterrupt))
-                        interrupts.request_interrupt(Interrupts::LcdStatInt);
+                        interrupts.request_interrupt(Interrupts::LcdStat);
                 }
             }
             else
@@ -708,7 +708,7 @@ void Ppu::step(uint64_t cpu_cycles)
                 current_mode = OamScan;
                 // OAM interrupt
                 if (get_bit(reg.get(STAT_ADDR), PpuRegisters::OamInt))
-                    interrupts.request_interrupt(Interrupts::LcdStatInt);
+                    interrupts.request_interrupt(Interrupts::LcdStat);
 
                 //cerr << "vblank end @ " << total_cycles - clocksum << endl;
 

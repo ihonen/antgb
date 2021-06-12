@@ -41,7 +41,7 @@ public:
 
 protected:
     void dispatch(const uint8_t* instruction);
-    void jump_to_interrupt_handler(const Interrupts::InterruptInfo& interrupt);
+    void jump_to_interrupt_handler(const Interrupts::Irq& interrupt);
 
     inline uint8_t get_immediate8(const uint8_t* instruction);
     inline uint16_t get_immediate16(const uint8_t* instruction);

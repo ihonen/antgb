@@ -69,7 +69,7 @@ FORCE_INLINE void Timer::emulate_timer(uint64_t cpu_cycles)
         if (reg.read(TIMA_ADDR) == 0xFF)
         {
             reg.write(TIMA_ADDR, reg.read(TMA_ADDR));
-            interrupts.request_interrupt(Interrupts::TimerInterrupt);
+            interrupts.request_interrupt(Interrupts::Timer);
             return;
         }
         else

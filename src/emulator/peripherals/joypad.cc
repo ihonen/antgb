@@ -59,7 +59,7 @@ void Joypad::button_pressed(JoypadButton button)
     if (button_status[button].pressed == false)
     {
         button_status[button].pressed = true;
-        interrupts.request_interrupt(Interrupts::JoypadInterrupt);
+        interrupts.request_interrupt(Interrupts::Joypad);
     }
 }
 
