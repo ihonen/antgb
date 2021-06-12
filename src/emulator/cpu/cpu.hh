@@ -52,8 +52,8 @@ public:
     inline uint64_t get_cycles();
     void jump_to_isr(addr_t vector_address);
     void invalid_opcode();
-    inline uint8_t extract_immediate8(const uint8_t* instruction = nullptr);
-    inline uint16_t extract_immediate16(const uint8_t* instruction = nullptr);
+    inline uint8_t extract_immediate8(const uint8_t* instruction);
+    inline uint16_t extract_immediate16(const uint8_t* instruction);
 
     void ADC_A_HL();
     void ADC_A_n8(uint8_t u8);
@@ -170,13 +170,11 @@ FORCE_INLINE void Cpu::reset_cycles()
 
 FORCE_INLINE uint8_t Cpu::extract_immediate8(const uint8_t* instruction)
 {
-    if (!instruction) instruction = current_instruction;
-    return current_instruction[1];
+    return instruction[1];
 }
 
 FORCE_INLINE uint16_t Cpu::extract_immediate16(const uint8_t* instruction)
 {
-    if (!instruction) instruction = current_instruction;
-    return (static_cast<uint16_t>(instruction[1])) |
-           (static_cast<uint16_t>(instruction[2]) << 8);
+    return (static_cast<uint16_t>(instruction[1]))
+           | (static_cast<uint16_t>(instruction[2]) << 8);
 }

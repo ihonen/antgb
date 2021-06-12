@@ -8,7 +8,7 @@ void Cpu::decode_and_dispatch(const uint8_t* instruction)
             NOP();
             break;
         case 0x01:
-            LD_r16_n16(reg.get_BC(), extract_immediate16());
+            LD_r16_n16(reg.get_BC(), extract_immediate16(current_instruction));
             break;
         case 0x02:
             LD_r16_A(reg.get_BC());
@@ -23,13 +23,13 @@ void Cpu::decode_and_dispatch(const uint8_t* instruction)
             DEC_r8(reg.get_B());
             break;
         case 0x06:
-            LD_r8_n8(reg.get_B(), extract_immediate8());
+            LD_r8_n8(reg.get_B(), extract_immediate8(current_instruction));
             break;
         case 0x07:
             RLCA();
             break;
         case 0x08:
-            LD_n16_SP(extract_immediate16());
+            LD_n16_SP(extract_immediate16(current_instruction));
             break;
         case 0x09:
             ADD_HL_r16(reg.get_BC());
@@ -47,7 +47,7 @@ void Cpu::decode_and_dispatch(const uint8_t* instruction)
             DEC_r8(reg.get_C());
             break;
         case 0x0E:
-            LD_r8_n8(reg.get_C(), extract_immediate8());
+            LD_r8_n8(reg.get_C(), extract_immediate8(current_instruction));
             break;
         case 0x0F:
             RRCA();
@@ -56,7 +56,7 @@ void Cpu::decode_and_dispatch(const uint8_t* instruction)
             STOP();
             break;
         case 0x11:
-            LD_r16_n16(reg.get_DE(), extract_immediate16());
+            LD_r16_n16(reg.get_DE(), extract_immediate16(current_instruction));
             break;
         case 0x12:
             LD_r16_A(reg.get_DE());
@@ -71,13 +71,13 @@ void Cpu::decode_and_dispatch(const uint8_t* instruction)
             DEC_r8(reg.get_D());
             break;
         case 0x16:
-            LD_r8_n8(reg.get_D(), extract_immediate8());
+            LD_r8_n8(reg.get_D(), extract_immediate8(current_instruction));
             break;
         case 0x17:
             RLA();
             break;
         case 0x18:
-            JR_n8(static_cast<int8_t>(extract_immediate8()));
+            JR_n8(static_cast<int8_t>(extract_immediate8(current_instruction)));
             break;
         case 0x19:
             ADD_HL_r16(reg.get_DE());
@@ -95,16 +95,16 @@ void Cpu::decode_and_dispatch(const uint8_t* instruction)
             DEC_r8(reg.get_E());
             break;
         case 0x1E:
-            LD_r8_n8(reg.get_E(), extract_immediate8());
+            LD_r8_n8(reg.get_E(), extract_immediate8(current_instruction));
             break;
         case 0x1F:
             RRA();
             break;
         case 0x20:
-            JR_cc_n8(!reg.read_Z_flag(), static_cast<int8_t>(extract_immediate8()));
+            JR_cc_n8(!reg.read_Z_flag(), static_cast<int8_t>(extract_immediate8(current_instruction)));
             break;
         case 0x21:
-            LD_r16_n16(reg.get_HL(), extract_immediate16());
+            LD_r16_n16(reg.get_HL(), extract_immediate16(current_instruction));
             break;
         case 0x22:
             LDI_HL_A();
@@ -119,13 +119,13 @@ void Cpu::decode_and_dispatch(const uint8_t* instruction)
             DEC_r8(reg.get_H());
             break;
         case 0x26:
-            LD_r8_n8(reg.get_H(), extract_immediate8());
+            LD_r8_n8(reg.get_H(), extract_immediate8(current_instruction));
             break;
         case 0x27:
             DAA();
             break;
         case 0x28:
-            JR_cc_n8(reg.read_Z_flag(), static_cast<int8_t>(extract_immediate8()));
+            JR_cc_n8(reg.read_Z_flag(), static_cast<int8_t>(extract_immediate8(current_instruction)));
             break;
         case 0x29:
             ADD_HL_r16(reg.get_HL());
@@ -143,16 +143,16 @@ void Cpu::decode_and_dispatch(const uint8_t* instruction)
             DEC_r8(reg.get_L());
             break;
         case 0x2E:
-            LD_r8_n8(reg.get_L(), extract_immediate8());
+            LD_r8_n8(reg.get_L(), extract_immediate8(current_instruction));
             break;
         case 0x2F:
             CPL();
             break;
         case 0x30:
-            JR_cc_n8(!reg.read_C_flag(), static_cast<int8_t>(extract_immediate8()));
+            JR_cc_n8(!reg.read_C_flag(), static_cast<int8_t>(extract_immediate8(current_instruction)));
             break;
         case 0x31:
-            LD_r16_n16(reg.get_SP(), extract_immediate16());
+            LD_r16_n16(reg.get_SP(), extract_immediate16(current_instruction));
             break;
         case 0x32:
             LDD_HL_A();
@@ -167,13 +167,13 @@ void Cpu::decode_and_dispatch(const uint8_t* instruction)
             DEC_HL();
             break;
         case 0x36:
-            LD_HL_n8(extract_immediate8());
+            LD_HL_n8(extract_immediate8(current_instruction));
             break;
         case 0x37:
             SCF();
             break;
         case 0x38:
-            JR_cc_n8(reg.read_C_flag(), static_cast<int8_t>(extract_immediate8()));
+            JR_cc_n8(reg.read_C_flag(), static_cast<int8_t>(extract_immediate8(current_instruction)));
             break;
         case 0x39:
             ADD_HL_r16(reg.get_SP());
@@ -191,7 +191,7 @@ void Cpu::decode_and_dispatch(const uint8_t* instruction)
             DEC_r8(reg.get_A());
             break;
         case 0x3E:
-            LD_r8_n8(reg.get_A(), extract_immediate8());
+            LD_r8_n8(reg.get_A(), extract_immediate8(current_instruction));
             break;
         case 0x3F:
             CCF();
@@ -587,19 +587,19 @@ void Cpu::decode_and_dispatch(const uint8_t* instruction)
             POP_r16(reg.get_BC());
             break;
         case 0xC2:
-            JP_cc_n16(!reg.read_Z_flag(), extract_immediate16());
+            JP_cc_n16(!reg.read_Z_flag(), extract_immediate16(current_instruction));
             break;
         case 0xC3:
-            JP_n16(extract_immediate16());
+            JP_n16(extract_immediate16(current_instruction));
             break;
         case 0xC4:
-            CALL_cc_n16(!reg.read_Z_flag(), extract_immediate16());
+            CALL_cc_n16(!reg.read_Z_flag(), extract_immediate16(current_instruction));
             break;
         case 0xC5:
             PUSH_r16(reg.get_BC());
             break;
         case 0xC6:
-            ADD_A_n8(extract_immediate8());
+            ADD_A_n8(extract_immediate8(current_instruction));
             break;
         case 0xC7:
             RST_f(0x00);
@@ -611,18 +611,18 @@ void Cpu::decode_and_dispatch(const uint8_t* instruction)
             RET();
             break;
         case 0xCA:
-            JP_cc_n16(reg.read_Z_flag(), extract_immediate16());
+            JP_cc_n16(reg.read_Z_flag(), extract_immediate16(current_instruction));
             break;
         case 0xCB:
             goto CB_OPCODES_BEGIN;
         case 0xCC:
-            CALL_cc_n16(reg.read_Z_flag(), extract_immediate16());
+            CALL_cc_n16(reg.read_Z_flag(), extract_immediate16(current_instruction));
             break;
         case 0xCD:
-            CALL_n16(extract_immediate16());
+            CALL_n16(extract_immediate16(current_instruction));
             break;
         case 0xCE:
-            ADC_A_n8(extract_immediate8());
+            ADC_A_n8(extract_immediate8(current_instruction));
             break;
         case 0xCF:
             RST_f(0x08);
@@ -634,19 +634,19 @@ void Cpu::decode_and_dispatch(const uint8_t* instruction)
             POP_r16(reg.get_DE());
             break;
         case 0xD2:
-            JP_cc_n16(!reg.read_C_flag(), extract_immediate16());
+            JP_cc_n16(!reg.read_C_flag(), extract_immediate16(current_instruction));
             break;
         case 0xD3:
             invalid_opcode();
             break;
         case 0xD4:
-            CALL_cc_n16(!reg.read_C_flag(), extract_immediate16());
+            CALL_cc_n16(!reg.read_C_flag(), extract_immediate16(current_instruction));
             break;
         case 0xD5:
             PUSH_r16(reg.get_DE());
             break;
         case 0xD6:
-            SUB_A_n8(extract_immediate8());
+            SUB_A_n8(extract_immediate8(current_instruction));
             break;
         case 0xD7:
             RST_f(0x10);
@@ -658,25 +658,25 @@ void Cpu::decode_and_dispatch(const uint8_t* instruction)
             RETI();
             break;
         case 0xDA:
-            JP_cc_n16(reg.read_C_flag(), extract_immediate16());
+            JP_cc_n16(reg.read_C_flag(), extract_immediate16(current_instruction));
             break;
         case 0xDB:
             invalid_opcode();
             break;
         case 0xDC:
-            CALL_cc_n16(reg.read_C_flag(), extract_immediate16());
+            CALL_cc_n16(reg.read_C_flag(), extract_immediate16(current_instruction));
             break;
         case 0xDD:
             invalid_opcode();
             break;
         case 0xDE:
-            SBC_A_n8(extract_immediate8());
+            SBC_A_n8(extract_immediate8(current_instruction));
             break;
         case 0xDF:
             RST_f(0x18);
             break;
         case 0xE0:
-            LDH_n8_A(extract_immediate8());
+            LDH_n8_A(extract_immediate8(current_instruction));
             break;
         case 0xE1:
             POP_r16(reg.get_HL());
@@ -694,19 +694,19 @@ void Cpu::decode_and_dispatch(const uint8_t* instruction)
             PUSH_r16(reg.get_HL());
             break;
         case 0xE6:
-            AND_n8(extract_immediate8());
+            AND_n8(extract_immediate8(current_instruction));
             break;
         case 0xE7:
             RST_f(0x20);
             break;
         case 0xE8:
-            ADD_SP_e8(static_cast<int8_t>(extract_immediate8()));
+            ADD_SP_e8(static_cast<int8_t>(extract_immediate8(current_instruction)));
             break;
         case 0xE9:
             JP_n16(reg.get_HL());
             break;
         case 0xEA:
-            LD_n16_A(extract_immediate16());
+            LD_n16_A(extract_immediate16(current_instruction));
             break;
         case 0xEB:
             invalid_opcode();
@@ -718,13 +718,13 @@ void Cpu::decode_and_dispatch(const uint8_t* instruction)
             invalid_opcode();
             break;
         case 0xEE:
-            XOR_n8(extract_immediate8());
+            XOR_n8(extract_immediate8(current_instruction));
             break;
         case 0xEF:
             RST_f(0x28);
             break;
         case 0xF0:
-            LDH_A_n8(extract_immediate8());
+            LDH_A_n8(extract_immediate8(current_instruction));
             break;
         case 0xF1:
             POP_r16(reg.get_AF());
@@ -745,19 +745,19 @@ void Cpu::decode_and_dispatch(const uint8_t* instruction)
             PUSH_r16(reg.get_AF());
             break;
         case 0xF6:
-            OR_n8(extract_immediate8());
+            OR_n8(extract_immediate8(current_instruction));
             break;
         case 0xF7:
             RST_f(0x30);
             break;
         case 0xF8:
-            LD_HL_SP_e8(static_cast<int8_t>(extract_immediate8()));
+            LD_HL_SP_e8(static_cast<int8_t>(extract_immediate8(current_instruction)));
             break;
         case 0xF9:
             LD_SP_HL();
             break;
         case 0xFA:
-            LD_A_n16(extract_immediate16());
+            LD_A_n16(extract_immediate16(current_instruction));
             break;
         case 0xFB:
             EI();
@@ -769,7 +769,7 @@ void Cpu::decode_and_dispatch(const uint8_t* instruction)
             invalid_opcode();
             break;
         case 0xFE:
-            CP_n8(extract_immediate8());
+            CP_n8(extract_immediate8(current_instruction));
             break;
         case 0xFF:
             RST_f(0x38);
