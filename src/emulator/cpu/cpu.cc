@@ -48,26 +48,22 @@ void Cpu::execute_next()
 
     if (interrupts_.has_pending_requests())
     {
-        auto& interrupt = interrupts_.next_request();
+        auto& interrupt = interrupts_.get_top_priority_request();
         if (interrupt.source != Interrupts::None)
         {
+            if (interrupt.source == Interrupts::Joypad)
+            {
+                is_stopped_ = false;
+            }
+
             const bool was_halted = is_halted_;
             is_halted_ = false;
 
-            switch (interrupt.source)
-            {
-                // TODO: Is this correct?
-                case Interrupts::Joypad:
-                    is_stopped_ = false;
-                    break;
-                default:
-                    break;
-            }
-
-            if (reg_.read_IME())
+            if (interrupts_.interrupts_enabled())
             {
                 if (was_halted)
                 {
+                    // TODO: Where does this come from?
                     elapsed_tcycles_ += 4;
                 }
 
@@ -110,12 +106,11 @@ void Cpu::invalid_opcode()
     throw OpcodeError(0, *current_instruction_);
 }
 
-void Cpu::jump_to_interrupt_handler(const Interrupts::Irq& interrupt)
+void Cpu::jump_to_interrupt_handler(const Interrupts::Irq& irq)
 {
-    interrupts_.clear_interrupt(interrupt.source);
+    interrupts_.clear_interrupt(irq.source);
     interrupts_.disable_interrupts_now();
-    PUSH_r16(reg_.get_PC());
-    reg_.write_PC(interrupt.handler_address);
+    CALL_n16(irq.handler_address);
     current_instruction_ = memory_.get(reg_.read_PC());
     elapsed_tcycles_ += 20;
 }

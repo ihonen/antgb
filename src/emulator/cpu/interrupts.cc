@@ -23,15 +23,16 @@ void Interrupts::post_bootram_reset()
     disable_delay_left_ = EXPIRED;
     enable_delay_left_  = EXPIRED;
 }
-const Interrupts::Irq& Interrupts::next_request()
+
+const Interrupts::Irq& Interrupts::get_top_priority_request()
 {
-    for (Source i = VBlank;
-         i <= Joypad;
-         i = static_cast<Source>(static_cast<int>(i) + 1))
+    for (Source source = VBlank;
+         source < None;
+         source = static_cast<Source>(static_cast<int>(source) + 1))
     {
-        if (interrupt_enabled(i) && interrupt_requested(i))
+        if (interrupt_enabled(source) && interrupt_requested(source))
         {
-            switch (i)
+            switch (source)
             {
                 case VBlank:
                     return VBLANK_IRQ;
@@ -44,6 +45,7 @@ const Interrupts::Irq& Interrupts::next_request()
                 case Joypad:
                     return JOYPAD_IRQ;
                 case None:
+                    assert(false);
                     return NONE_IRQ;
             }
         }

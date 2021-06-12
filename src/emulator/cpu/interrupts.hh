@@ -31,7 +31,7 @@ public:
     inline void post_instruction_exec_tick();
 
     inline bool has_pending_requests();
-    const Interrupts::Irq& next_request();
+    const Interrupts::Irq& get_top_priority_request();
 
     void request_interrupt(Source source);
     inline bool interrupt_requested(Source source);
@@ -40,6 +40,7 @@ public:
     inline void disable_interrupt(Source source);
     inline void enable_interrupt(Source source);
 
+    inline bool interrupts_enabled();
     inline void enable_interrupts_after(int delay);
     inline void enable_interrupts_now();
     inline void disable_interrupts_now();
@@ -121,6 +122,11 @@ FORCE_INLINE void Interrupts::disable_interrupt(Source source)
 FORCE_INLINE void Interrupts::enable_interrupt(Source source)
 {
     reg_.write_IE(reg_.read_IE() | static_cast<uint8_t>((1 << source)));
+}
+
+inline bool Interrupts::interrupts_enabled()
+{
+    return bool(reg_.read_IME());
 }
 
 FORCE_INLINE void Interrupts::enable_interrupts_after(int delay)
