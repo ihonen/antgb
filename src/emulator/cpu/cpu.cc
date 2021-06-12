@@ -30,14 +30,15 @@ void Cpu::hard_reset()
 {
     reg = CpuRegisters();
     reg.post_bootram_reset();
+    interrupts.hard_reset();
 
     current_instruction = nullptr;
     branch_taken = false;
-    DI_countdown = NO_COUNTDOWN;
-    EI_countdown = NO_COUNTDOWN;
+
     is_halted = false;
     is_stopped = false;
     clock_cycles = 0;
+
 }
 
 void Cpu::execute(const uint8_t* instruction)
@@ -47,13 +48,12 @@ void Cpu::execute(const uint8_t* instruction)
     current_instruction = instruction;
     branch_taken = false;
 
-    if (EI_countdown > 0)
-        --EI_countdown;
+    interrupts.pre_instruction_execute();
 
     if (interrupts.has_pending_requests())
     {
-        if (auto interrupt = interrupts.next_request();
-            interrupt.source != Interrupts::NoInterrupt)
+        auto interrupt = interrupts.next_request();
+        if (interrupt.source != Interrupts::NoInterrupt)
         {
             bool was_halted = is_halted;
             is_halted = false;
@@ -71,10 +71,11 @@ void Cpu::execute(const uint8_t* instruction)
             if (reg.read_IME())
             {
                 if (was_halted)
+                {
                     clock_cycles += 4;
-                reg.write_IME(0);
-                interrupts.clear_interrupt(interrupt.source);
-                jump_to_isr(interrupt.vector_address);
+                }
+
+                jump_to_interrupt_handler(interrupt);
                 return;
             }
         }
@@ -101,18 +102,7 @@ void Cpu::execute(const uint8_t* instruction)
         clock_cycles += 4;
     }
 
-    if (DI_countdown == 0)
-    {
-        reg.write_IME(0);
-        DI_countdown = NO_COUNTDOWN;
-        EI_countdown = NO_COUNTDOWN;
-    }
-    else if (EI_countdown == 0)
-    {
-        reg.write_IME(1);
-        DI_countdown = NO_COUNTDOWN;
-        EI_countdown = NO_COUNTDOWN;
-    }
+    interrupts.post_instruction_execute();
 }
 
 void Cpu::invalid_opcode()
@@ -120,18 +110,12 @@ void Cpu::invalid_opcode()
     throw OpcodeError(0, *current_instruction);
 }
 
-void Cpu::jump_to_isr(addr_t vector_address)
+void Cpu::jump_to_interrupt_handler(const Interrupts::InterruptInfo& interrupt)
 {
-    if (vector_address == 0x00) return;
-
-    // cerr << "Jumping to interrupt vector @ " << std::hex << vector_address << endl;
-    // trace_log << "Jumping to interrupt vector @ " << std::hex << vector_address << endl;
-
-    reg.write_IME(0);
+    interrupts.clear_interrupt(interrupt.source);
+    interrupts.disable_interrupts_now();
     PUSH_r16(reg.get_PC());
-    reg.write_PC(vector_address);
+    reg.write_PC(interrupt.handler_address);
     current_instruction = mem->get(reg.read_PC());
-    DI_countdown = NO_COUNTDOWN;
-    EI_countdown = NO_COUNTDOWN;
     clock_cycles += 20;
 }

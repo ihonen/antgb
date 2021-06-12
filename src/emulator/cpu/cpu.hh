@@ -37,10 +37,6 @@ public:
     bool is_stopped = false;
     uint64_t clock_cycles = 0;
 
-    static constexpr int NO_COUNTDOWN = -1;
-    int DI_countdown = NO_COUNTDOWN;
-    int EI_countdown = NO_COUNTDOWN;
-
     Cpu(CpuRegisters& registers, Interrupts& interrupts, MemoryBus* mem);
     ~Cpu();
     void hard_reset();
@@ -50,7 +46,7 @@ public:
     void decode_and_dispatch(const uint8_t* instruction);
     inline void reset_cycles();
     inline uint64_t get_cycles();
-    void jump_to_isr(addr_t vector_address);
+    void jump_to_interrupt_handler(const Interrupts::InterruptInfo& interrupt);
     void invalid_opcode();
     inline uint8_t extract_immediate8(const uint8_t* instruction);
     inline uint16_t extract_immediate16(const uint8_t* instruction);

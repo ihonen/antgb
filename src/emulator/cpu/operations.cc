@@ -211,13 +211,13 @@ void Cpu::DEC_r8(uint8_t& r8)
 void Cpu::DI()
 {
     // No delay in DI.
-    DI_countdown = 0;
+    interrupts.disable_interrupts_now();
 }
 
 // EI
 void Cpu::EI()
 {
-    EI_countdown = 1;
+    interrupts.enable_interrupts_after(1);
 }
 
 // HALT
@@ -500,9 +500,7 @@ void Cpu::RET_cc(bool cc)
 void Cpu::RETI()
 {
     RET();
-    reg.write_IME(1);
-    DI_countdown = NO_COUNTDOWN;
-    EI_countdown = NO_COUNTDOWN;
+    interrupts.enable_interrupts_now();
 }
 
 void Cpu::RL_HL()
