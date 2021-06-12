@@ -52,17 +52,20 @@ void Cpu::execute(const uint8_t* instruction)
 
     if (interrupts.has_pending_requests())
     {
-        auto interrupt = interrupts.next_request();
-
-        if (interrupt.source != Interrupts::NoInterrupt)
+        if (auto interrupt = interrupts.next_request();
+            interrupt.source != Interrupts::NoInterrupt)
         {
             bool was_halted = is_halted;
             is_halted = false;
-            if (interrupt.source == Interrupts::JoypadInterrupt)
+
+            switch (interrupt.source)
             {
-                // TODO: Does this require an actual
-                // interrupt or just a button press?
-                is_stopped = false;
+                // TODO: Is this correct?
+                case Interrupts::JoypadInterrupt:
+                    is_stopped = false;
+                    break;
+                default:
+                    break;
             }
 
             if (reg.read_IME())
