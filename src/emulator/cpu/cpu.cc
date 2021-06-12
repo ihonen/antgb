@@ -42,7 +42,7 @@ void Cpu::post_bootram_reset()
 
 void Cpu::execute_next()
 {
-    interrupts_.pre_instruction_execute();
+    interrupts_.pre_instruction_exec_tick();
 
     // TODO: Is the interrupt handling correct?
 
@@ -102,7 +102,7 @@ void Cpu::execute_next()
         elapsed_tcycles_ += 4;
     }
 
-    interrupts_.post_instruction_execute();
+    interrupts_.post_instruction_exec_tick();
 }
 
 void Cpu::invalid_opcode()

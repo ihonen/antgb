@@ -7,38 +7,38 @@
 class Interrupts
 {
 public:
-    enum IrqSource
+    enum Source
     {
-        VBlank  = 0x00,
-        LcdStat = 0x01,
-        Timer   = 0x02,
-        Serial  = 0x03,
-        Joypad  = 0x04,
-        None    = 0xFF
+        VBlank  = 0,
+        LcdStat = 1,
+        Timer   = 2,
+        Serial  = 3,
+        Joypad  = 4,
+        None,
     };
 
     struct Irq
     {
-        IrqSource source;
+        Source source;
         addr_t handler_address;
     };
 
     Interrupts(CpuRegisters& registers);
 
-    inline void post_bootram_reset();
+    void post_bootram_reset();
 
-    inline void pre_instruction_execute();
-    inline void post_instruction_execute();
+    inline void pre_instruction_exec_tick();
+    inline void post_instruction_exec_tick();
 
     inline bool has_pending_requests();
-    inline const Interrupts::Irq& next_request();
+    const Interrupts::Irq& next_request();
 
-    inline void request_interrupt(int source);
-    inline bool interrupt_requested(int source);
-    inline bool interrupt_enabled(int source);
-    inline void clear_interrupt(int source);
-    inline void disable_interrupt(int source);
-    inline void enable_interrupt(int source);
+    void request_interrupt(Source source);
+    inline bool interrupt_requested(Source source);
+    inline bool interrupt_enabled(Source source);
+    inline void clear_interrupt(Source source);
+    inline void disable_interrupt(Source source);
+    inline void enable_interrupt(Source source);
 
     inline void enable_interrupts_after(int delay);
     inline void enable_interrupts_now();
@@ -46,147 +46,99 @@ public:
 
 protected:
     CpuRegisters& reg_;
+
     uint64_t vblank_irq_count_  = 0;
     uint64_t lcdstat_irq_count_ = 0;
     uint64_t timer_irq_count_   = 0;
     uint64_t serial_irq_count_  = 0;
     uint64_t joypad_irq_count_  = 0;
 
-    const Irq VBLANK_IRQ = {VBlank, 0x0040};
+    const Irq VBLANK_IRQ  = {VBlank,  0x0040};
     const Irq LCDSTAT_IRQ = {LcdStat, 0x0048};
-    const Irq TIMER_IRQ = {Timer, 0x0050};
-    const Irq SERIAL_IRQ = {Serial, 0x0058};
-    const Irq JOYPAD_IRQ = {Joypad, 0x0060};
-    const Irq NONE_IRQ = {None, 0x0000};
+    const Irq TIMER_IRQ   = {Timer,   0x0050};
+    const Irq SERIAL_IRQ  = {Serial,  0x0058};
+    const Irq JOYPAD_IRQ  = {Joypad,  0x0060};
+    const Irq NONE_IRQ    = {None,    0x0000};
 
-    static constexpr int NO_COUNTDOWN = -1;
-    int DI_countdown_ = NO_COUNTDOWN;
-    int EI_countdown_ = NO_COUNTDOWN;
+    static constexpr int EXPIRED = -1;
+    int enable_delay_left_;
+    int disable_delay_left_;
 };
 
-FORCE_INLINE void Interrupts::post_bootram_reset()
+FORCE_INLINE void Interrupts::pre_instruction_exec_tick()
 {
-    DI_countdown_ = NO_COUNTDOWN;
-    EI_countdown_ = NO_COUNTDOWN;
-}
-
-FORCE_INLINE void Interrupts::pre_instruction_execute()
-{
-    if (DI_countdown_ != NO_COUNTDOWN)
+    if (disable_delay_left_ != EXPIRED)
     {
-        --DI_countdown_;
+        --disable_delay_left_;
     }
-    if (EI_countdown_ != NO_COUNTDOWN)
+    if (enable_delay_left_ != EXPIRED)
     {
-        --EI_countdown_;
+        --enable_delay_left_;
     }
 }
 
-FORCE_INLINE void Interrupts::post_instruction_execute()
+FORCE_INLINE void Interrupts::post_instruction_exec_tick()
 {
-    if (EI_countdown_ == 0)
+    if (enable_delay_left_ == 0)
     {
-        DI_countdown_ = NO_COUNTDOWN;
-        EI_countdown_ = NO_COUNTDOWN;
+        disable_delay_left_ = EXPIRED;
+        enable_delay_left_ = EXPIRED;
         reg_.write_IME(1);
     }
-    else if (DI_countdown_ == 0)
+    else if (disable_delay_left_ == 0)
     {
-        DI_countdown_ = NO_COUNTDOWN;
-        EI_countdown_ = NO_COUNTDOWN;
+        disable_delay_left_ = EXPIRED;
+        enable_delay_left_ = EXPIRED;
         reg_.write_IME(0);
     }
 }
 
 FORCE_INLINE bool Interrupts::has_pending_requests()
 {
-    return (reg_.read_IF() & 0x1F) != 0;
+    return bool(reg_.read_IF());
 }
 
-FORCE_INLINE const Interrupts::Irq& Interrupts::next_request()
+FORCE_INLINE bool Interrupts::interrupt_requested(Source source)
 {
-    for (IrqSource i = VBlank;
-         i <= Joypad;
-         i = static_cast<IrqSource>(static_cast<int>(i) + 1))
-    {
-        if (interrupt_enabled(i) && interrupt_requested(i))
-        {
-            switch (i)
-            {
-                case VBlank:
-                    return VBLANK_IRQ;
-                case LcdStat:
-                    return LCDSTAT_IRQ;
-                case Timer:
-                    return TIMER_IRQ;
-                case Serial:
-                    return SERIAL_IRQ;
-                case Joypad:
-                    return JOYPAD_IRQ;
-                case None:
-                    break;
-            }
-        }
-    }
-
-    return NONE_IRQ;
+    return bool((reg_.read_IF() & (1 << source)));
 }
 
-FORCE_INLINE void Interrupts::request_interrupt(int source)
+FORCE_INLINE bool Interrupts::interrupt_enabled(Source source)
 {
-    switch (source)
-    {
-    case VBlank: ++vblank_irq_count_; break;
-    case LcdStat: ++lcdstat_irq_count_; break;
-    case Joypad: ++joypad_irq_count_; break;
-    case Timer: ++timer_irq_count_; break;
-    case Serial: ++serial_irq_count_; break;
-    }
-
-    reg_.write_IF(reg_.read_IF() | (0x01 << source));
+    return bool((reg_.read_IE() & (1 << source)));
 }
 
-FORCE_INLINE bool Interrupts::interrupt_requested(int source)
+FORCE_INLINE void Interrupts::clear_interrupt(Source source)
 {
-    return (reg_.read_IF() & (0x01 << source)) != 0;
+    reg_.write_IF(reg_.read_IF() & ~(1 << source));
 }
 
-FORCE_INLINE bool Interrupts::interrupt_enabled(int source)
+FORCE_INLINE void Interrupts::disable_interrupt(Source source)
 {
-    return (reg_.read_IE() & (0x01 << source)) != 0;
+    reg_.write_IE(reg_.read_IE() & ~(1 << source));
 }
 
-FORCE_INLINE void Interrupts::clear_interrupt(int source)
+FORCE_INLINE void Interrupts::enable_interrupt(Source source)
 {
-    reg_.write_IF(reg_.read_IF() & ~(0x01 << source));
-}
-
-FORCE_INLINE void Interrupts::disable_interrupt(int source)
-{
-    reg_.write_IE(reg_.read_IE() & ~(0x01 << source));
-}
-
-FORCE_INLINE void Interrupts::enable_interrupt(int source)
-{
-    reg_.write_IE(reg_.read_IE() | (0x01 << source));
+    reg_.write_IE(reg_.read_IE() | static_cast<uint8_t>((1 << source)));
 }
 
 FORCE_INLINE void Interrupts::enable_interrupts_after(int delay)
 {
-    DI_countdown_ = NO_COUNTDOWN;
-    EI_countdown_ = delay;
+    disable_delay_left_ = EXPIRED;
+    enable_delay_left_ = delay;
 }
 
 FORCE_INLINE void Interrupts::enable_interrupts_now()
 {
-    DI_countdown_ = NO_COUNTDOWN;
-    EI_countdown_ = NO_COUNTDOWN;
+    disable_delay_left_ = EXPIRED;
+    enable_delay_left_ = EXPIRED;
     reg_.write_IME(1);
 }
 
 FORCE_INLINE void Interrupts::disable_interrupts_now()
 {
-    DI_countdown_ = NO_COUNTDOWN;
-    EI_countdown_ = NO_COUNTDOWN;
+    disable_delay_left_ = EXPIRED;
+    enable_delay_left_ = EXPIRED;
     reg_.write_IME(0);
 }
