@@ -26,7 +26,7 @@ public:
     const addr_t INTERRUPT_VECTOR[5] = {0x0040, 0x0048, 0x0050, 0x0058, 0x0060};
 
     Interrupts(CpuRegisters& registers);
-    inline void hard_reset();
+    inline void post_bootram_reset();
     inline void pre_instruction_execute();
     inline void post_instruction_execute();
     inline bool has_pending_requests();
@@ -55,7 +55,7 @@ protected:
     int EI_countdown = NO_COUNTDOWN;
 };
 
-FORCE_INLINE void Interrupts::hard_reset()
+FORCE_INLINE void Interrupts::post_bootram_reset()
 {
     DI_countdown = NO_COUNTDOWN;
     EI_countdown = NO_COUNTDOWN;

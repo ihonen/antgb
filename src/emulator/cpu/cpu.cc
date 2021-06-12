@@ -5,72 +5,70 @@
 #include <iomanip>
 #include <iostream>
 
-Cpu::Cpu(CpuRegisters& registers, Interrupts& interrupts, MemoryBus* mem)
-    : reg(registers)
-    , interrupts(interrupts)
-    , mem(mem)
+Cpu::Cpu(CpuRegisters& registers, Interrupts& interrupts, MemoryBus& mem)
+    : reg_(registers)
+    , interrupts_(interrupts)
+    , memory_(mem)
+    , current_instruction_(nullptr)
+    , branch_was_taken_(false)
+    , is_halted_(false)
+    , is_stopped_(false)
+    , elapsed_tcycles_(0)
 {
-    trace_log.open("trace.log", std::ofstream::out);
-    hard_reset();
+    trace_log_.open("trace.log", std::ofstream::out);
+    post_bootram_reset();
+}
+
+CpuRegisters& Cpu::get_registers()
+{
+    return reg_;
 }
 
 Cpu::~Cpu() = default;
 
-void Cpu::set_PC(uint16_t value)
+void Cpu::post_bootram_reset()
 {
-    reg.write_PC(value);
-}
+    reg_ = CpuRegisters();
+    reg_.post_bootram_reset();
+    interrupts_.post_bootram_reset();
 
-void Cpu::restart()
-{
-    hard_reset();
-}
+    current_instruction_ = nullptr;
+    branch_was_taken_ = false;
 
-void Cpu::hard_reset()
-{
-    reg = CpuRegisters();
-    reg.post_bootram_reset();
-    interrupts.hard_reset();
-
-    current_instruction = nullptr;
-    branch_taken = false;
-
-    is_halted = false;
-    is_stopped = false;
-    clock_cycles = 0;
-
+    is_halted_ = false;
+    is_stopped_ = false;
+    elapsed_tcycles_ = 0;
 }
 
 void Cpu::execute_next()
 {
-    current_instruction = mem->get(reg.read_PC());
-    branch_taken = false;
+    interrupts_.pre_instruction_execute();
 
-    interrupts.pre_instruction_execute();
+    // TODO: Is the interrupt handling correct?
 
-    if (interrupts.has_pending_requests())
+    if (interrupts_.has_pending_requests())
     {
-        auto interrupt = interrupts.next_request();
+        auto interrupt = interrupts_.next_request();
         if (interrupt.source != Interrupts::NoInterrupt)
         {
-            bool was_halted = is_halted;
-            is_halted = false;
+            const bool was_halted = is_halted_;
+            is_halted_ = false;
 
             switch (interrupt.source)
             {
                 // TODO: Is this correct?
                 case Interrupts::JoypadInterrupt:
-                    is_stopped = false;
+                    is_stopped_ = false;
                     break;
                 default:
                     break;
             }
 
-            if (reg.read_IME())
+            if (reg_.read_IME())
             {
                 if (was_halted)
                 {
-                    clock_cycles += 4;
+                    elapsed_tcycles_ += 4;
                 }
 
                 jump_to_interrupt_handler(interrupt);
@@ -79,41 +77,45 @@ void Cpu::execute_next()
         }
     }
 
-    if (!is_halted && !is_stopped)
+    if (!is_halted_ && !is_stopped_)
     {
-        const InstructionInfo* op_info = (*current_instruction == 0xCB) ?
-                                    &CB_OPCODE_TABLE[current_instruction[1]] :
-                                    &OPCODE_TABLE[*current_instruction];
+        current_instruction_ = memory_.get(reg_.read_PC());
+        assert(current_instruction_ != nullptr);
+        branch_was_taken_ = false;
 
-        reg.write_PC(reg.read_PC() + op_info->len_bytes);
+        const OpcodeInfo& opcode_info =
+            (current_instruction_[0] != 0xCB)
+            ? OPCODE_TABLE.at(current_instruction_[0])
+            : CB_OPCODE_TABLE.at(current_instruction_[1]);
 
-        decode_and_dispatch(current_instruction);
+        reg_.write_PC(reg_.read_PC() + opcode_info.len_bytes);
 
-        if (branch_taken)
-            clock_cycles += op_info->cycles_on_action;
-        else
-            clock_cycles += op_info->cycles_on_no_action;
+        dispatch(current_instruction_);
+
+        elapsed_tcycles_ += branch_was_taken_
+            ? opcode_info.tcycles_if_branch_taken
+            : opcode_info.tcycles_if_branch_not_taken;
     }
     else
     {
         // Halted or stopped, so advance time by one machine cycle.
-        clock_cycles += 4;
+        elapsed_tcycles_ += 4;
     }
 
-    interrupts.post_instruction_execute();
+    interrupts_.post_instruction_execute();
 }
 
 void Cpu::invalid_opcode()
 {
-    throw OpcodeError(0, *current_instruction);
+    throw OpcodeError(0, *current_instruction_);
 }
 
 void Cpu::jump_to_interrupt_handler(const Interrupts::InterruptInfo& interrupt)
 {
-    interrupts.clear_interrupt(interrupt.source);
-    interrupts.disable_interrupts_now();
-    PUSH_r16(reg.get_PC());
-    reg.write_PC(interrupt.handler_address);
-    current_instruction = mem->get(reg.read_PC());
-    clock_cycles += 20;
+    interrupts_.clear_interrupt(interrupt.source);
+    interrupts_.disable_interrupts_now();
+    PUSH_r16(reg_.get_PC());
+    reg_.write_PC(interrupt.handler_address);
+    current_instruction_ = memory_.get(reg_.read_PC());
+    elapsed_tcycles_ += 20;
 }

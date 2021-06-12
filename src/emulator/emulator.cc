@@ -49,7 +49,7 @@ Emulator::Emulator()
 
     interrupts = std::make_unique<Interrupts>(*cpu_registers);
 
-    cpu = std::make_unique<Cpu>(*cpu_registers, *interrupts, mem.get());
+    cpu = std::make_unique<Cpu>(*cpu_registers, *interrupts, *mem);
     dma = std::make_unique<Dma>(*mem);
     joypad = std::make_unique<Joypad>(*joypad_registers, *interrupts);
     ppu = std::make_unique<Ppu>(*ppu_registers, *interrupts, mem.get(), *dma);
@@ -86,5 +86,5 @@ void Emulator::button_released(JoypadButton button)
 void Emulator::reset_emulation()
 {
     mem->hard_reset();
-    cpu->hard_reset();
+    cpu->post_bootram_reset();
 }

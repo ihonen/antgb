@@ -1,6 +1,6 @@
 #include "cpu.hh"
 
-const std::array<const Cpu::InstructionInfo, 256> Cpu::OPCODE_TABLE =
+const std::array<const Cpu::OpcodeInfo, 256> Cpu::OPCODE_TABLE =
 {{
     {1, 4,  4, },
     {3, 12, 12,},
@@ -260,7 +260,7 @@ const std::array<const Cpu::InstructionInfo, 256> Cpu::OPCODE_TABLE =
     {1, 16, 16,}
 }};
 
-const std::array<const Cpu::InstructionInfo, 256> Cpu::CB_OPCODE_TABLE =
+const std::array<const Cpu::OpcodeInfo, 256> Cpu::CB_OPCODE_TABLE =
 {{
     {2, 8,  8, },
     {2, 8,  8, },

@@ -14,42 +14,39 @@ class MemoryBus;
 class Cpu
 {
 public:
-    struct InstructionInfo
+    struct OpcodeInfo
     {
         uint8_t len_bytes;
-        uint8_t cycles_on_action;
-        uint8_t cycles_on_no_action;
+        uint8_t tcycles_if_branch_taken;
+        uint8_t tcycles_if_branch_not_taken;
     };
 
-    static const uint64_t CLK_FREQ_Hz = 4194304;
-    static const std::array<const InstructionInfo, 256> OPCODE_TABLE;
-    static const std::array<const InstructionInfo, 256> CB_OPCODE_TABLE;
+    static constexpr uint64_t CLK_FREQ_Hz = 4194304;
 
-    std::ofstream trace_log;
+    static const std::array<const OpcodeInfo, 256> OPCODE_TABLE;
+    static const std::array<const OpcodeInfo, 256> CB_OPCODE_TABLE;
 
-    CpuRegisters& reg;
-    Interrupts& interrupts;
-    MemoryBus* mem;
-
-    const uint8_t* current_instruction = nullptr;
-    bool branch_taken = false;
-    bool is_halted = false;
-    bool is_stopped = false;
-    uint64_t clock_cycles = 0;
-
-    Cpu(CpuRegisters& registers, Interrupts& interrupts, MemoryBus* mem);
+    Cpu(CpuRegisters& registers, Interrupts& interrupts, MemoryBus& mem);
     ~Cpu();
-    void hard_reset();
-    void set_PC(uint16_t value);
+
+    CpuRegisters& get_registers();
+
+    inline emutime_t get_elapsed_tcycles();
+    inline void set_elapsed_tcycles(emutime_t tcycles);
+
     void restart();
+    void post_bootram_reset();
+
     void execute_next();
-    void decode_and_dispatch(const uint8_t* instruction);
-    inline void reset_cycles();
-    inline uint64_t get_cycles();
+
+protected:
+    void dispatch(const uint8_t* instruction);
     void jump_to_interrupt_handler(const Interrupts::InterruptInfo& interrupt);
-    void invalid_opcode();
-    inline uint8_t extract_immediate8(const uint8_t* instruction);
-    inline uint16_t extract_immediate16(const uint8_t* instruction);
+
+    inline uint8_t get_immediate8(const uint8_t* instruction);
+    inline uint16_t get_immediate16(const uint8_t* instruction);
+
+    [[noreturn]] void invalid_opcode();
 
     void ADC_A_HL();
     void ADC_A_n8(uint8_t u8);
@@ -152,24 +149,36 @@ public:
     void XOR_HL();
     void XOR_n8(uint8_t n8);
     void XOR_r8(uint8_t& r8);
+
+    CpuRegisters& reg_;
+    Interrupts& interrupts_;
+    MemoryBus& memory_;
+
+    std::ofstream trace_log_;
+
+    const uint8_t* current_instruction_;
+    bool branch_was_taken_;
+    bool is_halted_;
+    bool is_stopped_;
+    emutime_t elapsed_tcycles_;
 };
 
-FORCE_INLINE uint64_t Cpu::get_cycles()
+FORCE_INLINE emutime_t Cpu::get_elapsed_tcycles()
 {
-    return clock_cycles;
+    return elapsed_tcycles_;
 }
 
-FORCE_INLINE void Cpu::reset_cycles()
+FORCE_INLINE void Cpu::set_elapsed_tcycles(emutime_t tcycles)
 {
-    clock_cycles = 0;
+    elapsed_tcycles_ = tcycles;
 }
 
-FORCE_INLINE uint8_t Cpu::extract_immediate8(const uint8_t* instruction)
+FORCE_INLINE uint8_t Cpu::get_immediate8(const uint8_t* instruction)
 {
     return instruction[1];
 }
 
-FORCE_INLINE uint16_t Cpu::extract_immediate16(const uint8_t* instruction)
+FORCE_INLINE uint16_t Cpu::get_immediate16(const uint8_t* instruction)
 {
     return (static_cast<uint16_t>(instruction[1]))
            | (static_cast<uint16_t>(instruction[2]) << 8);

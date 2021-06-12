@@ -6,8 +6,9 @@
 #include <cstring>
 #include <iostream>
 
-using regid_t = int32_t;
-using addr_t = uint16_t;
+using regid_t   = int32_t;
+using addr_t    = uint16_t;
+using emutime_t = uint64_t;
 
 enum JoypadButton
 {

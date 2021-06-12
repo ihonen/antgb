@@ -83,9 +83,9 @@ public:
 
 FORCE_INLINE int Emulator::execute_next()
 {
-    uint64_t cpu_cycle_count_before = cpu->get_cycles();
+    uint64_t cpu_cycle_count_before = cpu->get_elapsed_tcycles();
     cpu->execute_next();
-    uint64_t cpu_cycle_count_after = cpu->get_cycles();
+    uint64_t cpu_cycle_count_after = cpu->get_elapsed_tcycles();
     uint64_t clock_cycles = cpu_cycle_count_after - cpu_cycle_count_before;
 
     timer_divider->emulate(clock_cycles);
@@ -104,35 +104,35 @@ FORCE_INLINE uint16_t Emulator::read(regid_t register_id)
     switch (register_id)
     {
         case RegA:
-            return cpu->reg.read_A();
+            return cpu->get_registers().read_A();
         case RegF:
-            return cpu->reg.read_F();
+            return cpu->get_registers().read_F();
         case RegAF:
-            return cpu->reg.read_AF();
+            return cpu->get_registers().read_AF();
         case RegB:
-            return cpu->reg.read_B();
+            return cpu->get_registers().read_B();
         case RegC:
-            return cpu->reg.read_C();
+            return cpu->get_registers().read_C();
         case RegBC:
-            return cpu->reg.read_BC();
+            return cpu->get_registers().read_BC();
         case RegD:
-            return cpu->reg.read_D();
+            return cpu->get_registers().read_D();
         case RegE:
-            return cpu->reg.read_E();
+            return cpu->get_registers().read_E();
         case RegDE:
-            return cpu->reg.read_DE();
+            return cpu->get_registers().read_DE();
         case RegH:
-            return cpu->reg.read_H();
+            return cpu->get_registers().read_H();
         case RegL:
-            return cpu->reg.read_L();
+            return cpu->get_registers().read_L();
         case RegHL:
-            return cpu->reg.read_HL();
+            return cpu->get_registers().read_HL();
         case RegPC:
-            return cpu->reg.read_PC();
+            return cpu->get_registers().read_PC();
         case RegSP:
-            return cpu->reg.read_SP();
+            return cpu->get_registers().read_SP();
         case RegIME:
-            return cpu->reg.read_IME();
+            return cpu->get_registers().read_IME();
         default:
             std::cerr << std::hex << register_id << std::endl;
             assert(false);
@@ -153,49 +153,49 @@ FORCE_INLINE void Emulator::write(regid_t register_id, uint16_t value)
     switch (register_id)
     {
         case RegA:
-            cpu->reg.write_A(static_cast<uint8_t>(value));
+            cpu->get_registers().write_A(static_cast<uint8_t>(value));
             break;
         case RegF:
-            cpu->reg.write_F(static_cast<uint8_t>(value));
+            cpu->get_registers().write_F(static_cast<uint8_t>(value));
             break;
         case RegAF:
-            cpu->reg.write_AF(value);
+            cpu->get_registers().write_AF(value);
             break;
         case RegB:
-            cpu->reg.write_B(static_cast<uint8_t>(value));
+            cpu->get_registers().write_B(static_cast<uint8_t>(value));
             break;
         case RegC:
-            cpu->reg.write_C(static_cast<uint8_t>(value));
+            cpu->get_registers().write_C(static_cast<uint8_t>(value));
             break;
         case RegBC:
-            cpu->reg.write_BC(value);
+            cpu->get_registers().write_BC(value);
             break;
         case RegD:
-            cpu->reg.write_D(static_cast<uint8_t>(value));
+            cpu->get_registers().write_D(static_cast<uint8_t>(value));
             break;
         case RegE:
-            cpu->reg.write_E(static_cast<uint8_t>(value));
+            cpu->get_registers().write_E(static_cast<uint8_t>(value));
             break;
         case RegDE:
-            cpu->reg.write_DE(value);
+            cpu->get_registers().write_DE(value);
             break;
         case RegH:
-            cpu->reg.write_H(static_cast<uint8_t>(value));
+            cpu->get_registers().write_H(static_cast<uint8_t>(value));
             break;
         case RegL:
-            cpu->reg.write_L(static_cast<uint8_t>(value));
+            cpu->get_registers().write_L(static_cast<uint8_t>(value));
             break;
         case RegHL:
-            cpu->reg.write_HL(value);
+            cpu->get_registers().write_HL(value);
             break;
         case RegPC:
-            cpu->reg.write_PC(value);
+            cpu->get_registers().write_PC(value);
             break;
         case RegSP:
-            cpu->reg.write_SP(value);
+            cpu->get_registers().write_SP(value);
             break;
         case RegIME:
-            cpu->reg.write_IME((value != 0) ? 1 : 0);
+            cpu->get_registers().write_IME((value != 0) ? 1 : 0);
             break;
         default:
             std::cerr << std::hex << register_id << std::endl;
