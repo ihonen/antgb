@@ -225,37 +225,31 @@ void MainWindow::load_rom_act()
                                                  ".",
                                                  "Game Boy ROMs (*.gb)");
     */
-    // QString filepath("cpu_instrs.gb");
-    QString filepath("tetris_jue_v1_1.gb");
+
+    QString filepath;
 
     // PASSED:
-    // QString filepath("01-special.gb");
-    // PASSED:
-    // QString filepath("02-interrupts.gb");
-    // PASSED:
-    // QString filepath("03-op sp,hl.gb");
-    // PASSED:
-    // QString filepath("04-op r,imm.gb");
-    // PASSED:
-    // QString filepath("05-op rp.gb");
-    // PASSED:
-    // QString filepath("06-ld r,r.gb");
-    // PASSED:
-    // QString filepath("07-jr,jp,call,ret,rst.gb");
-    // PASSED:
-    // QString filepath("08-misc instrs.gb");
-    // PASSED:
-    // QString filepath("09-op r,r.gb");
-    // PASSED:
-    // QString filepath("10-bit ops.gb");
-    // PASSED:
-    // QString filepath("11-op a,(hl).gb");
 
-    // PASSED:
-    // QString filepath("instr_timing.gb");
+    // filepath = "01-special.gb";
+    // filepath = "02-interrupts.gb";
+    // filepath = "03-op sp,hl.gb";
+    // filepath = "04-op r,imm.gb";
+    // filepath = "05-op rp.gb";
+    // filepath = "06-ld r,r.gb";
+    // filepath = "07-jr,jp,call,ret,rst.gb";
+    // filepath = "08-misc instrs.gb";
+    // filepath = "09-op r,r.gb";
+    // filepath = "10-bit ops.gb";
+    // filepath = "11-op a,(hl).gb";
+    filepath = "instr_timing.gb";
 
     // NOT PASSED:
+
     //QString filepath("interrupt_time.gb");
+
+    // OTHER:
+
+    // filepath = "tetris_jue_v1_1.gb";
 
     emuwidget->load_rom(filepath);
 }
