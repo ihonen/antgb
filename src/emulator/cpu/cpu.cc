@@ -41,11 +41,9 @@ void Cpu::hard_reset()
 
 }
 
-void Cpu::execute(const uint8_t* instruction)
+void Cpu::execute_next()
 {
-    if (!instruction) instruction = mem->get(reg.read_PC());
-    assert(instruction);
-    current_instruction = instruction;
+    current_instruction = mem->get(reg.read_PC());
     branch_taken = false;
 
     interrupts.pre_instruction_execute();

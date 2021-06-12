@@ -84,7 +84,7 @@ public:
 FORCE_INLINE int Emulator::execute_next()
 {
     uint64_t cpu_cycle_count_before = cpu->get_cycles();
-    cpu->execute();
+    cpu->execute_next();
     uint64_t cpu_cycle_count_after = cpu->get_cycles();
     uint64_t clock_cycles = cpu_cycle_count_after - cpu_cycle_count_before;
 

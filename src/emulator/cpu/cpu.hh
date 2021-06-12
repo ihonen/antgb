@@ -42,7 +42,7 @@ public:
     void hard_reset();
     void set_PC(uint16_t value);
     void restart();
-    void execute(const uint8_t* const instruction = nullptr);
+    void execute_next();
     void decode_and_dispatch(const uint8_t* instruction);
     inline void reset_cycles();
     inline uint64_t get_cycles();
