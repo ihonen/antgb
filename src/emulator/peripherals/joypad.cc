@@ -5,98 +5,139 @@
 #include <iostream>
 
 Joypad::Joypad(JoypadRegisters& registers, Interrupts& interrupts)
-    : registers(registers)
-    , interrupts(interrupts)
+    : registers_(registers)
+    , interrupts_(interrupts)
 {
-    button_status =
-    {
-        {JoypadUp,     {JoypadRegisters::Up,      false}},
-        {JoypadDown,   {JoypadRegisters::Down,    false}},
-        {JoypadLeft,   {JoypadRegisters::Left,    false}},
-        {JoypadRight,  {JoypadRegisters::Right,   false}},
-        {JoypadSelect, {JoypadRegisters::Select,  false}},
-        {JoypadStart,  {JoypadRegisters::Start,   false}},
-        {JoypadA,      {JoypadRegisters::ButtonA, false}},
-        {JoypadB,      {JoypadRegisters::ButtonB, false}},
-    };
 }
 
 void Joypad::button_pressed(JoypadButton button)
 {
-    if (button == JoypadNone) return;
-
-    if (registers.read(JOYP_ADDR) & JoypadRegisters::DirectionKeysSelect)
+    if (registers_.read(JOYP_ADDR) & JoypadRegisters::DirectionKeysSelect)
     {
+        uint8_t bit_pos = 0xFF;
+
         switch (button)
         {
             case JoypadRight:
+                bit_pos = JoypadRegisters::Right;
+                break;
             case JoypadLeft:
+                bit_pos = JoypadRegisters::Left;
+                break;
             case JoypadUp:
+                bit_pos = JoypadRegisters::Up;
+                break;
             case JoypadDown:
-                // TODO: Register interface violation.
-                clear_bit(registers.get(JOYP_ADDR), button_status[button].bit_pos);
+                bit_pos = JoypadRegisters::Down;
                 break;
             default:
+                bit_pos = 0;
                 break;
         }
-    }
-    else if (registers.read(JOYP_ADDR) & JoypadRegisters::ButtonKeysSelect)
-    {
-        switch (button)
+
+        if (bit_pos != 0xFF)
         {
-            case JoypadA:
-            case JoypadB:
-            case JoypadSelect:
-            case JoypadStart:
-                // TODO: Register interface violation.
-                clear_bit(registers.get(JOYP_ADDR), button_status[button].bit_pos);
-                break;
-            default:
-                break;
+            uint8_t value = registers_.read(JOYP_ADDR);
+            set_bit(&value, bit_pos);
+            registers_.write(JOYP_ADDR, value);
+            interrupts_.request_interrupt(Interrupts::Joypad);
         }
     }
 
-    if (button_status[button].pressed == false)
+    if (registers_.read(JOYP_ADDR) & JoypadRegisters::ButtonKeysSelect)
     {
-        button_status[button].pressed = true;
-        interrupts.request_interrupt(Interrupts::Joypad);
+        uint8_t bit_pos = 0xFF;
+
+        switch (button)
+        {
+            case JoypadA:
+                bit_pos = JoypadRegisters::ButtonA;
+                break;
+            case JoypadB:
+                bit_pos = JoypadRegisters::ButtonB;
+                break;
+            case JoypadSelect:
+                bit_pos = JoypadRegisters::Select;
+                break;
+            case JoypadStart:
+                bit_pos = JoypadRegisters::Start;
+                break;
+            default:
+                bit_pos = 0;
+                break;
+        }
+
+        if (bit_pos != 0xFF)
+        {
+            uint8_t value = registers_.read(JOYP_ADDR);
+            set_bit(&value, bit_pos);
+            registers_.write(JOYP_ADDR, value);
+            interrupts_.request_interrupt(Interrupts::Joypad);
+        }
     }
 }
 
 void Joypad::button_released(JoypadButton button)
 {
-    if (button == JoypadNone) return;
-
-    if (registers.read(JOYP_ADDR) & JoypadRegisters::DirectionKeysSelect)
+    if (registers_.read(JOYP_ADDR) & JoypadRegisters::DirectionKeysSelect)
     {
+        uint8_t bit_pos = 0xFF;
+
         switch (button)
         {
             case JoypadRight:
+                bit_pos = JoypadRegisters::Right;
+                break;
             case JoypadLeft:
+                bit_pos = JoypadRegisters::Left;
+                break;
             case JoypadUp:
+                bit_pos = JoypadRegisters::Up;
+                break;
             case JoypadDown:
-                // TODO: Register interface violation.
-                set_bit(registers.get(JOYP_ADDR), button_status[button].bit_pos);
+                bit_pos = JoypadRegisters::Down;
                 break;
             default:
+                bit_pos = 0;
                 break;
         }
-    }
-    else if (registers.read(JOYP_ADDR) & JoypadRegisters::ButtonKeysSelect)
-    {
-        switch (button)
+
+        if (bit_pos != 0xFF)
         {
-            case JoypadA:
-            case JoypadB:
-            case JoypadSelect:
-            case JoypadStart:
-                // TODO: Register interface violation.
-                set_bit(registers.get(JOYP_ADDR), button_status[button].bit_pos);
-                break;
-            default:
-                break;
+            uint8_t value = registers_.read(JOYP_ADDR);
+            clear_bit(&value, bit_pos);
+            registers_.write(JOYP_ADDR, value);
         }
     }
 
-    button_status[button].pressed = false;
+    if (registers_.read(JOYP_ADDR) & JoypadRegisters::ButtonKeysSelect)
+    {
+        uint8_t bit_pos = 0xFF;
+
+        switch (button)
+        {
+            case JoypadA:
+                bit_pos = JoypadRegisters::ButtonA;
+                break;
+            case JoypadB:
+                bit_pos = JoypadRegisters::ButtonB;
+                break;
+            case JoypadSelect:
+                bit_pos = JoypadRegisters::Select;
+                break;
+            case JoypadStart:
+                bit_pos = JoypadRegisters::Start;
+                break;
+            default:
+                bit_pos = 0;
+                break;
+        }
+
+        if (bit_pos != 0xFF)
+        {
+            uint8_t value = registers_.read(JOYP_ADDR);
+            clear_bit(&value, bit_pos);
+            registers_.write(JOYP_ADDR, value);
+        }
+    }
 }

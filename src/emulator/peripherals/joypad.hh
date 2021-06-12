@@ -4,8 +4,6 @@
 #include "joypadregisters.hh"
 #include <map>
 
-class Cpu;
-
 class Joypad
 {
 public:
@@ -13,14 +11,6 @@ public:
     void button_pressed(JoypadButton button);
     void button_released(JoypadButton button);
 protected:
-    struct ButtonState
-    {
-        JoypadRegisters::BitPos bit_pos;
-        bool pressed;
-    };
-
-    JoypadRegisters& registers;
-    Interrupts& interrupts;
-
-    std::map<JoypadButton, ButtonState> button_status;
+    JoypadRegisters& registers_;
+    Interrupts& interrupts_;
 };
