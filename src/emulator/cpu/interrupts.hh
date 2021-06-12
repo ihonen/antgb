@@ -96,8 +96,9 @@ FORCE_INLINE bool Interrupts::has_pending_requests()
 
 FORCE_INLINE Interrupts::InterruptInfo Interrupts::next_request()
 {
-    for (InterruptId i = VBlankInterrupt; i < JoypadInterrupt;
-         i             = (InterruptId)((int)i + 1))
+    for (InterruptId i = VBlankInterrupt;
+         i <= JoypadInterrupt;
+         i = (InterruptId)((int)i + 1))
     {
         if (interrupt_enabled(i) && interrupt_requested(i))
         {
