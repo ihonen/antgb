@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/ihonen/antgb.svg?branch=master)](https://travis-ci.com/ihonen/antgb)
+
 # AntGB - Game Boy Emulator with a Debugger
 ![](assets/logo_small.png)
 
