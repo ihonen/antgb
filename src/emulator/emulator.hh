@@ -43,7 +43,10 @@ public:
     Emulator();
     virtual ~Emulator() override;
 
-    virtual void set_frontend(iFrontend* frontend) override;
+    virtual void set_joypad_press_callback(iFrontend::JoypadCallback callback) override;
+    virtual void set_joypad_release_callback(iFrontend::JoypadCallback callback) override;
+    virtual void set_render_callback(iFrontend::RenderCallback callback) override;
+    virtual void set_serial_callback(iFrontend::SerialCallback callback) override;
 
     virtual void load_rom(const std::string& filepath) override;
     inline virtual int execute_next() override;
@@ -53,6 +56,11 @@ public:
 
     inline virtual uint16_t read(regid_t register_id) override;
     inline virtual void write(regid_t register_id, uint16_t value) override;
+
+    iFrontend::JoypadCallback joypad_press_callback;
+    iFrontend::JoypadCallback joypad_release_callback;
+    iFrontend::RenderCallback render_callback;
+    iFrontend::SerialCallback serial_callback;
 
     std::unique_ptr<BootRom> bootrom;
     std::unique_ptr<EchoRam> echoram;

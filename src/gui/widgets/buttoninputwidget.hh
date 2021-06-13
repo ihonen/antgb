@@ -3,8 +3,11 @@
 #include "debugger/debugcore.hh"
 #include "button.hh"
 #include <QGridLayout>
+#include <QMetaType>
 #include <QObject>
 #include <QWidget>
+
+Q_DECLARE_METATYPE(JoypadButton)
 
 class ButtonInputWidget : public QFrame
 {
@@ -33,4 +36,14 @@ public:
     ButtonInputWidget(DebugCore* debugger, QWidget* parent = nullptr);
     virtual void keyPressEvent(QKeyEvent *event) override;
     virtual void keyReleaseEvent(QKeyEvent *event) override;
+
+    void joypad_press_callback(JoypadButton button);
+    void joypad_release_callback(JoypadButton button);
+
+signals:
+    void joypad_pressed(JoypadButton);
+    void joypad_released(JoypadButton);
+private slots:
+    void on_joypad_pressed(JoypadButton button);
+    void on_joypad_released(JoypadButton button);
 };

@@ -134,23 +134,35 @@ void Button::leaveEvent(QEvent* event)
 void Button::mousePressEvent(QMouseEvent* event)
 {
     set_press_pixmap();
-    QLabel::mousePressEvent(event);
+    if (event != nullptr)
+    {
+        event->accept();
+    }
 }
 
 void Button::mouseReleaseEvent(QMouseEvent* event)
 {
     set_hover_pixmap();
-    QLabel::mouseReleaseEvent(event);
+    if (event != nullptr)
+    {
+        event->accept();
+    }
 }
 
 void Button::keyPressEvent(QKeyEvent* event)
 {
     set_press_pixmap();
-    QLabel::keyPressEvent(event);
+    if (event != nullptr)
+    {
+        event->accept();
+    }
 }
 
 void Button::keyReleaseEvent(QKeyEvent* event)
 {
     set_default_pixmap();
-    QLabel::keyReleaseEvent(event);
+    if (event != nullptr)
+    {
+        event->accept();
+    }
 }

@@ -8,7 +8,6 @@ Q_DECLARE_METATYPE(iFrontend::Pixels);
 
 class DisplayScene final
     : public QGraphicsScene
-    , public iFrontend
 {
     Q_OBJECT
 
@@ -17,9 +16,7 @@ public:
     virtual ~DisplayScene() override = default;
     void set_pixel(QImage& image, size_t x, size_t y, uint32_t color);
 
-    virtual void render_callback(const iFrontend::Pixels& pixels) override;
-    // TODO: This really, really, REALLY doesn't belong here.
-    virtual void serial_callback(const uint8_t byte) override;
+    void render_callback(const iFrontend::Pixels& pixels);
 
     static constexpr uint16_t RES_X = 160;
     static constexpr uint16_t RES_Y = 144;
@@ -31,8 +28,7 @@ public:
     QImage image;
     QGraphicsPixmapItem* item;
 signals:
-    void schedule_render_on_screen(const iFrontend::Pixels& pixels);
-
+    void rendering_requested(const iFrontend::Pixels& pixels);
 protected slots:
-    void render_on_screen(const iFrontend::Pixels& pixels);
+    void on_rendering_requested(const iFrontend::Pixels& pixels);
 };

@@ -58,6 +58,7 @@ public:
 inline iMemoryBusNode* MemoryBus::find_owner(addr_t address)
 {
     iMemoryBusNode* owner = nullptr;
+
     if (bootrom_.owns(address) && !bootrom_.is_locked())
         owner = static_cast<iMemoryBusNode*>(&bootrom_);
     else if (cartridge_.owns(address))

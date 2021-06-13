@@ -2,15 +2,16 @@
 
 #include "emulator/memory/memorybus.hh"
 
-Serial::Serial(SerialRegisters& reg, Interrupts& interrupts, iFrontend* frontend) :
-    interrupts(interrupts),
-    reg(reg),
-    frontend_(frontend)
+Serial::Serial(SerialRegisters& reg, Interrupts& interrupts, iFrontend* frontend)
+    : interrupts(interrupts)
+    , reg(reg)
+    , frontend_(frontend)
+    , callback_(nullptr)
 {
     tcycles_left_in_transfer = 0;
 }
 
-void Serial::set_frontend(iFrontend* frontend)
+void Serial::set_serial_callback(iFrontend::SerialCallback callback)
 {
-    frontend_ = frontend;
+    callback_ = callback;
 }

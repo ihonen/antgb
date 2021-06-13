@@ -21,6 +21,8 @@ ButtonInputWidget::ButtonInputWidget(DebugCore* debugger, QWidget* parent) :
     QFrame(parent),
     debugger(debugger)
 {
+    qRegisterMetaType<JoypadButton>("JoypadButton");
+
     setStyleSheet("background-color: #232629");
 
     up_button = new Button(JoypadUp, this);
@@ -67,22 +69,79 @@ ButtonInputWidget::ButtonInputWidget(DebugCore* debugger, QWidget* parent) :
     layout->addWidget(a_button, 2, 5);
     layout->setSpacing(0);
     layout->setMargin(0);
+
+    connect(this, &ButtonInputWidget::joypad_pressed,
+            this, &ButtonInputWidget::on_joypad_pressed);
+    connect(this, &ButtonInputWidget::joypad_released,
+            this, &ButtonInputWidget::on_joypad_released);
 }
 
 void ButtonInputWidget::keyPressEvent(QKeyEvent* event)
 {
     auto button = buttons[JOYPAD_KEYMAP.at(event->key())];
-    // TODO: Find a better solution.
-    button->keyPressEvent(event);
     debugger->button_pressed(button->id);
-    QWidget::keyPressEvent(event);
+    event->accept();
 }
 
 void ButtonInputWidget::keyReleaseEvent(QKeyEvent* event)
 {
     auto button = buttons[JOYPAD_KEYMAP.at(event->key())];
-    // TODO: Find a better solution.
-    button->keyReleaseEvent(event);
-    debugger->button_pressed(button->id);
-    QWidget::keyReleaseEvent(event);
+    debugger->button_released(button->id);
+    event->accept();
+}
+
+void ButtonInputWidget::joypad_press_callback(JoypadButton button)
+{
+    emit joypad_pressed(button);
+}
+
+void ButtonInputWidget::joypad_release_callback(JoypadButton button)
+{
+    emit joypad_released(button);
+}
+
+void ButtonInputWidget::on_joypad_pressed(JoypadButton button)
+{
+    Button* ui_button = nullptr;
+
+    switch (button)
+    {
+        case JoypadA: ui_button = a_button; break;
+        case JoypadB: ui_button = b_button; break;
+        case JoypadStart: ui_button = start_button; break;
+        case JoypadSelect: ui_button = select_button; break;
+        case JoypadUp: ui_button = up_button; break;
+        case JoypadDown: ui_button = down_button; break;
+        case JoypadLeft: ui_button = left_button; break;
+        case JoypadRight: ui_button = right_button; break;
+        case JoypadNone: break;
+    }
+    if (ui_button != nullptr)
+    {
+        // TODO: Find a better solution.
+        ui_button->keyPressEvent(nullptr);
+    }
+}
+
+void ButtonInputWidget::on_joypad_released(JoypadButton button)
+{
+    Button* ui_button = nullptr;
+
+    switch (button)
+    {
+        case JoypadA: ui_button = a_button; break;
+        case JoypadB: ui_button = b_button; break;
+        case JoypadStart: ui_button = start_button; break;
+        case JoypadSelect: ui_button = select_button; break;
+        case JoypadUp: ui_button = up_button; break;
+        case JoypadDown: ui_button = down_button; break;
+        case JoypadLeft: ui_button = left_button; break;
+        case JoypadRight: ui_button = right_button; break;
+        case JoypadNone: break;
+    }
+    if (ui_button != nullptr)
+    {
+        // TODO: Find a better solution.
+        ui_button->keyReleaseEvent(nullptr);
+    }
 }

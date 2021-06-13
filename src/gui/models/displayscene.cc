@@ -33,7 +33,6 @@ static const std::array<uint32_t, 4> colors =
 
 DisplayScene::DisplayScene(DebugCore* debugger, QObject* parent) :
     QGraphicsScene(parent),
-    iFrontend(),
     debugger(debugger)
 {
     qRegisterMetaType<iFrontend::Pixels>("iFrontend::Pixels");
@@ -43,8 +42,8 @@ DisplayScene::DisplayScene(DebugCore* debugger, QObject* parent) :
     item = new QGraphicsPixmapItem(QPixmap::fromImage(image));
     addItem(item);
 
-    connect(this, &DisplayScene::schedule_render_on_screen,
-            this, &DisplayScene::render_on_screen);
+    connect(this, &DisplayScene::rendering_requested,
+            this, &DisplayScene::on_rendering_requested);
 }
 
 void DisplayScene::set_pixel(QImage& image, size_t x, size_t y, uint32_t color)
@@ -60,24 +59,19 @@ void DisplayScene::set_pixel(QImage& image, size_t x, size_t y, uint32_t color)
     }
 }
 
-void DisplayScene::render_callback(const Pixels& pixels)
+void DisplayScene::render_callback(const iFrontend::Pixels& pixels)
 {
-    emit schedule_render_on_screen(pixels);
+    emit rendering_requested(pixels);
 }
 
-void DisplayScene::serial_callback(const uint8_t byte)
+void DisplayScene::on_rendering_requested(const iFrontend::Pixels& pixels)
 {
-    std::cerr << byte;
-}
-
-void DisplayScene::render_on_screen(const Pixels& pixels)
-{
-    for (size_t x = 0; x < SCREEN_WIDTH; ++x)
+    for (size_t x = 0; x < iFrontend::SCREEN_WIDTH; ++x)
     {
         for (size_t y = 0; y < iFrontend::SCREEN_HEIGHT; ++y)
         {
             set_pixel(image, x, y, colors.at(pixels.at(x).at(y)));
-       }
+        }
     }
 
     item->setPixmap(QPixmap::fromImage(image));

@@ -1,5 +1,7 @@
 #include "emulatorwidget.hh"
 
+#include <functional>
+
 #include <QFile>
 #include <QThread>
 
@@ -60,6 +62,35 @@ EmulatorWidget::EmulatorWidget(Emulator* emulator,
     main_layout->addWidget(memory_viewer, 0, 4, 2, 1);
     main_layout->addWidget(cartridge_viewer, 0, 5, 2, 3);
     setLayout(main_layout);
+
+    std::function<void(const iFrontend::Pixels&)> render_lambda =
+        [&](const auto& p)
+        {
+            display.scene->render_callback(p);
+        };
+
+    std::function<void(uint8_t)> serial_lambda =
+        [&](auto p)
+        {
+            serial_viewer->serial_callback(p);
+        };
+
+    std::function<void(JoypadButton)> joypad_press_lambda =
+        [&](auto p)
+        {
+            button_input_widget->joypad_press_callback(p);
+        };
+
+    std::function<void(JoypadButton)> joypad_release_lambda =
+        [&](auto p)
+        {
+            button_input_widget->joypad_release_callback(p);
+        };
+
+    emu->set_joypad_press_callback(joypad_press_lambda);
+    emu->set_joypad_release_callback(joypad_release_lambda);
+    emu->set_render_callback(render_lambda);
+    emu->set_serial_callback(serial_lambda);
 }
 
 EmulatorWidget::~EmulatorWidget()

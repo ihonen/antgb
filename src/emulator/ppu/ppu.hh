@@ -1,5 +1,6 @@
 #pragma once
 
+#include "debugger/iemulator.hh"
 #include "emulator/interfaces/iemulatorcomponent.hh"
 #include "emulator/common/bitmanip.hh"
 #include "emulator/cpu/interrupts.hh"
@@ -7,13 +8,13 @@
 #include "emulator/common/types.hh"
 #include <chrono>
 #include <map>
+#include <memory>
 #include <vector>
 
 using namespace std;
 
 using std::vector;
 
-class iFrontend;
 class MemoryBus;
 class PpuRegisters;
 class Renderer;
@@ -58,12 +59,11 @@ public:
 
     Ppu(PpuRegisters& reg,
         Interrupts& interrupts,
-        MemoryBus* mem,
-        Dma& dma,
-        iFrontend* renderer = nullptr);
+        MemoryBus& mem,
+        Dma& dma);
     virtual ~Ppu() override;
 
-    void set_frontend(iFrontend* frontend);
+    void set_render_callback(iFrontend::RenderCallback callback);
 
     void hard_reset();
 
@@ -76,7 +76,7 @@ public:
 
     PpuRegisters& reg;
     Interrupts& interrupts;
-    MemoryBus* mem;
+    MemoryBus& mem;
     Dma& dma;
-    Renderer* renderer;
+    std::unique_ptr<Renderer> renderer;
 };

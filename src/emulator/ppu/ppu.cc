@@ -67,7 +67,7 @@ public:
     static const addr_t TILE_MAP1_BASE = 0x9C00;
     static const addr_t TILE_MAP_BASE[2];
 
-    Background(Type type, MemoryBus* memory);
+    Background(Type type, MemoryBus& memory);
     void     set_memory(uint8_t* memory);
     uint8_t  get_pixel_at(size_t display_x, size_t display_y);
     uint8_t  get_pixel(size_t background_x, size_t background_y);
@@ -82,7 +82,7 @@ public:
     size_t   right();
     bool     is_enabled();
 
-    MemoryBus* mem;
+    MemoryBus& mem;
     Type type;
 };
 
@@ -92,9 +92,10 @@ const addr_t Background::TILE_DATA_BASE[2] = {Background::TILE_DATA_BLOCK2_BASE,
 const addr_t Background::TILE_MAP_BASE[2] = {Background::TILE_MAP0_BASE,
                                              Background::TILE_MAP1_BASE};
 
-Background::Background(Type type_, MemoryBus* memory)
+Background::Background(Type type_, MemoryBus& memory)
+    : mem(memory)
+    , type(type_)
 {
-    mem  = memory;
     type = type_;
 }
 
@@ -134,25 +135,25 @@ addr_t Background::tile_map_address()
 {
     if (type == Type::Background)
     {
-        return TILE_MAP_BASE[get_bit(mem->get(LCDC_ADDR), PpuRegisters::BgTileMapDisplaySelect)];
+        return TILE_MAP_BASE[get_bit(mem.get(LCDC_ADDR), PpuRegisters::BgTileMapDisplaySelect)];
     }
 
-    return TILE_MAP_BASE[get_bit(mem->get(LCDC_ADDR), PpuRegisters::WindowTileMapDisplaySelect)];
+    return TILE_MAP_BASE[get_bit(mem.get(LCDC_ADDR), PpuRegisters::WindowTileMapDisplaySelect)];
 }
 
 uint8_t* Background::tile_map_base()
 {
-    return mem->get(tile_map_address());
+    return mem.get(tile_map_address());
 }
 
 addr_t Background::tile_data_address()
 {
-    return TILE_DATA_BASE[get_bit(mem->get(LCDC_ADDR), PpuRegisters::BgAndWindowTileDataSelect)];
+    return TILE_DATA_BASE[get_bit(mem.get(LCDC_ADDR), PpuRegisters::BgAndWindowTileDataSelect)];
 }
 
 Tile* Background::tile_data_base()
 {
-    return (Tile*)mem->get(tile_data_address());
+    return (Tile*)mem.get(tile_data_address());
 }
 
 bool Background::includes(size_t display_x, size_t display_y)
@@ -165,17 +166,17 @@ size_t Background::top()
 {
     if (type == Type::Background)
     {
-        return *mem->get(SCY_ADDR);
+        return *mem.get(SCY_ADDR);
     }
 
-    return *mem->get(WY_ADDR);
+    return *mem.get(WY_ADDR);
 }
 
 size_t Background::bottom()
 {
     if (type == Type::Background)
     {
-        return (*mem->get(SCY_ADDR) + 144 - 1) % BG_HEIGHT_PIXELS;
+        return (*mem.get(SCY_ADDR) + 144 - 1) % BG_HEIGHT_PIXELS;
     }
 
     return 144;
@@ -185,17 +186,17 @@ size_t Background::left()
 {
     if (type == Type::Background)
     {
-        return *mem->get(SCX_ADDR);
+        return *mem.get(SCX_ADDR);
     }
 
-    return *mem->get(WX_ADDR);
+    return *mem.get(WX_ADDR);
 }
 
 size_t Background::right()
 {
     if (type == Type::Background)
     {
-        return (*mem->get(SCX_ADDR) + 160 - 1) % BG_WIDTH_PIXELS;
+        return (*mem.get(SCX_ADDR) + 160 - 1) % BG_WIDTH_PIXELS;
     }
 
     return 160;
@@ -205,11 +206,11 @@ bool Background::is_enabled()
 {
     if (type == Type::Background)
     {
-        return get_bit(mem->get(LCDC_ADDR), PpuRegisters::BgAndWindowDisplayEnable);
+        return get_bit(mem.get(LCDC_ADDR), PpuRegisters::BgAndWindowDisplayEnable);
     }
 
-    return get_bit(mem->get(LCDC_ADDR), PpuRegisters::BgAndWindowDisplayEnable)
-           && get_bit(mem->get(LCDC_ADDR), PpuRegisters::WindowDisplayEnable);
+    return get_bit(mem.get(LCDC_ADDR), PpuRegisters::BgAndWindowDisplayEnable)
+           && get_bit(mem.get(LCDC_ADDR), PpuRegisters::WindowDisplayEnable);
 }
 
 //----------------------------------------------------------------------------
@@ -363,7 +364,7 @@ uint8_t Sprite::palette_number()
 class Sprites
 {
 public:
-    Sprites(MemoryBus* memory);
+    Sprites(MemoryBus& memory);
     virtual ~Sprites();
     void               set_memory(uint8_t* memory);
     void               refresh();
@@ -380,7 +381,7 @@ public:
     std::array<Sprite, 10> sprite_buffer;
     size_t                 sprite_buffer_size;
 
-    MemoryBus* mem;
+    MemoryBus& mem;
 };
 
 static bool sprite_priority_comp(const Sprite& a, const Sprite& b)
@@ -393,10 +394,10 @@ static bool sprite_priority_comp(const Sprite& a, const Sprite& b)
     return a.attribute->tile_number <= b.attribute->tile_number;
 }
 
-Sprites::Sprites(MemoryBus* memory)
+Sprites::Sprites(MemoryBus& memory)
+    : sprite_buffer_size(0)
+    , mem(memory)
 {
-    mem                = memory;
-    sprite_buffer_size = 0;
 }
 
 Sprites::~Sprites() {}
@@ -420,8 +421,8 @@ void Sprites::refresh()
         }
         */
 
-        if (sprite_attributes->y_pos - 16 <= mem->read(LY_ADDR)
-            && sprite_attributes->y_pos - 9 /*- 16 + sprite_height()*/ >= mem->read(LY_ADDR))
+        if (sprite_attributes->y_pos - 16 <= mem.read(LY_ADDR)
+            && sprite_attributes->y_pos - 9 /*- 16 + sprite_height()*/ >= mem.read(LY_ADDR))
         {
             Sprite& sprite = sprite_buffer[sprite_buffer_size];
             assemble_sprite_info(sprite, sprite_attributes);
@@ -439,7 +440,7 @@ addr_t Sprites::sprite_attributes_address()
 
 Sprite::Attribute* Sprites::sprite_attributes_base()
 {
-    return (Sprite::Attribute*)(mem->get(sprite_attributes_address()));
+    return (Sprite::Attribute*)(mem.get(sprite_attributes_address()));
 }
 
 addr_t Sprites::sprite_data_address()
@@ -449,17 +450,17 @@ addr_t Sprites::sprite_data_address()
 
 Tile* Sprites::sprite_data_base()
 {
-    return (Tile*)(mem->get(sprite_data_address()));
+    return (Tile*)(mem.get(sprite_data_address()));
 }
 
 uint8_t Sprites::sprite_height()
 {
-    return get_bit(mem->get(LCDC_ADDR), PpuRegisters::ObjSize) ? 16 : 8;
+    return get_bit(mem.get(LCDC_ADDR), PpuRegisters::ObjSize) ? 16 : 8;
 }
 
 bool Sprites::enabled()
 {
-    return get_bit(mem->get(LCDC_ADDR), PpuRegisters::ObjDisplayEnable);
+    return get_bit(mem.get(LCDC_ADDR), PpuRegisters::ObjDisplayEnable);
 }
 
 void Sprites::assemble_sprite_info(Sprite& sprite, Sprite::Attribute* attributes)
@@ -497,8 +498,8 @@ Sprite* Sprites::get_sprite_at_x(size_t display_x)
 class Renderer
 {
 public:
-    Renderer(MemoryBus* mem, iFrontend* frontend);
-    void set_frontend(iFrontend* frontend);
+    Renderer(MemoryBus& mem);
+    void set_render_callback(iFrontend::RenderCallback callback);
     void set_memory(uint8_t* mem);
     void render_frame();
 
@@ -507,9 +508,9 @@ public:
 private:
     uint16_t TILE_DATA_BASE = 0x8000;
 
-    iFrontend* frontend;
+    iFrontend::RenderCallback callback_;
 
-    MemoryBus* mem;
+    MemoryBus& mem;
     iFrontend::Pixels pixels;
 
     Background background;
@@ -517,34 +518,38 @@ private:
     Sprites sprites;
 };
 
-Renderer::Renderer(MemoryBus* memory, iFrontend* renderer_)
-    : frontend(renderer_), mem(memory),
-      background(Background(Background::Type::Background, mem)),
-      window(Background(Background::Type::Window, mem)),
-      sprites(Sprites(memory))
+Renderer::Renderer(MemoryBus& memory)
+    : callback_(nullptr)
+    , mem(memory)
+    , background(Background(Background::Type::Background, mem))
+    , window(Background(Background::Type::Window, mem))
+    , sprites(Sprites(memory))
 {
     memset(pixels.data(), 0x00, 160 * 144);
 }
 
-void Renderer::set_frontend(iFrontend* renderer)
+void Renderer::set_render_callback(iFrontend::RenderCallback callback)
 {
-    frontend = renderer;
+    callback_ = callback;
 }
 
 void Renderer::render_frame()
 {
-    auto ly_backup = *mem->get(LY_ADDR);
+    //auto ly_backup = *mem.get(LY_ADDR);
 
     for (size_t y = 0; y < 144; ++y)
     {
-        *mem->get(LY_ADDR) = y;
-        sprites.refresh();
+        //*mem.get(LY_ADDR) = y;
+
+        //sprites.refresh();
         for (size_t x = 0; x < 160; ++x)
         {
+            /*
             if (background.includes(x, y))
             {
                 pixels[x][y] = background.get_pixel_at(x, y);
             }
+            */
 
             /*
             Sprite* sprite = sprites.get_sprite_at_x(x);
@@ -553,14 +558,16 @@ void Renderer::render_frame()
                 frame_buffer[y][x] = sprite->get_pixel_at(x, y);
             }
             */
+
+            pixels[x][y] = rand() % 3;
         }
     }
 
-    *mem->get(LY_ADDR) = ly_backup;
+    //*mem.get(LY_ADDR) = ly_backup;
 
-    if (frontend)
+    if (callback_ != nullptr)
     {
-        frontend->render_callback(pixels);
+        callback_(pixels);
     }
 }
 
@@ -568,24 +575,23 @@ void Renderer::render_frame()
 // Ppu
 //----------------------------------------------------------------------------
 
-Ppu::Ppu(PpuRegisters& reg, Interrupts& interrupts, MemoryBus* mem, Dma& dma, iFrontend* renderer_)
+Ppu::Ppu(PpuRegisters& reg, Interrupts& interrupts, MemoryBus& mem, Dma& dma)
     : reg(reg)
     , interrupts(interrupts)
     , mem(mem)
     , dma(dma)
+    , renderer(std::make_unique<Renderer>(mem))
 {
-    renderer = new Renderer(mem, renderer_);
     hard_reset();
 }
 
 Ppu::~Ppu()
 {
-    delete renderer;
 }
 
-void Ppu::set_frontend(iFrontend* frontend)
+void Ppu::set_render_callback(iFrontend::RenderCallback callback)
 {
-    renderer->set_frontend(frontend);
+    renderer->set_render_callback(callback);
 }
 
 void Ppu::hard_reset()
@@ -624,8 +630,8 @@ void Ppu::post_cpu_exec_tick(emutime_t tcycles)
         launch_dma(dma_src_address());
 
     /*
-    mem->hff41_stat &= ~(current_mode & MODE_FLAG_MASK);
-    mem->hff41_stat |= current_mode & MODE_FLAG_MASK;
+    mem.hff41_stat &= ~(current_mode & MODE_FLAG_MASK);
+    mem.hff41_stat |= current_mode & MODE_FLAG_MASK;
     mode_task_complete = false;
 
     */

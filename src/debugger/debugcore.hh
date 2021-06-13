@@ -18,7 +18,12 @@ class DebugCore : public iEmulator
 public:
     DebugCore(iEmulator* emu);
     virtual ~DebugCore() override;
-    virtual void set_frontend(iFrontend*) override {}
+
+    virtual void set_joypad_press_callback(iFrontend::JoypadCallback /*callback*/) override {}
+    virtual void set_joypad_release_callback(iFrontend::JoypadCallback /*callback*/) override {}
+    virtual void set_render_callback(iFrontend::RenderCallback /*callback*/) override {}
+    virtual void set_serial_callback(iFrontend::SerialCallback /*callback*/) override {}
+
     virtual void load_rom(const std::string& filepath) override;
     virtual int execute_next() override;
     void step_over();

@@ -23,8 +23,6 @@ MainWindow::MainWindow(Emulator* emulator, DebugCore* debugger, QWidget* parent)
     emuwidget = new EmulatorWidget(emu, debugger, this);
     setCentralWidget(emuwidget);
 
-    emu->set_frontend(emuwidget->display.scene);
-
     init_actions();
     init_toolbar();
     init_menubar();
@@ -241,15 +239,19 @@ void MainWindow::load_rom_act()
     // filepath = "09-op r,r.gb";
     // filepath = "10-bit ops.gb";
     // filepath = "11-op a,(hl).gb";
-    filepath = "instr_timing.gb";
+    // filepath = "instr_timing.gb";
+    // filepath = "interrupt_time.gb";
+    // filepath = "01-read_timing.gb";
+    // filepath = "02-write_timing.gb";
+    // filepath = "03-modify_timing.gb";
 
     // NOT PASSED:
 
-    //QString filepath("interrupt_time.gb");
+    // filepath = "interrupt_time.gb";
 
     // OTHER:
 
-    // filepath = "tetris_jue_v1_1.gb";
+    filepath = "tetris_jue_v1_1.gb";
 
     emuwidget->load_rom(filepath);
 }

@@ -7,7 +7,19 @@
 Joypad::Joypad(JoypadRegisters& registers, Interrupts& interrupts)
     : registers_(registers)
     , interrupts_(interrupts)
+    , press_callback_(nullptr)
+    , release_callback_(nullptr)
 {
+}
+
+void Joypad::set_joypad_press_callback(iFrontend::JoypadCallback callback)
+{
+    press_callback_ = callback;
+}
+
+void Joypad::set_joypad_release_callback(iFrontend::JoypadCallback callback)
+{
+    release_callback_ = callback;
 }
 
 void Joypad::button_pressed(JoypadButton button)
@@ -75,6 +87,11 @@ void Joypad::button_pressed(JoypadButton button)
             interrupts_.request_interrupt(Interrupts::Joypad);
         }
     }
+
+    if (press_callback_ != nullptr)
+    {
+        press_callback_(button);
+    }
 }
 
 void Joypad::button_released(JoypadButton button)
@@ -139,5 +156,10 @@ void Joypad::button_released(JoypadButton button)
             clear_bit(&value, bit_pos);
             registers_.write(JOYP_ADDR, value);
         }
+    }
+
+    if (release_callback_ != nullptr)
+    {
+        release_callback_(button);
     }
 }

@@ -12,24 +12,26 @@ public:
 
     Serial(SerialRegisters& reg, Interrupts& interrupts, iFrontend* frontend = nullptr);
 
+    void set_serial_callback(iFrontend::SerialCallback callback);
+
     virtual void pre_cpu_exec_tick() override {}
     inline virtual void post_cpu_exec_tick(emutime_t tcycles) override;
-
-    void set_frontend(iFrontend* frontend);
 
     emutime_t tcycles_left_in_transfer;
     Interrupts& interrupts;
     SerialRegisters& reg;
     iFrontend* frontend_;
+
+    iFrontend::SerialCallback callback_;
 };
 
 FORCE_INLINE void Serial::post_cpu_exec_tick(emutime_t tcycles)
 {
     if (reg.read(SB_ADDR) != 0x00 && reg.read(SC_ADDR) == 0x81)
     {
-        if (frontend_ != nullptr)
+        if (callback_ != nullptr)
         {
-            frontend_->serial_callback(reg.read(SB_ADDR));
+            callback_(reg.read(SB_ADDR));
         }
         reg.write(SB_ADDR, 0x00);
         tcycles_left_in_transfer = TCYCLES_PER_BYTE;

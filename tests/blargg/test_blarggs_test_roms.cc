@@ -1,5 +1,4 @@
 #include "emulator/emulator.hh"
-#include "tests/common/serialfrontend.hh"
 
 #include "gtest/gtest.h"
 
@@ -15,7 +14,7 @@ protected:
         rom_filepath_ = GetParam();
 
         emulator_.load_rom(rom_filepath_);
-        emulator_.set_frontend(&serial_);
+        emulator_.set_serial_callback([&](auto p) { serial_received_ += static_cast<char>(p); });
     }
 
     void TearDown() override
@@ -23,22 +22,24 @@ protected:
     }
 
     std::string rom_filepath_;
-    SerialFrontend serial_;
+    std::string serial_received_;
     Emulator emulator_;
 };
 
 TEST_P(BlarggsTestRomsTest, run)
 {
+
+
     for (uint64_t i = 0; i < 100000000ULL; ++i)
     {
         emulator_.execute_next();
 
-        if (serial_.get_received().find("Pass") != std::string::npos)
+        if (serial_received_.find("Pass") != std::string::npos)
         {
             return;
         }
 
-        ASSERT_FALSE(serial_.get_received().find("Fail") != std::string::npos);
+        ASSERT_FALSE(serial_received_.find("Fail") != std::string::npos);
     }
 
     bool timeout = true;

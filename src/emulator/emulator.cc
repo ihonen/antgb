@@ -12,6 +12,9 @@
 #include "emulator/peripherals/timer.hh"
 
 Emulator::Emulator()
+    : joypad_press_callback(nullptr)
+    , render_callback(nullptr)
+    , serial_callback(nullptr)
 {
     bootrom = std::make_unique<BootRom>();
     hram = std::make_unique<Hram>();
@@ -54,16 +57,34 @@ Emulator::Emulator()
     cpu = std::make_unique<Cpu>(*cpu_registers, *interrupts, *mem, *timer);
     dma = std::make_unique<Dma>(*mem);
     joypad = std::make_unique<Joypad>(*joypad_registers, *interrupts);
-    ppu = std::make_unique<Ppu>(*ppu_registers, *interrupts, mem.get(), *dma);
+    ppu = std::make_unique<Ppu>(*ppu_registers, *interrupts, *mem, *dma);
     serial = std::make_unique<Serial>(*serial_registers, *interrupts);
 }
 
 Emulator::~Emulator() = default;
 
-void Emulator::set_frontend(iFrontend* frontend)
+void Emulator::set_joypad_press_callback(iFrontend::JoypadCallback callback)
 {
-    ppu->set_frontend(frontend);
-    serial->set_frontend(frontend);
+    joypad_press_callback = callback;
+    joypad->set_joypad_press_callback(callback);
+}
+
+void Emulator::set_joypad_release_callback(iFrontend::JoypadCallback callback)
+{
+    joypad_release_callback = callback;
+    joypad->set_joypad_release_callback(callback);
+}
+
+void Emulator::set_render_callback(iFrontend::RenderCallback callback)
+{
+    render_callback = callback;
+    ppu->set_render_callback(callback);
+}
+
+void Emulator::set_serial_callback(iFrontend::SerialCallback callback)
+{
+    serial_callback = callback;
+    serial->set_serial_callback(callback);
 }
 
 void Emulator::load_rom(const std::string& filepath)
