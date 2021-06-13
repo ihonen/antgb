@@ -1,14 +1,21 @@
 #include "cpu.hh"
 
 #include "emulator/memory/memorybus.hh"
+#include "emulator/peripherals/timer.hh"
 #include <array>
 #include <iomanip>
 #include <iostream>
 
-Cpu::Cpu(CpuRegisters& registers, Interrupts& interrupts, MemoryBus& mem)
+Cpu::Cpu(
+    CpuRegisters& registers,
+    Interrupts& interrupts,
+    MemoryBus& mem,
+    Timer& timer
+)
     : reg_(registers)
     , interrupts_(interrupts)
     , memory_(mem)
+    , timer_(timer)
     , current_instruction_(nullptr)
     , branch_was_taken_(false)
     , is_halted_(false)
@@ -54,6 +61,7 @@ void Cpu::execute_next()
             if (interrupt.source == Interrupts::Joypad)
             {
                 is_stopped_ = false;
+                timer_.set_stopped(false);
             }
 
             const bool was_halted = is_halted_;

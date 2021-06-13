@@ -76,7 +76,7 @@ public:
     std::unique_ptr<Dma> dma;
     std::unique_ptr<Ppu> ppu;
     std::unique_ptr<Joypad> joypad;
-    std::unique_ptr<Timer> timer_divider;
+    std::unique_ptr<Timer> timer;
     std::unique_ptr<Serial> serial;
     std::unique_ptr<Cartridge> cartridge;
 };
@@ -88,7 +88,7 @@ FORCE_INLINE int Emulator::execute_next()
     uint64_t cpu_cycle_count_after = cpu->get_elapsed_tcycles();
     uint64_t clock_cycles = cpu_cycle_count_after - cpu_cycle_count_before;
 
-    timer_divider->emulate(clock_cycles);
+    timer->emulate(clock_cycles);
     ppu->step(clock_cycles);
     serial->emulate(clock_cycles);
     dma->emulate(clock_cycles);

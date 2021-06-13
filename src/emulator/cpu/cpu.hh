@@ -10,6 +10,7 @@
 
 
 class MemoryBus;
+class Timer;
 
 class Cpu
 {
@@ -26,7 +27,11 @@ public:
     static const std::array<const OpcodeInfo, 256> OPCODE_TABLE;
     static const std::array<const OpcodeInfo, 256> CB_OPCODE_TABLE;
 
-    Cpu(CpuRegisters& registers, Interrupts& interrupts, MemoryBus& mem);
+    Cpu(CpuRegisters& registers,
+        Interrupts& interrupts,
+        MemoryBus& mem,
+        Timer& timer
+    );
     ~Cpu();
 
     CpuRegisters& get_registers();
@@ -153,6 +158,7 @@ protected:
     CpuRegisters& reg_;
     Interrupts& interrupts_;
     MemoryBus& memory_;
+    Timer& timer_;
 
     std::ofstream trace_log_;
 

@@ -2,7 +2,7 @@
 
 namespace
 {
-    constexpr uint8_t DIV_WRITE_MASK  = 0b11111111;
+    constexpr uint8_t DIV_WRITE_MASK  = 0b00000000;
     constexpr uint8_t DIV_READ_MASK   = 0b11111111;
 
     constexpr uint8_t TIMA_WRITE_MASK = 0b11111111;

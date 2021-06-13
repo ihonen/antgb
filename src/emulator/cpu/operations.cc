@@ -1,6 +1,7 @@
 #include "cpu.hh"
 
 #include "emulator/memory/memorybus.hh"
+#include "emulator/peripherals/timer.hh"
 
 // ADC
 
@@ -747,6 +748,7 @@ void Cpu::SRL_r8(uint8_t& r8)
 void Cpu::STOP()
 {
     is_stopped_ = true;
+    timer_.set_stopped(true);
     // TODO: Turn off display
 }
 

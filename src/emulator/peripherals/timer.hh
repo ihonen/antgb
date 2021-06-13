@@ -7,74 +7,104 @@ class Timer
 {
 public:
     Timer(TimerRegisters& reg, Interrupts& interrupts);
-    inline void emulate(uint64_t cpu_cycles);
-    inline void emulate_divider(uint64_t cpu_cycles);
-    inline void emulate_timer(uint64_t cpu_cycles);
 
-    TimerRegisters& reg;
-    Interrupts& interrupts;
+    void set_stopped(bool stopped);
+    inline bool is_stopped();
 
-    struct
+    inline void emulate(emutime_t tcycles);
+
+protected:
+
+    inline bool is_timer_enabled();
+    inline emutime_t timer_tcycles_per_tick();
+
+    inline void emulate_divider(emutime_t tcycles);
+    inline void emulate_timer(emutime_t tcycles);
+    inline void emulate_timerold(emutime_t tcycles);
+
+    static constexpr emutime_t DIVIDER_FREQ_Hz = 16384;
+    static constexpr emutime_t DIVIDER_TCYCLES_PER_TICK =
+        Cpu::CLK_FREQ_Hz / DIVIDER_FREQ_Hz;
+
+    const emutime_t TIMER_FREQ_DIVIDER[4] =
     {
-        const uint64_t FREQ_Hz = 16384;
-        const uint64_t CPU_CYCLES_PER_TICK = Cpu::CLK_FREQ_Hz / FREQ_Hz;
-        const addr_t REGISTER_ADDRESS = 0xFF04;
-        uint64_t unemulated_cpu_cycles;
-    } divider;
+        1024,
+        16,
+        64,
+        256,
+    };
 
-    struct
-    {
-        const uint8_t CLK_SELECT_MASK = 0x03; // Bits 0-1
-        uint64_t unemulated_cpu_cycles;
-        // Selected with bits [0:1] of the control register.
-        const uint64_t FREQ_DIVIDER[4] =
-        {
-            1024, 16, 64, 256
-        };
-    } timer;
+    TimerRegisters& reg_;
+    Interrupts& interrupts_;
+
+    emutime_t divider_unemulated_tcycles_;
+    emutime_t timer_unemulated_tcycles_;
+
+    bool is_stopped_;
 };
 
-FORCE_INLINE void Timer::emulate(uint64_t cpu_cycles)
+FORCE_INLINE bool Timer::is_stopped()
 {
-    emulate_divider(cpu_cycles);
-    emulate_timer(cpu_cycles);
+    return is_stopped_;
 }
 
-FORCE_INLINE void Timer::emulate_divider(uint64_t cpu_cycles)
+FORCE_INLINE void Timer::emulate(emutime_t tcycles)
 {
-    divider.unemulated_cpu_cycles += cpu_cycles;
-    while (divider.unemulated_cpu_cycles <= divider.CPU_CYCLES_PER_TICK)
-    {
-        reg.write(DIV_ADDR, reg.read(DIV_ADDR) + 1);
-        divider.unemulated_cpu_cycles -= divider.CPU_CYCLES_PER_TICK;
-    }
+    emulate_divider(tcycles);
+    emulate_timer(tcycles);
 }
 
-FORCE_INLINE void Timer::emulate_timer(uint64_t cpu_cycles)
+FORCE_INLINE bool Timer::is_timer_enabled()
 {
-    timer.unemulated_cpu_cycles += cpu_cycles;
+    return bool(reg_.read(TAC_ADDR) & (1 << TimerRegisters::TimerEnable));
+}
 
-    if ((reg.read(TAC_ADDR) & (0x01 << TimerRegisters::TimerEnable)) == 0x00)
+FORCE_INLINE emutime_t Timer::timer_tcycles_per_tick()
+{
+    return TIMER_FREQ_DIVIDER[reg_.read(TAC_ADDR)
+           & (TimerRegisters::InputClockSelect0
+              | TimerRegisters::InputclockSelect1)];
+}
+
+FORCE_INLINE void Timer::emulate_divider(emutime_t tcycles)
+{
+    if (!is_stopped())
     {
-        timer.unemulated_cpu_cycles = 0;
-        return;
-    }
+        // TODO: Register interface violation.
+        // This is required because DIV is marked read only in the interface.
+        auto& div_value = *reg_.get(DIV_ADDR);
 
-    uint64_t clk_select = reg.read(TAC_ADDR) & (timer.CLK_SELECT_MASK);
-    uint64_t cpu_cycles_per_tick = timer.FREQ_DIVIDER[clk_select];
-
-    while (timer.unemulated_cpu_cycles >= cpu_cycles_per_tick)
-    {
-        timer.unemulated_cpu_cycles -= cpu_cycles_per_tick;
-        if (reg.read(TIMA_ADDR) == 0xFF)
+        for (divider_unemulated_tcycles_ += tcycles;
+             divider_unemulated_tcycles_ >= DIVIDER_TCYCLES_PER_TICK;
+             divider_unemulated_tcycles_ -= DIVIDER_TCYCLES_PER_TICK)
         {
-            reg.write(TIMA_ADDR, reg.read(TMA_ADDR));
-            interrupts.request_interrupt(Interrupts::Timer);
-            return;
+            ++div_value;
         }
-        else
+    }
+}
+
+FORCE_INLINE void Timer::emulate_timer(emutime_t tcycles)
+{
+    // TODO: Pandocs obscure behavior.
+
+    if (is_timer_enabled() && !is_stopped())
+    {
+        auto tcycles_per_tick = timer_tcycles_per_tick();
+
+        for (timer_unemulated_tcycles_ += tcycles;
+             timer_unemulated_tcycles_ >= tcycles_per_tick;
+             timer_unemulated_tcycles_ -= tcycles_per_tick)
         {
-            reg.write(TIMA_ADDR, reg.read(TIMA_ADDR) + 1);
+            if (reg_.read(TIMA_ADDR) == 0xFF)
+            {
+                reg_.write(TIMA_ADDR, reg_.read(TMA_ADDR));
+                interrupts_.request_interrupt(Interrupts::Timer);
+                return;
+            }
+            else
+            {
+                reg_.write(TIMA_ADDR, reg_.read(TIMA_ADDR) + 1);
+            }
         }
     }
 }

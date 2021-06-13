@@ -49,12 +49,13 @@ Emulator::Emulator()
 
     interrupts = std::make_unique<Interrupts>(*cpu_registers);
 
-    cpu = std::make_unique<Cpu>(*cpu_registers, *interrupts, *mem);
+    timer = std::make_unique<Timer>(*timer_registers, *interrupts);
+
+    cpu = std::make_unique<Cpu>(*cpu_registers, *interrupts, *mem, *timer);
     dma = std::make_unique<Dma>(*mem);
     joypad = std::make_unique<Joypad>(*joypad_registers, *interrupts);
     ppu = std::make_unique<Ppu>(*ppu_registers, *interrupts, mem.get(), *dma);
     serial = std::make_unique<Serial>(*serial_registers, *interrupts);
-    timer_divider = std::make_unique<Timer>(*timer_registers, *interrupts);
 }
 
 Emulator::~Emulator() = default;
