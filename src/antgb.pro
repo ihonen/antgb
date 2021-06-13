@@ -176,4 +176,11 @@ RESOURCES += \
     gui/assets/img.qrc \
     memdump.qrc
 
-FORMS +=
+# Copy the bootrom to the build directory.
+BOOTROM_SRC_PATH = $$shell_path($$clean_path($$PWD\\bootrom\\bootix_dmg.bin))
+BUILD_DIR = $$shell_path($$clean_path($$OUT_PWD))
+copydata.commands = $(COPY_DIR) $$BOOTROM_SRC_PATH $$BUILD_DIR
+first.depends = $(first) copydata
+export(first.depends)
+export(copydata.commands)
+QMAKE_EXTRA_TARGETS += first copydata

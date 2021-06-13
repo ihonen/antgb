@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>bootrom/bootix_dmg.bin</file>
+    </qresource>
+</RCC>
