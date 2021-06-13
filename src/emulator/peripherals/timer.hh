@@ -1,25 +1,27 @@
 #pragma once
 
+#include "emulator/interfaces/iemulatorcomponent.hh"
 #include "emulator/cpu/cpu.hh"
 #include "timerregisters.hh"
 
-class Timer
+class Timer : public iEmulatorComponent
 {
 public:
     Timer(TimerRegisters& reg, Interrupts& interrupts);
 
+    inline virtual void pre_cpu_exec_tick() override;
+    inline virtual void post_cpu_exec_tick(emutime_t tcycles) override;
+
     void set_stopped(bool stopped);
     inline bool is_stopped();
-
-    inline void emulate(emutime_t tcycles);
 
 protected:
 
     inline bool is_timer_enabled();
     inline emutime_t timer_tcycles_per_tick();
 
-    inline void emulate_divider(emutime_t tcycles);
-    inline void emulate_timer(emutime_t tcycles);
+    inline void divider_post_cpu_exec_tick(emutime_t tcycles);
+    inline void timer_post_cpu_exec_tick(emutime_t tcycles);
     inline void emulate_timerold(emutime_t tcycles);
 
     static constexpr emutime_t DIVIDER_FREQ_Hz = 16384;
@@ -43,15 +45,19 @@ protected:
     bool is_stopped_;
 };
 
+FORCE_INLINE void Timer::pre_cpu_exec_tick()
+{
+}
+
 FORCE_INLINE bool Timer::is_stopped()
 {
     return is_stopped_;
 }
 
-FORCE_INLINE void Timer::emulate(emutime_t tcycles)
+FORCE_INLINE void Timer::post_cpu_exec_tick(emutime_t tcycles)
 {
-    emulate_divider(tcycles);
-    emulate_timer(tcycles);
+    divider_post_cpu_exec_tick(tcycles);
+    timer_post_cpu_exec_tick(tcycles);
 }
 
 FORCE_INLINE bool Timer::is_timer_enabled()
@@ -66,7 +72,7 @@ FORCE_INLINE emutime_t Timer::timer_tcycles_per_tick()
               | TimerRegisters::InputclockSelect1)];
 }
 
-FORCE_INLINE void Timer::emulate_divider(emutime_t tcycles)
+FORCE_INLINE void Timer::divider_post_cpu_exec_tick(emutime_t tcycles)
 {
     if (!is_stopped())
     {
@@ -83,7 +89,7 @@ FORCE_INLINE void Timer::emulate_divider(emutime_t tcycles)
     }
 }
 
-FORCE_INLINE void Timer::emulate_timer(emutime_t tcycles)
+FORCE_INLINE void Timer::timer_post_cpu_exec_tick(emutime_t tcycles)
 {
     // TODO: Pandocs obscure behavior.
 

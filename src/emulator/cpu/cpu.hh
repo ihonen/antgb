@@ -2,6 +2,7 @@
 
 #include "cpuregisters.hh"
 #include "interrupts.hh"
+#include "emulator/interfaces/iemulatorcomponent.hh"
 #include "emulator/common/exceptions.hh"
 #include "emulator/common/macros.hh"
 #include "emulator/common/types.hh"

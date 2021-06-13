@@ -7,7 +7,7 @@ Serial::Serial(SerialRegisters& reg, Interrupts& interrupts, iFrontend* frontend
     reg(reg),
     frontend_(frontend)
 {
-    cpu_cycles_left_in_transfer = 0;
+    tcycles_left_in_transfer = 0;
 }
 
 void Serial::set_frontend(iFrontend* frontend)

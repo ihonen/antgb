@@ -1,25 +1,29 @@
 #pragma once
 
+#include "emulator/interfaces/iemulatorcomponent.hh"
 #include "debugger/ifrontend.hh"
 #include "emulator/cpu/interrupts.hh"
 #include "serialregisters.hh"
 
-class Serial
+class Serial : public iEmulatorComponent
 {
 public:
-    static constexpr uint64_t CPU_CYCLES_PER_BYTE = 4096;
+    static constexpr emutime_t TCYCLES_PER_BYTE = 4096;
 
     Serial(SerialRegisters& reg, Interrupts& interrupts, iFrontend* frontend = nullptr);
-    void set_frontend(iFrontend* frontend);
-    inline void emulate(uint64_t cpu_cycles);
 
-    uint64_t cpu_cycles_left_in_transfer;
+    virtual void pre_cpu_exec_tick() override {}
+    inline virtual void post_cpu_exec_tick(emutime_t tcycles) override;
+
+    void set_frontend(iFrontend* frontend);
+
+    emutime_t tcycles_left_in_transfer;
     Interrupts& interrupts;
     SerialRegisters& reg;
     iFrontend* frontend_;
 };
 
-FORCE_INLINE void Serial::emulate(uint64_t cpu_cycles)
+FORCE_INLINE void Serial::post_cpu_exec_tick(emutime_t tcycles)
 {
     if (reg.read(SB_ADDR) != 0x00 && reg.read(SC_ADDR) == 0x81)
     {
@@ -28,18 +32,18 @@ FORCE_INLINE void Serial::emulate(uint64_t cpu_cycles)
             frontend_->serial_callback(reg.read(SB_ADDR));
         }
         reg.write(SB_ADDR, 0x00);
-        cpu_cycles_left_in_transfer = CPU_CYCLES_PER_BYTE;
+        tcycles_left_in_transfer = TCYCLES_PER_BYTE;
     }
 
-    if (cpu_cycles_left_in_transfer <= cpu_cycles && cpu_cycles_left_in_transfer != 0)
+    if (tcycles_left_in_transfer <= tcycles && tcycles_left_in_transfer != 0)
     {
         interrupts.request_interrupt(Interrupts::Serial);
-        cpu_cycles_left_in_transfer = 0;
+        tcycles_left_in_transfer = 0;
         reg.write(SB_ADDR, 0x00);
         reg.write(SC_ADDR, 0x01);
     }
     else
     {
-        cpu_cycles_left_in_transfer -= cpu_cycles;
+        tcycles_left_in_transfer -= tcycles;
     }
 }

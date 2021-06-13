@@ -1,10 +1,11 @@
 #pragma once
 
 #include "cpuregisters.hh"
+#include "emulator/interfaces/iemulatorcomponent.hh"
 #include "emulator/common/macros.hh"
 #include "emulator/common/types.hh"
 
-class Interrupts
+class Interrupts : public iEmulatorComponent
 {
 public:
     enum Source
@@ -27,8 +28,8 @@ public:
 
     void post_bootram_reset();
 
-    inline void pre_instruction_exec_tick();
-    inline void post_instruction_exec_tick();
+    inline virtual void pre_cpu_exec_tick() override;
+    inline virtual void post_cpu_exec_tick(emutime_t /*tcycles*/) override;
 
     inline bool has_pending_requests();
     const Interrupts::Irq& get_top_priority_request();
@@ -66,7 +67,7 @@ protected:
     int disable_delay_left_;
 };
 
-FORCE_INLINE void Interrupts::pre_instruction_exec_tick()
+FORCE_INLINE void Interrupts::pre_cpu_exec_tick()
 {
     if (disable_delay_left_ != EXPIRED)
     {
@@ -78,7 +79,7 @@ FORCE_INLINE void Interrupts::pre_instruction_exec_tick()
     }
 }
 
-FORCE_INLINE void Interrupts::post_instruction_exec_tick()
+FORCE_INLINE void Interrupts::post_cpu_exec_tick(emutime_t /*tcycles*/)
 {
     if (enable_delay_left_ == 0)
     {

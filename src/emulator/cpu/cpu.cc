@@ -49,8 +49,6 @@ void Cpu::post_bootram_reset()
 
 void Cpu::execute_next()
 {
-    interrupts_.pre_instruction_exec_tick();
-
     // TODO: Is the interrupt handling correct?
 
     if (interrupts_.has_pending_requests())
@@ -105,8 +103,6 @@ void Cpu::execute_next()
         // Halted or stopped, so advance time by one machine cycle.
         elapsed_tcycles_ += 4;
     }
-
-    interrupts_.post_instruction_exec_tick();
 }
 
 void Cpu::invalid_opcode()

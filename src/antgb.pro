@@ -102,6 +102,7 @@ HEADERS += \
     debugger/ifrontend.hh \
     debugger/instructions.hh \
     debugger/types.hh \
+    emulator/interfaces/iemulatorcomponent.hh \
     emulator/memory/addresses.hh \
     emulator/peripherals/apu.hh \
     emulator/peripherals/apuregisters.hh \

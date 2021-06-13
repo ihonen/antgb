@@ -1,5 +1,6 @@
 #pragma once
 
+#include "emulator/interfaces/iemulatorcomponent.hh"
 #include "emulator/common/bitmanip.hh"
 #include "emulator/cpu/interrupts.hh"
 #include "emulator/memory/dma.hh"
@@ -17,7 +18,7 @@ class MemoryBus;
 class PpuRegisters;
 class Renderer;
 
-class Ppu
+class Ppu : public iEmulatorComponent
 {
 public:
     enum Mode
@@ -43,23 +44,32 @@ public:
 
     bool mode_task_complete;
     bool frame_ready;
-    uint64_t cpu_cycles_spent_in_mode;
+    emutime_t tcycles_spent_in_mode;
     Mode current_mode;
-    uint64_t unemulated_cpu_cycles;
+    emutime_t unemulated_tcycles;
 
-    uint64_t cpu_cycles_left_in_mode;
-    uint64_t cpu_cycles_until_ly;
+    emutime_t tcycles_left_in_mode;
+    emutime_t tcycles_until_ly;
 
-    uint64_t clocksum = 0;
+    emutime_t clocksum = 0;
     uint64_t scanline = 0;
 
     const uint8_t MODE_FLAG_MASK = 0x03; // Bits 0-1
 
-    Ppu(PpuRegisters& reg, Interrupts& interrupts, MemoryBus* mem, Dma& dma, iFrontend* renderer = nullptr);
-    ~Ppu();
+    Ppu(PpuRegisters& reg,
+        Interrupts& interrupts,
+        MemoryBus* mem,
+        Dma& dma,
+        iFrontend* renderer = nullptr);
+    virtual ~Ppu() override;
+
     void set_frontend(iFrontend* frontend);
+
     void hard_reset();
-    void step(uint64_t cpu_cycles);
+
+    virtual void pre_cpu_exec_tick() override {}
+    virtual void post_cpu_exec_tick(emutime_t cpu_cycles) override;
+
     bool has_dma_request();
     addr_t dma_src_address();
     void launch_dma(addr_t src_address);

@@ -591,13 +591,13 @@ void Ppu::set_frontend(iFrontend* frontend)
 void Ppu::hard_reset()
 {
     frame_ready              = false;
-    cpu_cycles_spent_in_mode = CPU_CYCLES_PER_VBLANK_MODE - 60;
-    unemulated_cpu_cycles    = 0;
+    tcycles_spent_in_mode = CPU_CYCLES_PER_VBLANK_MODE - 60;
+    unemulated_tcycles    = 0;
     // BGB:
     // Cycles until mode changes: 60
     // Cycles until the first LY update: 96.
-    cpu_cycles_left_in_mode = 60;
-    cpu_cycles_until_ly     = 96;
+    tcycles_left_in_mode = 60;
+    tcycles_until_ly     = 96;
 
     current_mode = OamScan;
     clocksum     = 0;
@@ -610,12 +610,12 @@ void Ppu::launch_dma(addr_t src_address)
     dma.launch_oam_dma(0xFE00, src_address, 160);
 }
 
-void Ppu::step(uint64_t cpu_cycles)
+void Ppu::post_cpu_exec_tick(emutime_t tcycles)
 {
-    clocksum += cpu_cycles;
+    clocksum += tcycles;
 
-    static uint64_t total_cycles = 0;
-    total_cycles += cpu_cycles;
+    static auto total_cycles = 0;
+    total_cycles += tcycles;
 
     bool stop = false;
 

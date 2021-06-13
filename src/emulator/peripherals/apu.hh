@@ -1,10 +1,14 @@
 #pragma once
 
+#include "emulator/interfaces/iemulatorcomponent.hh"
 #include "emulator/common/types.hh"
 
-class Apu
+class Apu : public iEmulatorComponent
 {
 public:
+    virtual void pre_cpu_exec_tick() override {}
+    virtual void post_cpu_exec_tick(emutime_t /*tcycles*/) override {}
+
     struct
     {
         uint8_t nr10;

@@ -6,6 +6,7 @@
 #include "emulator/common/macros.hh"
 #include "emulator/memory/memorybus.hh"
 #include "emulator/ppu/ppu.hh"
+#include "emulator/peripherals/joypad.hh"
 #include "emulator/peripherals/serial.hh"
 #include "emulator/peripherals/timer.hh"
 
@@ -83,17 +84,25 @@ public:
 
 FORCE_INLINE int Emulator::execute_next()
 {
-    uint64_t cpu_cycle_count_before = cpu->get_elapsed_tcycles();
+    dma->pre_cpu_exec_tick();
+    interrupts->pre_cpu_exec_tick();
+    ppu->pre_cpu_exec_tick();
+    serial->pre_cpu_exec_tick();
+    timer->pre_cpu_exec_tick();
+
+    auto elapsed_tcycles_before = cpu->get_elapsed_tcycles();
+
     cpu->execute_next();
-    uint64_t cpu_cycle_count_after = cpu->get_elapsed_tcycles();
-    uint64_t clock_cycles = cpu_cycle_count_after - cpu_cycle_count_before;
 
-    timer->emulate(clock_cycles);
-    ppu->step(clock_cycles);
-    serial->emulate(clock_cycles);
-    dma->emulate(clock_cycles);
+    auto tcycles_passed = cpu->get_elapsed_tcycles() - elapsed_tcycles_before;
 
-    return static_cast<int>(clock_cycles);
+    dma->post_cpu_exec_tick(tcycles_passed);
+    interrupts->post_cpu_exec_tick(tcycles_passed);
+    serial->post_cpu_exec_tick(tcycles_passed);
+    timer->post_cpu_exec_tick(tcycles_passed);
+    ppu->post_cpu_exec_tick(tcycles_passed);
+
+    return static_cast<int>(tcycles_passed);
 }
 
 FORCE_INLINE uint16_t Emulator::read(regid_t register_id)
