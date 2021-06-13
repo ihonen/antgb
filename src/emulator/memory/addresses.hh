@@ -101,6 +101,9 @@ static constexpr addr_t WAVERAM_SIZE = 0x0010;
 static constexpr addr_t APU_LOW      = 0xFF10;
 static constexpr addr_t APU_HIGH     = 0xFF3F;
 
+// Boot ROM
+static constexpr addr_t BOOTROM_LOCK_ADDR = 0xFF50;
+
 // Interrupts
 static constexpr addr_t IE_ADDR = 0xFFFF;
 static constexpr addr_t IF_ADDR = 0xFF0F;
