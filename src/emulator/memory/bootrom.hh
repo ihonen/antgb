@@ -2,14 +2,13 @@
 
 #include "memorybase.hh"
 
-class BootRom
-    : public MemoryBase<BOOTROM_LOW, BOOTROM_HIGH>
+class BootRom : public MemoryBase<BOOTROM_LOW, BOOTROM_HIGH>
 {
 protected:
     bool is_locked_ = false;
 
 public:
-    BootRom() = default;
+    BootRom(const std::string& filepath);
 
     bool is_locked()
     {

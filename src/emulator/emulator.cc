@@ -16,7 +16,7 @@ Emulator::Emulator()
     , render_callback(nullptr)
     , serial_callback(nullptr)
 {
-    bootrom = std::make_unique<BootRom>();
+    bootrom = std::make_unique<BootRom>("bootix_dmg.bin");
     hram = std::make_unique<Hram>();
     oam = std::make_unique<Oam>();
     vram = std::make_unique<Vram>();

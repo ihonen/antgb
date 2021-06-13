@@ -32,6 +32,7 @@ tests: tests-compile tests-run
 tests-compile:
 	$(CXX) -o $(OUTPUT) $(EMULATOR_SOURCES) $(TEST_SOURCES) $(GTEST_SOURCES) $(CXXFLAGS) $(LDFLAGS) $(LDLIBS)
 	cp $(SOURCES_DIR)/bootrom/bootix_dmg.bin $(TESTS_DIR)
+	cp $(SOURCES_DIR)/memdump/memory_post_bootrom.bin $(TESTS_DIR)
 
 tests-run:
 	$(OUTPUT)

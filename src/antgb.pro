@@ -29,6 +29,7 @@ SOURCES += \
     emulator/cpu/decode.cc \
     emulator/cpu/opcodetables.cc \
     emulator/cpu/operations.cc \
+    emulator/memory/bootrom.cc \
     emulator/peripherals/apuregisters.cc \
     emulator/memory/cartridge.cc \
     emulator/cpu/cpuregisters.cc \
