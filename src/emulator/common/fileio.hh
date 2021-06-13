@@ -2,5 +2,6 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
-void load_rom(std::string& filepath, uint8_t* memory);
+void read_binary_file(const std::string& filepath, std::vector<uint8_t>& image_out);

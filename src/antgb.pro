@@ -173,14 +173,17 @@ HEADERS += \
 
 RESOURCES += \
     gui/assets/dark.qrc \
-    gui/assets/img.qrc \
-    memdump.qrc
+    gui/assets/img.qrc
 
-# Copy the bootrom to the build directory.
+# Copy the bootrom and post-bootrom memory dump to the build directory.
 BOOTROM_SRC_PATH = $$shell_path($$clean_path($$PWD\\bootrom\\bootix_dmg.bin))
+AFTERBOOT_SRC_PATH = $$shell_path($$clean_path($$PWD\\memdump\\memory_post_bootrom.bin))
 BUILD_DIR = $$shell_path($$clean_path($$OUT_PWD))
-copydata.commands = $(COPY_DIR) $$BOOTROM_SRC_PATH $$BUILD_DIR
-first.depends = $(first) copydata
+copydata1.commands = $(COPY_DIR) $$BOOTROM_SRC_PATH $$BUILD_DIR
+copydata2.commands = $(COPY_DIR) $$AFTERBOOT_SRC_PATH $$BUILD_DIR
+first.depends = $(first) copydata1
+first.depends = $(first) copydata2
 export(first.depends)
-export(copydata.commands)
-QMAKE_EXTRA_TARGETS += first copydata
+export(copydata1.commands)
+export(copydata2.commands)
+QMAKE_EXTRA_TARGETS += first copydata1 copydata2

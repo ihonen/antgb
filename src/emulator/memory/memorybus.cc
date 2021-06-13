@@ -46,15 +46,15 @@ void MemoryBus::hard_reset()
     // TODO: Get rid of Qt dependency.
     // TODO: Move elsewhere.
 
-    std::string dump_filepath = ":/memdump/afterboot.dump";
-    uint8_t* afterboot_dump = new uint8_t[0x10000];
-    load_rom(dump_filepath, afterboot_dump);
+    std::string dump_filepath = "memory_post_bootrom.bin";
+    std::vector<uint8_t> afterboot_dump;
+    read_binary_file(dump_filepath, afterboot_dump);
+    assert(afterboot_dump.size() != 0);
     for (size_t i = 0; i < 0x10000; ++i)
     {
         if (i >= VRAM_LOW)
         {
-            force_write(i, afterboot_dump[i]);
+            force_write(i, afterboot_dump.at(i));
         }
     }
-    delete[] afterboot_dump;
 }

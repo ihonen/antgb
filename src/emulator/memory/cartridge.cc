@@ -1,6 +1,7 @@
 #include "cartridge.hh"
 
 #include "addresses.hh"
+#include "emulator/common/fileio.hh"
 
 #include <algorithm>
 #include <fstream>
@@ -16,15 +17,13 @@ Cartridge::Cartridge(const std::string& filepath)
 {
     std::vector<uint8_t> image;
 
-    std::ifstream file_in(filepath, std::ios::binary);
-    if (file_in.is_open())
-    {
-        image = std::vector<uint8_t>(std::istreambuf_iterator<char>(file_in), {});
-    }
+    read_binary_file(filepath, image);
 
     if (image.size() != 0x8000)
     {
-        std::cerr << "WARNING: Only ROM size 0x8000 is supported." << std::endl;
+        std::cerr << "WARNING: Cartridge: Only ROM size 0x8000 "
+                     "is supported at the moment."
+                  << std::endl;
     }
 
     for (size_t address = ROM0_LOW; address <= ROM0_HIGH; ++address)
